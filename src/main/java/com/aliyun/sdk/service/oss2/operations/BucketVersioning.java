@@ -18,6 +18,7 @@ public final class BucketVersioning {
     public static PutBucketVersioningResult putBucketVersioning(ClientImpl impl, PutBucketVersioningRequest request, OperationOptions options) {
         
         requireNonNull(request.bucket(), "request.bucket is required");
+        requireNonNull(request.versioningConfiguration(), "request.versioningConfiguration is required");
 
         OperationInput input = SerdeBucketVersioning.fromPutBucketVersioning(request);
         OperationOutput output = impl.execute(input, options);
@@ -27,7 +28,8 @@ public final class BucketVersioning {
     public static CompletableFuture<PutBucketVersioningResult> putBucketVersioningAsync(ClientImpl impl, PutBucketVersioningRequest request, OperationOptions options) {
         
         requireNonNull(request.bucket(), "request.bucket is required");
-        
+        requireNonNull(request.versioningConfiguration(), "request.versioningConfiguration is required");
+
         OperationInput input = SerdeBucketVersioning.fromPutBucketVersioning(request);
         return impl.executeAsync(input, options).thenApply(SerdeBucketVersioning::toPutBucketVersioning);
     }

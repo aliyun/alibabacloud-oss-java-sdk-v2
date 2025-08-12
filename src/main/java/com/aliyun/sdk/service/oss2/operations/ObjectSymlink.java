@@ -22,6 +22,7 @@ public final class ObjectSymlink {
 
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.symlinkTarget(), "request.symlinkTarget is required");
 
         OperationInput input = SerdeObjectSymlink.fromPutSymlink(request);
         OperationOutput output = impl.execute(input, options);
@@ -32,6 +33,7 @@ public final class ObjectSymlink {
 
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.symlinkTarget(), "request.symlinkTarget is required");
 
         OperationInput input = SerdeObjectSymlink.fromPutSymlink(request);
         return impl.executeAsync(input, options).thenApply(SerdeObjectSymlink::toPutSymlink);
