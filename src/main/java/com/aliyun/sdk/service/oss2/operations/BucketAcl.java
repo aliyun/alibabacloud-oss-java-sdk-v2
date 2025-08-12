@@ -21,6 +21,7 @@ public final class BucketAcl {
     public static PutBucketAclResult putBucketAcl(ClientImpl impl, PutBucketAclRequest request, OperationOptions options) {
         
         requireNonNull(request.bucket(), "request.bucket is required");
+        requireNonNull(request.acl(), "request.acl is required");
 
         OperationInput input = SerdeBucketAcl.fromPutBucketAcl(request);
         OperationOutput output = impl.execute(input, options);
@@ -30,7 +31,8 @@ public final class BucketAcl {
     public static CompletableFuture<PutBucketAclResult> putBucketAclAsync(ClientImpl impl, PutBucketAclRequest request, OperationOptions options) {
         
         requireNonNull(request.bucket(), "request.bucket is required");
-        
+        requireNonNull(request.acl(), "request.acl is required");
+
         OperationInput input = SerdeBucketAcl.fromPutBucketAcl(request);
         return impl.executeAsync(input, options).thenApply(SerdeBucketAcl::toPutBucketAcl);
     }

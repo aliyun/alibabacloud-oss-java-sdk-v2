@@ -22,6 +22,7 @@ public final class ObjectAcl {
 
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.objectAcl(), "request.objectAcl is required");
 
         OperationInput input = SerdeObjectAcl.fromPutObjectAcl(request);
         OperationOutput output = impl.execute(input, options);
@@ -32,6 +33,7 @@ public final class ObjectAcl {
 
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.objectAcl(), "request.objectAcl is required");
 
         OperationInput input = SerdeObjectAcl.fromPutObjectAcl(request);
         return impl.executeAsync(input, options).thenApply(SerdeObjectAcl::toPutObjectAcl);

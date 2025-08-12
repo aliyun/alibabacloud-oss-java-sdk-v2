@@ -48,6 +48,7 @@ public final class ObjectBasic {
 
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.sourceKey(), "request.sourceKey is required");
 
         OperationInput input = SerdeObjectBasic.fromCopyObject(request);
         OperationOutput output = impl.execute(input, options);
@@ -58,6 +59,7 @@ public final class ObjectBasic {
 
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.sourceKey(), "request.sourceKey is required");
 
         OperationInput input = SerdeObjectBasic.fromCopyObject(request);
         return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toCopyObject);

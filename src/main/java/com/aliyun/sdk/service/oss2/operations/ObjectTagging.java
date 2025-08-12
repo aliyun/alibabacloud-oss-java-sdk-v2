@@ -19,6 +19,7 @@ public final class ObjectTagging {
 
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.tagging(), "request.tagging is required");
 
         OperationInput input = SerdeObjectTagging.fromPutObjectTagging(request);
         OperationOutput output = impl.execute(input, options);
@@ -29,6 +30,7 @@ public final class ObjectTagging {
 
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.tagging(), "request.tagging is required");
 
         OperationInput input = SerdeObjectTagging.fromPutObjectTagging(request);
         return impl.executeAsync(input, options).thenApply(SerdeObjectTagging::toPutObjectTagging);
