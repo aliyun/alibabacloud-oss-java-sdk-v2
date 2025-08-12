@@ -24,6 +24,7 @@ public class UploadPartCopyRequestTest {
         assertThat(request.sourceBucket()).isNull();
         assertThat(request.sourceKey()).isNull();
         assertThat(request.sourceVersionId()).isNull();
+        assertThat(request.copySourceRange()).isNull();
         assertThat(request.copySourceIfMatch()).isNull();
         assertThat(request.copySourceIfNoneMatch()).isNull();
         assertThat(request.copySourceIfUnmodifiedSince()).isNull();

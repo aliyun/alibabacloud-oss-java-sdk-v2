@@ -155,7 +155,6 @@ public final class SerdeObjectMultipart {
         builder.bucket(request.bucket());
         builder.key(request.key());
 
-
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
         return input;

@@ -576,7 +576,6 @@ public class ClientObjectTest extends TestBase {
         }
     }
 
-
     private String genObjectName() {
         long ticks = new Date().getTime() / 1000;
         long val = new Random().nextInt(5000);

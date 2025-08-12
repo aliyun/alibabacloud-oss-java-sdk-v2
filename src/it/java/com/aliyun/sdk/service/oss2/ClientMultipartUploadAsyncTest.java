@@ -660,6 +660,7 @@ public class ClientMultipartUploadAsyncTest extends TestBase {
         }
     }
 
+
     @Test
     public void testUploadPartCopyWithSourceVersionIdAndUrlEncoding() throws ExecutionException, InterruptedException {
         OSSAsyncClient client = getDefaultAsyncClient();
