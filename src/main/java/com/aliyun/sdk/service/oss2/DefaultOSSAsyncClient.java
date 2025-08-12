@@ -240,4 +240,14 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<ListObjectVersionsResult> listObjectVersionsAsync(ListObjectVersionsRequest request, OperationOptions options) {
         return BucketVersioning.listObjectVersionsAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<PutBucketAclResult> putBucketAclAsync(PutBucketAclRequest request, OperationOptions options) {
+        return BucketAcl.putBucketAclAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
+        return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
+    }
 }
