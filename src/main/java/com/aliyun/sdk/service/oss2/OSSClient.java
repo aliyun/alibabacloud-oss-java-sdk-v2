@@ -1129,4 +1129,51 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket acl api
+    /**
+     * Configures or modifies the access control list (ACL) for a bucket.
+     *
+     * @param request A {@link PutBucketAclRequest} for PutBucketAcl operation.
+     * @return A {@link PutBucketAclResult} for PutBucketAcl operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default PutBucketAclResult putBucketAcl(PutBucketAclRequest request) {
+        return putBucketAcl(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures or modifies the access control list (ACL) for a bucket.
+     *
+     * @param request A {@link PutBucketAclRequest} for PutBucketAcl operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketAclResult} for PutBucketAcl operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default PutBucketAclResult putBucketAcl(PutBucketAclRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the access control list (ACL) of a bucket. Only the owner of a bucket can query the ACL of the bucket.
+     *
+     * @param request A {@link GetBucketAclRequest} for GetBucketAcl operation.
+     * @return A {@link GetBucketAclResult} for GetBucketAcl operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default GetBucketAclResult getBucketAcl(GetBucketAclRequest request) {
+        return getBucketAcl(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the access control list (ACL) of a bucket. Only the owner of a bucket can query the ACL of the bucket.
+     *
+     * @param request A {@link GetBucketAclRequest} for GetBucketAcl operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketAclResult} for GetBucketAcl operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }
