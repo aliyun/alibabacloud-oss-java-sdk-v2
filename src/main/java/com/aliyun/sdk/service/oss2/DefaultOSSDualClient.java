@@ -485,4 +485,24 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<ListObjectVersionsResult> listObjectVersionsAsync(ListObjectVersionsRequest request, OperationOptions options) {
         return BucketVersioning.listObjectVersionsAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketAclResult putBucketAcl(PutBucketAclRequest request, OperationOptions options) {
+        return BucketAcl.putBucketAcl(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
+        return BucketAcl.getBucketAcl(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketAclResult> putBucketAclAsync(PutBucketAclRequest request, OperationOptions options) {
+        return BucketAcl.putBucketAclAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
+        return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
+    }
 }

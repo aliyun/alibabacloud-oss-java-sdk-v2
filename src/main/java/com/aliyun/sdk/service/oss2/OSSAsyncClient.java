@@ -992,4 +992,54 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+
+    // bucket acl api
+    /**
+     * Configures or modifies the access control list (ACL) for a bucket.
+     *
+     * @param request A {@link PutBucketAclRequest} for PutBucketAcl operation.
+     * @return A Java Future containing the {@link PutBucketAclResult} of the PutBucketAcl operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketAclResult> putBucketAclAsync(PutBucketAclRequest request) {
+        return putBucketAclAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures or modifies the access control list (ACL) for a bucket.
+     *
+     * @param request A {@link PutBucketAclRequest} for PutBucketAcl operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketAclResult} of the PutBucketAcl operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketAclResult> putBucketAclAsync(PutBucketAclRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the access control list (ACL) of a bucket. Only the owner of a bucket can query the ACL of the bucket.
+     *
+     * @param request A {@link GetBucketAclRequest} for GetBucketAcl operation.
+     * @return A Java Future containing the {@link GetBucketAclResult} of the GetBucketAcl operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request) {
+        return getBucketAclAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the access control list (ACL) of a bucket. Only the owner of a bucket can query the ACL of the bucket.
+     *
+     * @param request A {@link GetBucketAclRequest} for GetBucketAcl operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketAclResult} of the GetBucketAcl operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
 }
