@@ -993,7 +993,6 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
-
     // bucket acl api
     /**
      * Configures or modifies the access control list (ACL) for a bucket.
@@ -1041,5 +1040,4 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
-
 }

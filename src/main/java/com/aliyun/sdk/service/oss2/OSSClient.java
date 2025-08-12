@@ -1176,5 +1176,4 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
-
 }
