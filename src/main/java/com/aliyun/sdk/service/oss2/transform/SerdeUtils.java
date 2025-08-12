@@ -6,6 +6,7 @@ import com.aliyun.sdk.service.oss2.exceptions.DeserializationException;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transport.StringBinaryData;
+import com.aliyun.sdk.service.oss2.utils.HttpUtils;
 import com.aliyun.sdk.service.oss2.utils.Md5Utils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -110,5 +111,37 @@ public final class SerdeUtils {
         java.io.StringWriter writer = new java.io.StringWriter();
         transformer.transform(new javax.xml.transform.dom.DOMSource(element), new javax.xml.transform.stream.StreamResult(writer));
         return writer.toString();
+    }
+
+    public static String encodeCopySource(Object request) {
+        String sourceBucket = null;
+        String bucket = null;
+        String sourceKey = null;
+        String sourceVersionId = null;
+
+        if (request instanceof CopyObjectRequest) {
+            CopyObjectRequest copyRequest = (CopyObjectRequest) request;
+            sourceBucket = copyRequest.sourceBucket();
+            bucket = copyRequest.bucket();
+            sourceKey = copyRequest.sourceKey();
+            sourceVersionId = copyRequest.sourceVersionId();
+        }
+
+        else if (request instanceof UploadPartCopyRequest) {
+            UploadPartCopyRequest uploadRequest = (UploadPartCopyRequest) request;
+            sourceBucket = uploadRequest.sourceBucket();
+            bucket = uploadRequest.bucket();
+            sourceKey = uploadRequest.sourceKey();
+            sourceVersionId = uploadRequest.sourceVersionId();
+        }
+
+        String bucketName = (sourceBucket != null && !sourceBucket.isEmpty()) ? sourceBucket : bucket;
+        String encodedSource = "/" + bucketName + "/" + HttpUtils.urlEncode(sourceKey);
+
+        if (sourceVersionId != null && !sourceVersionId.isEmpty()) {
+            encodedSource += "?versionId=" + sourceVersionId;
+        }
+
+        return encodedSource;
     }
 }

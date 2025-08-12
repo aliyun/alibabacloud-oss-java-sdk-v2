@@ -72,9 +72,9 @@ public final class SerdeObjectBasic {
                 .method("PUT");
 
         // default headers
-        //Map<String, String> headers = MapUtils.caseInsensitiveMap();
-        //headers.put("Content-Type", "application/xml");
-        //builder.headers(headers);
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("x-oss-copy-source", SerdeUtils.encodeCopySource(request));
+        builder.headers(headers);
 
         builder.bucket(request.bucket());
         builder.key(request.key());
