@@ -10,11 +10,17 @@ import static java.util.Objects.requireNonNull;
 public final class UploadPartCopyRequest extends RequestModel {
     private final String bucket;
     private final String key;
+    private final String sourceBucket;
+    private final String sourceKey;
+    private final String sourceVersionId;
 
     private UploadPartCopyRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
         this.key = builder.key;
+        this.sourceBucket = builder.sourceBucket;
+        this.sourceKey = builder.sourceKey;
+        this.sourceVersionId = builder.sourceVersionId;
     }
 
     public static Builder newBuilder() {
@@ -36,11 +42,24 @@ public final class UploadPartCopyRequest extends RequestModel {
     }
 
     /**
-     * The address to access the source object. You must have permissions to read the source object.brDefault value: null
+     * The name of the source bucket.
      */
-    public String copySource() {
-        String value = headers.get("x-oss-copy-source");
-        return value;
+    public String sourceBucket() {
+        return sourceBucket;
+    }
+
+    /**
+     * The full path of the source object.
+     */
+    public String sourceKey() {
+        return sourceKey;
+    }
+
+    /**
+     * The version ID of the source object.
+     */
+    public String sourceVersionId() {
+        return sourceVersionId;
     }
 
     /**
@@ -122,6 +141,9 @@ public final class UploadPartCopyRequest extends RequestModel {
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
         private String key;
+        private String sourceBucket;
+        private String sourceKey;
+        private String sourceVersionId;
 
         private Builder() {
             super();
@@ -131,6 +153,9 @@ public final class UploadPartCopyRequest extends RequestModel {
             super(request);
             this.bucket = request.bucket;
             this.key = request.key;
+            this.sourceBucket = request.sourceBucket;
+            this.sourceKey = request.sourceKey;
+            this.sourceVersionId = request.sourceVersionId;
         }
 
         /**
@@ -152,11 +177,29 @@ public final class UploadPartCopyRequest extends RequestModel {
         }
 
         /**
-         * The address to access the source object. You must have permissions to read the source object.brDefault value: null
+         * The name of the source bucket.
          */
-        public Builder copySource(String value) {
+        public Builder sourceBucket(String value) {
             requireNonNull(value);
-            this.headers.put("x-oss-copy-source", value);
+            this.sourceBucket = value;
+            return this;
+        }
+
+        /**
+         * The full path of the source object.
+         */
+        public Builder sourceKey(String value) {
+            requireNonNull(value);
+            this.sourceKey = value;
+            return this;
+        }
+
+        /**
+         * The version ID of the source object.
+         */
+        public Builder sourceVersionId(String value) {
+            requireNonNull(value);
+            this.sourceVersionId = value;
             return this;
         }
 
