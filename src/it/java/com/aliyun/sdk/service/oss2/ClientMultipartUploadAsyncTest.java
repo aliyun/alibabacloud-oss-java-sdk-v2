@@ -131,7 +131,8 @@ public class ClientMultipartUploadAsyncTest extends TestBase {
                         .key(copyObjectName)
                         .uploadId(copyUploadId)
                         .partNumber(1L)
-                        .copySource("/" + bucketName + "/" + objectName)
+                        .sourceBucket(bucketName)
+                        .sourceKey(objectName)
                         .build()).get();
         Assert.assertNotNull(copyPartResult);
         Assert.assertEquals(200, copyPartResult.statusCode());
@@ -656,6 +657,109 @@ public class ClientMultipartUploadAsyncTest extends TestBase {
                 assertThat(getResult.body()).isInstanceOf(ByteArrayInputStream.class);
                 assertThat(getResult.contentType()).isEqualTo("application/octet-stream");
             }
+        }
+    }
+
+    @Test
+    public void testUploadPartCopyWithSourceVersionIdAndUrlEncoding() throws ExecutionException, InterruptedException {
+        OSSAsyncClient client = getDefaultAsyncClient();
+        String sourceObjectName = genObjectName() + "-source object.txt"; // Include space for URL encoding test
+        String copyObjectName = genObjectName() + "-copy object.txt";
+        String sourceVersionId = null;
+
+        byte[] content = TestUtils.generateTestData(200 * 1024 + 123); // 200kb + 123 bytes
+
+        try {
+            // 1. Create a source object
+            PutObjectResult putResult = client.putObjectAsync(
+                    PutObjectRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(sourceObjectName)
+                            .body(new ByteArrayBinaryData(content))
+                            .build()).get();
+            Assert.assertNotNull(putResult);
+            Assert.assertEquals(200, putResult.statusCode());
+
+            // Get source object versionId (if versioning is enabled)
+            if (putResult.versionId() != null && !putResult.versionId().isEmpty()) {
+                sourceVersionId = putResult.versionId();
+            }
+
+            // 2. Initiate multipart upload for copy
+            InitiateMultipartUploadResult initiateCopyResult = client.initiateMultipartUploadAsync(
+                    InitiateMultipartUploadRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(copyObjectName)
+                            .build()).get();
+            Assert.assertNotNull(initiateCopyResult);
+            Assert.assertEquals(200, initiateCopyResult.statusCode());
+            String copyUploadId = initiateCopyResult.initiateMultipartUpload().uploadId();
+
+            // 3. Use uploadPartCopy to copy source object to target object
+            UploadPartCopyRequest.Builder copyRequestBuilder = UploadPartCopyRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(copyObjectName)
+                    .uploadId(copyUploadId)
+                    .partNumber(1L)
+                    .sourceBucket(bucketName)
+                    .sourceKey(sourceObjectName);
+
+            // Add sourceVersionId if source object has versionId
+            if (sourceVersionId != null) {
+                copyRequestBuilder.sourceVersionId(sourceVersionId);
+            }
+
+            UploadPartCopyResult copyPartResult = client.uploadPartCopyAsync(copyRequestBuilder.build()).get();
+            Assert.assertNotNull(copyPartResult);
+            Assert.assertEquals(200, copyPartResult.statusCode());
+
+            // 4. Complete multipart copy upload
+            List<Part> copyParts = new ArrayList<>();
+            copyParts.add(Part.newBuilder()
+                    .partNumber(1L)
+                    .eTag(copyPartResult.copyPartResult().eTag())
+                    .build());
+
+            CompleteMultipartUpload copyCompleteMultipartUpload = CompleteMultipartUpload.newBuilder()
+                    .parts(copyParts)
+                    .build();
+
+            CompleteMultipartUploadResult completeCopyResult = client.completeMultipartUploadAsync(
+                    CompleteMultipartUploadRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(copyObjectName)
+                            .uploadId(copyUploadId)
+                            .completeMultipartUpload(copyCompleteMultipartUpload)
+                            .build()).get();
+            Assert.assertNotNull(completeCopyResult);
+            Assert.assertEquals(200, completeCopyResult.statusCode());
+
+            // 5. Verify copied object
+            GetObjectMetaResult copyMetaResult = client.getObjectMetaAsync(
+                    GetObjectMetaRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(copyObjectName)
+                            .build()).get();
+            Assert.assertNotNull(copyMetaResult);
+            Assert.assertEquals(200, copyMetaResult.statusCode());
+            Assert.assertEquals(Long.valueOf(content.length), copyMetaResult.contentLength());
+
+        } finally {
+            // Clean up resources
+            DeleteObjectResult deleteResult = client.deleteObjectAsync(DeleteObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(sourceObjectName)
+                    .build()).get();
+            Assert.assertNotNull(deleteResult);
+            Assert.assertEquals(204, deleteResult.statusCode());
+
+            DeleteObjectResult deleteCopyResult = client.deleteObjectAsync(DeleteObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(copyObjectName)
+                    .build()).get();
+            Assert.assertNotNull(deleteCopyResult);
+            Assert.assertEquals(204, deleteCopyResult.statusCode());
+
         }
     }
 

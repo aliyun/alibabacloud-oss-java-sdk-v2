@@ -1,5 +1,7 @@
 package com.aliyun.sdk.service.oss2.models;
 
+import com.aliyun.sdk.service.oss2.OperationInput;
+import com.aliyun.sdk.service.oss2.transform.SerdeObjectMultipart;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +21,9 @@ public class UploadPartCopyRequestTest {
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
         assertThat(request.key()).isNull();
-        assertThat(request.copySource()).isNull();
-        assertThat(request.copySourceRange()).isNull();
+        assertThat(request.sourceBucket()).isNull();
+        assertThat(request.sourceKey()).isNull();
+        assertThat(request.sourceVersionId()).isNull();
         assertThat(request.copySourceIfMatch()).isNull();
         assertThat(request.copySourceIfNoneMatch()).isNull();
         assertThat(request.copySourceIfUnmodifiedSince()).isNull();
@@ -41,7 +44,9 @@ public class UploadPartCopyRequestTest {
         UploadPartCopyRequest request = UploadPartCopyRequest.newBuilder()
                 .bucket("examplebucket")
                 .key("examplekey")
-                .copySource("/sourcebucket/sourcekey")
+                .sourceBucket("sourcebucket")
+                .sourceKey("sourcekey")
+                .sourceVersionId("version123")
                 .copySourceRange("bytes=0-1024")
                 .copySourceIfMatch("\"etag-match\"")
                 .copySourceIfNoneMatch("\"etag-none-match\"")
@@ -58,7 +63,9 @@ public class UploadPartCopyRequestTest {
 
         assertThat(request.bucket()).isEqualTo("examplebucket");
         assertThat(request.key()).isEqualTo("examplekey");
-        assertThat(request.copySource()).isEqualTo("/sourcebucket/sourcekey");
+        assertThat(request.sourceBucket()).isEqualTo("sourcebucket");
+        assertThat(request.sourceKey()).isEqualTo("sourcekey");
+        assertThat(request.sourceVersionId()).isEqualTo("version123");
         assertThat(request.copySourceRange()).isEqualTo("bytes=0-1024");
         assertThat(request.copySourceIfMatch()).isEqualTo("\"etag-match\"");
         assertThat(request.copySourceIfNoneMatch()).isEqualTo("\"etag-none-match\"");
@@ -87,7 +94,9 @@ public class UploadPartCopyRequestTest {
         UploadPartCopyRequest original = UploadPartCopyRequest.newBuilder()
                 .bucket("examplebucket")
                 .key("examplekey")
-                .copySource("/sourcebucket/sourcekey2")
+                .sourceBucket("sourcebucket")
+                .sourceKey("sourcekey2")
+                .sourceVersionId("version456")
                 .copySourceRange("bytes=1025-2048")
                 .copySourceIfMatch("\"etag-match-2\"")
                 .copySourceIfNoneMatch("\"etag-none-match-2\"")
@@ -106,7 +115,9 @@ public class UploadPartCopyRequestTest {
 
         assertThat(copy.bucket()).isEqualTo("examplebucket");
         assertThat(copy.key()).isEqualTo("examplekey");
-        assertThat(copy.copySource()).isEqualTo("/sourcebucket/sourcekey2");
+        assertThat(copy.sourceBucket()).isEqualTo("sourcebucket");
+        assertThat(copy.sourceKey()).isEqualTo("sourcekey2");
+        assertThat(copy.sourceVersionId()).isEqualTo("version456");
         assertThat(copy.copySourceRange()).isEqualTo("bytes=1025-2048");
         assertThat(copy.copySourceIfMatch()).isEqualTo("\"etag-match-2\"");
         assertThat(copy.copySourceIfNoneMatch()).isEqualTo("\"etag-none-match-2\"");
@@ -130,7 +141,9 @@ public class UploadPartCopyRequestTest {
         UploadPartCopyRequest request = UploadPartCopyRequest.newBuilder()
                 .bucket("examplebucket")
                 .key("examplekey")
-                .copySource("/sourcebucket/sourcekey3")
+                .sourceBucket("sourcebucket")
+                .sourceKey("sourcekey3")
+                .sourceVersionId("version789")
                 .copySourceRange("bytes=2049-4096")
                 .copySourceIfMatch("\"etag-match-3\"")
                 .copySourceIfNoneMatch("\"etag-none-match-3\"")
@@ -144,7 +157,9 @@ public class UploadPartCopyRequestTest {
 
         assertThat(request.bucket()).isEqualTo("examplebucket");
         assertThat(request.key()).isEqualTo("examplekey");
-        assertThat(request.copySource()).isEqualTo("/sourcebucket/sourcekey3");
+        assertThat(request.sourceBucket()).isEqualTo("sourcebucket");
+        assertThat(request.sourceKey()).isEqualTo("sourcekey3");
+        assertThat(request.sourceVersionId()).isEqualTo("version789");
         assertThat(request.copySourceRange()).isEqualTo("bytes=2049-4096");
         assertThat(request.copySourceIfMatch()).isEqualTo("\"etag-match-3\"");
         assertThat(request.copySourceIfNoneMatch()).isEqualTo("\"etag-none-match-3\"");
@@ -154,5 +169,25 @@ public class UploadPartCopyRequestTest {
         assertThat(request.uploadId()).isEqualTo("upload-id-3");
         assertThat(request.trafficLimit()).isEqualTo(400000L);
         assertThat(request.requestPayer()).isEqualTo("requester");
+    }
+
+    @Test
+    public void xmlBuilder() {
+        UploadPartCopyRequest request = UploadPartCopyRequest.newBuilder()
+                .bucket("destbucket")
+                .key("destobject.txt")
+                .sourceBucket("sourcebucket")
+                .sourceKey("source object.txt")
+                .sourceVersionId("version123")
+                .partNumber(1L)
+                .uploadId("upload-id")
+                .build();
+
+        OperationInput input = SerdeObjectMultipart.fromUploadPartCopy(request);
+
+        assertThat(input.bucket().get()).isEqualTo("destbucket");
+        assertThat(input.key().get()).isEqualTo("destobject.txt");
+        assertThat(input.headers().get("x-oss-copy-source")).isEqualTo("/sourcebucket/source%20object.txt?versionId=version123");
+        assertThat(input.headers().get("Content-Type")).isEqualTo("application/octet-stream");
     }
 }

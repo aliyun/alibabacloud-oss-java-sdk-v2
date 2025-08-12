@@ -102,7 +102,8 @@ public class ClientObjectAsyncTest extends TestBase {
         CopyObjectResult copyResult = client.copyObjectAsync(CopyObjectRequest.newBuilder()
                 .bucket(bucketName)
                 .key(copyObjectName)
-                .copySource("/" + bucketName + "/" + objectName)
+                .sourceBucket(bucketName)
+                .sourceKey(objectName)
                 .build()).get();
         Assert.assertNotNull(copyResult);
         Assert.assertEquals(200, copyResult.statusCode());
@@ -508,6 +509,73 @@ public class ClientObjectAsyncTest extends TestBase {
                 assertThat(getResult.body()).isInstanceOf(ByteArrayInputStream.class);
                 assertThat(getResult.contentType()).isEqualTo("application/octet-stream");
             }
+        }
+    }
+
+    @Test
+    public void testCopyObjectWithSourceVersionIdAndUrlEncoding() throws ExecutionException, InterruptedException {
+        OSSAsyncClient client = getDefaultAsyncClient();
+        String sourceObjectName = genObjectName() + "-source object.txt"; // Include space for URL encoding test
+        String copyObjectName = genObjectName() + "-copy object.txt";
+        String sourceVersionId = null;
+
+        byte[] content = TestUtils.generateTestData(10 * 1024 + 123);
+
+        try {
+            // 1. Create a source object
+            PutObjectResult putResult = client.putObjectAsync(PutObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(sourceObjectName)
+                    .body(new ByteArrayBinaryData(content))
+                    .build()).get();
+            Assert.assertNotNull(putResult);
+            Assert.assertEquals(200, putResult.statusCode());
+
+            // Get source object versionId (if versioning is enabled)
+            if (putResult.versionId() != null && !putResult.versionId().isEmpty()) {
+                sourceVersionId = putResult.versionId();
+            }
+
+            // 2. Use copyObject to copy source object to target object
+            CopyObjectRequest.Builder copyRequestBuilder = CopyObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(copyObjectName)
+                    .sourceBucket(bucketName)
+                    .sourceKey(sourceObjectName);
+
+            // Add sourceVersionId if source object has versionId
+            if (sourceVersionId != null) {
+                copyRequestBuilder.sourceVersionId(sourceVersionId);
+            }
+
+            CopyObjectResult copyResult = client.copyObjectAsync(copyRequestBuilder.build()).get();
+            Assert.assertNotNull(copyResult);
+            Assert.assertEquals(200, copyResult.statusCode());
+
+            // 3. Verify copied object
+            GetObjectMetaResult copyMetaResult = client.getObjectMetaAsync(GetObjectMetaRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(copyObjectName)
+                    .build()).get();
+            Assert.assertNotNull(copyMetaResult);
+            Assert.assertEquals(200, copyMetaResult.statusCode());
+            Assert.assertEquals(Long.valueOf(content.length), copyMetaResult.contentLength());
+
+        } finally {
+            // Clean up resources
+            DeleteObjectResult deleteResult = client.deleteObjectAsync(DeleteObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(sourceObjectName)
+                    .build()).get();
+            Assert.assertNotNull(deleteResult);
+            Assert.assertEquals(204, deleteResult.statusCode());
+
+            DeleteObjectResult deleteCopyResult = client.deleteObjectAsync(DeleteObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(copyObjectName)
+                    .build()).get();
+            Assert.assertNotNull(deleteCopyResult);
+            Assert.assertEquals(204, deleteCopyResult.statusCode());
         }
     }
 
