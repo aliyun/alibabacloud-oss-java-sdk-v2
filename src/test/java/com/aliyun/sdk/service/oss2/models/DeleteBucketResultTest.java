@@ -23,7 +23,7 @@ public class DeleteBucketResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
         headers.put("ETag", "\"B5eJF1ptWaXm4bijSPyxw==\"");
         headers.put("Date", "Fri, 12 Oct 2022 00:00:00 GMT");
 
@@ -33,7 +33,7 @@ public class DeleteBucketResultTest {
                 .statusCode(204)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(result.headers().get("Date")).isEqualTo("Fri, 12 Oct 2022 00:00:00 GMT");
 
@@ -45,7 +45,7 @@ public class DeleteBucketResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-765432109876543210");
+        headers.put("x-oss-request-id", "req-765432109876543210");
         headers.put("ETag", "\"original-etag\"");
         headers.put("Date", "Sat, 13 Oct 2022 00:00:00 GMT");
 
@@ -57,7 +57,7 @@ public class DeleteBucketResultTest {
 
         DeleteBucketResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.headers().get("Date")).isEqualTo("Sat, 13 Oct 2022 00:00:00 GMT");
 
@@ -69,14 +69,14 @@ public class DeleteBucketResultTest {
     @Test
     public void testXmlBuilder() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
         headers.put("Content-Type", "application/xml");
 
         DeleteBucketResult result = DeleteBucketResult.newBuilder()
                 .headers(headers)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("Content-Type")).isEqualTo("application/xml");
     }
 }

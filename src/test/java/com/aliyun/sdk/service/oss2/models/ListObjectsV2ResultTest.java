@@ -86,7 +86,7 @@ public class ListObjectsV2ResultTest {
 
 
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
         headers.put("ETag", "\"B5eJF1ptWaXm4bijSPyxw==\"");
 
         ListObjectsV2Result result = ListObjectsV2Result.newBuilder()
@@ -94,7 +94,7 @@ public class ListObjectsV2ResultTest {
                 .innerBody(listBucketV2Result)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
 
         assertThat(result.name()).isEqualTo("examplebucket");
@@ -196,7 +196,7 @@ public class ListObjectsV2ResultTest {
         originalListBucketV2Result.startAfter = "b";
 
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-765432109876543210");
+        headers.put("x-oss-request-id", "req-765432109876543210");
         headers.put("ETag", "\"original-etag\"");
 
         ListObjectsV2Result original = ListObjectsV2Result.newBuilder()
@@ -206,7 +206,7 @@ public class ListObjectsV2ResultTest {
 
         ListObjectsV2Result copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
 
         assertThat(copy.name()).isEqualTo("examplebucket");

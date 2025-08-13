@@ -928,7 +928,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link PutBucketVersioningRequest} for PutBucketVersioning operation.
      * @return A {@link PutBucketVersioningResult} for PutBucketVersioning operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default PutBucketVersioningResult putBucketVersioning(PutBucketVersioningRequest request) {
         return putBucketVersioning(request, OperationOptions.defaults());
@@ -940,7 +940,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link PutBucketVersioningRequest} for PutBucketVersioning operation.
      * @param options The operation options.
      * @return A {@link PutBucketVersioningResult} for PutBucketVersioning operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default PutBucketVersioningResult putBucketVersioning(PutBucketVersioningRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
@@ -951,7 +951,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link GetBucketVersioningRequest} for GetBucketVersioning operation.
      * @return A {@link GetBucketVersioningResult} for GetBucketVersioning operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default GetBucketVersioningResult getBucketVersioning(GetBucketVersioningRequest request) {
         return getBucketVersioning(request, OperationOptions.defaults());
@@ -963,7 +963,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link GetBucketVersioningRequest} for GetBucketVersioning operation.
      * @param options The operation options.
      * @return A {@link GetBucketVersioningResult} for GetBucketVersioning operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default GetBucketVersioningResult getBucketVersioning(GetBucketVersioningRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
@@ -974,7 +974,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link ListObjectVersionsRequest} for ListObjectVersions operation.
      * @return A {@link ListObjectVersionsResult} for ListObjectVersions operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListObjectVersionsResult listObjectVersions(ListObjectVersionsRequest request) {
         return listObjectVersions(request, OperationOptions.defaults());
@@ -986,7 +986,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link ListObjectVersionsRequest} for ListObjectVersions operation.
      * @param options The operation options.
      * @return A {@link ListObjectVersionsResult} for ListObjectVersions operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListObjectVersionsResult listObjectVersions(ListObjectVersionsRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
@@ -1000,7 +1000,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link ListBucketsRequest} for ListBuckets operation.
      * @return A {@link ListBucketsIterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListBucketsIterable listBucketsPaginator(ListBucketsRequest request) {
         return listBucketsPaginator(request, PaginatorOptions.defaults());
@@ -1014,7 +1014,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link ListBucketsRequest} for ListBuckets operation.
      * @param options The paginator options.
      * @return A {@link ListBucketsIterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListBucketsIterable listBucketsPaginator(ListBucketsRequest request, PaginatorOptions options) {
         return new ListBucketsIterable(this, request, options);
@@ -1027,7 +1027,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link ListObjectsV2Request} for ListObjectsV2 operation.
      * @return A {@link ListObjectsV2Iterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListObjectsV2Iterable listObjectsV2Paginator(ListObjectsV2Request request) {
         return listObjectsV2Paginator(request, PaginatorOptions.defaults());
@@ -1041,7 +1041,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link ListObjectsV2Request} for ListObjectsV2 operation.
      * @param options The paginator options.
      * @return A {@link ListObjectsV2Iterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListObjectsV2Iterable listObjectsV2Paginator(ListObjectsV2Request request, PaginatorOptions options) {
         return new ListObjectsV2Iterable(this, request, options);
@@ -1054,7 +1054,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link ListObjectsRequest} for ListObjects operation.
      * @return A {@link ListObjectsIterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListObjectsIterable listObjectsPaginator(ListObjectsRequest request) {
         return listObjectsPaginator(request, PaginatorOptions.defaults());
@@ -1068,7 +1068,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link ListObjectsRequest} for ListObjects operation.
      * @param options The paginator options.
      * @return A {@link ListObjectsIterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListObjectsIterable listObjectsPaginator(ListObjectsRequest request, PaginatorOptions options) {
         return new ListObjectsIterable(this, request, options);
@@ -1081,7 +1081,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link ListMultipartUploadsRequest} for ListMultipartUploads operation.
      * @return A {@link ListMultipartUploadsIterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListMultipartUploadsIterable listMultipartUploadsPaginator(ListMultipartUploadsRequest request) {
         return listMultipartUploadsPaginator(request, PaginatorOptions.defaults());
@@ -1095,7 +1095,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link ListMultipartUploadsRequest} for ListMultipartUploads operation.
      * @param options The paginator options.
      * @return A {@link ListMultipartUploadsIterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListMultipartUploadsIterable listMultipartUploadsPaginator(ListMultipartUploadsRequest request, PaginatorOptions options) {
         return new ListMultipartUploadsIterable(this, request, options);
@@ -1108,7 +1108,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link ListPartsRequest} for ListParts operation.
      * @return A {@link ListPartsIterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListPartsIterable listPartsPaginator(ListPartsRequest request) {
         return listPartsPaginator(request, PaginatorOptions.defaults());
@@ -1122,7 +1122,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link ListPartsRequest} for ListParts operation.
      * @param options The paginator options.
      * @return A {@link ListPartsIterable} that can be used to iterate through all the response pages.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default ListPartsIterable listPartsPaginator(ListPartsRequest request, PaginatorOptions options) {
         return new ListPartsIterable(this, request, options);
@@ -1135,7 +1135,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link PutBucketAclRequest} for PutBucketAcl operation.
      * @return A {@link PutBucketAclResult} for PutBucketAcl operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default PutBucketAclResult putBucketAcl(PutBucketAclRequest request) {
         return putBucketAcl(request, OperationOptions.defaults());
@@ -1147,7 +1147,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link PutBucketAclRequest} for PutBucketAcl operation.
      * @param options The operation options.
      * @return A {@link PutBucketAclResult} for PutBucketAcl operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default PutBucketAclResult putBucketAcl(PutBucketAclRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
@@ -1158,7 +1158,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      *
      * @param request A {@link GetBucketAclRequest} for GetBucketAcl operation.
      * @return A {@link GetBucketAclResult} for GetBucketAcl operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default GetBucketAclResult getBucketAcl(GetBucketAclRequest request) {
         return getBucketAcl(request, OperationOptions.defaults());
@@ -1170,7 +1170,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @param request A {@link GetBucketAclRequest} for GetBucketAcl operation.
      * @param options The operation options.
      * @return A {@link GetBucketAclResult} for GetBucketAcl operation.
-     * @throws RuntimeException If a error occurs
+     * @throws RuntimeException If an error occurs
      */
     default GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();

@@ -32,7 +32,7 @@ public class ResultModel {
     }
 
     public String requestId() {
-        return headers.getOrDefault("x-request-id", "");
+        return headers.getOrDefault("x-oss-request-id", "");
     }
 
     protected static class Builder<BuilderT> {

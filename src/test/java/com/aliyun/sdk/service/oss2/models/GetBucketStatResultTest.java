@@ -22,7 +22,7 @@ public class GetBucketStatResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
 
         BucketStat bucketStat = BucketStat.newBuilder()
                 .archiveObjectCount(100L)
@@ -53,7 +53,7 @@ public class GetBucketStatResultTest {
                 .innerBody(bucketStat)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.bucketStat().archiveObjectCount()).isEqualTo(100L);
         assertThat(result.bucketStat().multipartUploadCount()).isEqualTo(50L);
         assertThat(result.bucketStat().liveChannelCount()).isEqualTo(10L);
@@ -80,7 +80,7 @@ public class GetBucketStatResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-765432109876543210");
+        headers.put("x-oss-request-id", "req-765432109876543210");
 
         BucketStat bucketStat = BucketStat.newBuilder()
                 .archiveObjectCount(200L)
@@ -113,7 +113,7 @@ public class GetBucketStatResultTest {
 
         GetBucketStatResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.bucketStat().archiveObjectCount()).isEqualTo(200L);
         assertThat(copy.bucketStat().multipartUploadCount()).isEqualTo(100L);
         assertThat(copy.bucketStat().liveChannelCount()).isEqualTo(20L);

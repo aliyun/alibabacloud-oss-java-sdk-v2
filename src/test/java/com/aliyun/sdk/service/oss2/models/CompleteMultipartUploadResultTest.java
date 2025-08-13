@@ -26,7 +26,7 @@ public class CompleteMultipartUploadResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "x-oss-hash-crc64ecma", "1234567890123456789",
                 "x-oss-version-id", "version-id-value"
         );
@@ -44,7 +44,7 @@ public class CompleteMultipartUploadResultTest {
                 .innerBody(completeMultipartUploadResultXml)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("x-oss-hash-crc64ecma")).isEqualTo("1234567890123456789");
         assertThat(result.headers().get("x-oss-version-id")).isEqualTo("version-id-value");
 
@@ -62,7 +62,7 @@ public class CompleteMultipartUploadResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "x-oss-hash-crc64ecma", "9876543210987654321",
                 "x-oss-version-id", "original-version-id"
         );
@@ -82,7 +82,7 @@ public class CompleteMultipartUploadResultTest {
 
         CompleteMultipartUploadResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("x-oss-hash-crc64ecma")).isEqualTo("9876543210987654321");
         assertThat(copy.headers().get("x-oss-version-id")).isEqualTo("original-version-id");
 

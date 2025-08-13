@@ -83,7 +83,7 @@ public class ListObjectsResultTest {
         listBucketResult.commonPrefixes = Collections.singletonList(commonPrefix);
 
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
         headers.put("ETag", "\"B5eJF1ptWaXm4bijSPyxw==\"");
 
         ListObjectsResult result = ListObjectsResult.newBuilder()
@@ -91,7 +91,7 @@ public class ListObjectsResultTest {
                 .innerBody(listBucketResult)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
 
         assertThat(result.name()).isEqualTo("examplebucket");
@@ -189,7 +189,7 @@ public class ListObjectsResultTest {
 
 
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-765432109876543210");
+        headers.put("x-oss-request-id", "req-765432109876543210");
         headers.put("ETag", "\"original-etag\"");
 
         ListObjectsResult original = ListObjectsResult.newBuilder()
@@ -199,7 +199,7 @@ public class ListObjectsResultTest {
 
         ListObjectsResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
 
         assertThat(copy.name()).isEqualTo("examplebucket");

@@ -23,20 +23,20 @@ public class AbortMultipartUploadResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg"
+                "x-oss-request-id", "req-1234567890abcdefg"
         );
 
         AbortMultipartUploadResult result = AbortMultipartUploadResult.newBuilder()
                 .headers(headers)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
     }
 
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210"
+                "x-oss-request-id", "req-765432109876543210"
         );
 
         AbortMultipartUploadResult original = AbortMultipartUploadResult.newBuilder()
@@ -45,7 +45,7 @@ public class AbortMultipartUploadResultTest {
 
         AbortMultipartUploadResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
     }
 
     @Test
@@ -63,10 +63,10 @@ public class AbortMultipartUploadResultTest {
         OperationOutput output = OperationOutput.newBuilder()
                 .body(BinaryData.fromString(xml))
                 .headers(MapUtils.of(
-                        "x-request-id", "req-1234567890abcdefg"))
+                        "x-oss-request-id", "req-1234567890abcdefg"))
                 .build();
         AbortMultipartUploadResult result = SerdeObjectMultipart.toAbortMultipartUpload(output);
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
     }
 }

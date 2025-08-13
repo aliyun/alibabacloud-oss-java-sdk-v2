@@ -21,7 +21,7 @@ public class PutObjectAclResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\"",
                 "x-oss-version-id", "version123456"
         );
@@ -33,7 +33,7 @@ public class PutObjectAclResultTest {
                 .innerBody("test-body")
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(result.headers().get("x-oss-version-id")).isEqualTo("version123456");
         assertThat(result.status()).isEqualTo("OK");
@@ -46,7 +46,7 @@ public class PutObjectAclResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "ETag", "\"original-etag\"",
                 "x-oss-version-id", "original-version"
         );
@@ -60,7 +60,7 @@ public class PutObjectAclResultTest {
 
         PutObjectAclResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.headers().get("x-oss-version-id")).isEqualTo("original-version");
         assertThat(copy.status()).isEqualTo("Created");

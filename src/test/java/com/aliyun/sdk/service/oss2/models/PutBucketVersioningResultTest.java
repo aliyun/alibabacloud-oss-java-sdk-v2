@@ -22,7 +22,7 @@ public class PutBucketVersioningResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
@@ -32,7 +32,7 @@ public class PutBucketVersioningResultTest {
                 .statusCode(200)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(result.status()).isEqualTo("HTTP/1.1 200 OK");
         assertThat(result.statusCode()).isEqualTo(200);
@@ -42,7 +42,7 @@ public class PutBucketVersioningResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "ETag", "\"original-etag\""
         );
 
@@ -54,7 +54,7 @@ public class PutBucketVersioningResultTest {
 
         PutBucketVersioningResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.status()).isEqualTo("HTTP/1.1 200 OK");
         assertThat(copy.statusCode()).isEqualTo(200);
@@ -76,7 +76,7 @@ public class PutBucketVersioningResultTest {
     @Test
     public void testXmlBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-111111111111111111"
+                "x-oss-request-id", "req-111111111111111111"
         );
 
         OperationOutput output = OperationOutput.newBuilder()
@@ -88,7 +88,7 @@ public class PutBucketVersioningResultTest {
 
         PutBucketVersioningResult result = SerdeBucketVersioning.toPutBucketVersioning(output);
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-111111111111111111");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-111111111111111111");
         assertThat(result.status()).isEqualTo("HTTP/1.1 200 OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-111111111111111111");

@@ -26,7 +26,7 @@ public class UploadPartCopyResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "x-oss-copy-source-version-id", "copy-source-version-id-value"
         );
 
@@ -40,7 +40,7 @@ public class UploadPartCopyResultTest {
                 .innerBody(copyPartResult)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("x-oss-copy-source-version-id")).isEqualTo("copy-source-version-id-value");
 
         assertThat(result.copySourceVersionId()).isEqualTo("copy-source-version-id-value");
@@ -53,7 +53,7 @@ public class UploadPartCopyResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "x-oss-copy-source-version-id", "original-copy-source-version-id"
         );
 
@@ -69,7 +69,7 @@ public class UploadPartCopyResultTest {
 
         UploadPartCopyResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("x-oss-copy-source-version-id")).isEqualTo("original-copy-source-version-id");
 
         assertThat(copy.copySourceVersionId()).isEqualTo("original-copy-source-version-id");

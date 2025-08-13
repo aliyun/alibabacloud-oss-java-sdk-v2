@@ -46,7 +46,7 @@ public class DeleteMultipleObjectsResultTest {
         deleteResultXml.encodingType = "url";
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
@@ -55,7 +55,7 @@ public class DeleteMultipleObjectsResultTest {
                 .innerBody(deleteResultXml)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
 
         assertThat(result.encodingType()).isEqualTo("url");
@@ -96,7 +96,7 @@ public class DeleteMultipleObjectsResultTest {
         deleteResultXml.encodingType = "url";
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "ETag", "\"original-etag\""
         );
 
@@ -107,7 +107,7 @@ public class DeleteMultipleObjectsResultTest {
 
         DeleteMultipleObjectsResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
 
         assertThat(copy.encodingType()).isEqualTo("url");

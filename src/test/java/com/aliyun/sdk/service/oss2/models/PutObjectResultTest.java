@@ -20,7 +20,7 @@ public class PutObjectResultTest {
         Map<String, String> headers = new HashMap<>();
         headers.put("x-oss-hash-crc64ecma", "1234567890123456789");
         headers.put("x-oss-version-id", "v1234567890abcdefg");
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
         headers.put("ETag", "\"D41D8CD98F00B204E9800998ECF8****\"");
         headers.put("Content-Md5", "1B2M2Y8AsgTpgAmY7PhC****");
         String callbackResult = "callback-result-value";
@@ -42,7 +42,7 @@ public class PutObjectResultTest {
         Map<String, String> headers = new HashMap<>();
         headers.put("x-oss-hash-crc64ecma", "1234567890123456789");
         headers.put("x-oss-version-id", "v1234567890abcdefg");
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
         headers.put("Content-Type", "application/xml");
         headers.put("Content-Md5", "content-md5-value");
 

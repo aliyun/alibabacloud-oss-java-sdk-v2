@@ -31,7 +31,7 @@ public class PutObjectRequestTest {
         BinaryData body = StringBinaryData.fromString("test-content");
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
@@ -48,7 +48,7 @@ public class PutObjectRequestTest {
         assertThat(request.key()).isEqualTo("exampleobject.txt");
         assertThat(request.body()).isEqualTo(body);
 
-        assertThat(request.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).contains(
                 new AbstractMap.SimpleEntry<>("param1", "value1"),
@@ -61,7 +61,7 @@ public class PutObjectRequestTest {
         BinaryData body = StringBinaryData.fromString("test-content");
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "ETag", "\"original-etag\""
         );
 
@@ -80,7 +80,7 @@ public class PutObjectRequestTest {
         assertThat(copy.key()).isEqualTo("exampleobject.txt");
         assertThat(copy.body()).isEqualTo(body);
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.parameters()).contains(
                 new AbstractMap.SimpleEntry<>("param1", "value1"),

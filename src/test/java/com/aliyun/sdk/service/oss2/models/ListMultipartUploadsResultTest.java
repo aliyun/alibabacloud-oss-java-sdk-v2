@@ -38,7 +38,7 @@ public class ListMultipartUploadsResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg"
+                "x-oss-request-id", "req-1234567890abcdefg"
         );
 
         Upload upload1 = Upload.newBuilder()
@@ -79,7 +79,7 @@ public class ListMultipartUploadsResultTest {
                 .innerBody(listMultipartUploadsResultXml)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
 
         assertThat(result.bucket()).isEqualTo("oss-example");
         assertThat(result.keyMarker()).isEqualTo("sadagfsd");
@@ -113,7 +113,7 @@ public class ListMultipartUploadsResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210"
+                "x-oss-request-id", "req-765432109876543210"
         );
 
         Upload upload = Upload.newBuilder()
@@ -142,7 +142,7 @@ public class ListMultipartUploadsResultTest {
 
         ListMultipartUploadsResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
 
         assertThat(copy.bucket()).isEqualTo("oss-example");
         assertThat(copy.keyMarker()).isEqualTo("sadagfsd");
@@ -196,11 +196,11 @@ public class ListMultipartUploadsResultTest {
         OperationOutput output = OperationOutput.newBuilder()
                 .body(BinaryData.fromString(xml))
                 .headers(MapUtils.of(
-                        "x-request-id", "req-1234567890abcdefg"))
+                        "x-oss-request-id", "req-1234567890abcdefg"))
                 .build();
         ListMultipartUploadsResult result = SerdeObjectMultipart.toListMultipartUploads(output);
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
 
         assertThat(result.bucket()).isEqualTo("oss-example");
         assertThat(result.keyMarker()).isEqualTo("sadagfsd");
@@ -265,11 +265,11 @@ public class ListMultipartUploadsResultTest {
         OperationOutput output = OperationOutput.newBuilder()
                 .body(BinaryData.fromString(xml))
                 .headers(MapUtils.of(
-                        "x-request-id", "req-1234567890abcdefg"))
+                        "x-oss-request-id", "req-1234567890abcdefg"))
                 .build();
         ListMultipartUploadsResult result = SerdeObjectMultipart.toListMultipartUploads(output);
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
 
         assertThat(result.bucket()).isEqualTo("oss-example");
         assertThat(result.keyMarker()).isEqualTo("example/key#.jpg");

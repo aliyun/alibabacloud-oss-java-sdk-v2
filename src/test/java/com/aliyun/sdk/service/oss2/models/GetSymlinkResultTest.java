@@ -19,7 +19,7 @@ public class GetSymlinkResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "x-oss-symlink-target", "target-object.txt",
                 "x-oss-version-id", "CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl"
         );
@@ -30,7 +30,7 @@ public class GetSymlinkResultTest {
                 .statusCode(200)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("x-oss-symlink-target")).isEqualTo("target-object.txt");
         assertThat(result.headers().get("x-oss-version-id")).isEqualTo("CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl");
         assertThat(result.status()).isEqualTo("OK");
@@ -43,7 +43,7 @@ public class GetSymlinkResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "x-oss-symlink-target", "another-target.txt",
                 "x-oss-version-id", "CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl"
         );
@@ -56,7 +56,7 @@ public class GetSymlinkResultTest {
 
         GetSymlinkResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("x-oss-symlink-target")).isEqualTo("another-target.txt");
         assertThat(copy.headers().get("x-oss-version-id")).isEqualTo("CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl");
         assertThat(copy.status()).isEqualTo("Found");
@@ -83,7 +83,7 @@ public class GetSymlinkResultTest {
                 "</Error>";
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-111111111111111111",
+                "x-oss-request-id", "req-111111111111111111",
                 "x-oss-symlink-target", "xml-target.txt",
                 "x-oss-version-id", "CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl"
         );
@@ -97,7 +97,7 @@ public class GetSymlinkResultTest {
 
         GetSymlinkResult result = SerdeObjectSymlink.toGetSymlink(output);
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-111111111111111111");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-111111111111111111");
         assertThat(result.headers().get("x-oss-symlink-target")).isEqualTo("xml-target.txt");
         assertThat(result.headers().get("x-oss-version-id")).isEqualTo("CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl");
         assertThat(result.status()).isEqualTo("OK");
