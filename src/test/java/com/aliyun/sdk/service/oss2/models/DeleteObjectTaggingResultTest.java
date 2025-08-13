@@ -20,7 +20,7 @@ public class DeleteObjectTaggingResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "x-oss-version-id", "CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl"
         );
 
@@ -30,7 +30,7 @@ public class DeleteObjectTaggingResultTest {
                 .statusCode(204)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("x-oss-version-id")).isEqualTo("CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl");
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(204);
@@ -41,7 +41,7 @@ public class DeleteObjectTaggingResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "x-oss-version-id", "CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl"
         );
 
@@ -53,7 +53,7 @@ public class DeleteObjectTaggingResultTest {
 
         DeleteObjectTaggingResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("x-oss-version-id")).isEqualTo("CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl");
         assertThat(copy.status()).isEqualTo("No Content");
         assertThat(copy.statusCode()).isEqualTo(204);
@@ -72,7 +72,7 @@ public class DeleteObjectTaggingResultTest {
 
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-111111111111111111",
+                "x-oss-request-id", "req-111111111111111111",
                 "x-oss-version-id", "CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl"
         );
 
@@ -85,7 +85,7 @@ public class DeleteObjectTaggingResultTest {
 
         DeleteObjectTaggingResult result = SerdeObjectTagging.toDeleteObjectTagging(output);
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-111111111111111111");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-111111111111111111");
         assertThat(result.headers().get("x-oss-version-id")).isEqualTo("CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl");
         assertThat(result.status()).isEqualTo("No Content");
         assertThat(result.statusCode()).isEqualTo(204);

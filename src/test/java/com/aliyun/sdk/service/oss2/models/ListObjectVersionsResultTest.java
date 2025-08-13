@@ -27,7 +27,7 @@ public class ListObjectVersionsResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
@@ -124,7 +124,7 @@ public class ListObjectVersionsResultTest {
                 .innerBody(listVersionsResultXml)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
 
         assertThat(result.name()).isEqualTo("java-sdk-test-bucket-1754294276-175-1226");
@@ -179,7 +179,7 @@ public class ListObjectVersionsResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "ETag", "\"original-etag\""
         );
 
@@ -231,7 +231,7 @@ public class ListObjectVersionsResultTest {
 
         ListObjectVersionsResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
 
         assertThat(copy.name()).isEqualTo("java-sdk-test-bucket-1754294276-175-1226");

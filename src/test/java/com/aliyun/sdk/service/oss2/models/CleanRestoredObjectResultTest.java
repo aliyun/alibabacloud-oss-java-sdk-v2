@@ -20,21 +20,21 @@ public class CleanRestoredObjectResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
         headers.put("x-oss-version-id", "v1234567890abcdefg");
 
         CleanRestoredObjectResult result = CleanRestoredObjectResult.newBuilder()
                 .headers(headers)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("x-oss-version-id")).isEqualTo("v1234567890abcdefg");
     }
 
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-765432109876543210");
+        headers.put("x-oss-request-id", "req-765432109876543210");
         headers.put("x-oss-version-id", "v765432109876543210");
 
         CleanRestoredObjectResult original = CleanRestoredObjectResult.newBuilder()
@@ -43,7 +43,7 @@ public class CleanRestoredObjectResultTest {
 
         CleanRestoredObjectResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("x-oss-version-id")).isEqualTo("v765432109876543210");
     }
 

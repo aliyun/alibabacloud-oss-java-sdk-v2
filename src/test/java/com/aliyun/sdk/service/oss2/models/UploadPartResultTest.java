@@ -26,7 +26,7 @@ public class UploadPartResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "Content-MD5", "content-md5-value",
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\"",
                 "x-oss-hash-crc64ecma", "1234567890123456789"
@@ -36,7 +36,7 @@ public class UploadPartResultTest {
                 .headers(headers)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("Content-MD5")).isEqualTo("content-md5-value");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(result.headers().get("x-oss-hash-crc64ecma")).isEqualTo("1234567890123456789");
@@ -49,7 +49,7 @@ public class UploadPartResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "Content-MD5", "original-content-md5",
                 "ETag", "\"original-etag\"",
                 "x-oss-hash-crc64ecma", "9876543210987654321"
@@ -61,7 +61,7 @@ public class UploadPartResultTest {
 
         UploadPartResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("Content-MD5")).isEqualTo("original-content-md5");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.headers().get("x-oss-hash-crc64ecma")).isEqualTo("9876543210987654321");

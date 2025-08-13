@@ -39,7 +39,7 @@ public class GetObjectAclResultTest {
                 .build();
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\"",
                 "versionId", "version123456"
         );
@@ -51,7 +51,7 @@ public class GetObjectAclResultTest {
                 .innerBody(accessControlPolicy)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(result.headers().get("versionId")).isEqualTo("version123456");
         assertThat(result.status()).isEqualTo("OK");
@@ -89,7 +89,7 @@ public class GetObjectAclResultTest {
                 .build();
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "ETag", "\"original-etag\"",
                 "versionId", "original-version"
         );
@@ -103,7 +103,7 @@ public class GetObjectAclResultTest {
 
         GetObjectAclResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.headers().get("versionId")).isEqualTo("original-version");
         assertThat(copy.status()).isEqualTo("Created");

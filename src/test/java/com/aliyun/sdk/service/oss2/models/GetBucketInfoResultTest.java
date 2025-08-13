@@ -73,7 +73,7 @@ public class GetBucketInfoResultTest {
                 .build();
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
@@ -82,7 +82,7 @@ public class GetBucketInfoResultTest {
                 .innerBody(bucketInfo)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
 
         BucketInfo resultBucket = result.bucketInfo();
@@ -163,7 +163,7 @@ public class GetBucketInfoResultTest {
                 .build();
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "ETag", "\"original-etag\""
         );
 
@@ -174,7 +174,7 @@ public class GetBucketInfoResultTest {
 
         GetBucketInfoResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
 
         BucketInfo copyBucket = copy.bucketInfo();

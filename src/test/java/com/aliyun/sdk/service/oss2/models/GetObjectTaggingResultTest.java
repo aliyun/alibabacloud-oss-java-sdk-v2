@@ -19,7 +19,7 @@ public class GetObjectTaggingResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg",
+                "x-oss-request-id", "req-1234567890abcdefg",
                 "x-oss-version-id", "CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl"
         );
 
@@ -48,7 +48,7 @@ public class GetObjectTaggingResultTest {
                 .innerBody(tagging)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("x-oss-version-id")).isEqualTo("CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl");
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
@@ -69,7 +69,7 @@ public class GetObjectTaggingResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210",
+                "x-oss-request-id", "req-765432109876543210",
                 "x-oss-version-id", "CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl"
         );
 
@@ -100,7 +100,7 @@ public class GetObjectTaggingResultTest {
 
         GetObjectTaggingResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("x-oss-version-id")).isEqualTo("CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl");
         assertThat(copy.status()).isEqualTo("Found");
         assertThat(copy.statusCode()).isEqualTo(302);
@@ -141,7 +141,7 @@ public class GetObjectTaggingResultTest {
                 "</Tagging>";
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-111111111111111111",
+                "x-oss-request-id", "req-111111111111111111",
                 "x-oss-version-id", "CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl"
         );
 
@@ -154,7 +154,7 @@ public class GetObjectTaggingResultTest {
 
         GetObjectTaggingResult result = SerdeObjectTagging.toGetObjectTagging(output);
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-111111111111111111");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-111111111111111111");
         assertThat(result.headers().get("x-oss-version-id")).isEqualTo("CAEQExiBgID98azQwxkiIGQzYmRkZGUxNTgwNzRiMjFiMWQ1NjMyOTRkZGZjMzVl");
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);

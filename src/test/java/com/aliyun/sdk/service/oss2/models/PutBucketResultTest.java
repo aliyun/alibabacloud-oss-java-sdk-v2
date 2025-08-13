@@ -23,7 +23,7 @@ public class PutBucketResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
         headers.put("ETag", "\"B5eJF1ptWaXm4bijSPyxw==\"");
         headers.put("Location", "/my-bucket");
         headers.put("x-oss-server-side-encryption", "AES256");
@@ -38,7 +38,7 @@ public class PutBucketResultTest {
                 .statusCode(200)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(result.headers().get("Location")).isEqualTo("/my-bucket");
         assertThat(result.headers().get("x-oss-server-side-encryption")).isEqualTo("AES256");
@@ -55,7 +55,7 @@ public class PutBucketResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-765432109876543210");
+        headers.put("x-oss-request-id", "req-765432109876543210");
         headers.put("ETag", "\"original-etag\"");
         headers.put("Location", "/original-bucket");
         headers.put("x-oss-server-side-encryption", "SM4");
@@ -72,7 +72,7 @@ public class PutBucketResultTest {
 
         PutBucketResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.headers().get("Location")).isEqualTo("/original-bucket");
         assertThat(copy.headers().get("x-oss-server-side-encryption")).isEqualTo("SM4");
@@ -89,14 +89,14 @@ public class PutBucketResultTest {
     @Test
     public void testXmlBuilder() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("x-request-id", "req-1234567890abcdefg");
+        headers.put("x-oss-request-id", "req-1234567890abcdefg");
         headers.put("Content-Type", "application/xml");
 
         PutBucketResult result = PutBucketResult.newBuilder()
                 .headers(headers)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("Content-Type")).isEqualTo("application/xml");
     }
 }

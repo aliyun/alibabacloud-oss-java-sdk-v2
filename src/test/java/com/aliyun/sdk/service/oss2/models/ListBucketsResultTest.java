@@ -23,7 +23,7 @@ public class ListBucketsResultTest {
     @Test
     public void testFullBuilder() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-1234567890abcdefg"
+                "x-oss-request-id", "req-1234567890abcdefg"
         );
 
         Owner owner = Owner.newBuilder()
@@ -72,7 +72,7 @@ public class ListBucketsResultTest {
                 .innerBody(listAllMyBucketsResultXml)
                 .build();
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-1234567890abcdefg");
@@ -109,7 +109,7 @@ public class ListBucketsResultTest {
     @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-765432109876543210"
+                "x-oss-request-id", "req-765432109876543210"
         );
 
         Owner owner = Owner.newBuilder()
@@ -160,7 +160,7 @@ public class ListBucketsResultTest {
 
         ListBucketsResult copy = original.toBuilder().build();
 
-        assertThat(copy.headers().get("x-request-id")).isEqualTo("req-765432109876543210");
+        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.status()).isEqualTo("Found");
         assertThat(copy.statusCode()).isEqualTo(302);
         assertThat(copy.requestId()).isEqualTo("req-765432109876543210");
@@ -237,7 +237,7 @@ public class ListBucketsResultTest {
                 "</ListAllMyBucketsResult>";
 
         Map<String, String> headers = MapUtils.of(
-                "x-request-id", "req-111111111111111111"
+                "x-oss-request-id", "req-111111111111111111"
         );
 
         OperationOutput output = OperationOutput.newBuilder()
@@ -249,7 +249,7 @@ public class ListBucketsResultTest {
 
         ListBucketsResult result = SerdeService.toListBuckets(output);
 
-        assertThat(result.headers().get("x-request-id")).isEqualTo("req-111111111111111111");
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-111111111111111111");
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-111111111111111111");
