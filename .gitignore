@@ -2,6 +2,7 @@
 
 ### IntelliJ IDEA ###
 .idea
+alibabacloud-oss-v2.iml
 
 ### Eclipse ###
 .apt_generated
