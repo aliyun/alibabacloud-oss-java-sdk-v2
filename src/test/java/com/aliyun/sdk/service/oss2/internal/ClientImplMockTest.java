@@ -7,7 +7,7 @@ import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.exceptions.InconsistentException;
 import com.aliyun.sdk.service.oss2.exceptions.OperationException;
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.hash.CRC64;
 import com.aliyun.sdk.service.oss2.hash.CRC64Observer;
 import com.aliyun.sdk.service.oss2.hash.CRC64ResponseChecker;
@@ -175,8 +175,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(403);
                 assertThat(serr.errorCode()).isEqualTo("InvalidAccessKeyId");
                 assertThat(serr.errorMessage()).isEqualTo("The OSS Access Key Id you provided does not exist in our records.");
@@ -274,7 +274,7 @@ public class ClientImplMockTest {
                 assertThat(mockHandler.requests).hasSize(1);
                 assertThat(e.getCause()).isInstanceOf(OperationException.class);
                 OperationException opErr = (OperationException) e.getCause();
-                ServiceError serr = (ServiceError) opErr.contains(ServiceError.class);
+                ServiceException serr = (ServiceException) opErr.contains(ServiceException.class);
                 assertThat(serr.statusCode()).isEqualTo(403);
                 assertThat(serr.errorCode()).isEqualTo("InvalidAccessKeyId");
                 assertThat(serr.errorMessage()).isEqualTo("The OSS Access Key Id you provided does not exist in our records.");
@@ -496,8 +496,8 @@ public class ClientImplMockTest {
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(Defaults.MAX_ATTEMPTS);
                 assertThat(mockHandler.responses).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -550,8 +550,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(4);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -609,8 +609,8 @@ public class ClientImplMockTest {
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(Defaults.MAX_ATTEMPTS);
                 assertThat(mockHandler.responses).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -640,8 +640,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(2);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -698,8 +698,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -755,8 +755,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(403);
                 assertThat(serr.errorCode()).isEqualTo("InvalidAccessKeyId");
             }
@@ -810,8 +810,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(3);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(502);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -865,8 +865,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -920,7 +920,7 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (Exception e) {
                 assertThat(mockHandler.requests).hasSize(3);
-                ServiceError serr = findCause(e, ServiceError.class);
+                ServiceException serr = findCause(e, ServiceException.class);
                 assertThat(serr.statusCode()).isEqualTo(502);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -974,7 +974,7 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (Exception e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                ServiceError serr = findCause(e, ServiceError.class);
+                ServiceException serr = findCause(e, ServiceException.class);
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -1033,7 +1033,7 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (Exception e) {
                 assertThat(mockHandler.requests).hasSize(2);
-                ServiceError serr = findCause(e, ServiceError.class);
+                ServiceException serr = findCause(e, ServiceException.class);
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -1063,7 +1063,7 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (Exception e) {
                 assertThat(mockHandler.requests).hasSize(4);
-                ServiceError serr = findCause(e, ServiceError.class);
+                ServiceException serr = findCause(e, ServiceException.class);
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
             }
@@ -1126,8 +1126,8 @@ public class ClientImplMockTest {
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(Defaults.MAX_ATTEMPTS);
                 assertThat(mockHandler.responses).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
                 assertThat(mockHandler.requestDates.get(0)).isNotEqualTo(
@@ -1166,7 +1166,7 @@ public class ClientImplMockTest {
             } catch (Exception e) {
                 assertThat(mockHandler.requests).hasSize(Defaults.MAX_ATTEMPTS);
                 assertThat(mockHandler.responses).hasSize(1);
-                ServiceError serr = findCause(e, ServiceError.class);
+                ServiceException serr = findCause(e, ServiceException.class);
                 assertThat(serr.statusCode()).isEqualTo(500);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
                 assertThat(mockHandler.requestDates.get(0)).isNotEqualTo(
@@ -1863,7 +1863,7 @@ public class ClientImplMockTest {
     }
 
     @Test
-    public void returnsServiceErrorNormal() throws Exception {
+    public void returnsServiceExceptionNormal() throws Exception {
         MockHttpClient mockHandler = new MockHttpClient();
 
         ClientConfiguration config = ClientConfiguration.defaultBuilder()
@@ -1916,8 +1916,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(404);
                 assertThat(serr.errorCode()).isEqualTo("NoSuchBucket");
                 assertThat(serr.errorMessage()).isEqualTo("The specified bucket does not exist.");
@@ -1929,7 +1929,7 @@ public class ClientImplMockTest {
     }
 
     @Test
-    public void returnsServiceErrorInHeader() throws Exception {
+    public void returnsServiceExceptionInHeader() throws Exception {
         MockHttpClient mockHandler = new MockHttpClient();
 
         ClientConfiguration config = ClientConfiguration.defaultBuilder()
@@ -1983,8 +1983,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(404);
                 assertThat(serr.errorCode()).isEqualTo("NoSuchBucket");
                 assertThat(serr.errorMessage()).isEqualTo("The specified bucket does not exist.");
@@ -1996,7 +1996,7 @@ public class ClientImplMockTest {
     }
 
     @Test
-    public void returnsServiceErrorEmptyBody() throws Exception {
+    public void returnsServiceExceptionEmptyBody() throws Exception {
         MockHttpClient mockHandler = new MockHttpClient();
 
         ClientConfiguration config = ClientConfiguration.defaultBuilder()
@@ -2042,8 +2042,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(404);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
                 assertThat(serr.errorMessage()).isEqualTo("Empty body");
@@ -2055,7 +2055,7 @@ public class ClientImplMockTest {
     }
 
     @Test
-    public void returnsServiceErrorNotErrorFormat() throws Exception {
+    public void returnsServiceExceptionNotErrorFormat() throws Exception {
         MockHttpClient mockHandler = new MockHttpClient();
 
         ClientConfiguration config = ClientConfiguration.defaultBuilder()
@@ -2108,8 +2108,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(404);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
                 assertThat(serr.errorMessage()).startsWith("Not found tag <Error>, part response body ");
@@ -2121,7 +2121,7 @@ public class ClientImplMockTest {
     }
 
     @Test
-    public void returnsServiceErrorNotXmlFormat() throws Exception {
+    public void returnsServiceExceptionNotXmlFormat() throws Exception {
         MockHttpClient mockHandler = new MockHttpClient();
 
         ClientConfiguration config = ClientConfiguration.defaultBuilder()
@@ -2174,8 +2174,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(404);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
                 assertThat(serr.errorMessage()).startsWith("Failed to parse xml from response body, part response body");
@@ -2187,7 +2187,7 @@ public class ClientImplMockTest {
     }
 
     @Test
-    public void returnsServiceErrorComplexErrorFormat() throws Exception {
+    public void returnsServiceExceptionComplexErrorFormat() throws Exception {
         MockHttpClient mockHandler = new MockHttpClient();
 
         ClientConfiguration config = ClientConfiguration.defaultBuilder()
@@ -2244,8 +2244,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(404);
                 assertThat(serr.errorCode()).isEqualTo("NoSuchBucket");
                 assertThat(serr.errorMessage()).isEqualTo("The specified bucket does not exist.");
@@ -2258,7 +2258,7 @@ public class ClientImplMockTest {
     }
 
     @Test
-    public void returnsServiceErrorNullBody() throws Exception {
+    public void returnsServiceExceptionNullBody() throws Exception {
         MockHttpClient mockHandler = new MockHttpClient();
 
         ClientConfiguration config = ClientConfiguration.defaultBuilder()
@@ -2304,8 +2304,8 @@ public class ClientImplMockTest {
                 Assert.fail("should not here");
             } catch (OperationException e) {
                 assertThat(mockHandler.requests).hasSize(1);
-                assertThat(e.getCause()).isInstanceOf(ServiceError.class);
-                ServiceError serr = (ServiceError) e.getCause();
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
                 assertThat(serr.statusCode()).isEqualTo(404);
                 assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
                 assertThat(serr.errorMessage()).isEqualTo("Empty body");

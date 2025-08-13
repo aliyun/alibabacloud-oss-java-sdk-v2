@@ -1,6 +1,6 @@
 package com.aliyun.sdk.service.oss2.retry;
 
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,8 +23,8 @@ public class ServiceErrorCodeRetryable implements ErrorRetryable {
      */
     @Override
     public boolean isErrorRetryable(Throwable error) {
-        if (error instanceof ServiceError) {
-            return errorCodes.contains(((ServiceError) error).errorCode());
+        if (error instanceof ServiceException) {
+            return errorCodes.contains(((ServiceException) error).errorCode());
         }
         return false;
     }

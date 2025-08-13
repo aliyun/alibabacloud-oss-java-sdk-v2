@@ -10,11 +10,11 @@ import java.util.TreeMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
-public class ServiceErrorTest {
+public class ServiceExceptionTest {
 
     @Test
-    public void testEmptyServiceError() {
-        ServiceError error = ServiceError.newBuilder().build();
+    public void testEmptyServiceException() {
+        ServiceException error = ServiceException.newBuilder().build();
         assertNotNull(error);
 
         assertSame(0, error.statusCode());
@@ -38,7 +38,7 @@ public class ServiceErrorTest {
     }
 
     @Test
-    public void testFullServiceError() {
+    public void testFullServiceException() {
         Map<String, String> errorFields = new HashMap<String, String>() {
         };
         errorFields.put("Code", "MalformedXML");
@@ -55,7 +55,7 @@ public class ServiceErrorTest {
         Instant timestamp = Instant.now();
         byte[] payload = "hello".getBytes();
 
-        ServiceError error = ServiceError.newBuilder()
+        ServiceException error = ServiceException.newBuilder()
                 .statusCode(statusCode)
                 .headers(headers)
                 .errorFields(errorFields)
@@ -82,7 +82,7 @@ public class ServiceErrorTest {
         assertThat(error).hasMessageContaining("Request Endpoint: http://oss-cn-hangzhou.aliyuncs.com/1.txt.");
 
         // not errorFields
-        error = ServiceError.newBuilder()
+        error = ServiceException.newBuilder()
                 .statusCode(statusCode)
                 .headers(headers)
                 .requestTarget(requestTarget)
@@ -106,5 +106,15 @@ public class ServiceErrorTest {
         assertThat(error).hasMessageContaining("EC: 0003-00000001");
         assertThat(error).hasMessageContaining("Timestamp:");
         assertThat(error).hasMessageContaining("Request Endpoint: http://oss-cn-hangzhou.aliyuncs.com/1.txt.");
+    }
+
+    @Test
+    public void testAsCause() {
+        assertThat(ServiceException.asCause(null)).isNull();
+        assertThat(ServiceException.asCause(new RuntimeException())).isNull();
+
+        ServiceException se = ServiceException.newBuilder().build();
+        RuntimeException root = new RuntimeException("test", se);
+        assertThat(ServiceException.asCause(root)).isEqualTo(se);
     }
 }

@@ -1,6 +1,6 @@
 package com.aliyun.sdk.service.oss2;
 
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.DescribeRegionsRequest;
 import com.aliyun.sdk.service.oss2.models.DescribeRegionsResult;
 import com.aliyun.sdk.service.oss2.models.RegionInfo;
@@ -79,9 +79,9 @@ public class ClientRegionsAsyncTest extends TestBase {
                     DescribeRegionsRequest.newBuilder()
                             .regions("invalid-region")
                             .build()).get();
-            Assert.fail("Expected ServiceError but none was thrown");
+            Assert.fail("Expected ServiceException but none was thrown");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchRegion", serr.errorCode());
             Assert.assertEquals("invalid-region", serr.errorMessage());

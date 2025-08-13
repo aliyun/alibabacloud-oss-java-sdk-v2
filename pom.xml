@@ -6,7 +6,7 @@
 
     <groupId>com.aliyun</groupId>
     <artifactId>alibabacloud-oss-v2</artifactId>
-    <version>0.1.0-alpha2</version>
+    <version>0.1.0-alpha3</version>
     <name>Alibaba Cloud OSS SDK For Java V2</name>
     <description>The Alibaba Cloud OSS SDK for Java is used to access the Alibaba Cloud Object Storage Service</description>
     <url>https://github.com/aliyun/alibabacloud-oss-java-sdk-v2</url>

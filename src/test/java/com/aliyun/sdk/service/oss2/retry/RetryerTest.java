@@ -2,7 +2,7 @@ package com.aliyun.sdk.service.oss2.retry;
 
 import com.aliyun.sdk.service.oss2.exceptions.CredentialsFetchException;
 import com.aliyun.sdk.service.oss2.exceptions.InconsistentException;
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.transport.RequestException;
 import com.aliyun.sdk.service.oss2.transport.ResponseException;
 import org.junit.jupiter.api.Test;
@@ -30,21 +30,21 @@ public class RetryerTest {
         assertThat(retry.isErrorRetryable(new Exception())).isFalse();
         assertThat(retry.isErrorRetryable(null)).isFalse();
 
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(401).build())).isTrue();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(408).build())).isTrue();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(429).build())).isTrue();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(500).build())).isTrue();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(504).build())).isTrue();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(599).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(401).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(408).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(429).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(500).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(504).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(599).build())).isTrue();
 
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(400).build())).isFalse();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(403).build())).isFalse();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(400).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(403).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().build())).isFalse();
 
         Map<String, String> errorFields = new HashMap<>();
         errorFields.put("Code", "BadRequest");
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(400)
                         .errorFields(errorFields)
                         .build()))
@@ -52,14 +52,14 @@ public class RetryerTest {
 
         errorFields.put("Code", "RequestTimeTooSkewed");
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(403)
                         .errorFields(errorFields)
                         .build()))
                 .isTrue();
 
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(400)
                         .build()))
                 .isFalse();
@@ -94,18 +94,18 @@ public class RetryerTest {
         assertThat(retry.isErrorRetryable(new InconsistentException("", "", null))).isFalse();
         assertThat(retry.isErrorRetryable(new CredentialsFetchException(new Exception()))).isFalse();
 
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(401).build())).isFalse();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(408).build())).isFalse();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(429).build())).isFalse();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(500).build())).isFalse();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(599).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(401).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(408).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(429).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(500).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(599).build())).isFalse();
 
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(400).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(400).build())).isFalse();
 
         Map<String, String> errorFields = new HashMap<>();
         errorFields.put("Code", "BadRequest");
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(400)
                         .errorFields(errorFields)
                         .build()))
@@ -113,14 +113,14 @@ public class RetryerTest {
 
         errorFields.put("Code", "RequestTimeTooSkewed");
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(403)
                         .errorFields(errorFields)
                         .build()))
                 .isTrue();
 
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(400)
                         .build()))
                 .isFalse();
@@ -140,21 +140,21 @@ public class RetryerTest {
         assertThat(retry.isErrorRetryable(new Exception())).isFalse();
         assertThat(retry.isErrorRetryable(null)).isFalse();
 
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(401).build())).isTrue();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(599).build())).isTrue();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(400).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(401).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(599).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(400).build())).isFalse();
 
         Map<String, String> errorFields = new HashMap<>();
         errorFields.put("Code", "BadRequest");
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(400)
                         .errorFields(errorFields)
                         .build()))
                 .isTrue();
 
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(400)
                         .build()))
                 .isFalse();
@@ -174,21 +174,21 @@ public class RetryerTest {
         assertThat(retry.isErrorRetryable(new Exception())).isFalse();
         assertThat(retry.isErrorRetryable(null)).isFalse();
 
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(401).build())).isTrue();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(599).build())).isTrue();
-        assertThat(retry.isErrorRetryable(ServiceError.newBuilder().statusCode(400).build())).isFalse();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(401).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(599).build())).isTrue();
+        assertThat(retry.isErrorRetryable(ServiceException.newBuilder().statusCode(400).build())).isFalse();
 
         Map<String, String> errorFields = new HashMap<>();
         errorFields.put("Code", "BadRequest");
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(400)
                         .errorFields(errorFields)
                         .build()))
                 .isTrue();
 
         assertThat(retry.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(400)
                         .build()))
                 .isFalse();
@@ -204,7 +204,7 @@ public class RetryerTest {
     void testNopRetryer_default() {
         Retryer retryer = new NopRetryer();
         assertThat(retryer.maxAttempts()).isEqualTo(1);
-        assertThat(retryer.isErrorRetryable(ServiceError.newBuilder().statusCode(401).build())).isFalse();
+        assertThat(retryer.isErrorRetryable(ServiceException.newBuilder().statusCode(401).build())).isFalse();
         assertThat(retryer.retryDelay(1, null)).isEqualTo(Duration.ofSeconds(0));
     }
 

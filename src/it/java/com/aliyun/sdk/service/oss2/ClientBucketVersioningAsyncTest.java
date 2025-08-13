@@ -1,6 +1,6 @@
 package com.aliyun.sdk.service.oss2;
 
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transport.StringBinaryData;
@@ -205,7 +205,7 @@ public class ClientBucketVersioningAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception not thrown");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
         }
 
@@ -216,7 +216,7 @@ public class ClientBucketVersioningAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception not thrown");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
         }
 
@@ -227,7 +227,7 @@ public class ClientBucketVersioningAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception not thrown");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
         }
     }

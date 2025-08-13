@@ -2,13 +2,12 @@ package com.aliyun.sdk.service.oss2;
 
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.internal.TestUtils;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.progress.ProgressListener;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transport.ByteArrayBinaryData;
-import com.aliyun.sdk.service.oss2.transport.StringBinaryData;
 import com.aliyun.sdk.service.oss2.utils.IOUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -190,7 +189,7 @@ public class ClientObjectAsyncTest extends TestBase {
             Assert.assertNotNull(cleanResult);
             Assert.assertEquals(200, cleanResult.statusCode());
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(409, serr.statusCode());
             Assert.assertEquals("ArchiveRestoreNotFinished", serr.errorCode());
             Assert.assertEquals(24, serr.requestId().length());
