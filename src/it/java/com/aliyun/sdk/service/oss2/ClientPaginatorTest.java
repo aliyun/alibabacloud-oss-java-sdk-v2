@@ -1,8 +1,7 @@
 package com.aliyun.sdk.service.oss2;
 
-import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.paginator.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
@@ -124,7 +123,7 @@ public class ClientPaginatorTest  extends TestBase {
                 fail("should not here");
             }
         } catch (Exception e) {
-            ServiceError serr = findCause(e, ServiceError.class);
+            ServiceException serr = findCause(e, ServiceException.class);
             assertThat(serr).isNotNull();
             assertThat(serr.errorCode()).isEqualTo("NoSuchBucket");
         }
@@ -257,7 +256,7 @@ public class ClientPaginatorTest  extends TestBase {
             }
 
         } catch (Exception e) {
-            ServiceError serr = findCause(e, ServiceError.class);
+            ServiceException serr = findCause(e, ServiceException.class);
             assertThat(serr).isNotNull();
             assertThat(serr.errorCode()).isEqualTo("InvalidAccessKeyId");
         }
@@ -368,7 +367,7 @@ public class ClientPaginatorTest  extends TestBase {
                 fail("should not here");
             }
         } catch (Exception e) {
-            ServiceError serr = findCause(e, ServiceError.class);
+            ServiceException serr = findCause(e, ServiceException.class);
             assertThat(serr).isNotNull();
             assertThat(serr.errorCode()).isEqualTo("NoSuchBucket");
         }
@@ -519,7 +518,7 @@ public class ClientPaginatorTest  extends TestBase {
                 fail("should not here");
             }
         } catch (Exception e) {
-            ServiceError serr = findCause(e, ServiceError.class);
+            ServiceException serr = findCause(e, ServiceException.class);
             assertThat(serr).isNotNull();
             assertThat(serr.errorCode()).isEqualTo("NoSuchBucket");
         }
@@ -611,7 +610,7 @@ public class ClientPaginatorTest  extends TestBase {
                 assertThat(result.parts()).hasSize(0);
             }
         } catch (Exception e) {
-            ServiceError serr = findCause(e, ServiceError.class);
+            ServiceException serr = findCause(e, ServiceException.class);
             assertThat(serr).isNotNull();
             assertThat(serr.errorCode()).isEqualTo("NoSuchUpload");
         }
@@ -678,7 +677,7 @@ public class ClientPaginatorTest  extends TestBase {
                 fail("should not here");
             }
         } catch (Exception e) {
-            ServiceError serr = findCause(e, ServiceError.class);
+            ServiceException serr = findCause(e, ServiceException.class);
             assertThat(serr).isNotNull();
             assertThat(serr.errorCode()).isEqualTo("NoSuchUpload");
         }
@@ -836,7 +835,7 @@ public class ClientPaginatorTest  extends TestBase {
                 fail("should not here");
             }
         } catch (Exception e) {
-            ServiceError serr = findCause(e, ServiceError.class);
+            ServiceException serr = findCause(e, ServiceException.class);
             assertThat(serr).isNotNull();
             assertThat(serr.errorCode()).isEqualTo("NoSuchBucket");
         }

@@ -1,6 +1,6 @@
 package com.aliyun.sdk.service.oss2;
 
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.ByteArrayBinaryData;
 import org.junit.Assert;
@@ -96,7 +96,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchKey", serr.errorCode());
             Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
@@ -109,7 +109,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchKey", serr.errorCode());
             Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
@@ -122,7 +122,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchKey", serr.errorCode());
             Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
@@ -166,7 +166,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchKey", serr.errorCode());
             Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
@@ -220,7 +220,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchKey", serr.errorCode());
             Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
@@ -233,7 +233,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object");
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchKey", serr.errorCode());
             Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
@@ -352,7 +352,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object: " + specialKey1);
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchKey", serr.errorCode());
             Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
@@ -365,7 +365,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object: " + specialKey2);
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchKey", serr.errorCode());
             Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
@@ -378,7 +378,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object: " + specialKey3);
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
             Assert.assertEquals("NoSuchKey", serr.errorCode());
             Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
@@ -391,7 +391,7 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
                     .build()).get();
             Assert.fail("Expected exception for deleted object: " + specialKey4);
         } catch (Exception ec) {
-            ServiceError serr = findCause(ec, ServiceError.class);
+            ServiceException serr = findCause(ec, ServiceException.class);
             Assert.assertEquals(404, serr.statusCode());
         }
     }

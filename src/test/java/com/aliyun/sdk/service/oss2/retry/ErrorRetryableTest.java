@@ -2,7 +2,7 @@ package com.aliyun.sdk.service.oss2.retry;
 
 import com.aliyun.sdk.service.oss2.exceptions.CredentialsFetchException;
 import com.aliyun.sdk.service.oss2.exceptions.InconsistentException;
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.transport.RequestException;
 import com.aliyun.sdk.service.oss2.transport.ResponseException;
 import org.junit.jupiter.api.Test;
@@ -34,16 +34,16 @@ class ErrorRetryableTest {
         ErrorRetryable retryable = new HTTPStatusCodeRetryable();
         assertThat(retryable.toString()).isNotEmpty();
 
-        assertThat(retryable.isErrorRetryable(ServiceError.newBuilder().statusCode(401).build())).isTrue();
-        assertThat(retryable.isErrorRetryable(ServiceError.newBuilder().statusCode(408).build())).isTrue();
-        assertThat(retryable.isErrorRetryable(ServiceError.newBuilder().statusCode(429).build())).isTrue();
-        assertThat(retryable.isErrorRetryable(ServiceError.newBuilder().statusCode(500).build())).isTrue();
-        assertThat(retryable.isErrorRetryable(ServiceError.newBuilder().statusCode(504).build())).isTrue();
-        assertThat(retryable.isErrorRetryable(ServiceError.newBuilder().statusCode(599).build())).isTrue();
+        assertThat(retryable.isErrorRetryable(ServiceException.newBuilder().statusCode(401).build())).isTrue();
+        assertThat(retryable.isErrorRetryable(ServiceException.newBuilder().statusCode(408).build())).isTrue();
+        assertThat(retryable.isErrorRetryable(ServiceException.newBuilder().statusCode(429).build())).isTrue();
+        assertThat(retryable.isErrorRetryable(ServiceException.newBuilder().statusCode(500).build())).isTrue();
+        assertThat(retryable.isErrorRetryable(ServiceException.newBuilder().statusCode(504).build())).isTrue();
+        assertThat(retryable.isErrorRetryable(ServiceException.newBuilder().statusCode(599).build())).isTrue();
 
-        assertThat(retryable.isErrorRetryable(ServiceError.newBuilder().statusCode(400).build())).isFalse();
-        assertThat(retryable.isErrorRetryable(ServiceError.newBuilder().statusCode(403).build())).isFalse();
-        assertThat(retryable.isErrorRetryable(ServiceError.newBuilder().build())).isFalse();
+        assertThat(retryable.isErrorRetryable(ServiceException.newBuilder().statusCode(400).build())).isFalse();
+        assertThat(retryable.isErrorRetryable(ServiceException.newBuilder().statusCode(403).build())).isFalse();
+        assertThat(retryable.isErrorRetryable(ServiceException.newBuilder().build())).isFalse();
     }
 
     @Test
@@ -54,7 +54,7 @@ class ErrorRetryableTest {
         Map<String, String> errorFields = new HashMap<>();
         errorFields.put("Code", "BadRequest");
         assertThat(retryable.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(401)
                         .errorFields(errorFields)
                         .build()))
@@ -62,7 +62,7 @@ class ErrorRetryableTest {
 
         errorFields.put("Code", "RequestTimeTooSkewed");
         assertThat(retryable.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(401)
                         .errorFields(errorFields)
                         .build()))
@@ -70,14 +70,14 @@ class ErrorRetryableTest {
 
         errorFields.put("Code", "UnSupportCode");
         assertThat(retryable.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(401)
                         .errorFields(errorFields)
                         .build()))
                 .isFalse();
 
         assertThat(retryable.isErrorRetryable(
-                ServiceError.newBuilder()
+                ServiceException.newBuilder()
                         .statusCode(401)
                         .build()))
                 .isFalse();

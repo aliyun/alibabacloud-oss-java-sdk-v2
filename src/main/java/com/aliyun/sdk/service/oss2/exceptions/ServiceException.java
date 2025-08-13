@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Service Error Class that encapsulates detailed error information returned by the OSS service
+ * Service Exception Class that encapsulates detailed error information returned by the OSS service
  */
-public class ServiceError extends RuntimeException {
+public class ServiceException extends RuntimeException {
     /**
      * Error message format template used to generate structured server-side error descriptions
      */
@@ -29,7 +29,7 @@ public class ServiceError extends RuntimeException {
     private final byte[] snapshot;
     private final Instant timestamp;
 
-    private ServiceError(Builder builder) {
+    private ServiceException(Builder builder) {
         super(String.format(ERROR_FMT,
                 builder.statusCode,
                 toErrorCode(builder.errorFields),
@@ -44,6 +44,28 @@ public class ServiceError extends RuntimeException {
         this.snapshot = builder.snapshot;
         this.timestamp = Optional.ofNullable(builder.timestamp).orElse(Instant.now());
         this.requestTarget = Optional.ofNullable(builder.requestTarget).orElse("");
+    }
+
+    /**
+     * Obtain the ServiceException cause if the throwable's causal chain have an immediate or wrapped exception
+     * to the ServiceException
+     *
+     * @param chain The root of a Throwable causal chain.
+     * @return the ServiceException instance, if chain is an instance of ServiceException;
+     * null, if none found
+     */
+    public static ServiceException asCause(Throwable chain) {
+        if (chain == null) {
+            return null;
+        }
+        Throwable current = chain;
+        while (current != null) {
+            if (current instanceof ServiceException) {
+                return (ServiceException) current;
+            }
+            current = current.getCause();
+        }
+        return null;
     }
 
     public static Builder newBuilder() {
@@ -169,7 +191,7 @@ public class ServiceError extends RuntimeException {
         private Builder() {
         }
 
-        private Builder(ServiceError from) {
+        private Builder(ServiceException from) {
             this.statusCode = from.statusCode;
             this.headers = from.headers;
             this.errorFields = from.errorFields;
@@ -231,8 +253,8 @@ public class ServiceError extends RuntimeException {
             return this;
         }
 
-        public ServiceError build() {
-            return new ServiceError(this);
+        public ServiceException build() {
+            return new ServiceException(this);
         }
     }
 }

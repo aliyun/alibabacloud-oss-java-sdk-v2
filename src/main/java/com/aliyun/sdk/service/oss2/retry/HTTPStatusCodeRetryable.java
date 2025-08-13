@@ -1,6 +1,6 @@
 package com.aliyun.sdk.service.oss2.retry;
 
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 
 /**
  * Determines whether a service error is retryable based on its HTTP status code.
@@ -19,8 +19,8 @@ public class HTTPStatusCodeRetryable implements ErrorRetryable {
      */
     @Override
     public boolean isErrorRetryable(Throwable error) {
-        if (error instanceof ServiceError) {
-            int statusCode = ((ServiceError) error).statusCode();
+        if (error instanceof ServiceException) {
+            int statusCode = ((ServiceException) error).statusCode();
             if (statusCode >= 500) {
                 return true;
             }

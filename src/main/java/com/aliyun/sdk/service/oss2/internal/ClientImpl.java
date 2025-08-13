@@ -7,7 +7,7 @@ import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.exceptions.CredentialsException;
 import com.aliyun.sdk.service.oss2.exceptions.OperationException;
 import com.aliyun.sdk.service.oss2.exceptions.PresignExpirationException;
-import com.aliyun.sdk.service.oss2.exceptions.ServiceError;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.retry.Retryer;
 import com.aliyun.sdk.service.oss2.retry.StandardRetryer;
 import com.aliyun.sdk.service.oss2.signer.Signer;
@@ -20,7 +20,6 @@ import com.aliyun.sdk.service.oss2.transport.apache5client.Apache5HttpClient;
 import com.aliyun.sdk.service.oss2.transport.apache5client.Apache5MixedHttpClient;
 import com.aliyun.sdk.service.oss2.types.AddressStyleType;
 import com.aliyun.sdk.service.oss2.types.AuthMethodType;
-import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
 import com.aliyun.sdk.service.oss2.utils.*;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -608,7 +607,7 @@ public class ClientImpl implements AutoCloseable {
                 requestTarget = String.format("%s %s", response.request().method(), response.request().uri());
             }
 
-            throw ServiceError.newBuilder()
+            throw ServiceException.newBuilder()
                     .statusCode(statusCode)
                     .errorFields(errorFields)
                     .headers(headers)
