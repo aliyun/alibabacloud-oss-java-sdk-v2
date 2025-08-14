@@ -90,18 +90,18 @@ public class MultipartUpload implements Example {
                     .parts(uploadParts)
                     .build();
 
-//            CompleteMultipartUploadResult completeResult = client.completeMultipartUpload(
-//                    CompleteMultipartUploadRequest.newBuilder()
-//                            .bucket(bucket)
-//                            .key(key)
-//                            .uploadId(uploadId)
-//                            .completeMultipartUpload(completeMultipartUpload)
-//                            .build());
-//
-//            System.out.printf("Completed multipart upload, status code:%d, request id:%s, bucket:%s, key:%s, location:%s, etag:%s\n",
-//                    completeResult.statusCode(), completeResult.requestId(), completeResult.completeMultipartUpload().bucket(),
-//                    completeResult.completeMultipartUpload().key(), completeResult.completeMultipartUpload().location(),
-//                    completeResult.completeMultipartUpload().eTag());
+            CompleteMultipartUploadResult completeResult = client.completeMultipartUpload(
+                    CompleteMultipartUploadRequest.newBuilder()
+                            .bucket(bucket)
+                            .key(key)
+                            .uploadId(uploadId)
+                            .completeMultipartUpload(completeMultipartUpload)
+                            .build());
+
+            System.out.printf("Completed multipart upload, status code:%d, request id:%s, bucket:%s, key:%s, location:%s, etag:%s\n",
+                    completeResult.statusCode(), completeResult.requestId(), completeResult.completeMultipartUpload().bucket(),
+                    completeResult.completeMultipartUpload().key(), completeResult.completeMultipartUpload().location(),
+                    completeResult.completeMultipartUpload().eTag());
 
         } catch (Exception e) {
             System.out.printf("error:\n%s", e);
