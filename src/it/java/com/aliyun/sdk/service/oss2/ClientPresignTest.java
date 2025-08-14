@@ -1,5 +1,7 @@
 package com.aliyun.sdk.service.oss2;
 
+import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
+import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.utils.IOUtils;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
@@ -16,6 +18,8 @@ import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.ProtocolException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,9 +27,43 @@ import java.io.IOException;
 
 public class ClientPresignTest extends TestBase {
 
+    private static OSSClient clientV4_;
+
+    private static OSSClient clientV1_;
+
+
+    @BeforeClass
+    public static void oneTimeSetUp() {
+        TestBase.oneTimeSetUp();
+
+        CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
+        clientV4_ = OSSClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .credentialsProvider(provider)
+                .build();
+
+        clientV1_ = OSSClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .signatureVersion("v1")
+                .credentialsProvider(provider)
+                .build();
+    }
+
+    @AfterClass
+    public static void oneTimeSetDown() {
+        try {
+            clientV4_.close();
+            clientV1_.close();
+        } catch (Exception ignore) {
+        }
+        TestBase.oneTimeSetDown();
+    }
+
     @Test
     public void presignGetAndPutObjectOnlyBody() throws IOException, ParseException {
-        OSSClient client = getDefaultClient();
+        OSSClient client = clientV4_;
         String objectName = "root/sub-folder/1+2.bin";
 
         String content= "hello world";
@@ -97,7 +135,7 @@ public class ClientPresignTest extends TestBase {
 
     @Test
     public void presignGetAndPutObjectFullProps() throws IOException, ProtocolException {
-        OSSClient client = getDefaultClient();
+        OSSClient client = clientV4_;
         String objectName = "root/sub-folder/full /1+2.bin";
 
         String content= "hello world";
@@ -192,7 +230,7 @@ public class ClientPresignTest extends TestBase {
 
     @Test
     public void presignMultipartObject() throws Exception {
-        OSSClient client = getDefaultClient();
+        OSSClient client = clientV4_;
         String objectName = "multipart/sub-folder/1+2.bin";
 
         String content= "hello world";

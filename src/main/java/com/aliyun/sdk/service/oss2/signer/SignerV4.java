@@ -323,19 +323,21 @@ public class SignerV4 implements Signer {
      * @return The canonical headers string
      */
     private String buildCanonicalHeaders(RequestMessage request, Set<String> additionalHeaders) {
-        String canonicalHeaders = "";
-        List<String> headerLines = new ArrayList<>();
+        Map<String, String> lowKeyMap = new HashMap<>();
         for (Map.Entry<String, String> entry : request.headers().entrySet()) {
             String key = entry.getKey().toLowerCase();
+            if (entry.getValue() == null || entry.getValue().isEmpty()) {
+                continue;
+            }
             if (isSignHeader(key, additionalHeaders)) {
-                headerLines.add(key + ":" + entry.getValue());
+                lowKeyMap.put(key, entry.getValue());
             }
         }
-        Collections.sort(headerLines);
-        if (headerLines.size() > 0) {
-            canonicalHeaders = String.join("\n", headerLines) + "\n";
-        }
-        return canonicalHeaders;
+
+        return lowKeyMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> entry.getKey() + ":" + entry.getValue() + "\n")
+                .collect(Collectors.joining());
     }
 
     /**
