@@ -3,16 +3,57 @@ package com.aliyun.sdk.service.oss2;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.progress.ProgressObserver;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.IOUtils;
+import com.aliyun.sdk.service.oss2.utils.MapUtils;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Collections;
+import java.util.Map;
 
 public class ClientMiscTest extends TestBase {
 
-    @Test
+     @Test
     public void testInvokeOperation() {
-        Assert.assertTrue(true);
+        OSSClient client = getDefaultClient();
+
+        String objectName = "invoke-operation-test.json";
+        // put object
+        OperationInput.Builder builder = OperationInput.newBuilder()
+                .opName("PutObject")
+                .method("PUT");
+        builder.body(BinaryData.fromString("hello world"));
+        builder.bucket(bucketName);
+        builder.key(objectName);
+
+        // headers
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/json");
+        headers.put("x-oss-meta-123", "value3");
+        headers.put("x-oss-meta-ABC", "value7");
+        headers.put("x-oss-meta-aaa", "value2");
+        headers.put("x-oss-meta-abc-123", "value5");
+        headers.put("x-oss-meta-abc123", "value4");
+        headers.put("x-oss-meta-zzz", "value1");
+
+        builder.headers(headers);
+
+        OperationInput input = builder.build();
+
+        client.invokeOperation(input, OperationOptions.defaults());
+
+
+        // get object
+        GetObjectResult getResult = client.getObject(GetObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName)
+                .build());
+        Assert.assertNotNull(getResult);
+        Assert.assertEquals(200, getResult.statusCode());
     }
 
     @Test

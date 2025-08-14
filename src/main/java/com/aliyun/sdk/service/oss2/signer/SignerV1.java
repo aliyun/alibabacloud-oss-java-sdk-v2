@@ -14,6 +14,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.aliyun.sdk.service.oss2.utils.HttpUtils.*;
 
@@ -317,19 +318,21 @@ public class SignerV1 implements Signer {
      * @return The canonical headers string
      */
     private String buildCanonicalHeaders(Map<String, String> headers) {
-        String canonicalHeaders = "";
-        List<String> headerLines = new ArrayList<>();
+        Map<String, String> lowKeyMap = new HashMap<>();
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             String key = entry.getKey().toLowerCase();
+            if (entry.getValue() == null || entry.getValue().isEmpty()) {
+                continue;
+            }
             if (isSignHeader(key)) {
-                headerLines.add(key + ":" + entry.getValue());
+                lowKeyMap.put(key, entry.getValue());
             }
         }
-        Collections.sort(headerLines);
-        if (headerLines.size() > 0) {
-            canonicalHeaders = String.join("\n", headerLines) + "\n";
-        }
-        return canonicalHeaders;
+
+        return lowKeyMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> entry.getKey() + ":" + entry.getValue() + "\n")
+                .collect(Collectors.joining());
     }
 
 }

@@ -6,11 +6,9 @@ import com.aliyun.sdk.service.oss2.transport.RequestMessage;
 import org.junit.jupiter.api.Test;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.aliyun.sdk.service.oss2.utils.HttpUtils.encodeQueryParameters;
 import static com.aliyun.sdk.service.oss2.utils.HttpUtils.uriEncodedParams;
@@ -445,6 +443,51 @@ public class SignerV4Test {
         assertEquals("ak%2F20231217%2Fcn-hangzhou%2Foss%2Faliyun_v4_request", queries.get("x-oss-credential"));
         assertEquals("6bd984bfe531afb6db1f7550983a741b103a8c58e5e14f83ea474c2322dfa2b7", queries.get("x-oss-signature"));
         assertEquals("abc%3Bzabc", queries.get("x-oss-additional-headers"));
+    }
+
+    @Test
+    public void testBuildCanonicalHeadersSorting() throws Exception {
+        // Test header sorting with various characters, numbers and special symbols
+        RequestMessage request = RequestMessage.newBuilder()
+                .method("GET")
+                .uri("http://examplebucket.oss-cn-hangzhou.aliyuncs.com/object")
+                .build();
+
+        Map<String, String> headers = new HashMap<>();
+        // Headers with various characters, numbers and special symbols to test sorting
+        headers.put("x-oss-meta-zzz", "value1");
+        headers.put("x-oss-meta-aaa", "value2");
+        headers.put("x-oss-meta-123", "value3");
+        headers.put("x-oss-meta-abc123", "value4");
+        headers.put("x-oss-meta-abc-123", "value5");
+        headers.put("x-oss-meta-abc_123", "value6");
+        headers.put("x-oss-meta-ABC", "value7"); // uppercase
+        headers.put("content-type", "application/json");
+        headers.put("x-oss-date", "20250814T080624Z");
+        headers.put("content-md5", "md5hash");
+        request = updateRequestHeaders(request, headers);
+
+        // Create SignerV4 instance using reflection to access private method
+        SignerV4 signer = new SignerV4();
+        Method buildCanonicalHeadersMethod = SignerV4.class.getDeclaredMethod("buildCanonicalHeaders", RequestMessage.class, Set.class);
+        buildCanonicalHeadersMethod.setAccessible(true);
+
+        // Call the method
+        String result = (String) buildCanonicalHeadersMethod.invoke(signer, request, null);
+
+        // Expected canonical headers (sorted by header name in lexicographical order)
+        String expected = "content-md5:md5hash\n" +
+                "content-type:application/json\n" +
+                "x-oss-date:20250814T080624Z\n" +
+                "x-oss-meta-123:value3\n" +
+                "x-oss-meta-aaa:value2\n" +
+                "x-oss-meta-abc:value7\n" +
+                "x-oss-meta-abc-123:value5\n" +
+                "x-oss-meta-abc123:value4\n" +
+                "x-oss-meta-abc_123:value6\n" +
+                "x-oss-meta-zzz:value1\n";
+
+        assertEquals(expected, result);
     }
 
     private RequestMessage updateRequestHeaders(RequestMessage request, Map<String, String> headers) throws UnsupportedEncodingException {
