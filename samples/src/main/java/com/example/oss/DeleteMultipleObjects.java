@@ -54,6 +54,11 @@ public class DeleteMultipleObjects implements Example {
                     result.statusCode(), result.requestId());
 
         } catch (Exception e) {
+            //If the exception is caused by ServiceException, detailed information can be obtained in this way.
+            //ServiceException se = ServiceException.asCause(e);
+            //if (se != null) {
+            //   System.out.printf("ServiceException: requestId:%s, errorCode:%s\n", se.requestId(), se.errorCode());
+            //}
             System.out.printf("error:\n%s", e);
         }
     }
