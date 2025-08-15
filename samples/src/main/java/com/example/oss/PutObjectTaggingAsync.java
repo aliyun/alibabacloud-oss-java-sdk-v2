@@ -11,7 +11,6 @@ import org.apache.commons.cli.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PutObjectTaggingAsync implements Example {
 
     private static void execute(

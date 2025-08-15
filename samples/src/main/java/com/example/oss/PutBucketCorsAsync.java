@@ -11,7 +11,6 @@ import org.apache.commons.cli.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class PutBucketCorsAsync implements Example {
 
     private static void execute(

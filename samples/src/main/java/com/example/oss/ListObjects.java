@@ -10,8 +10,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import javax.swing.text.AbstractDocument;
-
 public class ListObjects implements Example {
 
     private static void execute(

@@ -10,7 +10,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import java.util.List;
 
-
 public class ListObjectVersionsAsync implements Example {
 
     private static void execute(

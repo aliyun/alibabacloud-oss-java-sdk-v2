@@ -13,7 +13,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MultipartUploadAsync implements Example {
 
     private static void execute(
