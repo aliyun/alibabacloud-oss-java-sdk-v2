@@ -1,10 +1,8 @@
 package com.example.oss;
 
-import com.aliyun.sdk.service.oss2.OSSClient;
-import com.aliyun.sdk.service.oss2.OSSClientBuilder;
+import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
-import com.aliyun.sdk.service.oss2.io.BoundedInputStream;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.apache.commons.cli.CommandLine;
@@ -15,7 +13,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultipartUpload implements Example {
+public class MultipartUploadAsync implements Example {
 
     private static void execute(
             String endpoint,
@@ -25,21 +23,14 @@ public class MultipartUpload implements Example {
             String filePath) throws IOException {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
-        OSSClientBuilder clientBuilder = OSSClient.newBuilder()
-                .credentialsProvider(provider)
-                .region(region);
 
-        if (endpoint != null) {
-            clientBuilder.endpoint(endpoint);
-        }
-
-        try (OSSClient client = clientBuilder.build()) {
+        try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
             // Step 1: Initiate multipart upload
-            InitiateMultipartUploadResult initiateResult = client.initiateMultipartUpload(
-                    com.aliyun.sdk.service.oss2.models.InitiateMultipartUploadRequest.newBuilder()
+            InitiateMultipartUploadResult initiateResult = client.initiateMultipartUploadAsync(
+                    InitiateMultipartUploadRequest.newBuilder()
                             .bucket(bucket)
                             .key(key)
-                            .build());
+                            .build()).get();
 
             String uploadId = initiateResult.initiateMultipartUpload().uploadId();
             System.out.printf("Initiated multipart upload, status code:%d, request id:%s, upload id:%s\n",
@@ -52,22 +43,23 @@ public class MultipartUpload implements Example {
             int partNumber = 1;
             List<Part> uploadParts = new ArrayList<>();
 
-            for (long start = 0; start < fileSize; start += partSize) {
-                long curPartSize = Math.min(partSize, fileSize - start);
+            try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+                for (long start = 0; start < fileSize; start += partSize) {
+                    long curPartSize = Math.min(partSize, fileSize - start);
 
-                // Create a section of the file to upload
-                try (InputStream is = new FileInputStream(file)) {
-                    is.skip(start);
-                    BoundedInputStream boundedInputStream = new BoundedInputStream(is, curPartSize);
+                    // Create a section of the file to upload
+                    raf.seek(start);
+                    byte[] data = new byte[(int) curPartSize];
+                    raf.readFully(data);
 
                     // Upload the part
-                    UploadPartResult partResult = client.uploadPart(UploadPartRequest.newBuilder()
+                    UploadPartResult partResult = client.uploadPartAsync(UploadPartRequest.newBuilder()
                             .bucket(bucket)
                             .key(key)
                             .uploadId(uploadId)
                             .partNumber((long) partNumber)
-                            .body(BinaryData.fromStream(boundedInputStream))
-                            .build());
+                            .body(BinaryData.fromBytes(data))
+                            .build()).get();
 
                     System.out.printf("status code: %d, request id: %s, part number: %d, etag: %s\n",
                             partResult.statusCode(), partResult.requestId(), partNumber, partResult.eTag());
@@ -76,8 +68,9 @@ public class MultipartUpload implements Example {
                             .partNumber((long) partNumber)
                             .eTag(partResult.eTag())
                             .build());
+
+                    partNumber++;
                 }
-                partNumber++;
             }
 
             // Step 3: Complete multipart upload
@@ -88,13 +81,13 @@ public class MultipartUpload implements Example {
                     .parts(uploadParts)
                     .build();
 
-            CompleteMultipartUploadResult completeResult = client.completeMultipartUpload(
+            CompleteMultipartUploadResult completeResult = client.completeMultipartUploadAsync(
                     CompleteMultipartUploadRequest.newBuilder()
                             .bucket(bucket)
                             .key(key)
                             .uploadId(uploadId)
                             .completeMultipartUpload(completeMultipartUpload)
-                            .build());
+                            .build()).get();
 
             System.out.printf("Completed multipart upload, status code:%d, request id:%s, bucket:%s, key:%s, location:%s, etag:%s\n",
                     completeResult.statusCode(), completeResult.requestId(), completeResult.completeMultipartUpload().bucket(),
@@ -109,6 +102,14 @@ public class MultipartUpload implements Example {
             //}
             System.out.printf("error:\n%s", e);
         }
+    }
+
+    private static OSSAsyncClient getDefaultAsyncClient(String endpoint, String region, CredentialsProvider provider) {
+        return OSSAsyncClient.newBuilder()
+                .region(region)
+                .endpoint(endpoint)
+                .credentialsProvider(provider)
+                .build();
     }
 
     @Override

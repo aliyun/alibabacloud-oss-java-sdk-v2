@@ -1,44 +1,37 @@
 package com.example.oss;
 
-import com.aliyun.sdk.service.oss2.OSSClient;
-import com.aliyun.sdk.service.oss2.OSSClientBuilder;
+import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.utils.IOUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class ListObjects implements Example {
+public class GetObjectAsync implements Example {
 
     private static void execute(
             String endpoint,
             String region,
-            String bucket) {
+            String bucket,
+            String key) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
-        OSSClientBuilder clientBuilder = OSSClient.newBuilder()
-                .credentialsProvider(provider)
-                .region(region);
 
-        if (endpoint != null) {
-            clientBuilder.endpoint(endpoint);
-        }
+        try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
 
-        try (OSSClient client = clientBuilder.build()) {
+            try (GetObjectResult result = client.getObjectAsync(GetObjectRequest.newBuilder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build()).get()) {
 
-            ListObjectsResult result = client.listObjects(ListObjectsRequest.newBuilder()
-                            .bucket(bucket)
-                    .build());
+                //Load all the data into memory and then process it.
+                byte[] data = IOUtils.toByteArray(result.body());
 
-            System.out.printf("status code:%d, request id:%s\n",
-                    result.statusCode(), result.requestId());
-            
-            System.out.println("Objects:");
-            for (ObjectSummary content : result.contents()) {
-                System.out.printf("- %s (size: %d, lastModified: %s)\n", 
-                        content.key(), content.size(), content.lastModified());
+                System.out.printf("status code:%d, request id:%s, eTag:%s, content length:%d\n",
+                        result.statusCode(), result.requestId(), result.eTag(), result.contentLength());
             }
 
         } catch (Exception e) {
@@ -51,12 +44,21 @@ public class ListObjects implements Example {
         }
     }
 
+    private static OSSAsyncClient getDefaultAsyncClient(String endpoint, String region, CredentialsProvider provider) {
+        return OSSAsyncClient.newBuilder()
+                .region(region)
+                .endpoint(endpoint)
+                .credentialsProvider(provider)
+                .build();
+    }
+
     @Override
     public Options getOptions() {
         Options opts = new Options();
         opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS.").hasArg().get());
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("key").desc("The name of the object.").hasArg().required().get());
         return opts;
     }
 
@@ -65,6 +67,7 @@ public class ListObjects implements Example {
         String endpoint = cmd.getParsedOptionValue("endpoint");
         String region = cmd.getParsedOptionValue("region");
         String bucket = cmd.getParsedOptionValue("bucket");
-        execute(endpoint, region, bucket);
+        String key = cmd.getParsedOptionValue("key");
+        execute(endpoint, region, bucket, key);
     }
 }

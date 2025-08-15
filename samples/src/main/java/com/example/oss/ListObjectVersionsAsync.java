@@ -1,7 +1,6 @@
 package com.example.oss;
 
-import com.aliyun.sdk.service.oss2.OSSClient;
-import com.aliyun.sdk.service.oss2.OSSClientBuilder;
+import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
@@ -11,7 +10,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import java.util.List;
 
-public class ListObjectVersions implements Example {
+public class ListObjectVersionsAsync implements Example {
 
     private static void execute(
             String endpoint,
@@ -24,15 +23,8 @@ public class ListObjectVersions implements Example {
             Long maxKeys) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
-        OSSClientBuilder clientBuilder = OSSClient.newBuilder()
-                .credentialsProvider(provider)
-                .region(region);
 
-        if (endpoint != null) {
-            clientBuilder.endpoint(endpoint);
-        }
-
-        try (OSSClient client = clientBuilder.build()) {
+        try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
             
             ListObjectVersionsRequest.Builder requestBuilder = ListObjectVersionsRequest.newBuilder();
 
@@ -60,7 +52,7 @@ public class ListObjectVersions implements Example {
                 requestBuilder.maxKeys(maxKeys);
             }
 
-            ListObjectVersionsResult result = client.listObjectVersions(requestBuilder.build());
+            ListObjectVersionsResult result = client.listObjectVersionsAsync(requestBuilder.build()).get();
 
             System.out.printf("Status code:%d, request id:%s\n",
                     result.statusCode(), result.requestId());
@@ -96,6 +88,14 @@ public class ListObjectVersions implements Example {
             //}
             System.out.printf("error:\n%s", e);
         }
+    }
+
+    private static OSSAsyncClient getDefaultAsyncClient(String endpoint, String region, CredentialsProvider provider) {
+        return OSSAsyncClient.newBuilder()
+                .region(region)
+                .endpoint(endpoint)
+                .credentialsProvider(provider)
+                .build();
     }
 
     @Override
