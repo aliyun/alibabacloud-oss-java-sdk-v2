@@ -22,10 +22,6 @@ public class EnvironmentVariableCredentialsProvider implements CredentialsProvid
         if (accessKeyId == null) accessKeyId = "";
         if (accessKeySecret == null) accessKeySecret = "";
 
-        if (accessKeyId.isEmpty() || accessKeySecret.isEmpty()) {
-            throw new IllegalArgumentException("Missing required environment variables: OSS_ACCESS_KEY_ID and/or OSS_ACCESS_KEY_SECRET");
-        }
-
         this.credentials = new Credentials(accessKeyId, accessKeySecret, securityToken);
     }
 
