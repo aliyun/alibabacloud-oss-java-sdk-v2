@@ -10,7 +10,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class GetBucketStat implements Example {
+public class GetBucketAcl implements Example {
 
     private static void execute(
             String endpoint,
@@ -28,13 +28,17 @@ public class GetBucketStat implements Example {
 
         try (OSSClient client = clientBuilder.build()) {
 
-            GetBucketStatResult result = client.getBucketStat(GetBucketStatRequest.newBuilder()
+            GetBucketAclResult result = client.getBucketAcl(GetBucketAclRequest.newBuilder()
                             .bucket(bucket)
-                    .build());
+                            .build());
 
-            System.out.printf("status code:%d, request id:%s, storage:%d, object count:%d, multipart upload count:%d\n",
-                    result.statusCode(), result.requestId(), result.bucketStat().storage(), 
-                    result.bucketStat().objectCount(), result.bucketStat().multipartUploadCount());
+            System.out.printf("Status code:%d, request id:%s\n",
+                    result.statusCode(), result.requestId());
+
+            AccessControlPolicy accessControlPolicy = result.accessControlPolicy();
+            if (accessControlPolicy != null && accessControlPolicy.accessControlList() != null) {
+                System.out.printf("Bucket ACL: %s\n", accessControlPolicy.accessControlList().grant());
+            }
 
         } catch (Exception e) {
             //If the exception is caused by ServiceException, detailed information can be obtained in this way.

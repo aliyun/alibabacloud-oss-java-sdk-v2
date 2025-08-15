@@ -10,7 +10,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class GetBucketStat implements Example {
+import java.util.List;
+
+public class GetBucketCors implements Example {
 
     private static void execute(
             String endpoint,
@@ -28,13 +30,35 @@ public class GetBucketStat implements Example {
 
         try (OSSClient client = clientBuilder.build()) {
 
-            GetBucketStatResult result = client.getBucketStat(GetBucketStatRequest.newBuilder()
+            GetBucketCorsResult result = client.getBucketCors(GetBucketCorsRequest.newBuilder()
                             .bucket(bucket)
-                    .build());
+                            .build());
 
-            System.out.printf("status code:%d, request id:%s, storage:%d, object count:%d, multipart upload count:%d\n",
-                    result.statusCode(), result.requestId(), result.bucketStat().storage(), 
-                    result.bucketStat().objectCount(), result.bucketStat().multipartUploadCount());
+            System.out.printf("Status code:%d, request id:%s\n",
+                    result.statusCode(), result.requestId());
+
+            CORSConfiguration corsConfiguration = result.corsConfiguration();
+            if (corsConfiguration != null && corsConfiguration.corsRules() != null) {
+                List<CORSRule> corsRules = corsConfiguration.corsRules();
+                System.out.printf("Found %d CORS rules:\n", corsRules.size());
+                for (int i = 0; i < corsRules.size(); i++) {
+                    CORSRule rule = corsRules.get(i);
+                    System.out.printf("Rule %d:\n", i + 1);
+                    System.out.printf("  Allowed origins: %s\n", rule.allowedOrigins());
+                    System.out.printf("  Allowed methods: %s\n", rule.allowedMethods());
+                    if (rule.allowedHeaders() != null) {
+                        System.out.printf("  Allowed headers: %s\n", rule.allowedHeaders());
+                    }
+                    if (rule.exposeHeaders() != null) {
+                        System.out.printf("  Expose headers: %s\n", rule.exposeHeaders());
+                    }
+                    if (rule.maxAgeSeconds() != null) {
+                        System.out.printf("  Max age seconds: %d\n", rule.maxAgeSeconds());
+                    }
+                }
+            } else {
+                System.out.println("No CORS configuration found.");
+            }
 
         } catch (Exception e) {
             //If the exception is caused by ServiceException, detailed information can be obtained in this way.

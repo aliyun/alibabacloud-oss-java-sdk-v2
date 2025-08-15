@@ -10,7 +10,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class GetBucketStat implements Example {
+public class DeleteBucketCors implements Example {
 
     private static void execute(
             String endpoint,
@@ -28,13 +28,12 @@ public class GetBucketStat implements Example {
 
         try (OSSClient client = clientBuilder.build()) {
 
-            GetBucketStatResult result = client.getBucketStat(GetBucketStatRequest.newBuilder()
+            DeleteBucketCorsResult result = client.deleteBucketCors(DeleteBucketCorsRequest.newBuilder()
                             .bucket(bucket)
-                    .build());
+                            .build());
 
-            System.out.printf("status code:%d, request id:%s, storage:%d, object count:%d, multipart upload count:%d\n",
-                    result.statusCode(), result.requestId(), result.bucketStat().storage(), 
-                    result.bucketStat().objectCount(), result.bucketStat().multipartUploadCount());
+            System.out.printf("Status code:%d, request id:%s\n",
+                    result.statusCode(), result.requestId());
 
         } catch (Exception e) {
             //If the exception is caused by ServiceException, detailed information can be obtained in this way.

@@ -10,12 +10,13 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class GetBucketStat implements Example {
+public class PutBucketAcl implements Example {
 
     private static void execute(
             String endpoint,
             String region,
-            String bucket) {
+            String bucket,
+            String acl) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
         OSSClientBuilder clientBuilder = OSSClient.newBuilder()
@@ -28,13 +29,13 @@ public class GetBucketStat implements Example {
 
         try (OSSClient client = clientBuilder.build()) {
 
-            GetBucketStatResult result = client.getBucketStat(GetBucketStatRequest.newBuilder()
+            PutBucketAclResult result = client.putBucketAcl(PutBucketAclRequest.newBuilder()
                             .bucket(bucket)
-                    .build());
+                            .acl(acl)
+                            .build());
 
-            System.out.printf("status code:%d, request id:%s, storage:%d, object count:%d, multipart upload count:%d\n",
-                    result.statusCode(), result.requestId(), result.bucketStat().storage(), 
-                    result.bucketStat().objectCount(), result.bucketStat().multipartUploadCount());
+            System.out.printf("Status code:%d, request id:%s\n",
+                    result.statusCode(), result.requestId());
 
         } catch (Exception e) {
             //If the exception is caused by ServiceException, detailed information can be obtained in this way.
@@ -52,6 +53,7 @@ public class GetBucketStat implements Example {
         opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS.").hasArg().get());
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("acl").desc("The ACL that you want to configure or modify for the bucket. Valid values: private, public-read, public-read-write.").hasArg().required().get());
         return opts;
     }
 
@@ -60,6 +62,7 @@ public class GetBucketStat implements Example {
         String endpoint = cmd.getParsedOptionValue("endpoint");
         String region = cmd.getParsedOptionValue("region");
         String bucket = cmd.getParsedOptionValue("bucket");
-        execute(endpoint, region, bucket);
+        String acl = cmd.getParsedOptionValue("acl");
+        execute(endpoint, region, bucket, acl);
     }
 }
