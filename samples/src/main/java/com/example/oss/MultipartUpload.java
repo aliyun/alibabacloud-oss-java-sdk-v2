@@ -4,6 +4,7 @@ import com.aliyun.sdk.service.oss2.OSSClient;
 import com.aliyun.sdk.service.oss2.OSSClientBuilder;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
+import com.aliyun.sdk.service.oss2.io.BoundedInputStream;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.apache.commons.cli.CommandLine;
@@ -52,14 +53,13 @@ public class MultipartUpload implements Example {
             int partNumber = 1;
             List<Part> uploadParts = new ArrayList<>();
 
-            try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
-                for (long start = 0; start < fileSize; start += partSize) {
-                    long curPartSize = Math.min(partSize, fileSize - start);
+            for (long start = 0; start < fileSize; start += partSize) {
+                long curPartSize = Math.min(partSize, fileSize - start);
 
-                    // Create a section of the file to upload
-                    raf.seek(start);
-                    byte[] data = new byte[(int) curPartSize];
-                    raf.readFully(data);
+                // Create a section of the file to upload
+                try (InputStream is = new FileInputStream(file)) {
+                    is.skip(start);
+                    BoundedInputStream boundedInputStream = new BoundedInputStream(is, curPartSize);
 
                     // Upload the part
                     UploadPartResult partResult = client.uploadPart(UploadPartRequest.newBuilder()
@@ -67,7 +67,7 @@ public class MultipartUpload implements Example {
                             .key(key)
                             .uploadId(uploadId)
                             .partNumber((long) partNumber)
-                            .body(BinaryData.fromBytes(data))
+                            .body(BinaryData.fromStream(boundedInputStream))
                             .build());
 
                     System.out.printf("status code: %d, request id: %s, part number: %d, etag: %s\n",
@@ -77,9 +77,8 @@ public class MultipartUpload implements Example {
                             .partNumber((long) partNumber)
                             .eTag(partResult.eTag())
                             .build());
-
-                    partNumber++;
                 }
+                partNumber++;
             }
 
             // Step 3: Complete multipart upload
