@@ -1,7 +1,6 @@
 package com.example.oss;
 
-import com.aliyun.sdk.service.oss2.OSSClient;
-import com.aliyun.sdk.service.oss2.OSSClientBuilder;
+import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
@@ -10,7 +9,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class ListObjects implements Example {
+public class DeleteBucketCorsAsync implements Example {
 
     private static void execute(
             String endpoint,
@@ -18,28 +17,15 @@ public class ListObjects implements Example {
             String bucket) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
-        OSSClientBuilder clientBuilder = OSSClient.newBuilder()
-                .credentialsProvider(provider)
-                .region(region);
 
-        if (endpoint != null) {
-            clientBuilder.endpoint(endpoint);
-        }
+        try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
 
-        try (OSSClient client = clientBuilder.build()) {
-
-            ListObjectsResult result = client.listObjects(ListObjectsRequest.newBuilder()
+            DeleteBucketCorsResult result = client.deleteBucketCorsAsync(DeleteBucketCorsRequest.newBuilder()
                             .bucket(bucket)
-                    .build());
+                            .build()).get();
 
-            System.out.printf("status code:%d, request id:%s\n",
+            System.out.printf("Status code:%d, request id:%s\n",
                     result.statusCode(), result.requestId());
-            
-            System.out.println("Objects:");
-            for (ObjectSummary content : result.contents()) {
-                System.out.printf("- %s (size: %d, lastModified: %s)\n", 
-                        content.key(), content.size(), content.lastModified());
-            }
 
         } catch (Exception e) {
             //If the exception is caused by ServiceException, detailed information can be obtained in this way.
@@ -49,6 +35,14 @@ public class ListObjects implements Example {
             //}
             System.out.printf("error:\n%s", e);
         }
+    }
+
+    private static OSSAsyncClient getDefaultAsyncClient(String endpoint, String region, CredentialsProvider provider) {
+        return OSSAsyncClient.newBuilder()
+                .region(region)
+                .endpoint(endpoint)
+                .credentialsProvider(provider)
+                .build();
     }
 
     @Override

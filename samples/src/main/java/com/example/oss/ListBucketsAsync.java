@@ -1,17 +1,15 @@
 package com.example.oss;
 
-import com.aliyun.sdk.service.oss2.OSSClient;
-import com.aliyun.sdk.service.oss2.OSSClientBuilder;
+import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
-import com.aliyun.sdk.service.oss2.paginator.ListBucketsIterable;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class ListBuckets implements Example {
+public class ListBucketsAsync implements Example {
 
     private static void execute(
             String endpoint,
@@ -19,24 +17,16 @@ public class ListBuckets implements Example {
     ) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
-        OSSClientBuilder clientBuilder = OSSClient.newBuilder()
-                .credentialsProvider(provider)
-                .region(region);
 
-        if (endpoint != null) {
-            clientBuilder.endpoint(endpoint);
-        }
+        try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
 
-        try (OSSClient client = clientBuilder.build()) {
-
-            ListBucketsIterable paginator = client.listBucketsPaginator(
+            ListBucketsResult result = client.listBucketsAsync(
                     ListBucketsRequest.newBuilder()
-                            .build());
+                            .build()).get();
 
-            for (ListBucketsResult result : paginator) {
-                for (BucketSummary info : result.buckets()) {
-                    System.out.printf("bucket: name:%s, region:%s, storageClass:%s\n", info.name(), info.region(), info.storageClass());
-                }
+            for (BucketSummary info : result.buckets()) {
+                System.out.printf("bucket: name:%s, region:%s, storageClass:%s\n", info.name(), info.region(), info.storageClass());
+
             }
 
         } catch (Exception e) {
@@ -47,6 +37,14 @@ public class ListBuckets implements Example {
             //}
             System.out.printf("error:\n%s", e);
         }
+    }
+
+    private static OSSAsyncClient getDefaultAsyncClient(String endpoint, String region, CredentialsProvider provider) {
+        return OSSAsyncClient.newBuilder()
+                .region(region)
+                .endpoint(endpoint)
+                .credentialsProvider(provider)
+                .build();
     }
 
     @Override
