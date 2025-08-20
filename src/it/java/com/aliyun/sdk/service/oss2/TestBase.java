@@ -4,6 +4,7 @@ import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.paginator.ListBucketsIterable;
+import com.aliyun.sdk.service.oss2.paginator.ListObjectVersionsIterable;
 import com.aliyun.sdk.service.oss2.paginator.ListObjectsV2Iterable;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -133,23 +134,25 @@ public class TestBase {
     }
 
     private static void cleanObjects(OSSClient client, String bucketName) {
-        ListObjectsV2Iterable iterable = new ListObjectsV2Iterable(
-                client,
-                ListObjectsV2Request.newBuilder()
+        ListObjectVersionsIterable iterable = client.listObjectVersionsPaginator(
+                ListObjectVersionsRequest.newBuilder()
                         .bucket(bucketName)
                         .build());
-        for (ListObjectsV2Result result : iterable) {
+        for (ListObjectVersionsResult result : iterable) {
             //TODO use delete objects
             List<DeleteObject> delObjects = new ArrayList<>();
-            for (ObjectSummary object : result.contents()) {
+            for (ObjectVersion object : result.versions()) {
                 delObjects.add(DeleteObject.newBuilder()
                         .key(object.key())
+                        .versionId(object.versionId())
                         .build());
-//
-//                client.deleteObject(DeleteObjectRequest.newBuilder()
-//                        .bucket(bucketName)
-//                        .key(object.key())
-//                        .build());
+            }
+
+            for (DeleteMarkerEntry entry : result.deleteMarkers()) {
+                delObjects.add(DeleteObject.newBuilder()
+                        .key(entry.key())
+                        .versionId(entry.versionId())
+                        .build());
             }
 
             if (!delObjects.isEmpty()) {

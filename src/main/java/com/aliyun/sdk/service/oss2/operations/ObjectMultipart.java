@@ -11,7 +11,6 @@ import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.aliyun.sdk.service.oss2.operations.ObjectBasic.addContentType;
 import static java.util.Objects.requireNonNull;
 
 public final class ObjectMultipart {
@@ -22,10 +21,7 @@ public final class ObjectMultipart {
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
 
-        OperationInput input = SerdeObjectMultipart.fromInitiateMultipartUpload(request);
-        if (FeatureFlagsType.AUTO_DETECT_MIMETYPE.isSet(impl.getFeatureFlags())) {
-            addContentType(input);
-        }
+        OperationInput input = SerdeObjectMultipart.fromInitiateMultipartUpload(request, impl.getFeatureFlags());
         OperationOutput output = impl.execute(input, options);
         return SerdeObjectMultipart.toInitiateMultipartUpload(output);
     }
@@ -35,10 +31,7 @@ public final class ObjectMultipart {
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
 
-        OperationInput input = SerdeObjectMultipart.fromInitiateMultipartUpload(request);
-        if (FeatureFlagsType.AUTO_DETECT_MIMETYPE.isSet(impl.getFeatureFlags())) {
-            addContentType(input);
-        }
+        OperationInput input = SerdeObjectMultipart.fromInitiateMultipartUpload(request, impl.getFeatureFlags());
         return impl.executeAsync(input, options).thenApply(SerdeObjectMultipart::toInitiateMultipartUpload);
     }
 
@@ -50,7 +43,7 @@ public final class ObjectMultipart {
         requireNonNull(request.uploadId(), "request.uploadId is required");
         requireNonNull(request.partNumber(), "request.partNumber is required");
 
-        OperationInput input = SerdeObjectMultipart.fromUploadPart(request);
+        OperationInput input = SerdeObjectMultipart.fromUploadPart(request, impl.getFeatureFlags());
         OperationOutput output = impl.execute(input, options);
         return SerdeObjectMultipart.toUploadPart(output);
     }
@@ -62,7 +55,7 @@ public final class ObjectMultipart {
         requireNonNull(request.uploadId(), "request.uploadId is required");
         requireNonNull(request.partNumber(), "request.partNumber is required");
 
-        OperationInput input = SerdeObjectMultipart.fromUploadPart(request);
+        OperationInput input = SerdeObjectMultipart.fromUploadPart(request, impl.getFeatureFlags());
         return impl.executeAsync(input, options).thenApply(SerdeObjectMultipart::toUploadPart);
     }
 

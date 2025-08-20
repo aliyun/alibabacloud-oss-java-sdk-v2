@@ -138,6 +138,11 @@ abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>, C> im
         return (B) this;
     }
 
+    public B disableUploadCRC64Check(boolean value) {
+        cfgBuilder.disableUploadCRC64Check(value);
+        return (B) this;
+    }
+
     protected final HttpClientOptions toHttpClientOptions(ClientConfiguration cfg) {
 
         HttpClientOptions.Builder b = HttpClientOptions.custom();

@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2;
 
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
+import com.aliyun.sdk.service.oss2.exceptions.InconsistentException;
 import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.internal.TestUtils;
 import com.aliyun.sdk.service.oss2.models.*;
@@ -20,6 +21,7 @@ import java.util.Date;
 import java.util.Random;
 
 import static com.aliyun.sdk.service.oss2.internal.ClientImplMockTest.findCause;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ClientObjectTest extends TestBase {
 
@@ -28,50 +30,11 @@ public class ClientObjectTest extends TestBase {
         OSSClient client = getDefaultClient();
         String objectName = genObjectName();
 
-        class MockProgressListener implements ProgressListener {
-            public long total;
-            public long incTotal;
-            public long transferred;
-            public boolean finished;
-
-            public MockProgressListener() {
-                this.total = 0;
-                this.incTotal = 0;
-                this.transferred = 0;
-                this.finished = false;
-            }
-
-            @Override
-            public void onProgress(long increment, long transferred, long total) {
-                this.incTotal += increment;
-                this.total = total;
-                this.transferred = transferred;
-
-                int rate;
-                if (total > 0) {
-                    rate = (int) (100.0 * ((double) transferred / (double) total));
-                } else {
-                    rate = 0;
-                }
-
-                System.out.println("\r" + rate + "% ");
-
-
-            }
-
-            @Override
-            public void onFinish() {
-                this.finished = true;
-            }
-        }
-
         byte[] content = TestUtils.generateTestData(10 * 1024 + 123);
-        MockProgressListener progListener = new MockProgressListener();
         // put object
         PutObjectResult putResult = client.putObject(PutObjectRequest.newBuilder()
                 .bucket(bucketName)
                 .key(objectName)
-                .progressListener(progListener)
                 .body(new ByteArrayBinaryData(content))
                 .build());
         Assert.assertNotNull(putResult);
@@ -572,6 +535,269 @@ public class ClientObjectTest extends TestBase {
             Assert.assertNotNull(deleteCopyResult);
             Assert.assertEquals(204, deleteCopyResult.statusCode());
 
+        }
+    }
+
+    @Test
+    public void testObjectOperations_withProgress() {
+
+        class MockProgressListener implements ProgressListener {
+            public long total;
+            public long incTotal;
+            public long transferred;
+            public boolean finished;
+            public long allTotal;
+
+            public MockProgressListener() {
+                this.total = 0;
+                this.incTotal = 0;
+                this.transferred = 0;
+                this.finished = false;
+            }
+
+            @Override
+            public void onProgress(long increment, long transferred, long total) {
+                this.incTotal += increment;
+                this.total = total;
+                this.transferred = transferred;
+
+                int rate;
+                if (total > 0) {
+                    rate = (int) (100.0 * ((double) incTotal / (double) allTotal));
+                } else {
+                    rate = 0;
+                }
+                //System.out.println("\r" + rate + "% ");
+            }
+
+            @Override
+            public void onFinish() {
+                this.finished = true;
+            }
+        }
+
+        OSSClient client = getDefaultClient();
+        String objectName = genObjectName();
+
+        byte[] content = TestUtils.generateTestData(200 * 1024 + 123); // 200kb + 123 bytes
+        MockProgressListener progListener = new MockProgressListener();
+        progListener.allTotal = content.length;
+
+        // put object
+        PutObjectResult putResult = client.putObject(PutObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName)
+                .body(new ByteArrayBinaryData(content))
+                .progressListener(progListener)
+                .build());
+        Assert.assertNotNull(putResult);
+        Assert.assertEquals(200, putResult.statusCode());
+        Assert.assertEquals(content.length, progListener.total);
+        Assert.assertEquals(content.length, progListener.transferred);
+        Assert.assertEquals(content.length, progListener.incTotal);
+        Assert.assertTrue(progListener.finished);
+
+        // append object
+        progListener = new MockProgressListener();
+        progListener.allTotal = content.length;
+        Assert.assertEquals(0, progListener.total);
+        String appendObjectName = genObjectName() + "-append";
+
+        byte[] data1 = new byte[100 * 1024 + 12]; // 100kb + 12
+        System.arraycopy(content, 0, data1, 0, data1.length);
+        AppendObjectResult appendResult1 = client.appendObject(AppendObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(appendObjectName)
+                .body(BinaryData.fromBytes(data1))
+                .position(0L)
+                .progressListener(progListener)
+                .build());
+        Assert.assertNotNull(appendResult1);
+        Assert.assertEquals(200, appendResult1.statusCode());
+        Assert.assertEquals(data1.length, appendResult1.nextAppendPosition().longValue());
+        Assert.assertEquals(data1.length, progListener.incTotal);
+        Assert.assertEquals(data1.length, progListener.transferred);
+        Assert.assertEquals(data1.length, progListener.total);
+
+        // append
+        byte[] data2 = new byte[content.length - data1.length]; // Remaining data
+        System.arraycopy(content, data1.length, data2, 0, data2.length);
+        AppendObjectResult appendResult2 = client.appendObject(AppendObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(appendObjectName)
+                .body(BinaryData.fromBytes(data2))
+                .position(appendResult1.nextAppendPosition())
+                .progressListener(progListener)
+                .build());
+        Assert.assertNotNull(appendResult2);
+        Assert.assertEquals(200, appendResult2.statusCode());
+        Assert.assertEquals(content.length, appendResult2.nextAppendPosition().longValue());
+        Assert.assertEquals(content.length, progListener.incTotal);
+        Assert.assertEquals(data2.length, progListener.transferred);
+        Assert.assertEquals(data2.length, progListener.total);
+
+        // compare
+        HeadObjectResult headResult1 = client.headObject(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName)
+                .build());
+
+        HeadObjectResult headResult2 = client.headObject(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(appendObjectName)
+                .build());
+        assertThat(headResult1.hashCrc64ecma()).isNotNull();
+        Assert.assertEquals(headResult1.hashCrc64ecma(), headResult2.hashCrc64ecma());
+        assertThat(headResult2.objectType()).isEqualTo("Appendable");
+    }
+
+    @Test
+    public void testObjectOperations_enableCrc() throws Exception {
+        // crc checker is enable by default
+        OSSClient client = getDefaultClient();
+        String objectName = genObjectName();
+
+        byte[] content = TestUtils.generateTestData(200 * 1024 + 123); // 200kb + 123 bytes
+
+        // put object
+        PutObjectResult putResult = client.putObject(PutObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName)
+                .body(new ByteArrayBinaryData(content))
+                .build());
+        Assert.assertNotNull(putResult);
+        Assert.assertEquals(200, putResult.statusCode());
+
+        // append object
+        String appendObjectName = genObjectName() + "-append";
+
+        byte[] data1 = new byte[100 * 1024 + 12]; // 100kb + 12
+        System.arraycopy(content, 0, data1, 0, data1.length);
+        AppendObjectResult appendResult1 = client.appendObject(AppendObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(appendObjectName)
+                .body(BinaryData.fromBytes(data1))
+                .position(0L)
+                .initHashCRC64(0)
+                .build());
+        Assert.assertNotNull(appendResult1);
+        Assert.assertEquals(200, appendResult1.statusCode());
+        Assert.assertEquals(data1.length, appendResult1.nextAppendPosition().longValue());
+
+        // append
+        byte[] data2 = new byte[content.length - data1.length]; // Remaining data
+        System.arraycopy(content, data1.length, data2, 0, data2.length);
+        AppendObjectResult appendResult2 = client.appendObject(AppendObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(appendObjectName)
+                .body(BinaryData.fromBytes(data2))
+                .position(appendResult1.nextAppendPosition())
+                .initHashCRC64(Long.parseLong(appendResult1.hashCrc64ecma()))
+                .build());
+        Assert.assertNotNull(appendResult2);
+        Assert.assertEquals(200, appendResult2.statusCode());
+        Assert.assertEquals(content.length, appendResult2.nextAppendPosition().longValue());
+
+        // compare
+        HeadObjectResult headResult1 = client.headObject(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName)
+                .build());
+
+        HeadObjectResult headResult2 = client.headObject(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(appendObjectName)
+                .build());
+        assertThat(headResult1.hashCrc64ecma()).isNotNull();
+        Assert.assertEquals(headResult1.hashCrc64ecma(), headResult2.hashCrc64ecma());
+        assertThat(headResult2.objectType()).isEqualTo("Appendable");
+
+        // set invalid initHashCRC64, must fail
+        try {
+            client.appendObject(AppendObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(appendObjectName)
+                    .body(BinaryData.fromString("hello world"))
+                    .position(appendResult2.nextAppendPosition())
+                    .initHashCRC64(1234) // invalid crc
+                    .build());
+            Assert.assertEquals(200, appendResult2.statusCode());
+            fail("should not here");
+        } catch (Exception e) {
+            InconsistentException crce = findCause(e, InconsistentException.class);
+            assertThat(crce).isNotNull();
+            assertThat(crce.clientCRC()).isNotNull();
+            assertThat(crce.serverCRC()).isEqualTo("8653605903389908579");
+        }
+    }
+
+    @Test
+    public void testObjectOperations_disableCrc() throws Exception {
+
+        CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
+
+        try (OSSClient client = OSSClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .disableUploadCRC64Check(true)
+                .credentialsProvider(provider)
+                .build()) {
+
+            String objectName = genObjectName();
+            byte[] content = TestUtils.generateTestData(200 * 1024 + 123); // 200kb + 123 bytes
+
+            // put object
+            PutObjectResult putResult = client.putObject(PutObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(objectName)
+                    .body(new ByteArrayBinaryData(content))
+                    .build());
+            Assert.assertNotNull(putResult);
+            Assert.assertEquals(200, putResult.statusCode());
+
+            // append object
+            String appendObjectName = genObjectName() + "-append";
+
+            byte[] data1 = new byte[100 * 1024 + 12]; // 100kb + 12
+            System.arraycopy(content, 0, data1, 0, data1.length);
+            AppendObjectResult appendResult1 = client.appendObject(AppendObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(appendObjectName)
+                    .body(BinaryData.fromBytes(data1))
+                    .position(0L)
+                    .initHashCRC64(134) // invalid crc
+                    .build());
+            Assert.assertNotNull(appendResult1);
+            Assert.assertEquals(200, appendResult1.statusCode());
+            Assert.assertEquals(data1.length, appendResult1.nextAppendPosition().longValue());
+
+            // append
+            byte[] data2 = new byte[content.length - data1.length]; // Remaining data
+            System.arraycopy(content, data1.length, data2, 0, data2.length);
+            AppendObjectResult appendResult2 = client.appendObject(AppendObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(appendObjectName)
+                    .body(BinaryData.fromBytes(data2))
+                    .position(appendResult1.nextAppendPosition())
+                    .initHashCRC64(134) // invalid crc
+                    .build());
+            Assert.assertNotNull(appendResult2);
+            Assert.assertEquals(200, appendResult2.statusCode());
+            Assert.assertEquals(content.length, appendResult2.nextAppendPosition().longValue());
+
+            // compare
+            HeadObjectResult headResult1 = client.headObject(HeadObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(objectName)
+                    .build());
+
+            HeadObjectResult headResult2 = client.headObject(HeadObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(appendObjectName)
+                    .build());
+            assertThat(headResult1.hashCrc64ecma()).isNotNull();
+            Assert.assertEquals(headResult1.hashCrc64ecma(), headResult2.hashCrc64ecma());
+            assertThat(headResult2.objectType()).isEqualTo("Appendable");
         }
     }
 

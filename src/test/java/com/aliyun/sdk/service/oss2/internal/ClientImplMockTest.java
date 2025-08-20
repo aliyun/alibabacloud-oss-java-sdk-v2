@@ -25,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -2355,23 +2356,6 @@ public class ClientImplMockTest {
             assertThat(output.headers()).isNotEmpty();
             assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo("2004446556369382352");
 
-            // not set observer async
-            mockHandler.clear();
-            assertThat(mockHandler.requests).isNull();
-            mockHandler.responses = new ArrayList<>();
-            mockHandler.responses.add(ResponseMessage.newBuilder()
-                    .statusCode(200)
-                    .body(new StringBinaryData(""))
-                    .build());
-
-            output = client.executeAsync(input, OperationOptions.defaults()).get();
-            assertThat(mockHandler.requests).hasSize(1);
-            assertThat(mockHandler.lastRequest.body()).isInstanceOf(StringBinaryData.class);
-            assertThat(output.statusCode()).isEqualTo(200);
-            assertThat(output.status()).isEqualTo("");
-            assertThat(output.headers()).isNotEmpty();
-            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo("2004446556369382352");
-
             // empty observer
             AttributeMap opMetadata = AttributeMap.empty();
             opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.emptyList());
@@ -2394,23 +2378,6 @@ public class ClientImplMockTest {
                     .build();
 
             output = client.execute(input, OperationOptions.defaults());
-            assertThat(mockHandler.requests).hasSize(1);
-            assertThat(mockHandler.lastRequest.body()).isInstanceOf(StringBinaryData.class);
-            assertThat(output.statusCode()).isEqualTo(200);
-            assertThat(output.status()).isEqualTo("");
-            assertThat(output.headers()).isNotEmpty();
-            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo("2004446556369382352");
-
-            // empty observer async
-            mockHandler.clear();
-            assertThat(mockHandler.requests).isNull();
-            mockHandler.responses = new ArrayList<>();
-            mockHandler.responses.add(ResponseMessage.newBuilder()
-                    .statusCode(200)
-                    .body(new StringBinaryData(""))
-                    .build());
-
-            output = client.executeAsync(input, OperationOptions.defaults()).get();
             assertThat(mockHandler.requests).hasSize(1);
             assertThat(mockHandler.lastRequest.body()).isInstanceOf(StringBinaryData.class);
             assertThat(output.statusCode()).isEqualTo(200);
@@ -2452,7 +2419,7 @@ public class ClientImplMockTest {
             String clientCRC = Long.toUnsignedString(observer.getChecksum().getValue());
             assertThat(clientCRC).isEqualTo("2004446556369382352");
 
-            // set crc observer async
+            // set crc observer
             observer.reset();
             assertThat(observer.getChecksum().getValue()).isEqualTo(0L);
             mockHandler.clear();
@@ -2528,29 +2495,6 @@ public class ClientImplMockTest {
             String clientCRC = Long.toUnsignedString(observer.getChecksum().getValue());
             assertThat(clientCRC).isEqualTo("2004446556369382352");
 
-            // async
-            mockHandler.clear();
-            assertThat(mockHandler.requests).isNull();
-            mockHandler.responses = new ArrayList<>();
-            mockHandler.responses.add(ResponseMessage.newBuilder()
-                    .statusCode(500)
-                    .body(new StringBinaryData(""))
-                    .build());
-            mockHandler.responses.add(ResponseMessage.newBuilder()
-                    .statusCode(200)
-                    .body(new StringBinaryData(""))
-                    .build());
-
-            output = client.executeAsync(input, OperationOptions.defaults()).get();
-            assertThat(mockHandler.requests).hasSize(2);
-            assertThat(mockHandler.lastRequest.body()).isInstanceOf(InputStreamBinaryData.class);
-            assertThat(((InputStreamBinaryData) mockHandler.lastRequest.body()).unwrap()).isInstanceOf(ObservableInputStream.class);
-            assertThat(output.statusCode()).isEqualTo(200);
-            assertThat(output.status()).isEqualTo("");
-            assertThat(output.headers()).isNotEmpty();
-            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo("2004446556369382352");
-            clientCRC = Long.toUnsignedString(observer.getChecksum().getValue());
-            assertThat(clientCRC).isEqualTo("2004446556369382352");
         }
     }
 
@@ -2601,37 +2545,6 @@ public class ClientImplMockTest {
                     .build();
 
             OperationOutput output = client.execute(input, OperationOptions.defaults());
-            assertThat(mockHandler.requests).hasSize(1);
-            assertThat(mockHandler.lastRequest.body()).isInstanceOf(InputStreamBinaryData.class);
-            assertThat(((InputStreamBinaryData) mockHandler.lastRequest.body()).unwrap()).isInstanceOf(ObservableInputStream.class);
-            assertThat(output.statusCode()).isEqualTo(200);
-            assertThat(output.status()).isEqualTo("");
-            assertThat(output.headers()).isNotEmpty();
-            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo(patCrc);
-            assertThat(crcObserver.getChecksum().getValue()).isNotEqualTo(0);
-            assertThat(Long.toUnsignedString(crcObserver.getChecksum().getValue())).isEqualTo(patCrc);
-            assertThat(progListener.total).isEqualTo(content.length);
-            assertThat(progListener.incTotal).isEqualTo(content.length);
-            assertThat(progListener.transferred).isEqualTo(content.length);
-            assertTrue(progListener.finished);
-
-            // set observer async
-            mockHandler.clear();
-            assertThat(mockHandler.requests).isNull();
-            mockHandler.responses = new ArrayList<>();
-            mockHandler.responses.add(ResponseMessage.newBuilder()
-                    .statusCode(200)
-                    .body(new StringBinaryData(""))
-                    .build());
-
-            crcObserver = new CRC64Observer();
-            // progress
-            progListener = new MockProgressListener();
-            progObserver = new ProgressObserver(progListener, (long) content.length);
-            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Arrays.asList(crcObserver, progObserver));
-
-            input = input.toBuilder().opMetadata(opMetadata).build();
-            output = client.executeAsync(input, OperationOptions.defaults()).get();
             assertThat(mockHandler.requests).hasSize(1);
             assertThat(mockHandler.lastRequest.body()).isInstanceOf(InputStreamBinaryData.class);
             assertThat(((InputStreamBinaryData) mockHandler.lastRequest.body()).unwrap()).isInstanceOf(ObservableInputStream.class);
@@ -2706,39 +2619,6 @@ public class ClientImplMockTest {
             //assertThat(progListener.incTotal).isEqualTo((long)content.length);
             assertThat(progListener.transferred).isEqualTo(content.length);
             assertTrue(progListener.finished);
-
-            // async
-            mockHandler.clear();
-            assertThat(mockHandler.requests).isNull();
-            mockHandler.responses = new ArrayList<>();
-            mockHandler.responses.add(ResponseMessage.newBuilder()
-                    .statusCode(500)
-                    .body(new StringBinaryData(""))
-                    .build());
-            mockHandler.responses.add(ResponseMessage.newBuilder()
-                    .statusCode(200)
-                    .body(new StringBinaryData(""))
-                    .build());
-
-            // progress
-            progListener = new MockProgressListener();
-            progObserver = new ProgressObserver(progListener, (long) content.length);
-            assertThat(progListener.total).isEqualTo(0L);
-            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(progObserver));
-            input = input.toBuilder().opMetadata(opMetadata).build();
-
-            output = client.executeAsync(input, OperationOptions.defaults()).get();
-            assertThat(mockHandler.requests).hasSize(2);
-            assertThat(mockHandler.lastRequest.body()).isInstanceOf(InputStreamBinaryData.class);
-            assertThat(((InputStreamBinaryData) mockHandler.lastRequest.body()).unwrap()).isInstanceOf(ObservableInputStream.class);
-            assertThat(output.statusCode()).isEqualTo(200);
-            assertThat(output.status()).isEqualTo("");
-            assertThat(output.headers()).isNotEmpty();
-            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo(patCrc);
-            assertThat(progListener.total).isEqualTo(content.length);
-            //assertThat(progListener.incTotal).isEqualTo((long)content.length);
-            assertThat(progListener.transferred).isEqualTo(content.length);
-            assertTrue(progListener.finished);
         }
     }
 
@@ -2787,42 +2667,6 @@ public class ClientImplMockTest {
                     .build();
 
             OperationOutput output = client.execute(input, OperationOptions.defaults());
-            assertThat(mockHandler.requests).hasSize(1);
-            assertThat(mockHandler.lastRequest.body()).isInstanceOf(InputStreamBinaryData.class);
-            assertThat(((InputStreamBinaryData) mockHandler.lastRequest.body()).unwrap()).isInstanceOf(ObservableInputStream.class);
-            assertThat(output.statusCode()).isEqualTo(200);
-            assertThat(output.status()).isEqualTo("");
-            assertThat(output.headers()).isNotEmpty();
-            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo(patCrc);
-            assertTrue(crcHandler.accepted);
-
-            // async
-            opMetadata = AttributeMap.empty();
-            crcObserver = new CRC64Observer();
-            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(crcObserver));
-            crcHandler = new MockCRC64ResponseChecker(crcObserver.getChecksum());
-            opMetadata.put(AttributeKey.RESPONSE_HANDLER, Collections.singletonList(crcHandler));
-            assertFalse(crcHandler.accepted);
-
-            mockHandler.clear();
-            assertThat(mockHandler.requests).isNull();
-            mockHandler.responses = new ArrayList<>();
-            mockHandler.responses.add(ResponseMessage.newBuilder()
-                    .statusCode(200)
-                    .body(new StringBinaryData(""))
-                    .build());
-
-            input = OperationInput.newBuilder()
-                    .opName("PutObject")
-                    .method("PUT")
-                    .headers(headers)
-                    .bucket("bucket")
-                    .key("key")
-                    .body(new ByteArrayBinaryData(content))
-                    .opMetadata(opMetadata)
-                    .build();
-
-            output = client.executeAsync(input, OperationOptions.defaults()).get();
             assertThat(mockHandler.requests).hasSize(1);
             assertThat(mockHandler.lastRequest.body()).isInstanceOf(InputStreamBinaryData.class);
             assertThat(((InputStreamBinaryData) mockHandler.lastRequest.body()).unwrap()).isInstanceOf(ObservableInputStream.class);
@@ -2887,50 +2731,6 @@ public class ClientImplMockTest {
 
             try {
                 client.execute(input, OperationOptions.defaults());
-            } catch (Exception e) {
-                assertThat(mockHandler.requests).hasSize(1);
-                InconsistentException crcErr = findCause(e, InconsistentException.class);
-                // "crc is inconsistent, client crc:%s, server crc:%s, requestId: %s."
-                assertThat(e).hasMessageContaining("crc is inconsistent, ");
-                assertThat(e).hasMessageContaining("client crc:" + patCrc);
-                assertThat(e).hasMessageContaining("server crc:1234567");
-                assertThat(e).hasMessageContaining("requestId:request-id-123");
-                assertNotNull(crcErr);
-                assertThat(crcErr.clientCRC()).isEqualTo(patCrc);
-                assertThat(crcErr.serverCRC()).isEqualTo("1234567");
-                assertThat(crcErr.requestId()).isEqualTo("request-id-123");
-                assertThat(crcErr.headers()).isNotEmpty();
-            }
-
-            // async
-            opMetadata = AttributeMap.empty();
-            crcObserver = new CRC64Observer();
-            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(crcObserver));
-            crcHandler = new MockCRC64ResponseChecker(crcObserver.getChecksum());
-            opMetadata.put(AttributeKey.RESPONSE_HANDLER, Collections.singletonList(crcHandler));
-            assertFalse(crcHandler.accepted);
-
-            mockHandler.clear();
-            assertThat(mockHandler.requests).isNull();
-            mockHandler.responses = new ArrayList<>();
-            mockHandler.responses.add(ResponseMessage.newBuilder()
-                    .statusCode(200)
-                    .headers(respHeaders)
-                    .body(new StringBinaryData(""))
-                    .build());
-
-            input = OperationInput.newBuilder()
-                    .opName("PutObject")
-                    .method("PUT")
-                    .headers(headers)
-                    .bucket("bucket")
-                    .key("key")
-                    .body(new ByteArrayBinaryData(content))
-                    .opMetadata(opMetadata)
-                    .build();
-
-            try {
-                client.executeAsync(input, OperationOptions.defaults()).get();
             } catch (Exception e) {
                 assertThat(mockHandler.requests).hasSize(1);
                 InconsistentException crcErr = findCause(e, InconsistentException.class);
@@ -3012,15 +2812,441 @@ public class ClientImplMockTest {
             assertThat(output.headers()).isNotEmpty();
             assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo(patCrc);
             assertTrue(crcHandler.accepted);
+        }
+    }
 
-            // async
+
+    @Test
+    public void testUploadObserverNormal_useCRCObserver_async() throws Exception {
+        MockHttpClientPutObject mockHandler = new MockHttpClientPutObject();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            OperationInput input;
+            OperationOutput output;
+
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "text/plain");
+
+            // not set observer
+            mockHandler.clear();
+            assertThat(mockHandler.requests).isNull();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .headers(headers)
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new StringBinaryData("Hello, OSS!"))
+                    .build();
+
+            output = client.executeAsync(input, OperationOptions.defaults()).get();
+            assertThat(mockHandler.requests).hasSize(1);
+            assertThat(mockHandler.lastRequest.body()).isInstanceOf(StringBinaryData.class);
+            assertThat(output.statusCode()).isEqualTo(200);
+            assertThat(output.status()).isEqualTo("");
+            assertThat(output.headers()).isNotEmpty();
+            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo("2004446556369382352");
+
+            // empty observer
+            AttributeMap opMetadata = AttributeMap.empty();
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.emptyList());
+
+            mockHandler.clear();
+            assertThat(mockHandler.requests).isNull();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            output = client.executeAsync(input, OperationOptions.defaults()).get();
+            assertThat(mockHandler.requests).hasSize(1);
+            assertThat(mockHandler.lastRequest.body()).isInstanceOf(StringBinaryData.class);
+            assertThat(output.statusCode()).isEqualTo(200);
+            assertThat(output.status()).isEqualTo("");
+            assertThat(output.headers()).isNotEmpty();
+            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo("2004446556369382352");
+
+            // set crc observer
+            mockHandler.clear();
+            assertThat(mockHandler.requests).isNull();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
             opMetadata = AttributeMap.empty();
-            crcObserver = new CRC64Observer();
+            CRC64Observer observer = new CRC64Observer();
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(observer));
+
+            input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .headers(headers)
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new StringBinaryData("Hello, OSS!"))
+                    .opMetadata(opMetadata)
+                    .build();
+
+            output = client.executeAsync(input, OperationOptions.defaults()).get();
+            assertThat(mockHandler.requests).hasSize(1);
+            assertThat(mockHandler.lastRequest.body()).isInstanceOf(StringBinaryData.class);
+            assertThat(output.statusCode()).isEqualTo(200);
+            assertThat(output.status()).isEqualTo("");
+            assertThat(output.headers()).isNotEmpty();
+            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo("2004446556369382352");
+            String clientCRC = Long.toUnsignedString(observer.getChecksum().getValue());
+            assertThat(clientCRC).isEqualTo("2004446556369382352");
+        }
+    }
+
+    @Test
+    public void testUploadObserverRetryable_useCRCObserver_async() throws Exception {
+        MockHttpClientPutObject mockHandler = new MockHttpClientPutObject();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "text/plain");
+
+            // crc observer
+            AttributeMap opMetadata = AttributeMap.empty();
+            CRC64Observer observer = new CRC64Observer();
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(observer));
+
+            // set observer
+            mockHandler.clear();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(500)
+                    .body(new StringBinaryData(""))
+                    .build());
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .headers(headers)
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new StringBinaryData("Hello, OSS!"))
+                    .opMetadata(opMetadata)
+                    .build();
+
+            OperationOutput output = client.executeAsync(input, OperationOptions.defaults()).get();
+            assertThat(mockHandler.requests).hasSize(2);
+            assertThat(mockHandler.lastRequest.body()).isInstanceOf(StringBinaryData.class);
+            assertThat(output.statusCode()).isEqualTo(200);
+            assertThat(output.status()).isEqualTo("");
+            assertThat(output.headers()).isNotEmpty();
+            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo("2004446556369382352");
+            String clientCRC = Long.toUnsignedString(observer.getChecksum().getValue());
+            assertThat(clientCRC).isEqualTo("2004446556369382352");
+        }
+    }
+
+    @Test
+    public void testUploadObserver_useMultiObserver_async() throws Exception {
+        MockHttpClientPutObject mockHandler = new MockHttpClientPutObject();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "text/plain");
+
+            AttributeMap opMetadata = AttributeMap.empty();
+
+            // content
+            byte[] content = TestUtils.generateTestData(100 * 1024 + 123);
+            String patCrc = Long.toUnsignedString((new CRC64(content, content.length)).getValue());
+
+            // crc observer
+            CRC64Observer crcObserver = new CRC64Observer();
+            // progress
+            MockProgressListener progListener = new MockProgressListener();
+            ProgressObserver progObserver = new ProgressObserver(progListener, (long) content.length);
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Arrays.asList(crcObserver, progObserver));
+
+            // set observer
+            mockHandler.clear();
+            assertThat(mockHandler.requests).isNull();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .headers(headers)
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new ByteArrayBinaryData(content))
+                    .opMetadata(opMetadata)
+                    .build();
+
+            OperationOutput output = client.executeAsync(input, OperationOptions.defaults()).get();
+            assertThat(mockHandler.requests).hasSize(1);
+            assertThat(mockHandler.lastRequest.body()).isInstanceOf(ByteArrayBinaryData.class);
+            assertThat(output.statusCode()).isEqualTo(200);
+            assertThat(output.status()).isEqualTo("");
+            assertThat(output.headers()).isNotEmpty();
+            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo(patCrc);
+            assertThat(crcObserver.getChecksum().getValue()).isNotEqualTo(0);
+            assertThat(Long.toUnsignedString(crcObserver.getChecksum().getValue())).isEqualTo(patCrc);
+            assertThat(progListener.total).isEqualTo(content.length);
+            assertThat(progListener.incTotal).isEqualTo(content.length);
+            assertThat(progListener.transferred).isEqualTo(content.length);
+            assertTrue(progListener.finished);
+        }
+    }
+
+    @Test
+    public void testUploadObserverRetryable_useProgObserver_async() throws Exception {
+        MockHttpClientPutObject mockHandler = new MockHttpClientPutObject();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "text/plain");
+
+            // content
+            byte[] content = TestUtils.generateTestData(100 * 1024 + 123);
+            String patCrc = Long.toUnsignedString((new CRC64(content, content.length)).getValue());
+
+            // prog observer
+            AttributeMap opMetadata = AttributeMap.empty();
+            MockProgressListener progListener = new MockProgressListener();
+            ProgressObserver progObserver = new ProgressObserver(progListener, (long) content.length);
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(progObserver));
+
+            // set observer
+            mockHandler.clear();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(500)
+                    .body(new StringBinaryData(""))
+                    .build());
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .headers(headers)
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new ByteArrayBinaryData(content))
+                    .opMetadata(opMetadata)
+                    .build();
+
+            OperationOutput output = client.executeAsync(input, OperationOptions.defaults()).get();
+            assertThat(mockHandler.requests).hasSize(2);
+            assertThat(mockHandler.lastRequest.body()).isInstanceOf(ByteArrayBinaryData.class);
+            assertThat(output.statusCode()).isEqualTo(200);
+            assertThat(output.status()).isEqualTo("");
+            assertThat(output.headers()).isNotEmpty();
+            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo(patCrc);
+            assertThat(progListener.total).isEqualTo(content.length);
+            //assertThat(progListener.incTotal).isEqualTo((long)content.length);
+            assertThat(progListener.transferred).isEqualTo(content.length);
+            assertTrue(progListener.finished);
+
+        }
+    }
+
+    @Test
+    public void testUploadDataAndCheckResponseCrc_async() throws Exception {
+        MockHttpClientPutObject mockHandler = new MockHttpClientPutObject();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "text/plain");
+
+            // content
+            byte[] content = TestUtils.generateTestData(100 * 1024 + 123);
+            String patCrc = Long.toUnsignedString((new CRC64(content, content.length)).getValue());
+
+            // crc observer & response handler
+            AttributeMap opMetadata = AttributeMap.empty();
+            CRC64Observer crcObserver = new CRC64Observer();
             opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(crcObserver));
-            crcHandler = new MockCRC64ResponseChecker(crcObserver.getChecksum());
+            MockCRC64ResponseChecker crcHandler = new MockCRC64ResponseChecker(crcObserver.getChecksum());
             opMetadata.put(AttributeKey.RESPONSE_HANDLER, Collections.singletonList(crcHandler));
             assertFalse(crcHandler.accepted);
 
+            // sync
+            mockHandler.clear();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .headers(headers)
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new ByteArrayBinaryData(content))
+                    .opMetadata(opMetadata)
+                    .build();
+
+            OperationOutput output = client.executeAsync(input, OperationOptions.defaults()).get();
+            assertThat(mockHandler.requests).hasSize(1);
+            assertThat(mockHandler.lastRequest.body()).isInstanceOf(ByteArrayBinaryData.class);
+            assertThat(output.statusCode()).isEqualTo(200);
+            assertThat(output.status()).isEqualTo("");
+            assertThat(output.headers()).isNotEmpty();
+            assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo(patCrc);
+            assertTrue(crcHandler.accepted);
+        }
+    }
+
+    @Test
+    public void testUploadDataAndCheckResponseCrc_throwInconsistentException_async() throws Exception {
+        MockHttpClientPutObject mockHandler = new MockHttpClientPutObject();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .retryMaxAttempts(1)
+                .httpClient(mockHandler)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "text/plain");
+
+            // content
+            byte[] content = TestUtils.generateTestData(100 * 1024 + 123);
+            String patCrc = Long.toUnsignedString((new CRC64(content, content.length)).getValue());
+
+            // crc observer & response handler
+            AttributeMap opMetadata = AttributeMap.empty();
+            CRC64Observer crcObserver = new CRC64Observer();
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(crcObserver));
+            MockCRC64ResponseChecker crcHandler = new MockCRC64ResponseChecker(crcObserver.getChecksum());
+            opMetadata.put(AttributeKey.RESPONSE_HANDLER, Collections.singletonList(crcHandler));
+            assertFalse(crcHandler.accepted);
+
+            // set invalid "x-oss-hash-crc64ecma"
+            Map<String, String> respHeaders = MapUtils.caseInsensitiveMap();
+            respHeaders.put("x-oss-hash-crc64ecma", "1234567");
+            respHeaders.put("x-oss-request-id", "request-id-123");
+
+            // sync
+            mockHandler.clear();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .headers(respHeaders)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .headers(headers)
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new ByteArrayBinaryData(content))
+                    .opMetadata(opMetadata)
+                    .build();
+
+            try {
+                client.executeAsync(input, OperationOptions.defaults()).get();
+            } catch (Exception e) {
+                assertThat(mockHandler.requests).hasSize(1);
+                InconsistentException crcErr = findCause(e, InconsistentException.class);
+                // "crc is inconsistent, client crc:%s, server crc:%s, requestId: %s."
+                assertThat(e).hasMessageContaining("crc is inconsistent, ");
+                assertThat(e).hasMessageContaining("client crc:" + patCrc);
+                assertThat(e).hasMessageContaining("server crc:1234567");
+                assertThat(e).hasMessageContaining("requestId:request-id-123");
+                assertNotNull(crcErr);
+                assertThat(crcErr.clientCRC()).isEqualTo(patCrc);
+                assertThat(crcErr.serverCRC()).isEqualTo("1234567");
+                assertThat(crcErr.requestId()).isEqualTo("request-id-123");
+                assertThat(crcErr.headers()).isNotEmpty();
+            }
+        }
+    }
+
+    @Test
+    public void testUploadDataAndCheckResponseCrc_retryInconsistentException_async() throws Exception {
+        MockHttpClientPutObject mockHandler = new MockHttpClientPutObject();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "text/plain");
+
+            // content
+            byte[] content = TestUtils.generateTestData(100 * 1024 + 123);
+            String patCrc = Long.toUnsignedString((new CRC64(content, content.length)).getValue());
+
+            // set invalid "x-oss-hash-crc64ecma"
+            Map<String, String> respHeaders = MapUtils.caseInsensitiveMap();
+            respHeaders.put("x-oss-hash-crc64ecma", "1234567");
+            respHeaders.put("x-oss-request-id", "request-id-123");
+
+            // crc observer & response handler
+            AttributeMap opMetadata = AttributeMap.empty();
+            CRC64Observer crcObserver = new CRC64Observer();
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(crcObserver));
+            MockCRC64ResponseChecker crcHandler = new MockCRC64ResponseChecker(crcObserver.getChecksum());
+            opMetadata.put(AttributeKey.RESPONSE_HANDLER, Collections.singletonList(crcHandler));
+            assertFalse(crcHandler.accepted);
+
+            // sync
             mockHandler.clear();
             assertThat(mockHandler.requests).isNull();
             mockHandler.responses = new ArrayList<>();
@@ -3034,7 +3260,7 @@ public class ClientImplMockTest {
                     .body(new StringBinaryData(""))
                     .build());
 
-            input = OperationInput.newBuilder()
+            OperationInput input = OperationInput.newBuilder()
                     .opName("PutObject")
                     .method("PUT")
                     .headers(headers)
@@ -3044,10 +3270,9 @@ public class ClientImplMockTest {
                     .opMetadata(opMetadata)
                     .build();
 
-            output = client.executeAsync(input, OperationOptions.defaults()).get();
+            OperationOutput output = client.executeAsync(input, OperationOptions.defaults()).get();
             assertThat(mockHandler.requests).hasSize(2);
-            assertThat(mockHandler.lastRequest.body()).isInstanceOf(InputStreamBinaryData.class);
-            assertThat(((InputStreamBinaryData) mockHandler.lastRequest.body()).unwrap()).isInstanceOf(ObservableInputStream.class);
+            assertThat(mockHandler.lastRequest.body()).isInstanceOf(ByteArrayBinaryData.class);
             assertThat(output.statusCode()).isEqualTo(200);
             assertThat(output.status()).isEqualTo("");
             assertThat(output.headers()).isNotEmpty();
@@ -3586,7 +3811,7 @@ public class ClientImplMockTest {
         public CompletableFuture<ResponseMessage> sendAsync(RequestMessage request, RequestContext context) {
             saveRequest(request);
             CompletableFuture<ResponseMessage> future = new CompletableFuture<ResponseMessage>();
-            future.complete(popResponse());
+            future.complete(popResponseAsync(context));
             return future;
         }
 
@@ -3628,6 +3853,40 @@ public class ClientImplMockTest {
 
             return resp;
         }
+
+        private ResponseMessage popResponseAsync(RequestContext context) {
+            ResponseMessage resp = responses.remove(0);
+
+            // consume request body
+            ByteBuffer byteBuffer = lastRequest.body().toByteBuffer();
+
+            //
+            if (context.containsKey(RequestContext.Key.UPLOAD_OBSERVER_CHANNEL)) {
+                List<ObservableByteChannel> channels = context.get(RequestContext.Key.UPLOAD_OBSERVER_CHANNEL);
+                for (ObservableByteChannel channel: channels) {
+                    ByteBuffer dup = byteBuffer.duplicate();
+                    try {
+                        channel.write(dup);
+                        channel.finished();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            if (resp.statusCode() == 200) {
+                // update crc64
+                Map<String, String> headers = Optional.ofNullable(resp.headers()).orElse(MapUtils.caseInsensitiveMap());
+                byte[] bs = new byte[byteBuffer.remaining()];
+                byteBuffer.get(bs);
+                CRC64 crc = new CRC64(bs, bs.length);
+                headers.putIfAbsent("x-oss-hash-crc64ecma", Long.toUnsignedString(crc.getValue()));
+                resp = resp.toBuilder().headers(headers).build();
+            }
+
+            return resp;
+        }
+
 
         public void clear() {
             lastRequest = null;

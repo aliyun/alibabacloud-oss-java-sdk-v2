@@ -20,7 +20,8 @@ public final class Defaults {
 
     // defaults for feature flags
     public static final int FEATURE_FLAGS = FeatureFlagsType.combine(
-            FeatureFlagsType.AUTO_DETECT_MIMETYPE
+            FeatureFlagsType.AUTO_DETECT_MIMETYPE,
+            FeatureFlagsType.ENABLE_CRC64_CHECK_UPLOAD
     );
 
     private Defaults() {

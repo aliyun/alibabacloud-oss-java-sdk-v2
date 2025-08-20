@@ -18,6 +18,7 @@ public final class AppendObjectRequest extends RequestModel {
     private final String key;
     private final BinaryData body;
     private final ProgressListener progressListener;
+    private final Long initHashCRC64;
 
     private AppendObjectRequest(Builder builder) {
         super(builder);
@@ -25,6 +26,7 @@ public final class AppendObjectRequest extends RequestModel {
         this.key = builder.key;
         this.body = builder.body;
         this.progressListener = builder.progressListener;
+        this.initHashCRC64 = builder.initHashCRC64;
     }
 
     public static Builder newBuilder() {
@@ -196,6 +198,13 @@ public final class AppendObjectRequest extends RequestModel {
     }
 
     /**
+     * Gets the initial value of CRC64. If not set, the crc check is ignored.
+     */
+    public Long initHashCRC64 () {
+        return initHashCRC64;
+    }
+
+    /**
      * The request body.
      */
     public BinaryData body() {
@@ -211,6 +220,7 @@ public final class AppendObjectRequest extends RequestModel {
         private String key;
         private BinaryData body;
         private ProgressListener progressListener;
+        private Long initHashCRC64;
 
         private Builder() {
             super();
@@ -222,6 +232,7 @@ public final class AppendObjectRequest extends RequestModel {
             this.key = request.key;
             this.body = request.body;
             this.progressListener = request.progressListener;
+            this.initHashCRC64 = request.initHashCRC64;
         }
 
         /**
@@ -419,6 +430,14 @@ public final class AppendObjectRequest extends RequestModel {
         public Builder body(BinaryData value) {
             requireNonNull(value);
             this.body = value;
+            return this;
+        }
+
+        /**
+         * Specify the initial value of CRC64. If not set, the crc check is ignored.
+         */
+        public Builder initHashCRC64(long value) {
+            this.initHashCRC64 = value;
             return this;
         }
 

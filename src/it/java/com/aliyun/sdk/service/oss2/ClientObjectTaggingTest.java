@@ -113,17 +113,29 @@ public class ClientObjectTaggingTest extends TestBase {
     }
 
     //TODO
-    @Ignore
     @Test
     public void testObjectTaggingWithVersionId() {
         OSSClient client = getDefaultClient();
+        String bucketNameVersion = bucketName + "-versions";
         String objectName = genObjectName() + "-tagging-version-test";
+
+        // Test putBucketVersioning with Enabled status
+        client.putBucket(PutBucketRequest.newBuilder()
+                .bucket(bucketNameVersion)
+                .build());
+
+        client.putBucketVersioning(PutBucketVersioningRequest.newBuilder()
+                .bucket(bucketNameVersion)
+                .versioningConfiguration(VersioningConfiguration.newBuilder()
+                        .status("Enabled")
+                        .build())
+                .build());
 
         // 1. Create an object first
         byte[] content = TestUtils.generateTestData(1024);
         PutObjectResult putResult = client.putObject(
                 PutObjectRequest.newBuilder()
-                        .bucket(bucketName)
+                        .bucket(bucketNameVersion)
                         .key(objectName)
                         .body(new ByteArrayBinaryData(content))
                         .build());
@@ -140,7 +152,7 @@ public class ClientObjectTaggingTest extends TestBase {
 
         PutObjectTaggingResult putTaggingResult = client.putObjectTagging(
                 PutObjectTaggingRequest.newBuilder()
-                        .bucket(bucketName)
+                        .bucket(bucketNameVersion)
                         .key(objectName)
                         .versionId(versionId)
                         .tagging(tagging)
@@ -151,7 +163,7 @@ public class ClientObjectTaggingTest extends TestBase {
         // 3. Get object tagging with version id
         GetObjectTaggingResult getTaggingResult = client.getObjectTagging(
                 GetObjectTaggingRequest.newBuilder()
-                        .bucket(bucketName)
+                        .bucket(bucketNameVersion)
                         .key(objectName)
                         .versionId(versionId)
                         .build());
@@ -169,20 +181,11 @@ public class ClientObjectTaggingTest extends TestBase {
         // 4. Delete object tagging with version id
         DeleteObjectTaggingResult deleteTaggingResult = client.deleteObjectTagging(
                 DeleteObjectTaggingRequest.newBuilder()
-                        .bucket(bucketName)
+                        .bucket(bucketNameVersion)
                         .key(objectName)
                         .versionId(versionId)
                         .build());
         Assert.assertNotNull(deleteTaggingResult);
         Assert.assertEquals(204, deleteTaggingResult.statusCode());
-
-        // 5. Clean up - delete object
-        DeleteObjectResult deleteResult = client.deleteObject(
-                DeleteObjectRequest.newBuilder()
-                        .bucket(bucketName)
-                        .key(objectName)
-                        .build());
-        Assert.assertNotNull(deleteResult);
-        Assert.assertEquals(204, deleteResult.statusCode());
     }
 }

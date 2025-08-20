@@ -20,6 +20,7 @@ import com.aliyun.sdk.service.oss2.transport.apache5client.Apache5HttpClient;
 import com.aliyun.sdk.service.oss2.transport.apache5client.Apache5MixedHttpClient;
 import com.aliyun.sdk.service.oss2.types.AddressStyleType;
 import com.aliyun.sdk.service.oss2.types.AuthMethodType;
+import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
 import com.aliyun.sdk.service.oss2.utils.*;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -513,7 +514,11 @@ public class ClientImpl implements AutoCloseable {
     }
 
     private int resolveFeatureFlags(ClientConfiguration config) {
-        return Defaults.FEATURE_FLAGS;
+        int flags = Defaults.FEATURE_FLAGS;
+        if (config.DisableUploadCRC64Check().orElse(false)) {
+            flags = ~FeatureFlagsType.ENABLE_CRC64_CHECK_UPLOAD.getValue() & flags;
+        }
+        return flags;
     }
 
     public static class InnerOptions {
