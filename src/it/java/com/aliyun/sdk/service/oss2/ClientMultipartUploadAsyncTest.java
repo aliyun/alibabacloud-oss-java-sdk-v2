@@ -4,6 +4,7 @@ import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.internal.TestUtils;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.progress.ProgressListener;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transport.ByteArrayBinaryData;
 import org.junit.Assert;
@@ -255,12 +256,7 @@ public class ClientMultipartUploadAsyncTest extends TestBase {
                         .build()).get();
         Assert.assertNotNull(listAfterAbortResult);
         Assert.assertEquals(200, listAfterAbortResult.statusCode());
-        found = false;
-        if (listAfterAbortResult.uploads() == null) {
-            found = false;
-        }
-
-        Assert.assertFalse("Upload should not be in the list after abort", found);
+        assertThat(listAfterAbortResult.uploads()).isEmpty();
     }
 
     @Test
@@ -761,6 +757,209 @@ public class ClientMultipartUploadAsyncTest extends TestBase {
             Assert.assertNotNull(deleteCopyResult);
             Assert.assertEquals(204, deleteCopyResult.statusCode());
 
+        }
+    }
+
+
+    @Test
+    public void testMultipartUploadOperations_withProgress() throws ExecutionException, InterruptedException {
+
+        class MockProgressListener implements ProgressListener {
+            public long total;
+            public long incTotal;
+            public long transferred;
+            public boolean finished;
+            public long allTotal;
+
+            public MockProgressListener() {
+                this.total = 0;
+                this.incTotal = 0;
+                this.transferred = 0;
+                this.finished = false;
+            }
+
+            @Override
+            public void onProgress(long increment, long transferred, long total) {
+                this.incTotal += increment;
+                this.total = total;
+                this.transferred = transferred;
+
+                int rate;
+                if (total > 0) {
+                    rate = (int) (100.0 * ((double) incTotal / (double) allTotal));
+                } else {
+                    rate = 0;
+                }
+                //System.out.println("\r" + rate + "% ");
+            }
+
+            @Override
+            public void onFinish() {
+                this.finished = true;
+            }
+        }
+
+        OSSAsyncClient client = getDefaultAsyncClient();
+        String objectName = genObjectName() + "-multipart.txt";
+        String copyObjectName = genObjectName() + "-multipart-copy.txt";
+
+        byte[] content = TestUtils.generateTestData(200 * 1024 + 123); // 200kb + 123 bytes
+        List<UploadPartResult> uploadParts = new ArrayList<>();
+        MockProgressListener progListener = new MockProgressListener();
+        progListener.allTotal = content.length;
+
+        // 1. Initiate multipart upload
+        InitiateMultipartUploadResult initiateResult = client.initiateMultipartUploadAsync(
+                InitiateMultipartUploadRequest.newBuilder()
+                        .bucket(bucketName)
+                        .key(objectName)
+                        .build()).get();
+        Assert.assertNotNull(initiateResult);
+        Assert.assertEquals(200, initiateResult.statusCode());
+        Assert.assertNotNull(initiateResult.initiateMultipartUpload().uploadId());
+        String uploadId = initiateResult.initiateMultipartUpload().uploadId();
+
+        // 2. Upload parts
+        // Upload part 1
+        byte[] part1Data = new byte[100 * 1024 + 12]; // 100kb + 12
+        System.arraycopy(content, 0, part1Data, 0, part1Data.length);
+        UploadPartResult part1Result = client.uploadPartAsync(
+                UploadPartRequest.newBuilder()
+                        .bucket(bucketName)
+                        .key(objectName)
+                        .uploadId(uploadId)
+                        .partNumber(1L)
+                        .body(new ByteArrayBinaryData(part1Data))
+                        .progressListener(progListener)
+                        .build()).get();
+        Assert.assertNotNull(part1Result);
+        Assert.assertEquals(200, part1Result.statusCode());
+        Assert.assertEquals(part1Data.length, progListener.incTotal);
+        Assert.assertEquals(part1Data.length, progListener.transferred);
+        Assert.assertEquals(part1Data.length, progListener.total);
+        uploadParts.add(part1Result);
+
+
+        // Upload part 2
+        byte[] part2Data = new byte[content.length - part1Data.length]; // Remaining data
+        System.arraycopy(content, part1Data.length, part2Data, 0, part2Data.length);
+        UploadPartResult part2Result = client.uploadPartAsync(
+                UploadPartRequest.newBuilder()
+                        .bucket(bucketName)
+                        .key(objectName)
+                        .uploadId(uploadId)
+                        .partNumber(2L)
+                        .body(new ByteArrayBinaryData(part2Data))
+                        .progressListener(progListener)
+                        .build()).get();
+        Assert.assertNotNull(part2Result);
+        Assert.assertEquals(200, part2Result.statusCode());
+        uploadParts.add(part2Result);
+        Assert.assertEquals(content.length, progListener.incTotal);
+        Assert.assertEquals(part2Data.length, progListener.transferred);
+        Assert.assertEquals(part2Data.length, progListener.total);
+
+        // 3. Complete multipart upload
+        CompleteMultipartUpload completeMultipartUpload = CompleteMultipartUpload.newBuilder()
+                .parts(createCompletedPartList(uploadParts))
+                .build();
+
+        CompleteMultipartUploadResult completeResult = client.completeMultipartUploadAsync(
+                CompleteMultipartUploadRequest.newBuilder()
+                        .bucket(bucketName)
+                        .key(objectName)
+                        .uploadId(uploadId)
+                        .completeMultipartUpload(completeMultipartUpload)
+                        .build()).get();
+        Assert.assertNotNull(completeResult);
+        Assert.assertEquals(200, completeResult.statusCode());
+
+        // 4. Verify uploaded object
+        GetObjectMetaResult metaResult = client.getObjectMetaAsync(
+                GetObjectMetaRequest.newBuilder()
+                        .bucket(bucketName)
+                        .key(objectName)
+                        .build()).get();
+        Assert.assertNotNull(metaResult);
+        Assert.assertEquals(200, metaResult.statusCode());
+        Assert.assertEquals(Long.valueOf(content.length), metaResult.contentLength());
+    }
+
+    @Test
+    public void testMultipartUploadOperations_disableCRC() throws Exception {
+
+        CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
+
+        try (OSSAsyncClient client = OSSAsyncClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .disableUploadCRC64Check(true)
+                .credentialsProvider(provider)
+                .build()) {
+
+            String objectName = genObjectName() + "-multipart.txt";
+            String copyObjectName = genObjectName() + "-multipart-copy.txt";
+
+            byte[] content = TestUtils.generateTestData(200 * 1024 + 123); // 200kb + 123 bytes
+            List<UploadPartResult> uploadParts = new ArrayList<>();
+
+            // 1. Initiate multipart upload
+            InitiateMultipartUploadResult initiateResult = client.initiateMultipartUploadAsync(
+                    InitiateMultipartUploadRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .build()).get();
+            Assert.assertNotNull(initiateResult);
+            Assert.assertEquals(200, initiateResult.statusCode());
+            Assert.assertNotNull(initiateResult.initiateMultipartUpload().uploadId());
+            String uploadId = initiateResult.initiateMultipartUpload().uploadId();
+
+            // 2. Upload parts
+            // Upload part 1
+            byte[] part1Data = new byte[100 * 1024 + 12]; // 100kb + 12
+            System.arraycopy(content, 0, part1Data, 0, part1Data.length);
+            UploadPartResult part1Result = client.uploadPartAsync(
+                    UploadPartRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .uploadId(uploadId)
+                            .partNumber(1L)
+                            .body(new ByteArrayBinaryData(part1Data))
+                            .build()).get();
+            Assert.assertNotNull(part1Result);
+            Assert.assertEquals(200, part1Result.statusCode());
+            uploadParts.add(part1Result);
+
+
+            // Upload part 2
+            byte[] part2Data = new byte[content.length - part1Data.length]; // Remaining data
+            System.arraycopy(content, part1Data.length, part2Data, 0, part2Data.length);
+            UploadPartResult part2Result = client.uploadPartAsync(
+                    UploadPartRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .uploadId(uploadId)
+                            .partNumber(2L)
+                            .body(new ByteArrayBinaryData(part2Data))
+                            .build()).get();
+            Assert.assertNotNull(part2Result);
+            Assert.assertEquals(200, part2Result.statusCode());
+            uploadParts.add(part2Result);
+
+            // 3. Complete multipart upload
+            CompleteMultipartUpload completeMultipartUpload = CompleteMultipartUpload.newBuilder()
+                    .parts(createCompletedPartList(uploadParts))
+                    .build();
+
+            CompleteMultipartUploadResult completeResult = client.completeMultipartUploadAsync(
+                    CompleteMultipartUploadRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .uploadId(uploadId)
+                            .completeMultipartUpload(completeMultipartUpload)
+                            .build()).get();
+            Assert.assertNotNull(completeResult);
+            Assert.assertEquals(200, completeResult.statusCode());
         }
     }
 

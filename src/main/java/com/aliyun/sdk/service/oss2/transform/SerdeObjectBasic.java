@@ -4,12 +4,16 @@ import com.aliyun.sdk.service.oss2.AttributeKey;
 import com.aliyun.sdk.service.oss2.AttributeMap;
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.OperationOutput;
+import com.aliyun.sdk.service.oss2.hash.CRC64Observer;
+import com.aliyun.sdk.service.oss2.hash.CRC64ResponseChecker;
+import com.aliyun.sdk.service.oss2.io.StreamObserver;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.models.internal.DeleteResultXml;
-import com.aliyun.sdk.service.oss2.models.internal.DeleteXml;
 import com.aliyun.sdk.service.oss2.progress.ProgressObserver;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transport.InputStreamBinaryData;
+import com.aliyun.sdk.service.oss2.transport.ResponseMessage;
+import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
 import com.aliyun.sdk.service.oss2.utils.HttpUtils;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.utils.XmlUtils;
@@ -17,14 +21,17 @@ import com.aliyun.sdk.service.oss2.utils.XmlUtils;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class SerdeObjectBasic {
 
 
-    public static OperationInput fromPutObject(PutObjectRequest request) {
+    public static OperationInput fromPutObject(PutObjectRequest request, int featureFlags) {
         OperationInput.Builder builder = OperationInput.newBuilder()
                 .opName("PutObject")
                 .method("PUT");
@@ -40,9 +47,24 @@ public final class SerdeObjectBasic {
 
         // prog observer
         AttributeMap opMetadata = AttributeMap.empty();
+        List<StreamObserver> streamObservers = new ArrayList<>();
+        List<Consumer<ResponseMessage>> responseHandlers = new ArrayList<>();
         if (request.progressListener() != null) {
-            ProgressObserver progObserver = new ProgressObserver(request.progressListener(), request.body().getLength());
-            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(progObserver));
+            streamObservers.add(new ProgressObserver(request.progressListener(), request.body().getLength()));
+        }
+
+        // crc observer
+        if (FeatureFlagsType.ENABLE_CRC64_CHECK_UPLOAD.isSet(featureFlags)) {
+            CRC64Observer observer = new CRC64Observer();
+            streamObservers.add(observer);
+            responseHandlers.add(new CRC64ResponseChecker(observer.getChecksum()));
+        }
+
+        if (!streamObservers.isEmpty()) {
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, streamObservers);
+        }
+        if (!responseHandlers.isEmpty()) {
+            opMetadata.put(AttributeKey.RESPONSE_HANDLER, responseHandlers);
         }
         builder.opMetadata(opMetadata);
 
@@ -52,6 +74,11 @@ public final class SerdeObjectBasic {
         OperationInput input = builder.build();
 
         SerdeUtils.serializeInput(request, input);
+
+        if (FeatureFlagsType.AUTO_DETECT_MIMETYPE.isSet(featureFlags)) {
+            SerdeUtils.addContentType(input);
+        }
+
         return input;
     }
 
@@ -130,7 +157,7 @@ public final class SerdeObjectBasic {
     }
 
 
-    public static OperationInput fromAppendObject(AppendObjectRequest request) {
+    public static OperationInput fromAppendObject(AppendObjectRequest request, int featureFlags) {
         OperationInput.Builder builder = OperationInput.newBuilder()
                 .opName("AppendObject")
                 .method("POST");
@@ -145,28 +172,19 @@ public final class SerdeObjectBasic {
         parameters.put("append", "");
         builder.parameters(parameters);
 
-
         // body
         builder.body(request.body());
-
-
-        // opMetadata
-        AttributeMap opMetadata = AttributeMap.empty();
-
-        // prog observer
-        if (request.progressListener() != null) {
-            ProgressObserver progObserver = new ProgressObserver(request.progressListener(), request.body().getLength());
-            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(progObserver));
-        }
-
-        builder.opMetadata(opMetadata);
-
 
         builder.bucket(request.bucket());
         builder.key(request.key());
 
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input);
+
+        if (FeatureFlagsType.AUTO_DETECT_MIMETYPE.isSet(featureFlags)) {
+            SerdeUtils.addContentType(input);
+        }
+
         return input;
     }
 

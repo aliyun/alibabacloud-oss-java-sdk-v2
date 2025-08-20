@@ -113,18 +113,29 @@ public class ClientObjectTaggingAsyncTest extends TestBase {
         Assert.assertEquals(204, deleteResult.statusCode());
     }
 
-    //TODO
-    @Ignore
     @Test
     public void testObjectTaggingWithVersionId() throws ExecutionException, InterruptedException {
         OSSAsyncClient client = getDefaultAsyncClient();
+        String bucketNameVersion = bucketName + "-versions";
         String objectName = genObjectName() + "-tagging-version-test";
+
+        // Test putBucketVersioning with Enabled status
+        client.putBucketAsync(PutBucketRequest.newBuilder()
+                .bucket(bucketNameVersion)
+                .build()).get();
+
+        client.putBucketVersioningAsync(PutBucketVersioningRequest.newBuilder()
+                .bucket(bucketNameVersion)
+                .versioningConfiguration(VersioningConfiguration.newBuilder()
+                        .status("Enabled")
+                        .build())
+                .build()).get();
 
         // 1. Create an object first
         byte[] content = TestUtils.generateTestData(1024);
         PutObjectResult putResult = client.putObjectAsync(
                 PutObjectRequest.newBuilder()
-                        .bucket(bucketName)
+                        .bucket(bucketNameVersion)
                         .key(objectName)
                         .body(new ByteArrayBinaryData(content))
                         .build()).get();
@@ -141,7 +152,7 @@ public class ClientObjectTaggingAsyncTest extends TestBase {
 
         PutObjectTaggingResult putTaggingResult = client.putObjectTaggingAsync(
                 PutObjectTaggingRequest.newBuilder()
-                        .bucket(bucketName)
+                        .bucket(bucketNameVersion)
                         .key(objectName)
                         .versionId(versionId)
                         .tagging(tagging)
@@ -152,7 +163,7 @@ public class ClientObjectTaggingAsyncTest extends TestBase {
         // 3. Get object tagging with version id
         GetObjectTaggingResult getTaggingResult = client.getObjectTaggingAsync(
                 GetObjectTaggingRequest.newBuilder()
-                        .bucket(bucketName)
+                        .bucket(bucketNameVersion)
                         .key(objectName)
                         .versionId(versionId)
                         .build()).get();
@@ -170,20 +181,11 @@ public class ClientObjectTaggingAsyncTest extends TestBase {
         // 4. Delete object tagging with version id
         DeleteObjectTaggingResult deleteTaggingResult = client.deleteObjectTaggingAsync(
                 DeleteObjectTaggingRequest.newBuilder()
-                        .bucket(bucketName)
+                        .bucket(bucketNameVersion)
                         .key(objectName)
                         .versionId(versionId)
                         .build()).get();
         Assert.assertNotNull(deleteTaggingResult);
         Assert.assertEquals(204, deleteTaggingResult.statusCode());
-
-        // 5. Clean up - delete object
-        DeleteObjectResult deleteResult = client.deleteObjectAsync(
-                DeleteObjectRequest.newBuilder()
-                        .bucket(bucketName)
-                        .key(objectName)
-                        .build()).get();
-        Assert.assertNotNull(deleteResult);
-        Assert.assertEquals(204, deleteResult.statusCode());
     }
 }

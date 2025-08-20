@@ -1,23 +1,35 @@
 package com.aliyun.sdk.service.oss2.transform;
 
+import com.aliyun.sdk.service.oss2.AttributeKey;
+import com.aliyun.sdk.service.oss2.AttributeMap;
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.OperationOutput;
+import com.aliyun.sdk.service.oss2.hash.CRC64Observer;
+import com.aliyun.sdk.service.oss2.hash.CRC64ResponseChecker;
+import com.aliyun.sdk.service.oss2.io.StreamObserver;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.models.internal.ListMultipartUploadsResultXml;
 import com.aliyun.sdk.service.oss2.models.internal.ListPartResultXml;
+import com.aliyun.sdk.service.oss2.progress.ProgressObserver;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
+import com.aliyun.sdk.service.oss2.transport.ResponseMessage;
+import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
 import com.aliyun.sdk.service.oss2.utils.HttpUtils;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public final class SerdeObjectMultipart {
 
-    public static OperationInput fromInitiateMultipartUpload(InitiateMultipartUploadRequest request) {
+    public static OperationInput fromInitiateMultipartUpload(InitiateMultipartUploadRequest request, int featureFlags) {
         OperationInput.Builder builder = OperationInput.newBuilder()
                 .opName("InitiateMultipartUpload")
                 .method("POST");
@@ -38,6 +50,10 @@ public final class SerdeObjectMultipart {
 
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        if (FeatureFlagsType.AUTO_DETECT_MIMETYPE.isSet(featureFlags)) {
+            SerdeUtils.addContentType(input);
+        }
         return input;
     }
 
@@ -60,7 +76,7 @@ public final class SerdeObjectMultipart {
                 .build();
     }
 
-    public static OperationInput fromUploadPart(UploadPartRequest request) {
+    public static OperationInput fromUploadPart(UploadPartRequest request, int featureFlags) {
         OperationInput.Builder builder = OperationInput.newBuilder()
                 .opName("UploadPart")
                 .method("PUT");
@@ -72,6 +88,29 @@ public final class SerdeObjectMultipart {
 
         // body
         builder.body(request.body());
+
+        // prog observer
+        AttributeMap opMetadata = AttributeMap.empty();
+        List<StreamObserver> streamObservers = new ArrayList<>();
+        List<Consumer<ResponseMessage>> responseHandlers = new ArrayList<>();
+        if (request.progressListener() != null) {
+            streamObservers.add(new ProgressObserver(request.progressListener(), request.body().getLength()));
+        }
+
+        // crc observer
+        if (FeatureFlagsType.ENABLE_CRC64_CHECK_UPLOAD.isSet(featureFlags)) {
+            CRC64Observer observer = new CRC64Observer();
+            streamObservers.add(observer);
+            responseHandlers.add(new CRC64ResponseChecker(observer.getChecksum()));
+        }
+
+        if (!streamObservers.isEmpty()) {
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, streamObservers);
+        }
+        if (!responseHandlers.isEmpty()) {
+            opMetadata.put(AttributeKey.RESPONSE_HANDLER, responseHandlers);
+        }
+        builder.opMetadata(opMetadata);
 
         builder.bucket(request.bucket());
         builder.key(request.key());

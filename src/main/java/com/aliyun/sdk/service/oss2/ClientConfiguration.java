@@ -33,6 +33,7 @@ public final class ClientConfiguration {
     private final Boolean insecureSkipVerify;
     private final Boolean enabledRedirect;
     private final String proxyHost;
+    private final Boolean disableUploadCRC64Check;
 
 
     private ClientConfiguration(Builder builder) {
@@ -57,6 +58,7 @@ public final class ClientConfiguration {
         this.insecureSkipVerify = builder.insecureSkipVerify;
         this.enabledRedirect = builder.enabledRedirect;
         this.proxyHost = builder.proxyHost;
+        this.disableUploadCRC64Check = builder.disableUploadCRC64Check;
     }
 
     public static Builder newBuilder() {
@@ -152,6 +154,10 @@ public final class ClientConfiguration {
         return Optional.ofNullable(proxyHost);
     }
 
+    public Optional<Boolean> DisableUploadCRC64Check() {
+        return Optional.ofNullable(disableUploadCRC64Check);
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }
@@ -178,6 +184,7 @@ public final class ClientConfiguration {
         private Boolean insecureSkipVerify;
         private Boolean enabledRedirect;
         private String proxyHost;
+        private Boolean disableUploadCRC64Check;
 
         protected Builder() {
         }
@@ -204,6 +211,7 @@ public final class ClientConfiguration {
             this.insecureSkipVerify = from.insecureSkipVerify;
             this.enabledRedirect = from.enabledRedirect;
             this.proxyHost = from.proxyHost;
+            this.disableUploadCRC64Check = from.disableUploadCRC64Check;
         }
 
         public Builder region(String region) {
@@ -329,6 +337,11 @@ public final class ClientConfiguration {
         public Builder proxyHost(String value) {
             requireNonNull(value);
             this.proxyHost = value;
+            return this;
+        }
+
+        public Builder disableUploadCRC64Check(boolean value) {
+            this.disableUploadCRC64Check = value;
             return this;
         }
 

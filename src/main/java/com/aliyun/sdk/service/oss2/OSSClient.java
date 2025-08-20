@@ -1075,6 +1075,33 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
 
     /**
+     * This is a variant of the ListObjectVersions operation.
+     * The return type is a custom iterable that can be used to iterate through all the pages.
+     * SDK will internally handle making service calls for you.
+     *
+     * @param request A {@link ListObjectVersionsRequest} for ListObjectVersions operation.
+     * @return A {@link ListObjectVersionsIterable} that can be used to iterate through all the response pages.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListObjectVersionsIterable listObjectVersionsPaginator(ListObjectVersionsRequest request) {
+        return listObjectVersionsPaginator(request, PaginatorOptions.defaults());
+    }
+
+    /**
+     * This is a variant of the ListObjectVersions operation.
+     * The return type is a custom iterable that can be used to iterate through all the pages.
+     * SDK will internally handle making service calls for you.
+     *
+     * @param request A {@link ListObjectVersionsRequest} for ListObjectVersions operation.
+     * @param options The paginator options.
+     * @return A {@link ListObjectVersionsIterable} that can be used to iterate through all the response pages.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListObjectVersionsIterable listObjectVersionsPaginator(ListObjectVersionsRequest request, PaginatorOptions options) {
+        return new ListObjectVersionsIterable(this, request, options);
+    }
+
+    /**
      * This is a variant of the ListMultipartUploads operation.
      * The return type is a custom iterable that can be used to iterate through all the pages.
      * SDK will internally handle making service calls for you.

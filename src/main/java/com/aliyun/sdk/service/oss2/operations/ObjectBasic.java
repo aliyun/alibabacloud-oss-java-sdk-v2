@@ -1,17 +1,24 @@
 package com.aliyun.sdk.service.oss2.operations;
 
 
-import com.aliyun.sdk.service.oss2.AttributeKey;
-import com.aliyun.sdk.service.oss2.OperationInput;
-import com.aliyun.sdk.service.oss2.OperationOptions;
-import com.aliyun.sdk.service.oss2.OperationOutput;
+import com.aliyun.sdk.service.oss2.*;
+import com.aliyun.sdk.service.oss2.exceptions.InconsistentException;
+import com.aliyun.sdk.service.oss2.hash.CRC64Observer;
+import com.aliyun.sdk.service.oss2.hash.CRC64ResponseChecker;
 import com.aliyun.sdk.service.oss2.internal.ClientImpl;
+import com.aliyun.sdk.service.oss2.io.StreamObserver;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.progress.ProgressObserver;
 import com.aliyun.sdk.service.oss2.transform.SerdeObjectBasic;
+import com.aliyun.sdk.service.oss2.transport.ResponseMessage;
 import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
 import com.aliyun.sdk.service.oss2.utils.MimeUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,10 +30,7 @@ public final class ObjectBasic {
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
 
-        OperationInput input = SerdeObjectBasic.fromPutObject(request);
-        if (FeatureFlagsType.AUTO_DETECT_MIMETYPE.isSet(impl.getFeatureFlags())) {
-            addContentType(input);
-        }
+        OperationInput input = SerdeObjectBasic.fromPutObject(request, impl.getFeatureFlags());
         OperationOutput output = impl.execute(input, options);
         return SerdeObjectBasic.toPutObject(output);
     }
@@ -36,10 +40,7 @@ public final class ObjectBasic {
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
 
-        OperationInput input = SerdeObjectBasic.fromPutObject(request);
-        if (FeatureFlagsType.AUTO_DETECT_MIMETYPE.isSet(impl.getFeatureFlags())) {
-            addContentType(input);
-        }
+        OperationInput input = SerdeObjectBasic.fromPutObject(request, impl.getFeatureFlags());
         return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toPutObject);
     }
 
@@ -91,12 +92,33 @@ public final class ObjectBasic {
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
         requireNonNull(request.position(), "request.position is required");
+        int featureFlags = impl.getFeatureFlags();
 
-        OperationInput input = SerdeObjectBasic.fromAppendObject(request);
-        if (FeatureFlagsType.AUTO_DETECT_MIMETYPE.isSet(impl.getFeatureFlags())) {
-            addContentType(input);
+        OperationInput input = SerdeObjectBasic.fromAppendObject(request, featureFlags);
+
+        // progress observer
+        List<StreamObserver> streamObservers = null;
+        if (request.progressListener() != null) {
+            streamObservers = new ArrayList<>();
+            streamObservers.add(new ProgressObserver(request.progressListener(), request.body().getLength()));
         }
+
+        // crc observer
+        // AppendObject is not idempotent, and cannot be retried
+        CRC64Observer crcObserver = null;
+        if (request.initHashCRC64() != null && FeatureFlagsType.ENABLE_CRC64_CHECK_UPLOAD.isSet(featureFlags)) {
+            if (streamObservers == null) {
+                streamObservers = new ArrayList<>();
+            }
+            crcObserver = new CRC64Observer(request.initHashCRC64());
+            streamObservers.add(crcObserver);
+        }
+        if (streamObservers != null) {
+            input.opMetadata().put(AttributeKey.UPLOAD_OBSERVER, streamObservers);
+        }
+
         OperationOutput output = impl.execute(input, options);
+        checkResponseCrc(crcObserver, output.headers());
         return SerdeObjectBasic.toAppendObject(output);
     }
 
@@ -105,12 +127,36 @@ public final class ObjectBasic {
         requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.key(), "request.key is required");
         requireNonNull(request.position(), "request.position is required");
+        int featureFlags = impl.getFeatureFlags();
 
-        OperationInput input = SerdeObjectBasic.fromAppendObject(request);
-        if (FeatureFlagsType.AUTO_DETECT_MIMETYPE.isSet(impl.getFeatureFlags())) {
-            addContentType(input);
+        OperationInput input = SerdeObjectBasic.fromAppendObject(request, featureFlags);
+
+        // progress observer
+        List<StreamObserver> streamObservers = null;
+        if (request.progressListener() != null) {
+            streamObservers = new ArrayList<>();
+            streamObservers.add(new ProgressObserver(request.progressListener(), request.body().getLength()));
         }
-        return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toAppendObject);
+
+        // crc observer
+        // AppendObject is not idempotent, and cannot be retried
+        CRC64Observer crcObserver = null;
+        if (request.initHashCRC64() != null && FeatureFlagsType.ENABLE_CRC64_CHECK_UPLOAD.isSet(featureFlags)) {
+            if (streamObservers == null) {
+                streamObservers = new ArrayList<>();
+            }
+            crcObserver = new CRC64Observer(request.initHashCRC64());
+            streamObservers.add(crcObserver);
+        }
+        if (streamObservers != null) {
+            input.opMetadata().put(AttributeKey.UPLOAD_OBSERVER, streamObservers);
+        }
+        final CRC64Observer crcChecker = crcObserver;
+        return impl.executeAsync(input, options).thenApply(
+                output -> {
+                    checkResponseCrc(crcChecker, output.headers());
+                    return SerdeObjectBasic.toAppendObject(output);
+                });
     }
 
 
@@ -232,11 +278,20 @@ public final class ObjectBasic {
         return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toCleanRestoredObject);
     }
 
-    static void addContentType(OperationInput input) {
-        if (input.headers().containsKey("Content-Type")) {
+    private static void checkResponseCrc(CRC64Observer observer, Map<String, String> headers) {
+        if (observer == null || headers == null) {
             return;
         }
-        String value = MimeUtils.getMimetype(input.key().orElse(null), MimeUtils.DEFAULT_MIMETYPE);
-        input.headers().put("Content-Type",value);
+
+        String serverCRC = headers.get("x-oss-hash-crc64ecma");
+        if (serverCRC == null) {
+            return;
+        }
+
+        String clientCRC = Long.toUnsignedString(observer.getChecksum().getValue());
+
+        if (!serverCRC.equals(clientCRC)) {
+            throw new InconsistentException(clientCRC, serverCRC, headers);
+        }
     }
 }

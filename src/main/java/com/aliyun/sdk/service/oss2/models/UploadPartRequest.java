@@ -1,5 +1,6 @@
 package com.aliyun.sdk.service.oss2.models;
 
+import com.aliyun.sdk.service.oss2.progress.ProgressListener;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
 
@@ -12,12 +13,14 @@ public final class UploadPartRequest extends RequestModel {
     private final String bucket;
     private final String key;
     private final BinaryData body;
+    private final ProgressListener progressListener;
 
     private UploadPartRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
         this.key = builder.key;
         this.body = builder.body;
+        this.progressListener = builder.progressListener;
     }
 
     public static Builder newBuilder() {
@@ -93,6 +96,13 @@ public final class UploadPartRequest extends RequestModel {
         return body;
     }
 
+    /**
+     * Gets the progress listener for monitoring data transfer during OSS operations.
+     */
+    public ProgressListener progressListener() {
+        return progressListener;
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }
@@ -101,6 +111,7 @@ public final class UploadPartRequest extends RequestModel {
         private String bucket;
         private String key;
         private BinaryData body;
+        private ProgressListener progressListener;
 
         private Builder() {
             super();
@@ -111,6 +122,7 @@ public final class UploadPartRequest extends RequestModel {
             this.bucket = request.bucket;
             this.key = request.key;
             this.body = request.body;
+            this.progressListener = request.progressListener;
         }
 
         /**
@@ -191,6 +203,15 @@ public final class UploadPartRequest extends RequestModel {
         public Builder body(BinaryData value) {
             requireNonNull(value);
             this.body = value;
+            return this;
+        }
+
+        /**
+         * Sets the progress listener for monitoring data transfer during OSS operations.
+         */
+        public Builder progressListener(ProgressListener progressListener) {
+            requireNonNull(progressListener);
+            this.progressListener = progressListener;
             return this;
         }
 

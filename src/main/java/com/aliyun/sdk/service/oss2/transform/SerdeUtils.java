@@ -8,6 +8,7 @@ import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transport.StringBinaryData;
 import com.aliyun.sdk.service.oss2.utils.HttpUtils;
 import com.aliyun.sdk.service.oss2.utils.Md5Utils;
+import com.aliyun.sdk.service.oss2.utils.MimeUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -144,4 +145,14 @@ public final class SerdeUtils {
 
         return encodedSource;
     }
+
+
+    static void addContentType(OperationInput input) {
+        if (input.headers().containsKey("Content-Type")) {
+            return;
+        }
+        String value = MimeUtils.getMimetype(input.key().orElse(null), MimeUtils.DEFAULT_MIMETYPE);
+        input.headers().put("Content-Type",value);
+    }
+
 }

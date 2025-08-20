@@ -4,6 +4,9 @@ import com.aliyun.sdk.service.oss2.io.ObservableInputStream;
 import com.aliyun.sdk.service.oss2.io.StreamObserver;
 import com.aliyun.sdk.service.oss2.transport.*;
 
+import java.nio.channels.WritableByteChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -51,11 +54,23 @@ public class TransportExecuteMiddleware implements ExecuteMiddleware {
     }
 
     private static RequestContext toRequestContext(ExecuteContext context) {
-        RequestContext rctx = RequestContext.empty();
+        RequestContext ctx = RequestContext.empty();
         if (context.responseHeadersRead != null) {
-            rctx.put(RequestContext.Key.HTTP_COMPLETION_OPTION, RequestContext.HttpCompletionOption.ResponseHeadersRead);
+            ctx.put(RequestContext.Key.HTTP_COMPLETION_OPTION, RequestContext.HttpCompletionOption.ResponseHeadersRead);
         }
-        return rctx;
+        return ctx;
+    }
+
+    private static RequestContext toRequestContextAsync(ExecuteContext context) {
+        RequestContext ctx = toRequestContext(context);
+        if (context.requestBodyObserver != null && !context.requestBodyObserver.isEmpty()) {
+            List<ObservableByteChannel>  channels = new ArrayList<>();
+            for (StreamObserver observer : context.requestBodyObserver) {
+                channels.add(new ByteChannelObserver(observer));
+            }
+            ctx.put(RequestContext.Key.UPLOAD_OBSERVER_CHANNEL, channels);
+        }
+        return ctx;
     }
 
     /**
@@ -80,7 +95,7 @@ public class TransportExecuteMiddleware implements ExecuteMiddleware {
      */
     @Override
     public CompletableFuture<ResponseMessage> executeAsync(RequestMessage request, ExecuteContext context) {
-        return httpClient.sendAsync(processRequest(request, context), toRequestContext(context))
+        return httpClient.sendAsync(request, toRequestContextAsync(context))
                 .thenApplyAsync(TransportExecuteMiddleware::processResponse);
     }
 }

@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2.transport;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -91,6 +92,7 @@ public class RequestContext {
     public static class Key<T> {
         public static final Key<HttpCompletionOption> HTTP_COMPLETION_OPTION = new Key<>(new Key.UnsafeValueType(HttpCompletionOption.class));
         public static final Key<Duration> READWRITE_TIMEOUT = new Key<>(new Key.UnsafeValueType(Duration.class));
+        public static final Key<List<ObservableByteChannel>> UPLOAD_OBSERVER_CHANNEL = new Key<>(new Key.UnsafeValueType(List.class));
 
         private final Class<?> valueType;
 
@@ -110,7 +112,6 @@ public class RequestContext {
                             this, this.valueType, value.getClass()));
                 }
             }
-
         }
 
         @SuppressWarnings("unchecked")

@@ -142,7 +142,12 @@ public class Apache5AsyncHttpClient implements HttpClient, AutoCloseable {
             }
         });
 
-        return new BasicRequestProducer(httpRequest, toEntityProducer(request.body()));
+        AsyncEntityProducer entityProducer = toEntityProducer(request.body());
+        if (entityProducer != null && context.containsKey(RequestContext.Key.UPLOAD_OBSERVER_CHANNEL)) {
+            entityProducer = new ObservableEntityProducer(entityProducer, context.get(RequestContext.Key.UPLOAD_OBSERVER_CHANNEL));
+        }
+
+        return new BasicRequestProducer(httpRequest, entityProducer);
     }
 
     private AsyncEntityProducer toEntityProducer(BinaryData body) {
