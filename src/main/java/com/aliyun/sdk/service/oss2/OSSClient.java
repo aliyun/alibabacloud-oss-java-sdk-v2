@@ -1,7 +1,14 @@
 package com.aliyun.sdk.service.oss2;
 
+import com.aliyun.sdk.service.oss2.exceptions.OperationException;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.paginator.*;
+import com.aliyun.sdk.service.oss2.transport.BinaryData;
+import com.aliyun.sdk.service.oss2.utils.IOUtils;
+
+import java.io.*;
+import java.nio.file.Path;
 
 /**
  * A client for accessing OSS synchronously.
@@ -1203,4 +1210,201 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // extensions api
+
+    /**
+     * Use GetBucketAcl to check if the bucket exists.
+     *
+     * @param bucket The bucket name.
+     * @return Returns true if the bucket exists and false if not.
+     * @throws RuntimeException If an error occurs
+     */
+    default boolean doesBucketExist(String bucket) {
+        return doesBucketExist(GetBucketAclRequest.newBuilder().bucket(bucket).build());
+    }
+
+    /**
+     * Use GetBucketAcl to check if the bucket exists.
+     *
+     * @param request A {@link GetBucketAclRequest} for GetBucketAcl operation.
+     * @return Returns true if the bucket exists and false if not.
+     * @throws RuntimeException If an error occurs
+     */
+    default boolean doesBucketExist(GetBucketAclRequest request) {
+        try {
+            getBucketAcl(request);
+            return true;
+        } catch (Exception e) {
+            ServiceException err = ServiceException.asCause(e);
+            if (err != null) {
+                return !"NoSuchBucket".equals(err.errorCode());
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Use GetObjectMeta to check if the object exists.
+     *
+     * @param bucket The bucket name.
+     * @return Returns true if the bucket exists and false if not.
+     * @throws RuntimeException If an error occurs
+     *                          Throw an exception when encountering a NoSuchBucket error.
+     */
+    default boolean doesObjectExist(String bucket, String key) {
+        return doesObjectExist(GetObjectMetaRequest.newBuilder().bucket(bucket).key(key).build());
+    }
+
+    /**
+     * Use GetObjectMeta to check if the object exists.
+     *
+     * @param request A {@link GetObjectMetaRequest} for GetObjectMeta operation.
+     * @return Returns true if the bucket exists and false if not.
+     * @throws RuntimeException If an error occurs,
+     *                          Throw an exception when encountering a NoSuchBucket error.
+     */
+    default boolean doesObjectExist(GetObjectMetaRequest request) {
+        try {
+            getObjectMeta(request);
+            return true;
+        } catch (Exception e) {
+            ServiceException err = ServiceException.asCause(e);
+            if (err != null) {
+                if ("NoSuchKey".equals(err.errorCode()) ||
+                        (err.statusCode() == 404 && "BadErrorResponse".equals(err.errorCode()))) {
+                    return false;
+                }
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Use GetObjectMeta to check if the object exists.
+     *
+     * @param bucket The bucket name.
+     * @return Returns true if the bucket exists and false if not.
+     * Returns false when encountering a NoSuchBucket error like oss sdk v1.
+     * @throws RuntimeException If an error occurs
+     */
+    default boolean doesObjectExistLegacy(String bucket, String key) {
+        return doesObjectExistLegacy(GetObjectMetaRequest.newBuilder().bucket(bucket).key(key).build());
+    }
+
+    /**
+     * Use GetObjectMeta to check if the object exists.
+     *
+     * @param request A {@link GetObjectMetaRequest} for GetObjectMeta operation.
+     * @return Returns true if the bucket exists and false if not.
+     * Returns false when encountering a NoSuchBucket error like oss sdk v1.
+     * @throws RuntimeException If an error occurs
+     */
+    default boolean doesObjectExistLegacy(GetObjectMetaRequest request) {
+        try {
+            getObjectMeta(request);
+            return true;
+        } catch (Exception e) {
+            ServiceException err = ServiceException.asCause(e);
+            if (err != null) {
+                if ("NoSuchBucket".equals(err.errorCode()) ||
+                        "NoSuchKey".equals(err.errorCode()) ||
+                        (err.statusCode() == 404 && "BadErrorResponse".equals(err.errorCode()))) {
+                    return false;
+                }
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Creates a new object from the local file.
+     *
+     * @param request A {@link PutObjectRequest} for PutObject operation.
+     * @param file    The local file.
+     * @return A {@link PutObjectResult} for PutObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutObjectResult putObjectFromFile(PutObjectRequest request, File file) {
+        return putObjectFromFile(request, file, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a new object from the local file.
+     *
+     * @param request  A {@link PutObjectRequest} for PutObject operation.
+     * @param filePath The local file path.
+     * @return A {@link PutObjectResult} for PutObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutObjectResult putObjectFromFile(PutObjectRequest request, Path filePath) {
+        return putObjectFromFile(request, filePath.toFile(), OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a new object from the local file.
+     *
+     * @param request A {@link PutObjectRequest} for PutObject operation.
+     * @param file    The local file.
+     * @param options The operation options.
+     * @return A {@link PutObjectResult} for PutObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutObjectResult putObjectFromFile(PutObjectRequest request, File file, OperationOptions options) {
+        try (InputStream in = new FileInputStream(file)) {
+            return putObject(request.toBuilder().body(BinaryData.fromStream(in)).build(), options);
+        } catch (IOException e) {
+            throw new OperationException("PutObject", e);
+        }
+    }
+
+    /**
+     * Downloads a object into the local file.
+     *
+     * @param request A {@link GetObjectRequest} for GetObject operation.
+     * @param file    The local file.
+     * @return A {@link GetObjectResult} for GetObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetObjectResult getObjectToFile(GetObjectRequest request, File file) {
+        return getObjectToFile(request, file, OperationOptions.defaults());
+    }
+
+    /**
+     * Downloads a object into the local file.
+     *
+     * @param request  A {@link GetObjectRequest} for GetObject operation.
+     * @param filePath The local file path.
+     * @return A {@link GetObjectResult} for GetObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetObjectResult getObjectToFile(GetObjectRequest request, Path filePath) {
+        return getObjectToFile(request, filePath.toFile(), OperationOptions.defaults());
+    }
+
+    /**
+     * Downloads a object into the local file.
+     *
+     * @param request A {@link GetObjectRequest} for GetObject operation.
+     * @param file    The local file.
+     * @param options The operation options.
+     * @return A {@link GetObjectResult} for GetObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetObjectResult getObjectToFile(GetObjectRequest request, File file, OperationOptions options) {
+        try (OutputStream os = new FileOutputStream(file)) {
+            try (GetObjectResult result = getObject(request, options)) {
+                long ignore = IOUtils.copyLarge(result.body(), os, IOUtils.byteArray(32 * 1024));
+                return result.toBuilder().innerBody(null).build();
+            }
+        } catch (Exception e) {
+            if (e instanceof OperationException) {
+                throw (OperationException) e;
+            }
+            throw new OperationException("PutObject", e);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+
 }

@@ -93,6 +93,7 @@ public class RequestContext {
         public static final Key<HttpCompletionOption> HTTP_COMPLETION_OPTION = new Key<>(new Key.UnsafeValueType(HttpCompletionOption.class));
         public static final Key<Duration> READWRITE_TIMEOUT = new Key<>(new Key.UnsafeValueType(Duration.class));
         public static final Key<List<ObservableByteChannel>> UPLOAD_OBSERVER_CHANNEL = new Key<>(new Key.UnsafeValueType(List.class));
+        public static final Key<BinaryDataConsumerSupplier> RESPONSE_CONSUMER_SUPPLIER = new Key<>(new Key.UnsafeValueType(BinaryDataConsumerSupplier.class));
 
         private final Class<?> valueType;
 

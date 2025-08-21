@@ -312,6 +312,10 @@ public class ClientImpl implements AutoCloseable {
             context.responseHeadersRead = Boolean.TRUE;
         }
 
+        if (input.opMetadata().containsKey(AttributeKey.RESPONSE_CONSUMER_SUPPLIER)) {
+            context.dataConsumerSupplier = input.opMetadata().get(AttributeKey.RESPONSE_CONSUMER_SUPPLIER);
+        }
+
         // signing context
         AuthMethodType authMethod = opOpts.authMethod().orElse(options.authMethod());
         SigningContext signCtx = new SigningContext();

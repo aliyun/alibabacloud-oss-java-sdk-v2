@@ -18,6 +18,7 @@ import org.apache.hc.core5.http.nio.entity.StringAsyncEntityProducer;
 import org.apache.hc.core5.http.nio.support.BasicRequestProducer;
 import org.apache.hc.core5.util.Timeout;
 
+import java.nio.channels.Channels;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -76,9 +77,11 @@ public class Apache5AsyncHttpClient implements HttpClient, AutoCloseable {
             AsyncRequestProducer requestProducer = toRequestProducer(request, context);
             HttpClientContext httpContext = toHttpClientContext(context);
 
+            BinaryDataConsumerSupplier dataConsumerSupplier = context.get(RequestContext.Key.RESPONSE_CONSUMER_SUPPLIER);
+
             this.httpClient.execute(
                     requestProducer,
-                    SimpleResponseConsumer.create(),
+                    new CustomAsyncResponseConsumer(dataConsumerSupplier),
                     null,
                     httpContext
                     , new FutureCallback<SimpleHttpResponse>() {
@@ -158,8 +161,9 @@ public class Apache5AsyncHttpClient implements HttpClient, AutoCloseable {
             } else if (body instanceof StringBinaryData) {
                 entityProducer = new StringAsyncEntityProducer(body.toString(), null);
             } else if (body instanceof InputStreamBinaryData) {
-                //entityProducer = null;
-                throw new UnsupportedOperationException(this.name() + " does not support InputStreamBinaryData.");
+                entityProducer = new ByteChannelAsyncEntityProducer(Channels.newChannel(body.toStream()), body.getLength());
+            } else if (body instanceof ByteChannelBinaryData) {
+                entityProducer = new ByteChannelAsyncEntityProducer(body.toByteChannel(), body.getLength());
             } else {
                 // Default is to ByteBuffer
                 entityProducer = new ByteBufferAsyncEntityProducer(body.toByteBuffer(), null);

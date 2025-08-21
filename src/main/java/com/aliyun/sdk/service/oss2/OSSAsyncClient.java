@@ -1,7 +1,16 @@
 package com.aliyun.sdk.service.oss2;
 
+import com.aliyun.sdk.service.oss2.exceptions.OperationException;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.transport.BinaryData;
+import com.aliyun.sdk.service.oss2.transport.BinaryDataConsumerSupplier;
+import com.aliyun.sdk.service.oss2.utils.IOUtils;
 
+import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -1039,5 +1048,226 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+    //-----------------------------------------------------------------------
+
+    // extensions api
+    /**
+     * Use GetBucketAcl to check if the bucket exists.
+     *
+     * @param bucket The bucket name.
+     * @return A Java Future containing the result. True if the bucket exists and False if not.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<Boolean> doesBucketExistAsync(String bucket) {
+        return doesBucketExistAsync(GetBucketAclRequest.newBuilder().bucket(bucket).build());
+    }
+
+    /**
+     * Use GetBucketAcl to check if the bucket exists.
+     *
+     * @param request A {@link GetBucketAclRequest} for GetBucketAcl operation.
+     * @return A Java Future containing the result. True if the bucket exists and False if not.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<Boolean> doesBucketExistAsync(GetBucketAclRequest request) {
+        return getBucketAclAsync(request).handle((result, exception) -> {
+            if (exception != null) {
+                Throwable cause = exception.getCause();
+                ServiceException err = ServiceException.asCause(cause);
+                if (err != null) {
+                    return !"NoSuchBucket".equals(err.errorCode());
+                }
+                if (cause instanceof RuntimeException) {
+                    throw (RuntimeException)cause;
+                } else {
+                    throw new RuntimeException(cause);
+                }
+            } else {
+                return Boolean.TRUE;
+            }
+        });
+    }
+
+    /**
+     * Use GetObjectMeta to check if the object exists.
+     *
+     * @param bucket The bucket name.
+     * @return A Java Future containing the result. True if the object exists and False if not.
+     * @throws RuntimeException If an error occurs
+     *         Throw an exception when encountering a NoSuchBucket error.
+     */
+    default CompletableFuture<Boolean>  doesObjectExistAsync(String bucket, String key) {
+        return doesObjectExistAsync(GetObjectMetaRequest.newBuilder().bucket(bucket).key(key).build());
+    }
+
+    /**
+     * Use GetObjectMeta to check if the object exists.
+     *
+     * @param request A {@link GetObjectMetaRequest} for GetObjectMeta operation.
+     * @return A Java Future containing the result. True if the object exists and False if not.
+     * @throws RuntimeException If an error occurs,
+     *         Throw an exception when encountering a NoSuchBucket error.
+     */
+    default CompletableFuture<Boolean> doesObjectExistAsync(GetObjectMetaRequest request) {
+        return getObjectMetaAsync(request).handle((result, exception) -> {
+            if (exception != null) {
+                Throwable cause = exception.getCause();
+                ServiceException err = ServiceException.asCause(cause);
+                if (err != null) {
+                    if ("NoSuchKey".equals(err.errorCode()) ||
+                            (err.statusCode() == 404 && "BadErrorResponse".equals(err.errorCode()))) {
+                        return Boolean.FALSE;
+                    }
+                }
+                if (cause instanceof RuntimeException) {
+                    throw (RuntimeException)cause;
+                } else {
+                    throw new RuntimeException(cause);
+                }
+            } else {
+                return Boolean.TRUE;
+            }
+        });
+    }
+
+    /**
+     * Use GetObjectMeta to check if the object exists.
+     *
+     * @param bucket The bucket name.
+     * @return  A Java Future containing the result.
+     *          True if the object exists and False if not.
+     *          False when encountering a NoSuchBucket error like oss sdk v1.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<Boolean>  doesObjectExistLegacyAsync(String bucket, String key) {
+        return doesObjectExistLegacyAsync(GetObjectMetaRequest.newBuilder().bucket(bucket).key(key).build());
+    }
+
+    /**
+     * Use GetObjectMeta to check if the object exists.
+     *
+     * @param request A {@link GetObjectMetaRequest} for GetObjectMeta operation.
+     * @return  A Java Future containing the result.
+     *          True if the object exists and False if not.
+     *          False when encountering a NoSuchBucket error like oss sdk v1.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<Boolean>  doesObjectExistLegacyAsync(GetObjectMetaRequest request) {
+        return getObjectMetaAsync(request).handle((result, exception) -> {
+            if (exception != null) {
+                Throwable cause = exception.getCause();
+                ServiceException err = ServiceException.asCause(cause);
+                if (err != null) {
+                    if ("NoSuchBucket".equals(err.errorCode()) ||
+                            "NoSuchKey".equals(err.errorCode()) ||
+                            (err.statusCode() == 404 && "BadErrorResponse".equals(err.errorCode()))) {
+                        return Boolean.FALSE;
+                    }
+                }
+                if (cause instanceof RuntimeException) {
+                    throw (RuntimeException)cause;
+                } else {
+                    throw new RuntimeException(cause);
+                }
+            } else {
+                return Boolean.TRUE;
+            }
+        });
+    }
+
+    /**
+     * Creates a new object from the local file.
+     *
+     * @param request A {@link PutObjectRequest} for PutObject operation.
+     * @param filePath    The local file path.
+     * @return A Java Future containing the {@link PutObjectResult} of the PutObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutObjectResult> putObjectFromFileAsync(PutObjectRequest request, Path filePath) {
+        return putObjectFromFileAsync(request, filePath, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a new object from the local file.
+     *
+     * @param request A {@link PutObjectRequest} for PutObject operation.
+     * @param filePath    The local file path.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutObjectResult} of the PutObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutObjectResult>  putObjectFromFileAsync(PutObjectRequest request, Path filePath, OperationOptions options) {
+        CompletableFuture<PutObjectResult> future = new CompletableFuture<>();
+        try {
+            final FileChannel fileChannel = FileChannel.open(filePath);
+            CompletableFuture<PutObjectResult> resultFuture = putObjectAsync(
+                    request.toBuilder().body(BinaryData.fromByteChannel(fileChannel, fileChannel.size())).build(),
+                    options
+            );
+            resultFuture.whenComplete((result, exception) -> {
+                IOUtils.closeQuietly(fileChannel);
+                if (exception != null) {
+                    future.completeExceptionally(exception.getCause());
+                    return;
+                }
+                future.complete(result);
+            });
+        } catch (Exception e) {
+            future.completeExceptionally(new OperationException("PutObject", e));
+        }
+        return future;
+    }
+
+    /**
+     * Downloads a object into the local file.
+     *
+     * @param request  A {@link GetObjectRequest} for GetObject operation.
+     * @param filePath The local file path.
+     * @return A Java Future containing the {@link GetObjectResult} of the PutObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetObjectResult> getObjectToFileAsync(GetObjectRequest request, final Path filePath) {
+        return getObjectToFileAsync(request, filePath, OperationOptions.defaults());
+    }
+
+    /**
+     * Downloads a object into the local file.
+     *
+     * @param request A {@link GetObjectRequest} for GetObject operation.
+     * @param filePath The local file path.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetObjectResult} of the PutObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetObjectResult> getObjectToFileAsync(GetObjectRequest request, final Path filePath, OperationOptions options) {
+        return getObjectAsync(request.toBuilder()
+                .dataConsumerSupplier(new BinaryDataConsumerSupplier() {
+
+                    @Override
+                    public Object get() {
+                        try {
+                            return FileChannel.open(filePath,
+                                    StandardOpenOption.CREATE,
+                                    StandardOpenOption.TRUNCATE_EXISTING,
+                                    StandardOpenOption.WRITE);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Open channel fail.", e);
+                        }
+                    }
+
+                    @Override
+                    public boolean isReplayable() {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean autoRelease() {
+                        return true;
+                    }
+                })
+                .build(), options).thenApply(x -> x.toBuilder().innerBody(null).build());
+    }
+
+
     //-----------------------------------------------------------------------
 }

@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2.transport;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
 
 public abstract class BinaryData {
 
@@ -65,6 +66,27 @@ public abstract class BinaryData {
     }
 
     /**
+     * Creates an instance of {@link BinaryData} from the given {@link ReadableByteChannel}.
+     *
+     * @param channel The {@link ReadableByteChannel} that {@link BinaryData} will represent.
+     * @return A {@link BinaryData} representing the {@link ReadableByteChannel}.
+     */
+    public static BinaryData fromByteChannel(ReadableByteChannel channel) {
+        return fromByteChannel(channel, null);
+    }
+
+    /**
+     * Creates an instance of {@link BinaryData} from the given {@link ReadableByteChannel}.
+     *
+     * @param channel The {@link ReadableByteChannel} that {@link BinaryData} will represent.
+     * @param length  length The length of data in bytes.
+     * @return A {@link BinaryData} representing the {@link ReadableByteChannel}.
+     */
+    public static BinaryData fromByteChannel(ReadableByteChannel channel, Long length) {
+        return new ByteChannelBinaryData(channel, length);
+    }
+
+    /**
      * Returns a byte array representation of this {@link BinaryData}.
      *
      * @return A byte array representing this {@link BinaryData}.
@@ -94,6 +116,13 @@ public abstract class BinaryData {
      * @return A read-only {@link ByteBuffer} representing the {@link BinaryData}.
      */
     public abstract ByteBuffer toByteBuffer();
+
+    /**
+     * Returns a read-only {@link ReadableByteChannel} representation of this {@link BinaryData}.
+     *
+     * @return The {@link ReadableByteChannel} representing the {@link BinaryData}.
+     */
+    public abstract ReadableByteChannel toByteChannel();
 
     /**
      * Gets the length of the {@link BinaryData} if it can be calculated.

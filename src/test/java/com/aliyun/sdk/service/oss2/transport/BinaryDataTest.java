@@ -2,14 +2,20 @@ package com.aliyun.sdk.service.oss2.transport;
 
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.FilterInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ReadOnlyBufferException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BinaryDataTest {
 
@@ -114,7 +120,89 @@ public class BinaryDataTest {
     }
 
     @Test
-    public void testFromFile() throws Exception {
+    public void testFromReadableByteChannel() throws IOException {
+        // non seekable
+        {
+            byte[] content = "hello".getBytes(StandardCharsets.UTF_8);
+            BinaryData binaryData = BinaryData.fromByteChannel(Channels.newChannel(new ByteArrayInputStream(content)));
+            assertThat(binaryData.isReplayable()).isFalse();
+            assertThat(binaryData.getLength()).isNull();
+
+            // 1st
+            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            ReadableByteChannel channel = binaryData.toByteChannel();
+            int got = channel.read(buffer);
+            assertEquals(content.length, got);
+            buffer.flip();
+            byte []data = copyBytesFrom(buffer);
+            assertArrayEquals(content, data);
+
+            // 2st
+            buffer = ByteBuffer.allocate(1024);
+            channel = binaryData.toByteChannel();
+            got = channel.read(buffer);
+            assertEquals(-1, got);
+        }
+
+        // seekable
+        byte[] content =  "Hello World".getBytes(StandardCharsets.UTF_8);
+        Path path = Files.createTempFile("file", ".txt");
+        Files.deleteIfExists(path);
+        Files.write(path, content);
+        try (FileChannel fileChannel = FileChannel.open(path)) {
+            BinaryData binaryData = BinaryData.fromByteChannel(fileChannel);
+            assertThat(binaryData.isReplayable()).isTrue();
+            assertThat(binaryData.getLength()).isNull();
+
+            ReadableByteChannel channel1 = binaryData.toByteChannel();
+            ByteBuffer buffer1 = ByteBuffer.allocate(1024);
+            channel1.read(buffer1);
+            buffer1.flip();
+            byte[] data = copyBytesFrom(buffer1);
+            assertArrayEquals(content, data);
+
+            ReadableByteChannel channel2 = binaryData.toByteChannel();
+            ByteBuffer buffer2 = ByteBuffer.allocate(1024);
+            channel2.read(buffer2);
+            buffer2.flip();
+            data = copyBytesFrom(buffer2);
+            assertArrayEquals(content, data);
+        }
+
+        // seekable + size
+        try (FileChannel fileChannel = FileChannel.open(path)) {
+            BinaryData binaryData = BinaryData.fromByteChannel(fileChannel, 5L);
+            assertThat(binaryData.isReplayable()).isTrue();
+            assertThat(binaryData.getLength()).isEqualTo(5L);
+
+            binaryData = BinaryData.fromByteChannel(fileChannel, 100L);
+            assertThat(binaryData.isReplayable()).isTrue();
+            assertThat(binaryData.getLength()).isEqualTo(content.length);
+        }
+
+        // set position
+        try (FileChannel fileChannel = FileChannel.open(path)) {
+            byte[] cut = new byte[content.length -1];
+            System.arraycopy(content, 1, cut, 0, content.length -1);
+            fileChannel.position(1);
+            BinaryData binaryData = BinaryData.fromByteChannel(fileChannel);
+            assertThat(binaryData.isReplayable()).isTrue();
+            assertThat(binaryData.getLength()).isNull();
+
+            ReadableByteChannel channel1 = binaryData.toByteChannel();
+            ByteBuffer buffer1 = ByteBuffer.allocate(1024);
+            channel1.read(buffer1);
+            buffer1.flip();
+            byte[] data = copyBytesFrom(buffer1);
+            assertArrayEquals(cut, data);
+
+            ReadableByteChannel channel2 = binaryData.toByteChannel();
+            ByteBuffer buffer2 = ByteBuffer.allocate(1024);
+            channel2.read(buffer2);
+            buffer2.flip();
+            data = copyBytesFrom(buffer2);
+            assertArrayEquals(cut, data);
+        }
     }
 
     @Test
@@ -135,5 +223,36 @@ public class BinaryDataTest {
         public boolean markSupported() {
             return false;
         }
+    }
+
+    public static File createSampleFile(String fileName, long size) throws IOException {
+        File file = File.createTempFile(fileName, "");
+        file.deleteOnExit();
+        String context = "abcdefghijklmnopqrstuvwxyz0123456789011234567890\n";
+
+        Writer writer = new OutputStreamWriter(new FileOutputStream(file));
+        for (int i = 0; i < size / context.length(); i++) {
+            writer.write(context);
+        }
+        writer.close();
+
+        return file;
+    }
+
+    public static byte[] copyBytesFrom(ByteBuffer bb) {
+        if (bb == null) {
+            return null;
+        }
+
+        if (bb.hasArray()) {
+            return Arrays.copyOfRange(
+                    bb.array(),
+                    bb.arrayOffset() + bb.position(),
+                    bb.arrayOffset() + bb.limit());
+        }
+
+        byte[] dst = new byte[bb.remaining()];
+        bb.asReadOnlyBuffer().get(dst);
+        return dst;
     }
 }

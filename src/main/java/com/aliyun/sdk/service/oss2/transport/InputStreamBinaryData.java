@@ -1,10 +1,11 @@
 package com.aliyun.sdk.service.oss2.transport;
 
-import javax.sound.midi.SysexMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
@@ -98,6 +99,11 @@ public final class InputStreamBinaryData extends BinaryData {
     @Override
     public ByteBuffer toByteBuffer() {
         return ByteBuffer.wrap(toBytes()).asReadOnlyBuffer();
+    }
+
+    @Override
+    public ReadableByteChannel toByteChannel() {
+        return Channels.newChannel(toStream());
     }
 
     @Override

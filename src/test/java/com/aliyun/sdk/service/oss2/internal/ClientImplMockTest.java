@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -3738,6 +3739,99 @@ public class ClientImplMockTest {
                 client.presignInner(input, null);
             } catch (Exception e) {
                 assertThat(e).hasMessageContaining("Credentials is null or empty.");
+            }
+        }
+    }
+
+
+    @Test
+    public void testDownloadDataWithDataConsumerSupplier_notReplayable_async() throws Exception {
+        MockHttpClientPutObject mockHandler = new MockHttpClientPutObject();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "text/plain");
+
+            // content
+            byte[] content = TestUtils.generateTestData(100 * 1024 + 123);
+            String patCrc = Long.toUnsignedString((new CRC64(content, content.length)).getValue());
+
+            // set invalid "x-oss-hash-crc64ecma"
+            Map<String, String> respHeaders = MapUtils.caseInsensitiveMap();
+            respHeaders.put("x-oss-hash-crc64ecma", "1234567");
+            respHeaders.put("x-oss-request-id", "request-id-123");
+
+            // crc observer & response handler
+            AttributeMap opMetadata = AttributeMap.empty();
+            CRC64Observer crcObserver = new CRC64Observer();
+            opMetadata.put(AttributeKey.UPLOAD_OBSERVER, Collections.singletonList(crcObserver));
+            MockCRC64ResponseChecker crcHandler = new MockCRC64ResponseChecker(crcObserver.getChecksum());
+            opMetadata.put(AttributeKey.RESPONSE_HANDLER, Collections.singletonList(crcHandler));
+            assertFalse(crcHandler.accepted);
+
+            BinaryDataConsumerSupplier supplier = new BinaryDataConsumerSupplier() {
+                @Override
+                public boolean isReplayable() {
+                    return false;
+                }
+
+                @Override
+                public boolean autoRelease() {
+                    return false;
+                }
+
+                @Override
+                public Object get() {
+                    return Channels.newChannel(new OutputStream() {
+                        @Override
+                        public void write(int b) throws IOException {
+
+                        }
+                    });
+                }
+            };
+            opMetadata.put(AttributeKey.RESPONSE_CONSUMER_SUPPLIER, supplier);
+
+            // sync
+            mockHandler.clear();
+            assertThat(mockHandler.requests).isNull();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .headers(respHeaders)
+                    .build());
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .headers(headers)
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new ByteArrayBinaryData(content))
+                    .opMetadata(opMetadata)
+                    .build();
+
+            try {
+                OperationOutput output = client.executeAsync(input, OperationOptions.defaults()).get();
+            } catch (Exception e) {
+                assertThat(mockHandler.requests).hasSize(1);
+                //assertThat(mockHandler.lastRequest.body()).isInstanceOf(ByteArrayBinaryData.class);
+                //assertThat(output.statusCode()).isEqualTo(200);
+                //assertThat(output.status()).isEqualTo("");
+                //assertThat(output.headers()).isNotEmpty();
+                //assertThat(output.headers().get("x-oss-hash-crc64ecma")).isEqualTo(patCrc);
+                assertTrue(crcHandler.accepted);
             }
         }
     }
