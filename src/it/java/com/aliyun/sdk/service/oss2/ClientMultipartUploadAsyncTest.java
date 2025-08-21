@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2;
 
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
+import com.aliyun.sdk.service.oss2.hash.CRC64;
 import com.aliyun.sdk.service.oss2.internal.TestUtils;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.progress.ProgressListener;
@@ -11,6 +12,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayInputStream;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -960,6 +965,105 @@ public class ClientMultipartUploadAsyncTest extends TestBase {
                             .build()).get();
             Assert.assertNotNull(completeResult);
             Assert.assertEquals(200, completeResult.statusCode());
+        }
+    }
+
+    @Test
+    public void testMultipartUploadOperations_fromPath() throws Exception {
+        OSSAsyncClient client = getDefaultAsyncClient();
+
+        String objectName = genObjectName() + "-multipart-path.txt";
+
+        byte[] content = TestUtils.generateTestData(200 * 1024 + 123); // 200kb + 123 bytes
+        CRC64 hash = new CRC64(content, content.length);
+        String contentCrc = Long.toUnsignedString(hash.getValue());
+        Path filePath = Files.createTempFile("test-data", ".bin");
+        Files.write(filePath, content);
+
+        List<UploadPartResult> uploadParts = new ArrayList<>();
+
+        try (FileChannel fileChannel = FileChannel.open(filePath, StandardOpenOption.READ)) {
+            // 1. Initiate multipart upload
+            InitiateMultipartUploadResult initiateResult = client.initiateMultipartUploadAsync(
+                    InitiateMultipartUploadRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .build()).get();
+            Assert.assertNotNull(initiateResult);
+            Assert.assertEquals(200, initiateResult.statusCode());
+            Assert.assertNotNull(initiateResult.initiateMultipartUpload().uploadId());
+            String uploadId = initiateResult.initiateMultipartUpload().uploadId();
+
+            // 2. Upload parts
+            // Upload part 1
+            long part1DataSize = 100 * 1024 + 12; // 100kb + 12
+            fileChannel.position(0);
+            UploadPartResult part1Result = client.uploadPartAsync(
+                    UploadPartRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .uploadId(uploadId)
+                            .partNumber(1L)
+                            .body(BinaryData.fromByteChannel(fileChannel, part1DataSize))
+                            .build()).get();
+            Assert.assertNotNull(part1Result);
+            Assert.assertEquals(200, part1Result.statusCode());
+            uploadParts.add(part1Result);
+
+            // Upload part 2
+            long part2DataSize = content.length - part1DataSize; // Remaining data
+            fileChannel.position(part1DataSize);
+            UploadPartResult part2Result = client.uploadPartAsync(
+                    UploadPartRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .uploadId(uploadId)
+                            .partNumber(2L)
+                            .body(BinaryData.fromByteChannel(fileChannel, part2DataSize))
+                            .build()).get();
+            Assert.assertNotNull(part2Result);
+            Assert.assertEquals(200, part2Result.statusCode());
+            uploadParts.add(part2Result);
+
+            // 3. List parts
+            ListPartsResult listPartsResult = client.listPartsAsync(
+                    ListPartsRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .uploadId(uploadId)
+                            .build()).get();
+            Assert.assertNotNull(listPartsResult);
+            Assert.assertEquals(200, listPartsResult.statusCode());
+            Assert.assertEquals(2, listPartsResult.parts().size());
+            Assert.assertEquals(objectName, listPartsResult.key());
+            Assert.assertEquals(uploadId, listPartsResult.uploadId());
+
+            // 4. Complete multipart upload
+            CompleteMultipartUpload completeMultipartUpload = CompleteMultipartUpload.newBuilder()
+                    .parts(createCompletedPartList(uploadParts))
+                    .build();
+
+            CompleteMultipartUploadResult completeResult = client.completeMultipartUploadAsync(
+                    CompleteMultipartUploadRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .uploadId(uploadId)
+                            .completeMultipartUpload(completeMultipartUpload)
+                            .build()).get();
+            Assert.assertNotNull(completeResult);
+            Assert.assertEquals(200, completeResult.statusCode());
+            Assert.assertEquals(contentCrc, completeResult.hashCRC64());
+
+            // 5. Verify uploaded object
+            HeadObjectResult metaResult = client.headObjectAsync(
+                    HeadObjectRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .build()).get();
+            Assert.assertNotNull(metaResult);
+            Assert.assertEquals(200, metaResult.statusCode());
+            Assert.assertEquals(Long.valueOf(content.length), metaResult.contentLength());
+            Assert.assertEquals(contentCrc, metaResult.hashCrc64ecma());
         }
     }
 

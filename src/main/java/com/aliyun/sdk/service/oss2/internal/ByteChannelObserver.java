@@ -5,18 +5,25 @@ import com.aliyun.sdk.service.oss2.transport.ObservableByteChannel;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 
 public class ByteChannelObserver implements ObservableByteChannel {
     private final StreamObserver so;
+    private final WritableByteChannel wbc;
     // for re-use in dataUpdate(ByteBuffer input)
     private byte[] tempArray;
 
     public ByteChannelObserver(StreamObserver so) {
         this.so = so;
+        this.wbc = (so instanceof ObservableByteChannel)? (WritableByteChannel)so : null;
     }
 
     @Override
     public int write(ByteBuffer src) throws IOException {
+        if (wbc != null) {
+            return wbc.write(src);
+        }
+
         int first = src.position();
         dataUpdate(src);
         return src.position() - first;

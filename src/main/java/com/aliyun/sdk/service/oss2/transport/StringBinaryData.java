@@ -3,6 +3,8 @@ package com.aliyun.sdk.service.oss2.transport;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
@@ -55,6 +57,11 @@ public final class StringBinaryData extends BinaryData {
     @Override
     public ByteBuffer toByteBuffer() {
         return ByteBuffer.wrap(toBytes()).asReadOnlyBuffer();
+    }
+
+    @Override
+    public ReadableByteChannel toByteChannel() {
+        return Channels.newChannel(toStream());
     }
 
     private byte[] getBytes() {

@@ -22,7 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -132,6 +131,13 @@ public final class SerdeObjectBasic {
 
         builder.bucket(request.bucket());
         builder.key(request.key());
+
+        // bodyConsumer
+        if (request.dataConsumerSupplier() != null) {
+            AttributeMap opMetadata = AttributeMap.empty();
+            opMetadata.put(AttributeKey.RESPONSE_CONSUMER_SUPPLIER, request.dataConsumerSupplier());
+            builder.opMetadata(opMetadata);
+        }
 
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input);

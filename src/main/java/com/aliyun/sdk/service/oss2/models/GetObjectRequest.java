@@ -1,5 +1,6 @@
 package com.aliyun.sdk.service.oss2.models;
 
+import com.aliyun.sdk.service.oss2.transport.BinaryDataConsumerSupplier;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
 
 import static java.util.Objects.requireNonNull;
@@ -10,11 +11,13 @@ import static java.util.Objects.requireNonNull;
 public final class GetObjectRequest extends RequestModel {
     private final String bucket;
     private final String key;
+    private final BinaryDataConsumerSupplier dataConsumerSupplier;
 
     private GetObjectRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
         this.key = builder.key;
+        this.dataConsumerSupplier = builder.dataConsumerSupplier;
     }
 
     public static Builder newBuilder() {
@@ -171,6 +174,14 @@ public final class GetObjectRequest extends RequestModel {
         return value;
     }
 
+    /**
+     * A data consumer supplier to save the response body.
+     * Valid only on GetObjectAsync api.
+     */
+    public BinaryDataConsumerSupplier dataConsumerSupplier() {
+        return this.dataConsumerSupplier;
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }
@@ -178,6 +189,7 @@ public final class GetObjectRequest extends RequestModel {
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
         private String key;
+        private BinaryDataConsumerSupplier dataConsumerSupplier;
 
         private Builder() {
             super();
@@ -187,6 +199,7 @@ public final class GetObjectRequest extends RequestModel {
             super(request);
             this.bucket = request.bucket;
             this.key = request.key;
+            this.dataConsumerSupplier = request.dataConsumerSupplier;
         }
 
         /**
@@ -357,6 +370,15 @@ public final class GetObjectRequest extends RequestModel {
         public Builder rangeBehavior(String value) {
             requireNonNull(value);
             this.headers.put("x-oss-range-behavior", value);
+            return this;
+        }
+
+        /**
+         * A data consumer supplier to save the response body.
+         */
+        public Builder dataConsumerSupplier(BinaryDataConsumerSupplier value) {
+            requireNonNull(value);
+            this.dataConsumerSupplier = value;
             return this;
         }
 

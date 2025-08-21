@@ -14,6 +14,7 @@ import java.util.List;
 
 public class ObservableInputStream extends FilterInputStream {
 
+    private boolean noteFinishedDone;
     private final List<StreamObserver> observers;
 
     /**
@@ -25,6 +26,7 @@ public class ObservableInputStream extends FilterInputStream {
     private ObservableInputStream(final InputStream inputStream, final List<StreamObserver> observers) {
         super(inputStream);
         this.observers = observers;
+        this.noteFinishedDone = false;
     }
 
     /**
@@ -93,6 +95,16 @@ public class ObservableInputStream extends FilterInputStream {
 
     /**
      * Notifies the observers by invoking {@link StreamObserver#finished()}.
+     * Ignore the exception thrown by observer
+     */
+    public void tryNoteFinished() {
+        try {
+            noteFinished();
+        } catch (Exception ignore) {}
+    }
+
+    /**
+     * Notifies the observers by invoking {@link StreamObserver#finished()}.
      *
      * @throws IOException Some observer has thrown an exception, which is being passed down.
      */
@@ -147,9 +159,12 @@ public class ObservableInputStream extends FilterInputStream {
      * @throws IOException Some observer has thrown an exception, which is being passed down.
      */
     protected void noteFinished() throws IOException {
-        for (StreamObserver observer : this.observers) {
-            observer.finished();
+        if (!this.noteFinishedDone) {
+            for (StreamObserver observer : this.observers) {
+                observer.finished();
+            }
         }
+        this.noteFinishedDone = true;
     }
 
     private void notify(final byte[] buffer, final int offset, final int result, final IOException ioe) throws IOException {

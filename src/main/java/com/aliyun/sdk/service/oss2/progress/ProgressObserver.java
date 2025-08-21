@@ -3,10 +3,12 @@ package com.aliyun.sdk.service.oss2.progress;
 import com.aliyun.sdk.service.oss2.io.StreamObserver;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ProgressObserver extends StreamObserver {
+public class ProgressObserver extends StreamObserver implements WritableByteChannel {
 
     private final ProgressListener listener;
     private final long total;
@@ -50,5 +52,24 @@ public class ProgressObserver extends StreamObserver {
     public void reset() {
         this.lastWritten = this.written;
         this.written = 0;
+    }
+
+    @Override
+    public int write(ByteBuffer src) throws IOException {
+        int len = src.limit() - src.position();
+        src.position(src.limit());
+        notify((long)len);
+        return len;
+    }
+
+    @Override
+    public boolean isOpen() {
+        // NOP
+        return true;
+    }
+
+    @Override
+    public void close() throws IOException {
+        // NOP
     }
 }

@@ -597,6 +597,24 @@ public class ClientObjectTest extends TestBase {
         Assert.assertEquals(content.length, progListener.incTotal);
         Assert.assertTrue(progListener.finished);
 
+        // put object + inputStream
+        progListener = new MockProgressListener();
+        progListener.allTotal = content.length;
+        Assert.assertEquals(0, progListener.total);
+        Assert.assertFalse(progListener.finished);
+        putResult = client.putObject(PutObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName)
+                .body(BinaryData.fromStream(new ByteArrayInputStream(content)))
+                .progressListener(progListener)
+                .build());
+        Assert.assertNotNull(putResult);
+        Assert.assertEquals(200, putResult.statusCode());
+        Assert.assertEquals(-1, progListener.total);
+        Assert.assertEquals(content.length, progListener.transferred);
+        Assert.assertEquals(content.length, progListener.incTotal);
+        Assert.assertTrue(progListener.finished);
+
         // append object
         progListener = new MockProgressListener();
         progListener.allTotal = content.length;

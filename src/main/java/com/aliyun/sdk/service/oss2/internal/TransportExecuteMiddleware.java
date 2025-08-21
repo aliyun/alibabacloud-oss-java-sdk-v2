@@ -4,7 +4,6 @@ import com.aliyun.sdk.service.oss2.io.ObservableInputStream;
 import com.aliyun.sdk.service.oss2.io.StreamObserver;
 import com.aliyun.sdk.service.oss2.transport.*;
 
-import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -28,13 +27,18 @@ public class TransportExecuteMiddleware implements ExecuteMiddleware {
     }
 
     private static RequestMessage processRequest(RequestMessage request, ExecuteContext context) {
+        if (request.body() instanceof ByteChannelBinaryData) {
+            throw new UnsupportedOperationException("The synchronous interface does not support ByteChannelBinaryData.");
+        }
         //change to ObserverInputStream
         if (context.requestBodyObserver != null && !context.requestBodyObserver.isEmpty()) {
             ObservableInputStream ois = new ObservableInputStream(request.body().toStream());
             for (StreamObserver observer : context.requestBodyObserver) {
                 ois.add(observer);
             }
-            return request.toBuilder().body(BinaryData.fromStream(ois)).build();
+            Long length = request.body().getLength();
+            context.observableInputStream = length != null ? ois : null;
+            return request.toBuilder().body(BinaryData.fromStream(ois, length)).build();
         }
         return request;
     }
@@ -50,7 +54,21 @@ public class TransportExecuteMiddleware implements ExecuteMiddleware {
                 return res;
             }
         }
+
         return response;
+    }
+
+    private static ResponseMessage processResponseContext(ResponseMessage response, ExecuteContext context) {
+        // context
+        if (context.observableInputStream != null) {
+            if (response.statusCode() / 100 == 2) {
+                context.observableInputStream.tryNoteFinished();
+            }
+            context.observableInputStream = null;
+        }
+
+        // response
+        return processResponse(response);
     }
 
     private static RequestContext toRequestContext(ExecuteContext context) {
@@ -58,6 +76,11 @@ public class TransportExecuteMiddleware implements ExecuteMiddleware {
         if (context.responseHeadersRead != null) {
             ctx.put(RequestContext.Key.HTTP_COMPLETION_OPTION, RequestContext.HttpCompletionOption.ResponseHeadersRead);
         }
+
+        if (context.dataConsumerSupplier != null) {
+            ctx.put(RequestContext.Key.RESPONSE_CONSUMER_SUPPLIER, context.dataConsumerSupplier);
+        }
+
         return ctx;
     }
 
@@ -83,7 +106,9 @@ public class TransportExecuteMiddleware implements ExecuteMiddleware {
      */
     @Override
     public ResponseMessage execute(RequestMessage request, ExecuteContext context) throws Exception {
-        return processResponse(httpClient.send(processRequest(request, context), toRequestContext(context)));
+        return processResponseContext(
+                httpClient.send(processRequest(request, context), toRequestContext(context)),
+                context);
     }
 
     /**

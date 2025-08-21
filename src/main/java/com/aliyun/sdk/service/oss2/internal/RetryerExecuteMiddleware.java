@@ -144,6 +144,11 @@ class RetryerExecuteMiddleware implements ExecuteMiddleware {
                     return;
                 }
 
+                if (!(context.dataConsumerSupplier == null || context.dataConsumerSupplier.isReplayable())) {
+                    future.completeExceptionally(exception);
+                    return;
+                }
+
                 // TODO CancellationRequested
 
                 if (!this.retryer.isErrorRetryable(cause)) {

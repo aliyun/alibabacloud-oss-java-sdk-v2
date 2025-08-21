@@ -1,7 +1,9 @@
 package com.aliyun.sdk.service.oss2.internal;
 
+import com.aliyun.sdk.service.oss2.io.ObservableInputStream;
 import com.aliyun.sdk.service.oss2.io.StreamObserver;
 import com.aliyun.sdk.service.oss2.signer.SigningContext;
+import com.aliyun.sdk.service.oss2.transport.BinaryDataConsumerSupplier;
 import com.aliyun.sdk.service.oss2.transport.ResponseMessage;
 
 import java.time.Duration;
@@ -42,4 +44,10 @@ public class ExecuteContext {
      * It is the streaming mode.
      */
     public Boolean responseHeadersRead;
+
+
+    public ObservableInputStream observableInputStream;
+
+
+    public BinaryDataConsumerSupplier dataConsumerSupplier;
 }
