@@ -3836,6 +3836,272 @@ public class ClientImplMockTest {
         }
     }
 
+    @Test
+    public void returnsServiceExceptionNormal_json() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        String xmlBody =
+                "{\n" +
+                "\"Error\": {\n" +
+                        "\"Code\": \"MissingArgument\",\n" +
+                        "\"Message\": \"Missing Some Required Arguments.\",\n" +
+                        "\"RequestId\": \"57ABD896CCB80C366955****\",\n" +
+                        "\"HostId\": \"oss-example.oss-cn-hangzhou.aliyuncs.com\",\n" +
+                        "\"EC\": \"0016-00000502\",\n" +
+                        "\"RecommendDoc\": \"https://api.aliyun.com/troubleshoot?q=0016-00000502\"\n" +
+                        "}\n" +
+                "}\n";
+
+        Map<String, String> respHeaders = MapUtils.caseInsensitiveMap();
+        respHeaders.put("Content-Type", "application/json");
+        respHeaders.put("x-oss-request-id", "5C3D9175B6FC201293AD****");
+        respHeaders.put("Date", "Fri, 24 Feb 2017 03:15:40 GMT");
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(400)
+                .body(new StringBinaryData(xmlBody))
+                .headers(respHeaders)
+                .build());
+
+        // error in xml body
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "application/xml");
+
+            Map<String, String> parameters = MapUtils.caseSensitiveMap();
+            parameters.put("acl", "");
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutBucketAcl")
+                    .method("PUT")
+                    .headers(headers)
+                    .parameters(parameters)
+                    .bucket("bucket")
+                    .build();
+
+            try {
+                client.execute(input, OperationOptions.defaults());
+                Assert.fail("should not here");
+            } catch (OperationException e) {
+                assertThat(mockHandler.requests).hasSize(1);
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
+                assertThat(serr.statusCode()).isEqualTo(400);
+                assertThat(serr.errorCode()).isEqualTo("MissingArgument");
+                assertThat(serr.errorMessage()).isEqualTo("Missing Some Required Arguments.");
+                assertThat(serr.requestId()).isEqualTo("57ABD896CCB80C366955****");
+                assertThat(serr.ec()).isEqualTo("0016-00000502");
+                assertThat(serr.timestamp()).isEqualTo(Instant.ofEpochSecond(1487906140));
+            }
+        }
+    }
+
+    @Test
+    public void returnsServiceExceptionEmpty_json() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        String xmlBody =
+                "";
+
+        Map<String, String> respHeaders = MapUtils.caseInsensitiveMap();
+        respHeaders.put("Content-Type", "application/json");
+        respHeaders.put("x-oss-request-id", "5C3D9175B6FC201293AD****");
+        respHeaders.put("Date", "Fri, 24 Feb 2017 03:15:40 GMT");
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(400)
+                .body(new StringBinaryData(xmlBody))
+                .headers(respHeaders)
+                .build());
+
+        // error in xml body
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "application/xml");
+
+            Map<String, String> parameters = MapUtils.caseSensitiveMap();
+            parameters.put("acl", "");
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutBucketAcl")
+                    .method("PUT")
+                    .headers(headers)
+                    .parameters(parameters)
+                    .bucket("bucket")
+                    .build();
+
+            try {
+                client.execute(input, OperationOptions.defaults());
+                Assert.fail("should not here");
+            } catch (OperationException e) {
+                assertThat(mockHandler.requests).hasSize(1);
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
+                assertThat(serr.statusCode()).isEqualTo(400);
+                assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
+                assertThat(serr.errorMessage()).isEqualTo("Empty body");
+                assertThat(serr.requestId()).isEqualTo("5C3D9175B6FC201293AD****");
+                assertThat(serr.ec()).isEqualTo("");
+                assertThat(serr.timestamp()).isEqualTo(Instant.ofEpochSecond(1487906140));
+            }
+        }
+    }
+
+
+    @Test
+    public void returnsServiceExceptionInvalidFormat_json() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        String xmlBody =
+                "\n" +
+                        "\"Error\": {\n" +
+                        "\"Code\": \"MissingArgument\",\n" +
+                        "\"Message\": \"Missing Some Required Arguments.\",\n" +
+                        "\"RequestId\": \"57ABD896CCB80C366955****\",\n" +
+                        "\"HostId\": \"oss-example.oss-cn-hangzhou.aliyuncs.com\",\n" +
+                        "\"EC\": \"0016-00000502\",\n" +
+                        "\"RecommendDoc\": \"https://api.aliyun.com/troubleshoot?q=0016-00000502\"\n" +
+                        "}\n" +
+                        "}\n";
+
+        Map<String, String> respHeaders = MapUtils.caseInsensitiveMap();
+        respHeaders.put("Content-Type", "application/json");
+        respHeaders.put("x-oss-request-id", "5C3D9175B6FC201293AD****");
+        respHeaders.put("Date", "Fri, 24 Feb 2017 03:15:40 GMT");
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(400)
+                .body(new StringBinaryData(xmlBody))
+                .headers(respHeaders)
+                .build());
+
+        // error in xml body
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "application/xml");
+
+            Map<String, String> parameters = MapUtils.caseSensitiveMap();
+            parameters.put("acl", "");
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutBucketAcl")
+                    .method("PUT")
+                    .headers(headers)
+                    .parameters(parameters)
+                    .bucket("bucket")
+                    .build();
+
+            try {
+                client.execute(input, OperationOptions.defaults());
+                Assert.fail("should not here");
+            } catch (OperationException e) {
+                assertThat(mockHandler.requests).hasSize(1);
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
+                assertThat(serr.statusCode()).isEqualTo(400);
+                assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
+                assertThat(serr.errorMessage()).contains("Not found key Error, part response body");
+                assertThat(serr.requestId()).isEqualTo("5C3D9175B6FC201293AD****");
+                assertThat(serr.ec()).isEqualTo("");
+                assertThat(serr.timestamp()).isEqualTo(Instant.ofEpochSecond(1487906140));
+            }
+        }
+    }
+
+    @Test
+    public void returnsServiceExceptionNotError_json() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        String xmlBody =
+                "{\n" +
+                        "\"NotError\": {\n" +
+                        "\"Code\": \"MissingArgument\",\n" +
+                        "\"Message\": \"Missing Some Required Arguments.\",\n" +
+                        "\"RequestId\": \"57ABD896CCB80C366955****\",\n" +
+                        "\"HostId\": \"oss-example.oss-cn-hangzhou.aliyuncs.com\",\n" +
+                        "\"EC\": \"0016-00000502\",\n" +
+                        "\"RecommendDoc\": \"https://api.aliyun.com/troubleshoot?q=0016-00000502\"\n" +
+                        "}\n" +
+                        "}\n";
+
+        Map<String, String> respHeaders = MapUtils.caseInsensitiveMap();
+        respHeaders.put("Content-Type", "application/json");
+        respHeaders.put("x-oss-request-id", "5C3D9175B6FC201293AD****");
+        respHeaders.put("Date", "Fri, 24 Feb 2017 03:15:40 GMT");
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(400)
+                .body(new StringBinaryData(xmlBody))
+                .headers(respHeaders)
+                .build());
+
+        // error in xml body
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "application/xml");
+
+            Map<String, String> parameters = MapUtils.caseSensitiveMap();
+            parameters.put("acl", "");
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutBucketAcl")
+                    .method("PUT")
+                    .headers(headers)
+                    .parameters(parameters)
+                    .bucket("bucket")
+                    .build();
+
+            try {
+                client.execute(input, OperationOptions.defaults());
+                Assert.fail("should not here");
+            } catch (OperationException e) {
+                assertThat(mockHandler.requests).hasSize(1);
+                assertThat(e.getCause()).isInstanceOf(ServiceException.class);
+                ServiceException serr = (ServiceException) e.getCause();
+                assertThat(serr.statusCode()).isEqualTo(400);
+                assertThat(serr.statusCode()).isEqualTo(400);
+                assertThat(serr.errorCode()).isEqualTo("BadErrorResponse");
+                assertThat(serr.errorMessage()).contains("Not found key Error, part response body");
+                assertThat(serr.requestId()).isEqualTo("5C3D9175B6FC201293AD****");
+                assertThat(serr.ec()).isEqualTo("");
+                assertThat(serr.timestamp()).isEqualTo(Instant.ofEpochSecond(1487906140));
+            }
+        }
+    }
+
+
     static class MockHttpClient implements HttpClient {
 
         public RequestMessage lastRequest;

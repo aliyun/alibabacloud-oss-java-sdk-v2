@@ -143,6 +143,11 @@ abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>, C> im
         return (B) this;
     }
 
+    public B userId(String value) {
+        cfgBuilder.userId(value);
+        return (B) this;
+    }
+
     protected final HttpClientOptions toHttpClientOptions(ClientConfiguration cfg) {
 
         HttpClientOptions.Builder b = HttpClientOptions.custom();
