@@ -3,30 +3,39 @@ package com.example.oss;
 import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
-import com.aliyun.sdk.service.oss2.io.BoundedInputStream;
 import com.aliyun.sdk.service.oss2.models.*;
-import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import java.io.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class MultipartUploadAsync implements Example {
+public class UploadPartCopyAsync implements Example {
 
     private static void execute(
             String endpoint,
             String region,
             String bucket,
             String key,
-            String filePath) throws IOException {
+            String sourceBucket,
+            String sourceKey) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
 
         try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
-            // Step 1: Initiate multipart upload
+            // Step 1: Get source object metadata
+            GetObjectMetaResult resultMeta = client.getObjectMetaAsync(GetObjectMetaRequest.newBuilder()
+                    .bucket(sourceBucket)
+                    .key(sourceKey)
+                    .build()).get();
+
+            System.out.printf("Got source object meta, status code:%d, request id:%s, content length:%d\n",
+                    resultMeta.statusCode(), resultMeta.requestId(), resultMeta.contentLength());
+
+            // Step 2: Initiate multipart upload
             InitiateMultipartUploadResult initiateResult = client.initiateMultipartUploadAsync(
                     InitiateMultipartUploadRequest.newBuilder()
                             .bucket(bucket)
@@ -37,42 +46,41 @@ public class MultipartUploadAsync implements Example {
             System.out.printf("Initiated multipart upload, status code:%d, request id:%s, upload id:%s\n",
                     initiateResult.statusCode(), initiateResult.requestId(), uploadId);
 
-            // Step 2: Upload parts
-            File file = new File(filePath);
-            long fileSize = file.length();
+            // Step 3: Upload parts by copying from source object
             long partSize = 100 * 1024; // 100KB per part
+            long totalSize = resultMeta.contentLength();
             int partNumber = 1;
             List<Part> uploadParts = new ArrayList<>();
+            long offset = 0;
 
-            for (long start = 0; start < fileSize; start += partSize) {
-                long curPartSize = Math.min(partSize, fileSize - start);
+            while (offset < totalSize) {
+                long numToUpload = Math.min(partSize, totalSize - offset);
+                long end = offset + numToUpload - 1;
 
-                // Create a section of the file to upload
-                try (InputStream is = new FileInputStream(file)) {
-                    is.skip(start);
-                    BoundedInputStream boundedInputStream = new BoundedInputStream(is, curPartSize);
+                UploadPartCopyResult upResult = client.uploadPartCopyAsync(UploadPartCopyRequest.newBuilder()
+                        .bucket(bucket)
+                        .key(key)
+                        .uploadId(uploadId)
+                        .partNumber((long) partNumber)
+                        .sourceBucket(sourceBucket)
+                        .sourceKey(sourceKey)
+                        .copySourceRange("bytes=" + offset + "-" + end)
+                        .build()).get();
 
-                    // Upload the part
-                    UploadPartResult partResult = client.uploadPartAsync(UploadPartRequest.newBuilder()
-                            .bucket(bucket)
-                            .key(key)
-                            .uploadId(uploadId)
-                            .partNumber((long) partNumber)
-                            .body(BinaryData.fromStream(boundedInputStream))
-                            .build()).get();
+                System.out.printf("status code: %d, request id: %s, part number: %d, last modified: %s, etag: %s, source version id: %s\n",
+                        upResult.statusCode(), upResult.requestId(), partNumber, upResult.copyPartResult().lastModified(),
+                        upResult.copyPartResult().eTag(), upResult.copySourceVersionId());
 
-                    System.out.printf("status code: %d, request id: %s, part number: %d, etag: %s\n",
-                            partResult.statusCode(), partResult.requestId(), partNumber, partResult.eTag());
+                uploadParts.add(Part.newBuilder()
+                        .partNumber((long) partNumber)
+                        .eTag(upResult.copyPartResult().eTag())
+                        .build());
 
-                    uploadParts.add(Part.newBuilder()
-                            .partNumber((long) partNumber)
-                            .eTag(partResult.eTag())
-                            .build());
-                }
+                offset += numToUpload;
                 partNumber++;
             }
 
-            // Step 3: Complete multipart upload
+            // Step 4: Complete multipart upload
             // Sort parts by part number
             uploadParts.sort((p1, p2) -> p1.partNumber().compareTo(p2.partNumber()));
 
@@ -88,17 +96,18 @@ public class MultipartUploadAsync implements Example {
                             .completeMultipartUpload(completeMultipartUpload)
                             .build()).get();
 
-            System.out.printf("Async Completed multipart upload, status code:%d, request id:%s, bucket:%s, key:%s, location:%s, etag:%s\n",
+            System.out.printf("Completed multipart upload part copy async, status code:%d, request id:%s, bucket:%s, key:%s, location:%s, etag:%s\n",
                     completeResult.statusCode(), completeResult.requestId(), completeResult.completeMultipartUpload().bucket(),
                     completeResult.completeMultipartUpload().key(), completeResult.completeMultipartUpload().location(),
                     completeResult.completeMultipartUpload().eTag());
 
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof Exception) {
+                System.out.printf("error:\n%s", e.getCause());
+            } else {
+                System.out.printf("error:\n%s", e);
+            }
         } catch (Exception e) {
-            //If the exception is caused by ServiceException, detailed information can be obtained in this way.
-            //ServiceException se = ServiceException.asCause(e);
-            //if (se != null) {
-            //   System.out.printf("ServiceException: requestId:%s, errorCode:%s\n", se.requestId(), se.errorCode());
-            //}
             System.out.printf("error:\n%s", e);
         }
     }
@@ -118,7 +127,8 @@ public class MultipartUploadAsync implements Example {
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("key").desc("The name of the object.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("file_path").desc("The path of Upload file.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("sourceBucket").desc("The name of the source bucket.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("sourceKey").desc("The name of the source object.").hasArg().required().get());
         return opts;
     }
 
@@ -128,11 +138,8 @@ public class MultipartUploadAsync implements Example {
         String region = cmd.getParsedOptionValue("region");
         String bucket = cmd.getParsedOptionValue("bucket");
         String key = cmd.getParsedOptionValue("key");
-        String filePath = cmd.getParsedOptionValue("file_path");
-        try {
-            execute(endpoint, region, bucket, key, filePath);
-        } catch (IOException e) {
-            System.out.printf("IO error:\n%s", e);
-        }
+        String sourceBucket = cmd.getParsedOptionValue("sourceBucket");
+        String sourceKey = cmd.getParsedOptionValue("sourceKey");
+        execute(endpoint, region, bucket, key, sourceBucket, sourceKey);
     }
 }
