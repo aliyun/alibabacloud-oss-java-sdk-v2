@@ -3,7 +3,6 @@ package com.example.oss;
 import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
-import com.aliyun.sdk.service.oss2.io.BoundedInputStream;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.apache.commons.cli.CommandLine;
@@ -11,6 +10,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,28 +40,28 @@ public class MultipartUploadAsync implements Example {
             System.out.printf("Initiated multipart upload, status code:%d, request id:%s, upload id:%s\n",
                     initiateResult.statusCode(), initiateResult.requestId(), uploadId);
 
-            // Step 2: Upload parts
+            // Step 2: Upload parts using FileChannel
+            Path path = Paths.get(filePath);
             File file = new File(filePath);
             long fileSize = file.length();
             long partSize = 100 * 1024; // 100KB per part
             int partNumber = 1;
             List<Part> uploadParts = new ArrayList<>();
 
-            for (long start = 0; start < fileSize; start += partSize) {
-                long curPartSize = Math.min(partSize, fileSize - start);
+            try (FileChannel fileChannel = FileChannel.open(path, StandardOpenOption.READ)) {
+                for (long start = 0; start < fileSize; start += partSize) {
+                    long curPartSize = Math.min(partSize, fileSize - start);
 
-                // Create a section of the file to upload
-                try (InputStream is = new FileInputStream(file)) {
-                    is.skip(start);
-                    BoundedInputStream boundedInputStream = new BoundedInputStream(is, curPartSize);
+                    // Position the file channel at the start of this part
+                    fileChannel.position(start);
 
-                    // Upload the part
+                    // Upload the part using FileChannel
                     UploadPartResult partResult = client.uploadPartAsync(UploadPartRequest.newBuilder()
                             .bucket(bucket)
                             .key(key)
                             .uploadId(uploadId)
                             .partNumber((long) partNumber)
-                            .body(BinaryData.fromStream(boundedInputStream))
+                            .body(BinaryData.fromByteChannel(fileChannel, curPartSize))
                             .build()).get();
 
                     System.out.printf("status code: %d, request id: %s, part number: %d, etag: %s\n",
@@ -68,8 +71,9 @@ public class MultipartUploadAsync implements Example {
                             .partNumber((long) partNumber)
                             .eTag(partResult.eTag())
                             .build());
+
+                    partNumber++;
                 }
-                partNumber++;
             }
 
             // Step 3: Complete multipart upload
