@@ -1407,4 +1407,51 @@ public interface OSSClient extends AutoCloseable, Presignable {
 
     //-----------------------------------------------------------------------
 
+    // processObject api
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @return A {@link ProcessObjectResult} for ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ProcessObjectResult processObject(ProcessObjectRequest request) {
+        return processObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @param options The operation options.
+     * @return A {@link ProcessObjectResult} for ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ProcessObjectResult processObject(ProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @return A {@link AsyncProcessObjectResult} for AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request) {
+        return asyncProcessObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @param options The operation options.
+     * @return A {@link AsyncProcessObjectResult} for AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }
