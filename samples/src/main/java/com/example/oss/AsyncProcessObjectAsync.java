@@ -4,62 +4,40 @@ import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.models.internal.AsyncProcessJson;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class PutObjectTaggingAsync implements Example {
+public class AsyncProcessObjectAsync implements Example {
 
     private static void execute(
             String endpoint,
             String region,
             String bucket,
             String key,
-            String tags,
-            String versionId) {
+            String process) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
 
         try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
-            List<Tag> tagList = new ArrayList<>();
-            if (tags != null) {
-                String[] tagPairs = tags.split(",");
-                for (String tagPair : tagPairs) {
-                    String[] parts = tagPair.split("=");
-                    if (parts.length == 2) {
-                        tagList.add(Tag.newBuilder()
-                                .key(parts[0].trim())
-                                .value(parts[1].trim())
-                                .build());
-                    }
-                }
-            }
-            
-            Tagging tagging = Tagging.newBuilder()
-                    .tagSet(TagSet.newBuilder()
-                            .tags(tagList)
-                            .build())
-                    .build();
 
-            PutObjectTaggingRequest.Builder requestBuilder = PutObjectTaggingRequest.newBuilder()
-                    .bucket(bucket)
-                    .key(key)
-                    .tagging(tagging);
-            
-            if (versionId != null) {
-                requestBuilder.versionId(versionId);
-            }
+            AsyncProcessObjectResult result = client.asyncProcessObjectAsync(
+                    AsyncProcessObjectRequest.newBuilder()
+                            .bucket(bucket)
+                            .key(key)
+                            .process(process)
+                            .build()).get();
 
-            PutObjectTaggingResult result = client.putObjectTaggingAsync(requestBuilder.build()).get();
-
-            System.out.printf("Status code:%d, request id:%s\n",
+            System.out.printf("AsyncProcessObjectAsync has been executed successfully. Status code:%d, request id:%s\n",
                     result.statusCode(), result.requestId());
-            
-            if (result.versionId() != null) {
-                System.out.printf("Version ID: %s\n", result.versionId());
+
+            AsyncProcessJson asyncProcess = result.asyncProcessJson();
+            if (asyncProcess != null) {
+                System.out.printf("Event ID: %s\n", asyncProcess.eventId());
+                System.out.printf("Task ID: %s\n", asyncProcess.taskId());
+                System.out.printf("Process Request ID: %s\n", asyncProcess.processRequestId());
             }
 
         } catch (Exception e) {
@@ -87,8 +65,7 @@ public class PutObjectTaggingAsync implements Example {
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("key").desc("The name of the object.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("tags").desc("The tags to be added to the object. Format: key1=value1,key2=value2.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("versionId").desc("The version id of the target object.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("process").desc("The process to apply to the object. Example: image/resize,m_fixed,w_100,h_100.").hasArg().required().get());
         return opts;
     }
 
@@ -98,8 +75,7 @@ public class PutObjectTaggingAsync implements Example {
         String region = cmd.getParsedOptionValue("region");
         String bucket = cmd.getParsedOptionValue("bucket");
         String key = cmd.getParsedOptionValue("key");
-        String tags = cmd.getParsedOptionValue("tags");
-        String versionId = cmd.getParsedOptionValue("versionId");
-        execute(endpoint, region, bucket, key, tags, versionId);
+        String process = cmd.getParsedOptionValue("process");
+        execute(endpoint, region, bucket, key, process);
     }
 }
