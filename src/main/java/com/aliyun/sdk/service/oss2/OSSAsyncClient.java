@@ -1270,4 +1270,53 @@ public interface OSSAsyncClient extends AutoCloseable {
 
 
     //-----------------------------------------------------------------------
+
+    // processObject api
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @return A Java Future containing the {@link ProcessObjectResult} of the ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ProcessObjectResult> processObjectAsync(ProcessObjectRequest request) {
+        return processObjectAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ProcessObjectResult} of the ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ProcessObjectResult> processObjectAsync(ProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @return A Java Future containing the {@link AsyncProcessObjectResult} of the AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<AsyncProcessObjectResult> asyncProcessObjectAsync(AsyncProcessObjectRequest request) {
+        return asyncProcessObjectAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link AsyncProcessObjectResult} of the AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<AsyncProcessObjectResult> asyncProcessObjectAsync(AsyncProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
 }

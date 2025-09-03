@@ -284,4 +284,14 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAcl(this.clientImpl, request, options);
     }
+
+    @Override
+    public ProcessObjectResult processObject(ProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.processObject(this.clientImpl, request, options);
+    }
+
+    @Override
+    public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.asyncProcessObject(this.clientImpl, request, options);
+    }
 }
