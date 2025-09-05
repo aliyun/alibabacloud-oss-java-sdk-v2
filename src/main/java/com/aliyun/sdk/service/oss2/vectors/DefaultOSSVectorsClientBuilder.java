@@ -1,11 +1,18 @@
-package com.aliyun.sdk.service.oss2;
+package com.aliyun.sdk.service.oss2.vectors;
 
+import com.aliyun.sdk.service.oss2.*;
 import com.aliyun.sdk.service.oss2.internal.Ensure;
 import com.aliyun.sdk.service.oss2.signer.VectorsSignerV4;
 import com.aliyun.sdk.service.oss2.transport.HttpClient;
 import com.aliyun.sdk.service.oss2.transport.HttpClientOptions;
 import com.aliyun.sdk.service.oss2.transport.apache4client.Apache4HttpClientBuilder;
 import com.aliyun.sdk.service.oss2.transport.apache5client.Apache5HttpClientBuilder;
+import com.aliyun.sdk.service.oss2.types.EndpointProvider;
+import com.aliyun.sdk.service.oss2.utils.HttpUtils;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Internal implementation of {@link OSSVectorsClientBuilder}.
@@ -27,7 +34,11 @@ class DefaultOSSVectorsClientBuilder extends DefaultBaseClientBuilder<OSSVectors
         config = updateEndpoint(config);
         config = updateSinger(config);
         config = updateUserAgent(config);
-        return new DefaultOSSClient(config);
+        final String accountId = config.userId().orElse("");
+        return new DefaultOSSClient(config,
+                x -> x.toBuilder()
+                        .endpointProvider(new VectorsEndpointProvider(x.endpoint(), accountId))
+                        .build());
     }
 
     @Override
@@ -81,5 +92,34 @@ class DefaultOSSVectorsClientBuilder extends DefaultBaseClientBuilder<OSSVectors
             userAgent += "/" + config.userAgent().get();
         }
         return config.toBuilder().userAgent(userAgent).build();
+    }
+
+    static class VectorsEndpointProvider implements EndpointProvider {
+        private final URI endpoint;
+        private final String accountId;
+
+        VectorsEndpointProvider(URI endpoint, String accountId) {
+            this.endpoint = endpoint;
+            this.accountId = accountId;
+        }
+
+        @Override
+        public String buildURL(OperationInput input) {
+            List<String> paths = new ArrayList<>();
+            String host = this.endpoint.getAuthority();
+
+            if (input.bucket().isPresent()) {
+                host = String.format("%s-%s.%s", input.bucket().get(), this.accountId, host);
+            }
+
+            if (input.key().isPresent()) {
+                paths.add(HttpUtils.urlEncodePath(input.key().get()));
+            }
+
+            return String.format("%s://%s/%s",
+                    this.endpoint.getScheme(),
+                    host,
+                    String.join("/", paths));
+        }
     }
 }

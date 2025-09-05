@@ -1,5 +1,7 @@
-package com.aliyun.sdk.service.oss2;
+package com.aliyun.sdk.service.oss2.vectors;
 
+import com.aliyun.sdk.service.oss2.ClientConfiguration;
+import com.aliyun.sdk.service.oss2.DefaultBaseClientBuilder;
 import com.aliyun.sdk.service.oss2.transport.HttpClient;
 import com.aliyun.sdk.service.oss2.transport.HttpClientOptions;
 import com.aliyun.sdk.service.oss2.transport.apache5client.Apache5AsyncHttpClientBuilder;
@@ -19,7 +21,11 @@ class DefaultOSSAsyncVectorsClientBuilder extends DefaultBaseClientBuilder<OSSAs
         config = DefaultOSSVectorsClientBuilder.updateSinger(config);
         config = DefaultOSSVectorsClientBuilder.updateUserAgent(config);
 
-        return new DefaultOSSAsyncVectorsClient(config);
+        final String accountId = config.userId().orElse("");
+        return new DefaultOSSAsyncVectorsClient(config,
+                x -> x.toBuilder()
+                        .endpointProvider(new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(x.endpoint(), accountId))
+                        .build());
     }
 
     private HttpClient determineHttpClient() {

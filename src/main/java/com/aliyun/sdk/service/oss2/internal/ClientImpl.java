@@ -336,9 +336,13 @@ public class ClientImpl implements AutoCloseable {
         // request
         // request::host & path & query
         StringBuilder url = new StringBuilder();
-        URI endpoint = options.endpoint();
-        url.append(endpoint.getScheme()).append("://");
-        url.append(buildHostPath(input, endpoint.getAuthority(), options.addressStyle()));
+        if (options.endpointProvider() != null) {
+            url.append(options.endpointProvider().buildURL(input));
+        } else {
+            URI endpoint = options.endpoint();
+            url.append(endpoint.getScheme()).append("://");
+            url.append(buildHostPath(input, endpoint.getAuthority(), options.addressStyle()));
+        }
         Optional<String> query = HttpUtils.encodeQueryParameters(input.parameters());
         query.ifPresent(s -> url.append("?").append(s));
 

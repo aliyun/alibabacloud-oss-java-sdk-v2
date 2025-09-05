@@ -14,12 +14,12 @@ import java.util.List;
  * {@link DefaultOSSDualClientBuilder}
  */
 @SuppressWarnings("unchecked")
-abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>, C> implements BaseClientBuilder<B, C> {
+public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>, C> implements BaseClientBuilder<B, C> {
 
     protected ClientConfiguration.Builder cfgBuilder;
     protected HttpClient httpClient;
 
-    DefaultBaseClientBuilder() {
+    public DefaultBaseClientBuilder() {
         cfgBuilder = ClientConfiguration.defaultBuilder();
         httpClient = null;
     }

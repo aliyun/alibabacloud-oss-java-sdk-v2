@@ -1,16 +1,9 @@
-package com.aliyun.sdk.service.oss2;
+package com.aliyun.sdk.service.oss2.vectors;
 
-import com.aliyun.sdk.service.oss2.exceptions.OperationException;
-import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
-import com.aliyun.sdk.service.oss2.models.*;
-import com.aliyun.sdk.service.oss2.transport.BinaryData;
-import com.aliyun.sdk.service.oss2.transport.BinaryDataConsumerSupplier;
-import com.aliyun.sdk.service.oss2.utils.IOUtils;
+import com.aliyun.sdk.service.oss2.OperationInput;
+import com.aliyun.sdk.service.oss2.OperationOptions;
+import com.aliyun.sdk.service.oss2.OperationOutput;
 
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.concurrent.CompletableFuture;
 
 /**

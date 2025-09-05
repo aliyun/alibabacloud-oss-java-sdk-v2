@@ -1,8 +1,7 @@
-package com.aliyun.sdk.service.oss2;
+package com.aliyun.sdk.service.oss2.vectors;
 
+import com.aliyun.sdk.service.oss2.*;
 import com.aliyun.sdk.service.oss2.internal.ClientImpl;
-import com.aliyun.sdk.service.oss2.models.*;
-import com.aliyun.sdk.service.oss2.operations.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

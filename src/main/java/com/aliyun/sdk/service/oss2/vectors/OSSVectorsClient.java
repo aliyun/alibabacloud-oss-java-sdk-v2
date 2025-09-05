@@ -1,4 +1,8 @@
-package com.aliyun.sdk.service.oss2;
+package com.aliyun.sdk.service.oss2.vectors;
+
+import com.aliyun.sdk.service.oss2.OperationInput;
+import com.aliyun.sdk.service.oss2.OperationOptions;
+import com.aliyun.sdk.service.oss2.OperationOutput;
 
 /**
  * A client for accessing OSS Vectors synchronously.
