@@ -5,6 +5,7 @@ import com.aliyun.sdk.service.oss2.OSSClientBuilder;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.utils.Base64Utils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -54,25 +55,43 @@ public class PostObjectCallbackV4 implements Example {
             String date = Instant.now().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String dateTime = Instant.now().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"));
 
-            String policy = "{\n" +
-                    "  \"expiration\": \"2120-01-01T12:00:00.000Z\",\n" +
-                    "  \"conditions\": [\n" +
-                    "    {\"x-oss-signature-version\": \"OSS4-HMAC-SHA256\"},\n" +
-                    "    {\"x-oss-credential\": \"" + accessKeyId + "/" + date + "/" + region + "/oss/aliyun_v4_request\"},\n" +
-                    "    {\"x-oss-date\": \"" + dateTime + "\"},\n" +
-                    "    [\"content-length-range\", 0, 104857600]\n" +
-                    "  ]\n" +
-                    "}";
+
+            Map<String, Object> policyMap = new LinkedHashMap<>();
+            policyMap.put("expiration", "2120-01-01T12:00:00.000Z");
+
+            List<Object> conditions = new ArrayList<>();
+
+            Map<String, String> signatureVersionCondition = new LinkedHashMap<>();
+            signatureVersionCondition.put("x-oss-signature-version", "OSS4-HMAC-SHA256");
+            conditions.add(signatureVersionCondition);
+
+            Map<String, String> credentialCondition = new LinkedHashMap<>();
+            credentialCondition.put("x-oss-credential", accessKeyId + "/" + date + "/" + region + "/oss/aliyun_v4_request");
+            conditions.add(credentialCondition);
+
+            Map<String, String> dateCondition = new LinkedHashMap<>();
+            dateCondition.put("x-oss-date", dateTime);
+            conditions.add(dateCondition);
+
+            conditions.add(Arrays.asList("content-length-range", 0, 104857600));
+
+            policyMap.put("conditions", conditions);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String policy = objectMapper.writeValueAsString(policyMap);
 
             String encodePolicy = Base64Utils.encodeToString(policy.getBytes(StandardCharsets.UTF_8));
             formFields.put("policy", encodePolicy);
 
-            String callback = "{\n" +
-                    "  \"callbackUrl\": \"" + callbackUrl + "\",\n" +
-                    "  \"callbackHost\": \"" + callbackHost + "\",\n" +
-                    "  \"callbackBody\": \"{\\\"bucket\\\":${bucket},\\\"object\\\":${object},\\\"mimeType\\\":${mimeType},\\\"size\\\":${size},\\\"my_var1\\\":${x:var1},\\\"my_var2\\\":${x:var2}}\",\n" +
-                    "  \"callbackBodyType\": \"application/json\"\n" +
-                    "}";
+            Map<String, Object> callbackMap = new LinkedHashMap<>();
+            callbackMap.put("callbackUrl", callbackUrl);
+            callbackMap.put("callbackHost", callbackHost);
+
+            String callbackBody = "{\"bucket\":${bucket},\"object\":${object},\"mimeType\":${mimeType},\"size\":${size},\"my_var1\":${x:var1},\"my_var2\":${x:var2}}";
+            callbackMap.put("callbackBody", callbackBody);
+            callbackMap.put("callbackBodyType", "application/json");
+
+            String callback = objectMapper.writeValueAsString(callbackMap);
 
             String encodeCallback = Base64Utils.encodeToString(callback.getBytes(StandardCharsets.UTF_8));
             formFields.put("callback", encodeCallback);
