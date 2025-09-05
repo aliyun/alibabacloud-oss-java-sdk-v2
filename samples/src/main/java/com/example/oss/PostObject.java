@@ -23,16 +23,14 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class PostObjectCallbackV4 implements Example {
+public class PostObject implements Example {
 
     private static void execute(
             String endpoint,
             String region,
             String bucket,
             String key,
-            String localFilePath,
-            String callbackUrl,
-            String callbackHost) {
+            String localFilePath) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
         OSSClientBuilder clientBuilder = OSSClient.newBuilder()
@@ -55,11 +53,14 @@ public class PostObjectCallbackV4 implements Example {
             String date = Instant.now().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String dateTime = Instant.now().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"));
 
-
             Map<String, Object> policyMap = new LinkedHashMap<>();
             policyMap.put("expiration", "2120-01-01T12:00:00.000Z");
 
             List<Object> conditions = new ArrayList<>();
+
+            Map<String, String> bucketCondition = new LinkedHashMap<>();
+            bucketCondition.put("bucket", bucket);
+            conditions.add(bucketCondition);
 
             Map<String, String> signatureVersionCondition = new LinkedHashMap<>();
             signatureVersionCondition.put("x-oss-signature-version", "OSS4-HMAC-SHA256");
@@ -72,6 +73,7 @@ public class PostObjectCallbackV4 implements Example {
             Map<String, String> dateCondition = new LinkedHashMap<>();
             dateCondition.put("x-oss-date", dateTime);
             conditions.add(dateCondition);
+
 
             conditions.add(Arrays.asList("content-length-range", 0, 104857600));
 
@@ -88,22 +90,6 @@ public class PostObjectCallbackV4 implements Example {
             String encodePolicy = Base64Utils.encodeToString(policy.getBytes(StandardCharsets.UTF_8));
             formFields.put("policy", encodePolicy);
 
-            Map<String, Object> callbackMap = new LinkedHashMap<>();
-            callbackMap.put("callbackUrl", callbackUrl);
-            callbackMap.put("callbackHost", callbackHost);
-
-            String callbackBody = "{\"bucket\":${bucket},\"object\":${object},\"mimeType\":${mimeType},\"size\":${size},\"my_var1\":${x:var1},\"my_var2\":${x:var2}}";
-            callbackMap.put("callbackBody", callbackBody);
-            callbackMap.put("callbackBodyType", "application/json");
-
-            String callback = objectMapper.writeValueAsString(callbackMap);
-
-            String encodeCallback = Base64Utils.encodeToString(callback.getBytes(StandardCharsets.UTF_8));
-            formFields.put("callback", encodeCallback);
-
-            formFields.put("x:var1", "value1");
-            formFields.put("x:var2", "value2");
-
             formFields.put("x-oss-signature-version", "OSS4-HMAC-SHA256");
             formFields.put("x-oss-credential", accessKeyId + "/" + date + "/" + region + "/oss/aliyun_v4_request");
             formFields.put("x-oss-date", dateTime);
@@ -115,7 +101,7 @@ public class PostObjectCallbackV4 implements Example {
 
             System.out.println("Post Object [" + key + "] to bucket [" + bucket + "]");
             System.out.println("post response:" + result);
-            System.out.println("PostObjectCallbackV4 has been executed successfully.\n");
+            System.out.println("PostObjectV4 has been executed successfully.\n");
 
         } catch (Exception e) {
             System.out.printf("error:\n%s", e);
@@ -256,8 +242,6 @@ public class PostObjectCallbackV4 implements Example {
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("key").desc("The name of the object.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("localFilePath").desc("The path of the local file to upload.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("callbackUrl").desc("The callback server url.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("callbackHost").desc("The callback server host.").hasArg().get());
         return opts;
     }
 
@@ -268,8 +252,6 @@ public class PostObjectCallbackV4 implements Example {
         String bucket = cmd.getParsedOptionValue("bucket");
         String key = cmd.getParsedOptionValue("key");
         String localFilePath = cmd.getParsedOptionValue("localFilePath");
-        String callbackUrl = cmd.getParsedOptionValue("callbackUrl");
-        String callbackHost = cmd.getParsedOptionValue("callbackHost");
-        execute(endpoint, region, bucket, key, localFilePath, callbackUrl, callbackHost);
+        execute(endpoint, region, bucket, key, localFilePath);
     }
 }
