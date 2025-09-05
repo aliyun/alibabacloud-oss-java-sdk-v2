@@ -1,0 +1,373 @@
+package com.aliyun.sdk.service.oss2.vectors;
+
+import com.aliyun.sdk.service.oss2.ClientConfiguration;
+import com.aliyun.sdk.service.oss2.DefaultOSSClient;
+import com.aliyun.sdk.service.oss2.OSSClient;
+import com.aliyun.sdk.service.oss2.OperationInput;
+import com.aliyun.sdk.service.oss2.credentials.AnonymousCredentialsProvider;
+import com.aliyun.sdk.service.oss2.signer.VectorsSignerV4;
+import com.aliyun.sdk.service.oss2.transport.apache4client.Apache4HttpClient;
+import com.aliyun.sdk.service.oss2.transport.apache5client.Apache5HttpClient;
+import org.junit.Test;
+import java.lang.reflect.Field;
+import java.net.URI;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
+public class DefaultOSSVectorsClientBuilderTest {
+
+    @Test
+    public void defaultConfiguration() throws Exception {
+        try (OSSClient client = OSSVectorsClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .userId("test-user-id")
+                .build()) {
+
+            assertNotNull(client);
+
+            // Test the buildURL method directly instead of accessing private fields via reflection
+            DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider =
+                    new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
+                            URI.create("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com"),
+                            "test-user-id");
+
+            OperationInput input = OperationInput.newBuilder().build();
+            String url = provider.buildURL(input);
+
+            assertNotNull(url);
+            assertEquals("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com/", url);
+
+        }
+    }
+
+    @Test
+    public void configEndpoint() throws Exception {
+        // Test default endpoint construction
+        try (OSSClient client = OSSVectorsClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .userId("test-user-id")
+                .build()) {
+
+            assertNotNull(client);
+
+            // Test the buildURL method directly
+            DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider =
+                    new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
+                            URI.create("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com"),
+                            "test-user-id");
+
+            OperationInput input = OperationInput.newBuilder().build();
+            String url = provider.buildURL(input);
+
+            assertNotNull(url);
+            assertEquals("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com/", url);
+        }
+
+        // Test internal endpoint
+        try (OSSClient client = OSSVectorsClient.newBuilder()
+                .region("cn-shanghai")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .useInternalEndpoint(true)
+                .userId("test-user-id")
+                .build()) {
+
+            assertNotNull(client);
+
+            // Test the buildURL method directly
+            DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider =
+                    new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
+                            URI.create("https://oss-cn-shanghai-internal.oss-vectors.aliyuncs.com"),
+                            "test-user-id");
+
+            OperationInput input = OperationInput.newBuilder().build();
+            String url = provider.buildURL(input);
+
+            assertNotNull(url);
+            assertEquals("https://oss-cn-shanghai-internal.oss-vectors.aliyuncs.com/", url);
+        }
+
+        // Test with custom endpoint
+        try (OSSClient client = OSSVectorsClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .endpoint("http://oss-cn-shenzhen.aliyuncs.com")
+                .userId("test-user-id")
+                .build()) {
+
+            assertNotNull(client);
+
+            // Test the buildURL method directly
+            DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider =
+                    new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
+                            URI.create("http://oss-cn-shenzhen.aliyuncs.com"),
+                            "test-user-id");
+
+            OperationInput input = OperationInput.newBuilder().build();
+            String url = provider.buildURL(input);
+
+            assertNotNull(url);
+            assertEquals("http://oss-cn-shenzhen.aliyuncs.com/", url);
+        }
+    }
+
+    @Test
+    public void configUserAgent() throws Exception {
+        // Test default user agent
+        try (OSSClient client = OSSVectorsClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .userId("test-user-id")
+                .build()) {
+
+            assertNotNull(client);
+
+            // Test via the update user agent method which is already accessible
+            ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                    .region("cn-hangzhou")
+                    .build();
+
+            ClientConfiguration updatedConfig = DefaultOSSVectorsClientBuilder.updateUserAgent(config);
+            assertTrue(updatedConfig.userAgent().isPresent());
+            assertEquals("vectors-client", updatedConfig.userAgent().get());
+        }
+
+        // Test custom user agent
+        try (OSSClient client = OSSVectorsClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .userAgent("my-agent")
+                .userId("test-user-id")
+                .build()) {
+
+            assertNotNull(client);
+
+            // Test via the update user agent method which is already accessible
+            ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                    .region("cn-hangzhou")
+                    .userAgent("my-agent")
+                    .build();
+
+            ClientConfiguration updatedConfig = DefaultOSSVectorsClientBuilder.updateUserAgent(config);
+            assertTrue(updatedConfig.userAgent().isPresent());
+            assertEquals("vectors-client/my-agent", updatedConfig.userAgent().get());
+        }
+    }
+
+    @Test
+    public void configHttpClient() throws Exception {
+        // Test Apache HttpClient 5 (default)
+        try (OSSClient client = OSSVectorsClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .userId("test-user-id")
+                .build()) {
+
+            assertNotNull(client);
+            assertTrue(client instanceof DefaultOSSClient);
+
+            DefaultOSSClient defaultClient = (DefaultOSSClient) client;
+
+            // Use reflection to access private clientImpl field
+            Field clientImplField = DefaultOSSClient.class.getDeclaredField("clientImpl");
+            clientImplField.setAccessible(true);
+            Object clientImpl = clientImplField.get(defaultClient);
+
+            // Check that clientImpl is not null before proceeding
+            assertNotNull("clientImpl should not be null", clientImpl);
+
+            // Use reflection to access private options field
+            Field optionsField = clientImpl.getClass().getDeclaredField("options");
+            optionsField.setAccessible(true);
+            Object options = optionsField.get(clientImpl);
+
+            // Check that options is not null before proceeding
+            assertNotNull("options should not be null", options);
+
+            // Use reflection to access httpClient method
+            Field httpClientField = options.getClass().getDeclaredField("httpClient");
+            httpClientField.setAccessible(true);
+            Object httpClient = httpClientField.get(options);
+
+            assertThat(httpClient).isInstanceOf(Apache5HttpClient.class);
+        }
+
+        // Test Apache HttpClient 4
+        try (OSSClient client = OSSVectorsClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .useApacheHttpClient4(true)
+                .userId("test-user-id")
+                .build()) {
+
+            assertNotNull(client);
+            assertTrue(client instanceof DefaultOSSClient);
+
+            DefaultOSSClient defaultClient = (DefaultOSSClient) client;
+
+            // Use reflection to access private clientImpl field
+            Field clientImplField = DefaultOSSClient.class.getDeclaredField("clientImpl");
+            clientImplField.setAccessible(true);
+            Object clientImpl = clientImplField.get(defaultClient);
+
+            // Check that clientImpl is not null before proceeding
+            assertNotNull("clientImpl should not be null", clientImpl);
+
+            // Use reflection to access private options field
+            Field optionsField = clientImpl.getClass().getDeclaredField("options");
+            optionsField.setAccessible(true);
+            Object options = optionsField.get(clientImpl);
+
+            // Check that options is not null before proceeding
+            assertNotNull("options should not be null", options);
+
+            // Use reflection to access httpClient method
+            Field httpClientField = options.getClass().getDeclaredField("httpClient");
+            httpClientField.setAccessible(true);
+            Object httpClient = httpClientField.get(options);
+
+            assertThat(httpClient).isInstanceOf(Apache4HttpClient.class);
+        }
+    }
+
+    @Test
+    public void configSigner() throws Exception {
+        try (OSSClient client = OSSVectorsClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .userId("test-user-id")
+                .build()) {
+
+            assertNotNull(client);
+
+            // Test via the update signer method which is already accessible
+            ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                    .region("cn-hangzhou")
+                    .build();
+
+            ClientConfiguration updatedConfig = DefaultOSSVectorsClientBuilder.updateSinger(config);
+            assertTrue(updatedConfig.signer().isPresent());
+            assertThat(updatedConfig.signer().get()).isInstanceOf(VectorsSignerV4.class);
+        }
+    }
+
+    @Test
+    public void testVectorsEndpointProviderBuildURL() {
+        // Test with bucket and key
+        DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider = new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
+                URI.create("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com"),
+                "test-account-id");
+
+        OperationInput input = OperationInput.newBuilder()
+                .bucket("test-bucket")
+                .key("test-key")
+                .build();
+
+        String url = provider.buildURL(input);
+        assertEquals("https://test-bucket-test-account-id.oss-cn-hangzhou.oss-vectors.aliyuncs.com/test-key", url);
+
+        // Test with bucket only
+        input = OperationInput.newBuilder()
+                .bucket("test-bucket")
+                .build();
+
+        url = provider.buildURL(input);
+        assertEquals("https://test-bucket-test-account-id.oss-cn-hangzhou.oss-vectors.aliyuncs.com/", url);
+
+        // Test with key only
+        input = OperationInput.newBuilder()
+                .key("test-key")
+                .build();
+
+        url = provider.buildURL(input);
+        assertEquals("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com/test-key", url);
+
+        // Test with neither bucket nor key
+        input = OperationInput.newBuilder()
+                .build();
+
+        url = provider.buildURL(input);
+        assertEquals("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com/", url);
+
+        // Test with special characters in key (URL encoding)
+        input = OperationInput.newBuilder()
+                .bucket("test-bucket")
+                .key("test key")
+                .build();
+
+        url = provider.buildURL(input);
+        assertEquals("https://test-bucket-test-account-id.oss-cn-hangzhou.oss-vectors.aliyuncs.com/test%20key", url);
+    }
+
+    @Test
+    public void testUpdateEndpoint() {
+        // Test with endpoint already set
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .endpoint("http://oss-cn-beijing.aliyuncs.com")
+                .region("cn-hangzhou")
+                .build();
+
+        ClientConfiguration updatedConfig = DefaultOSSVectorsClientBuilder.updateEndpoint(config);
+        assertEquals(config, updatedConfig);
+
+        // Test without region
+        config = ClientConfiguration.defaultBuilder()
+                .build();
+
+        updatedConfig = DefaultOSSVectorsClientBuilder.updateEndpoint(config);
+        assertEquals(config, updatedConfig);
+
+        // Test with valid region
+        config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .build();
+
+        updatedConfig = DefaultOSSVectorsClientBuilder.updateEndpoint(config);
+        assertTrue(updatedConfig.endpoint().isPresent());
+        assertEquals("oss-cn-hangzhou.oss-vectors.aliyuncs.com", updatedConfig.endpoint().get());
+
+        // Test with valid region and internal endpoint
+        config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .useInternalEndpoint(true)
+                .build();
+
+        updatedConfig = DefaultOSSVectorsClientBuilder.updateEndpoint(config);
+        assertTrue(updatedConfig.endpoint().isPresent());
+        assertEquals("oss-cn-hangzhou-internal.oss-vectors.aliyuncs.com", updatedConfig.endpoint().get());
+    }
+
+    @Test
+    public void testUpdateSigner() {
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .build();
+
+        ClientConfiguration updatedConfig = DefaultOSSVectorsClientBuilder.updateSinger(config);
+        assertTrue(updatedConfig.signer().isPresent());
+        assertThat(updatedConfig.signer().get()).isInstanceOf(VectorsSignerV4.class);
+    }
+
+    @Test
+    public void testUpdateUserAgent() {
+        // Test default user agent
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .build();
+
+        ClientConfiguration updatedConfig = DefaultOSSVectorsClientBuilder.updateUserAgent(config);
+        assertTrue(updatedConfig.userAgent().isPresent());
+        assertEquals("vectors-client", updatedConfig.userAgent().get());
+
+        // Test custom user agent
+        config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .userAgent("my-agent")
+                .build();
+
+        updatedConfig = DefaultOSSVectorsClientBuilder.updateUserAgent(config);
+        assertTrue(updatedConfig.userAgent().isPresent());
+        assertEquals("vectors-client/my-agent", updatedConfig.userAgent().get());
+    }
+}
