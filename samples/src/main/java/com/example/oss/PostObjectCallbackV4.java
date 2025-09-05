@@ -75,6 +75,11 @@ public class PostObjectCallbackV4 implements Example {
 
             conditions.add(Arrays.asList("content-length-range", 0, 104857600));
 
+            // conditions.add(Arrays.asList("eq", "success_action_status", "201"));
+            // conditions.add(Arrays.asList("starts-with", "$key", "user/eric/"));
+            // conditions.add(Arrays.asList("in", "$content-type", Arrays.asList("image/jpg", "image/png")));
+            // conditions.add(Arrays.asList("not-in", "$cache-control", Arrays.asList("no-cache")));
+
             policyMap.put("conditions", conditions);
 
             ObjectMapper objectMapper = new ObjectMapper();
