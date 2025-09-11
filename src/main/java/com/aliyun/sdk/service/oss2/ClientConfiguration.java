@@ -34,7 +34,7 @@ public final class ClientConfiguration {
     private final Boolean enabledRedirect;
     private final String proxyHost;
     private final Boolean disableUploadCRC64Check;
-    private final String userId;
+    private final String accountId;
 
 
     private ClientConfiguration(Builder builder) {
@@ -60,7 +60,7 @@ public final class ClientConfiguration {
         this.enabledRedirect = builder.enabledRedirect;
         this.proxyHost = builder.proxyHost;
         this.disableUploadCRC64Check = builder.disableUploadCRC64Check;
-        this.userId = builder.userId;
+        this.accountId = builder.accountId;
     }
 
     public static Builder newBuilder() {
@@ -161,7 +161,7 @@ public final class ClientConfiguration {
     }
 
     public Optional<String> userId() {
-        return Optional.ofNullable(userId);
+        return Optional.ofNullable(accountId);
     }
 
 
@@ -192,7 +192,7 @@ public final class ClientConfiguration {
         private Boolean enabledRedirect;
         private String proxyHost;
         private Boolean disableUploadCRC64Check;
-        private String userId;
+        private String accountId;
 
         protected Builder() {
         }
@@ -220,7 +220,7 @@ public final class ClientConfiguration {
             this.enabledRedirect = from.enabledRedirect;
             this.proxyHost = from.proxyHost;
             this.disableUploadCRC64Check = from.disableUploadCRC64Check;
-            this.userId = from.userId;
+            this.accountId = from.accountId;
         }
 
         public Builder region(String region) {
@@ -354,8 +354,8 @@ public final class ClientConfiguration {
             return this;
         }
 
-        public Builder userId(String value) {
-            this.userId = value;
+        public Builder accountId(String value) {
+            this.accountId = value;
             return this;
         }
 

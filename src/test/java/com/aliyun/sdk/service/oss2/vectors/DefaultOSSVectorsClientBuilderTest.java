@@ -18,10 +18,10 @@ public class DefaultOSSVectorsClientBuilderTest {
 
     @Test
     public void defaultConfiguration() throws Exception {
-        try (OSSClient client = OSSVectorsClient.newBuilder()
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .userId("test-user-id")
+                .accountId("test-user-id")
                 .build()) {
 
             assertNotNull(client);
@@ -44,10 +44,10 @@ public class DefaultOSSVectorsClientBuilderTest {
     @Test
     public void configEndpoint() throws Exception {
         // Test default endpoint construction
-        try (OSSClient client = OSSVectorsClient.newBuilder()
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .userId("test-user-id")
+                .accountId("test-user-id")
                 .build()) {
 
             assertNotNull(client);
@@ -66,11 +66,11 @@ public class DefaultOSSVectorsClientBuilderTest {
         }
 
         // Test internal endpoint
-        try (OSSClient client = OSSVectorsClient.newBuilder()
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-shanghai")
                 .credentialsProvider(new AnonymousCredentialsProvider())
                 .useInternalEndpoint(true)
-                .userId("test-user-id")
+                .accountId("test-user-id")
                 .build()) {
 
             assertNotNull(client);
@@ -89,11 +89,11 @@ public class DefaultOSSVectorsClientBuilderTest {
         }
 
         // Test with custom endpoint
-        try (OSSClient client = OSSVectorsClient.newBuilder()
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
                 .endpoint("http://oss-cn-shenzhen.aliyuncs.com")
-                .userId("test-user-id")
+                .accountId("test-user-id")
                 .build()) {
 
             assertNotNull(client);
@@ -115,10 +115,10 @@ public class DefaultOSSVectorsClientBuilderTest {
     @Test
     public void configUserAgent() throws Exception {
         // Test default user agent
-        try (OSSClient client = OSSVectorsClient.newBuilder()
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .userId("test-user-id")
+                .accountId("test-user-id")
                 .build()) {
 
             assertNotNull(client);
@@ -134,11 +134,11 @@ public class DefaultOSSVectorsClientBuilderTest {
         }
 
         // Test custom user agent
-        try (OSSClient client = OSSVectorsClient.newBuilder()
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
                 .userAgent("my-agent")
-                .userId("test-user-id")
+                .accountId("test-user-id")
                 .build()) {
 
             assertNotNull(client);
@@ -158,10 +158,10 @@ public class DefaultOSSVectorsClientBuilderTest {
     @Test
     public void configHttpClient() throws Exception {
         // Test Apache HttpClient 5 (default)
-        try (OSSClient client = OSSVectorsClient.newBuilder()
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .userId("test-user-id")
+                .accountId("test-user-id")
                 .build()) {
 
             assertNotNull(client);
@@ -194,11 +194,11 @@ public class DefaultOSSVectorsClientBuilderTest {
         }
 
         // Test Apache HttpClient 4
-        try (OSSClient client = OSSVectorsClient.newBuilder()
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
                 .useApacheHttpClient4(true)
-                .userId("test-user-id")
+                .accountId("test-user-id")
                 .build()) {
 
             assertNotNull(client);
@@ -233,10 +233,10 @@ public class DefaultOSSVectorsClientBuilderTest {
 
     @Test
     public void configSigner() throws Exception {
-        try (OSSClient client = OSSVectorsClient.newBuilder()
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .userId("test-user-id")
+                .accountId("test-user-id")
                 .build()) {
 
             assertNotNull(client);

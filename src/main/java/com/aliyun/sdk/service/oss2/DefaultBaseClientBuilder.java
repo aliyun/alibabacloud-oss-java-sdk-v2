@@ -143,8 +143,8 @@ public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>
         return (B) this;
     }
 
-    public B userId(String value) {
-        cfgBuilder.userId(value);
+    public B accountId(String value) {
+        cfgBuilder.accountId(value);
         return (B) this;
     }
 
