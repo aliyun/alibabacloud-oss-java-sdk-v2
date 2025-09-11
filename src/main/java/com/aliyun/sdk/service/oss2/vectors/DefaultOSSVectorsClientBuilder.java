@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Internal implementation of {@link OSSVectorsClientBuilder}.
  */
-class DefaultOSSVectorsClientBuilder extends DefaultBaseClientBuilder<OSSVectorsClientBuilder, OSSClient> implements OSSVectorsClientBuilder {
+class DefaultOSSVectorsClientBuilder extends DefaultBaseClientBuilder<OSSVectorsClientBuilder, OSSVectorsClient> implements OSSVectorsClientBuilder {
 
     private boolean useApacheHttpClient4;
 
@@ -27,7 +27,7 @@ class DefaultOSSVectorsClientBuilder extends DefaultBaseClientBuilder<OSSVectors
     }
 
     @Override
-    protected OSSClient buildClient() {
+    protected OSSVectorsClient buildClient() {
         ClientConfiguration config = cfgBuilder
                 .httpClient(determineHttpClient())
                 .build();
@@ -35,7 +35,7 @@ class DefaultOSSVectorsClientBuilder extends DefaultBaseClientBuilder<OSSVectors
         config = updateSinger(config);
         config = updateUserAgent(config);
         final String accountId = config.userId().orElse("");
-        return new DefaultOSSClient(config,
+        return new DefaultOSSVectorsClient(config,
                 x -> x.toBuilder()
                         .endpointProvider(new VectorsEndpointProvider(x.endpoint(), accountId))
                         .build());

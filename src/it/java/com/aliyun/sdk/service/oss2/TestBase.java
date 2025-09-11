@@ -6,6 +6,7 @@ import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.paginator.ListBucketsIterable;
 import com.aliyun.sdk.service.oss2.paginator.ListObjectVersionsIterable;
 import com.aliyun.sdk.service.oss2.paginator.ListObjectsV2Iterable;
+import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.Random;
 
 public class TestBase {
+
 
     protected static final String BUCKET_NAME_PREFIX = "java-sdk-test-bucket-";
     protected static final String OJBJECT_NAME_PREFIX = "java-sdk-test-object-";
@@ -211,6 +213,17 @@ public class TestBase {
         return OSSClient.newBuilder()
                 .region(region())
                 .endpoint(endpoint())
+                .credentialsProvider(provider)
+                .build();
+    }
+
+
+    public static OSSVectorsClient getVectorsClient() {
+        CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
+        return OSSVectorsClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .accountId(accountId())
                 .credentialsProvider(provider)
                 .build();
     }

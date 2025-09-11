@@ -48,10 +48,10 @@ public class VectorsSignerV4 implements Signer {
         return key.startsWith("x-oss-") || key.equals("content-type") || key.equals("content-md5");
     }
 
-    private final String userId;
+    private final String accountId;
 
-    public VectorsSignerV4(String userId) {
-        this.userId = userId;
+    public VectorsSignerV4(String accountId) {
+        this.accountId = accountId;
     }
 
     /**
@@ -75,8 +75,8 @@ public class VectorsSignerV4 implements Signer {
             throw new IllegalArgumentException("Request cannot be null");
         }
 
-        if (this.userId == null || this.userId.isEmpty()) {
-            throw new IllegalArgumentException("VectorsSignerV4.userId is null");
+        if (this.accountId == null || this.accountId.isEmpty()) {
+            throw new IllegalArgumentException("VectorsSignerV4.accountId is null");
         }
 
         if (signingCtx.isAuthMethodQuery()) {
@@ -296,10 +296,12 @@ public class VectorsSignerV4 implements Signer {
      * @return The URL-encoded URI string
      */
     private String buildCanonicalUri(SigningContext signingCtx) {
-        //'/acs:ossvector:{signing_ctx.region}:{self._uid}:'
-        StringBuilder uri = new StringBuilder(String.format("/acs:ossvector:%s:%s", signingCtx.getRegion(), this.userId));
+        //'/acs:ossvector:{signing_ctx.region}:{self._accountId}:'
+        StringBuilder uri = new StringBuilder(String.format("/acs:ossvector:%s:", signingCtx.getRegion()));
         if (!StringUtils.isNullOrEmpty(signingCtx.getBucket())) {
-            uri.append(signingCtx.getBucket()).append("/");
+            uri.append(this.accountId).append(":").append(signingCtx.getBucket()).append("/");
+        } else {
+            uri.append(":/");
         }
         if (!StringUtils.isNullOrEmpty(signingCtx.getKey())) {
             uri.append(signingCtx.getKey());

@@ -66,5 +66,5 @@ public interface BaseClientBuilder<B extends BaseClientBuilder<B, T>, T> {
 
     B disableUploadCRC64Check(boolean value);
 
-    B userId(String value);
+    B accountId(String value);
 }
