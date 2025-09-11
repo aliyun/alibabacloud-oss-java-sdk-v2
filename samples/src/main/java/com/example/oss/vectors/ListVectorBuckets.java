@@ -34,7 +34,6 @@ public class ListVectorBuckets implements Example {
         }
 
         if (accountId != null) {
-            // accountId需要通过header传递
             clientBuilder.accountId(accountId);
         }
 
