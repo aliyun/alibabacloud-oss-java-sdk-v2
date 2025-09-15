@@ -3,7 +3,7 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.BucketProperties;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.BucketPropertiesJson;
 import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorBucketBasic;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.VectorBucketsJson;
 import org.junit.jupiter.api.Test;
@@ -36,38 +36,37 @@ public class ListVectorBucketsResultTest {
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
-        List<BucketProperties> buckets = Arrays.asList(
-                BucketProperties.newBuilder()
-                        .name("test-bucket-3")
-                        .location("oss-cn-shanghai")
-                        .creationDate(Instant.parse("2014-02-07T18:12:43.000Z"))
-                        .extranetEndpoint("oss-cn-shanghai.oss-vectors.aliyuncs.com")
-                        .intranetEndpoint("oss-cn-shanghai-internal.oss-vectors.aliyuncs.com")
-                        .region("cn-shanghai")
-                        .resourceGroupId("rg-default-id")
-                        .build(),
-                BucketProperties.newBuilder()
-                        .name("test-bucket-4")
-                        .location("oss-cn-hangzhou")
-                        .creationDate(Instant.parse("2014-02-05T11:21:04.000Z"))
-                        .extranetEndpoint("oss-cn-hangzhou.oss-vectors.aliyuncs.com")
-                        .intranetEndpoint("oss-cn-hangzhou-internal.oss-vectors.aliyuncs.com")
-                        .region("cn-hangzhou")
-                        .resourceGroupId("rg-default-id")
-                        .build()
-        );
+        BucketPropertiesJson bucket1 = new BucketPropertiesJson();
+        bucket1.name = "test-bucket-3";
+        bucket1.location = "oss-cn-shanghai";
+        bucket1.creationDate = Instant.parse("2014-02-07T18:12:43.000Z");
+        bucket1.extranetEndpoint = "oss-cn-shanghai.oss-vectors.aliyuncs.com";
+        bucket1.intranetEndpoint = "oss-cn-shanghai-internal.oss-vectors.aliyuncs.com";
+        bucket1.region = "cn-shanghai";
+        bucket1.resourceGroupId = "rg-default-id";
 
-        VectorBucketsJson vectorBucketsJson = VectorBucketsJson.newBuilder()
-                .prefix("test")
-                .marker("marker1")
-                .maxKeys(100)
-                .isTruncated(false)
-                .nextMarker("")
-                .buckets(buckets)
+        BucketPropertiesJson bucket2 = new BucketPropertiesJson();
+        bucket2.name = "test-bucket-4";
+        bucket2.location = "oss-cn-hangzhou";
+        bucket2.creationDate = Instant.parse("2014-02-05T11:21:04.000Z");
+        bucket2.extranetEndpoint = "oss-cn-hangzhou.oss-vectors.aliyuncs.com";
+        bucket2.intranetEndpoint = "oss-cn-hangzhou-internal.oss-vectors.aliyuncs.com";
+        bucket2.region = "cn-hangzhou";
+        bucket2.resourceGroupId = "rg-default-id";
+
+        List<BucketPropertiesJson> buckets = Arrays.asList(bucket1, bucket2);
+
+        VectorBucketsJson vectorBucketsJson = new VectorBucketsJson();
+        vectorBucketsJson.prefix = "test";
+        vectorBucketsJson.marker = "marker1";
+        vectorBucketsJson.maxKeys = 100;
+        vectorBucketsJson.isTruncated = false;
+        vectorBucketsJson.nextMarker = "";
+        vectorBucketsJson.buckets = buckets;
+
+        VectorBucketsResponse vectorBucketsResponse = VectorBucketsResponse.newBuilder()
+                .vectorBuckets(vectorBucketsJson)
                 .build();
-
-        VectorBucketsResponse vectorBucketsResponse = new VectorBucketsResponse();
-        vectorBucketsResponse.setVectorBuckets(vectorBucketsJson);
 
         ListVectorBucketsResult result = ListVectorBucketsResult.newBuilder()
                 .headers(headers)
@@ -85,27 +84,27 @@ public class ListVectorBucketsResultTest {
         assertThat(result.isTruncated()).isEqualTo(false);
         assertThat(result.nextMarker()).isEqualTo("");
 
-        List<BucketProperties> resultBuckets = result.buckets();
+        List<BucketPropertiesJson> resultBuckets = result.buckets();
         assertThat(resultBuckets).isNotNull();
         assertThat(resultBuckets).hasSize(2);
 
-        BucketProperties bucket1 = resultBuckets.get(0);
-        assertThat(bucket1.name()).isEqualTo("test-bucket-3");
-        assertThat(bucket1.location()).isEqualTo("oss-cn-shanghai");
-        assertThat(bucket1.creationDate()).isEqualTo(Instant.parse("2014-02-07T18:12:43.000Z"));
-        assertThat(bucket1.extranetEndpoint()).isEqualTo("oss-cn-shanghai.oss-vectors.aliyuncs.com");
-        assertThat(bucket1.intranetEndpoint()).isEqualTo("oss-cn-shanghai-internal.oss-vectors.aliyuncs.com");
-        assertThat(bucket1.region()).isEqualTo("cn-shanghai");
-        assertThat(bucket1.resourceGroupId()).isEqualTo("rg-default-id");
+        BucketPropertiesJson resultBucket1 = resultBuckets.get(0);
+        assertThat(resultBucket1.name).isEqualTo("test-bucket-3");
+        assertThat(resultBucket1.location).isEqualTo("oss-cn-shanghai");
+        assertThat(resultBucket1.creationDate).isEqualTo(Instant.parse("2014-02-07T18:12:43.000Z"));
+        assertThat(resultBucket1.extranetEndpoint).isEqualTo("oss-cn-shanghai.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket1.intranetEndpoint).isEqualTo("oss-cn-shanghai-internal.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket1.region).isEqualTo("cn-shanghai");
+        assertThat(resultBucket1.resourceGroupId).isEqualTo("rg-default-id");
 
-        BucketProperties bucket2 = resultBuckets.get(1);
-        assertThat(bucket2.name()).isEqualTo("test-bucket-4");
-        assertThat(bucket2.location()).isEqualTo("oss-cn-hangzhou");
-        assertThat(bucket2.creationDate()).isEqualTo(Instant.parse("2014-02-05T11:21:04.000Z"));
-        assertThat(bucket2.extranetEndpoint()).isEqualTo("oss-cn-hangzhou.oss-vectors.aliyuncs.com");
-        assertThat(bucket2.intranetEndpoint()).isEqualTo("oss-cn-hangzhou-internal.oss-vectors.aliyuncs.com");
-        assertThat(bucket2.region()).isEqualTo("cn-hangzhou");
-        assertThat(bucket2.resourceGroupId()).isEqualTo("rg-default-id");
+        BucketPropertiesJson resultBucket2 = resultBuckets.get(1);
+        assertThat(resultBucket2.name).isEqualTo("test-bucket-4");
+        assertThat(resultBucket2.location).isEqualTo("oss-cn-hangzhou");
+        assertThat(resultBucket2.creationDate).isEqualTo(Instant.parse("2014-02-05T11:21:04.000Z"));
+        assertThat(resultBucket2.extranetEndpoint).isEqualTo("oss-cn-hangzhou.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket2.intranetEndpoint).isEqualTo("oss-cn-hangzhou-internal.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket2.region).isEqualTo("cn-hangzhou");
+        assertThat(resultBucket2.resourceGroupId).isEqualTo("rg-default-id");
 
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
@@ -119,29 +118,28 @@ public class ListVectorBucketsResultTest {
                 "ETag", "\"original-etag\""
         );
 
-        List<BucketProperties> buckets = Arrays.asList(
-                BucketProperties.newBuilder()
-                        .name("test-bucket-5")
-                        .location("oss-cn-beijing")
-                        .creationDate(Instant.parse("2015-03-08T19:13:44.000Z"))
-                        .extranetEndpoint("oss-cn-beijing.oss-vectors.aliyuncs.com")
-                        .intranetEndpoint("oss-cn-beijing-internal.oss-vectors.aliyuncs.com")
-                        .region("cn-beijing")
-                        .resourceGroupId("rg-another-id")
-                        .build()
-        );
+        BucketPropertiesJson bucket = new BucketPropertiesJson();
+        bucket.name = "test-bucket-5";
+        bucket.location = "oss-cn-beijing";
+        bucket.creationDate = Instant.parse("2015-03-08T19:13:44.000Z");
+        bucket.extranetEndpoint = "oss-cn-beijing.oss-vectors.aliyuncs.com";
+        bucket.intranetEndpoint = "oss-cn-beijing-internal.oss-vectors.aliyuncs.com";
+        bucket.region = "cn-beijing";
+        bucket.resourceGroupId = "rg-another-id";
 
-        VectorBucketsJson vectorBucketsJson = VectorBucketsJson.newBuilder()
-                .prefix("example")
-                .marker("marker2")
-                .maxKeys(50)
-                .isTruncated(true)
-                .nextMarker("next-marker-value")
-                .buckets(buckets)
+        List<BucketPropertiesJson> buckets = Arrays.asList(bucket);
+
+        VectorBucketsJson vectorBucketsJson = new VectorBucketsJson();
+        vectorBucketsJson.prefix = "example";
+        vectorBucketsJson.marker = "marker2";
+        vectorBucketsJson.maxKeys = 50;
+        vectorBucketsJson.isTruncated = true;
+        vectorBucketsJson.nextMarker = "next-marker-value";
+        vectorBucketsJson.buckets = buckets;
+
+        VectorBucketsResponse vectorBucketsResponse = VectorBucketsResponse.newBuilder()
+                .vectorBuckets(vectorBucketsJson)
                 .build();
-
-        VectorBucketsResponse vectorBucketsResponse = new VectorBucketsResponse();
-        vectorBucketsResponse.setVectorBuckets(vectorBucketsJson);
 
         ListVectorBucketsResult original = ListVectorBucketsResult.newBuilder()
                 .headers(headers)
@@ -161,18 +159,18 @@ public class ListVectorBucketsResultTest {
         assertThat(copy.isTruncated()).isEqualTo(true);
         assertThat(copy.nextMarker()).isEqualTo("next-marker-value");
 
-        List<BucketProperties> resultBuckets = copy.buckets();
+        List<BucketPropertiesJson> resultBuckets = copy.buckets();
         assertThat(resultBuckets).isNotNull();
         assertThat(resultBuckets).hasSize(1);
 
-        BucketProperties bucket = resultBuckets.get(0);
-        assertThat(bucket.name()).isEqualTo("test-bucket-5");
-        assertThat(bucket.location()).isEqualTo("oss-cn-beijing");
-        assertThat(bucket.creationDate()).isEqualTo(Instant.parse("2015-03-08T19:13:44.000Z"));
-        assertThat(bucket.extranetEndpoint()).isEqualTo("oss-cn-beijing.oss-vectors.aliyuncs.com");
-        assertThat(bucket.intranetEndpoint()).isEqualTo("oss-cn-beijing-internal.oss-vectors.aliyuncs.com");
-        assertThat(bucket.region()).isEqualTo("cn-beijing");
-        assertThat(bucket.resourceGroupId()).isEqualTo("rg-another-id");
+        BucketPropertiesJson resultBucket = resultBuckets.get(0);
+        assertThat(resultBucket.name).isEqualTo("test-bucket-5");
+        assertThat(resultBucket.location).isEqualTo("oss-cn-beijing");
+        assertThat(resultBucket.creationDate).isEqualTo(Instant.parse("2015-03-08T19:13:44.000Z"));
+        assertThat(resultBucket.extranetEndpoint).isEqualTo("oss-cn-beijing.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket.intranetEndpoint).isEqualTo("oss-cn-beijing-internal.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket.region).isEqualTo("cn-beijing");
+        assertThat(resultBucket.resourceGroupId).isEqualTo("rg-another-id");
 
         assertThat(copy.status()).isEqualTo("Partial");
         assertThat(copy.statusCode()).isEqualTo(206);
@@ -232,27 +230,27 @@ public class ListVectorBucketsResultTest {
         assertThat(result.isTruncated()).isEqualTo(false);
         assertThat(result.nextMarker()).isEqualTo("");
 
-        List<BucketProperties> resultBuckets = result.buckets();
+        List<BucketPropertiesJson> resultBuckets = result.buckets();
         assertThat(resultBuckets).isNotNull();
         assertThat(resultBuckets).hasSize(2);
 
-        BucketProperties bucket1 = resultBuckets.get(0);
-        assertThat(bucket1.name()).isEqualTo("test-bucket-3");
-        assertThat(bucket1.location()).isEqualTo("oss-cn-shanghai");
-        assertThat(bucket1.creationDate()).isEqualTo(Instant.parse("2014-02-07T18:12:43.000Z"));
-        assertThat(bucket1.extranetEndpoint()).isEqualTo("oss-cn-shanghai.oss-vectors.aliyuncs.com");
-        assertThat(bucket1.intranetEndpoint()).isEqualTo("oss-cn-shanghai-internal.oss-vectors.aliyuncs.com");
-        assertThat(bucket1.region()).isEqualTo("cn-shanghai");
-        assertThat(bucket1.resourceGroupId()).isEqualTo("rg-default-id");
+        BucketPropertiesJson resultBucket1 = resultBuckets.get(0);
+        assertThat(resultBucket1.name).isEqualTo("test-bucket-3");
+        assertThat(resultBucket1.location).isEqualTo("oss-cn-shanghai");
+        assertThat(resultBucket1.creationDate).isEqualTo(Instant.parse("2014-02-07T18:12:43.000Z"));
+        assertThat(resultBucket1.extranetEndpoint).isEqualTo("oss-cn-shanghai.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket1.intranetEndpoint).isEqualTo("oss-cn-shanghai-internal.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket1.region).isEqualTo("cn-shanghai");
+        assertThat(resultBucket1.resourceGroupId).isEqualTo("rg-default-id");
 
-        BucketProperties bucket2 = resultBuckets.get(1);
-        assertThat(bucket2.name()).isEqualTo("test-bucket-4");
-        assertThat(bucket2.location()).isEqualTo("oss-cn-hangzhou");
-        assertThat(bucket2.creationDate()).isEqualTo(Instant.parse("2014-02-05T11:21:04.000Z"));
-        assertThat(bucket2.extranetEndpoint()).isEqualTo("oss-cn-hangzhou.oss-vectors.aliyuncs.com");
-        assertThat(bucket2.intranetEndpoint()).isEqualTo("oss-cn-hangzhou-internal.oss-vectors.aliyuncs.com");
-        assertThat(bucket2.region()).isEqualTo("cn-hangzhou");
-        assertThat(bucket2.resourceGroupId()).isEqualTo("rg-default-id");
+        BucketPropertiesJson resultBucket2 = resultBuckets.get(1);
+        assertThat(resultBucket2.name).isEqualTo("test-bucket-4");
+        assertThat(resultBucket2.location).isEqualTo("oss-cn-hangzhou");
+        assertThat(resultBucket2.creationDate).isEqualTo(Instant.parse("2014-02-05T11:21:04.000Z"));
+        assertThat(resultBucket2.extranetEndpoint).isEqualTo("oss-cn-hangzhou.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket2.intranetEndpoint).isEqualTo("oss-cn-hangzhou-internal.oss-vectors.aliyuncs.com");
+        assertThat(resultBucket2.region).isEqualTo("cn-hangzhou");
+        assertThat(resultBucket2.resourceGroupId).isEqualTo("rg-default-id");
 
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);

@@ -36,7 +36,7 @@ public class ClientVectorBucketsTest extends TestBase {
                     .build());
             Assert.assertNotNull(getResult);
             Assert.assertEquals(200, getResult.statusCode());
-            Assert.assertEquals(bucketName, getResult.bucketInfo().getBucketInfo().name());
+            Assert.assertEquals(bucketName, getResult.bucketInfoResponse().bucketInfo().name);
 
             // List vector buckets
             ListVectorBucketsResult listResult = vectorsClient.listVectorBuckets(ListVectorBucketsRequest.newBuilder()
@@ -46,7 +46,7 @@ public class ClientVectorBucketsTest extends TestBase {
             Assert.assertEquals(200, listResult.statusCode());
             assertThat(listResult.buckets()).isNotNull();
             boolean found = listResult.buckets().stream()
-                    .anyMatch(bucket -> bucketName.equals(bucket.name()));
+                    .anyMatch(bucket -> bucketName.equals(bucket.name));
             Assert.assertTrue("Created bucket should be in the list", found);
 
             // Delete vector bucket

@@ -19,7 +19,7 @@ public final class GetVectorBucketResult extends ResultModel {
     /**
      * BucketInfo defines Bucket information.
      */
-    public BucketInfoResponse bucketInfo() {
+    public BucketInfoResponse bucketInfoResponse() {
         return (BucketInfoResponse) innerBody;
     }
 
