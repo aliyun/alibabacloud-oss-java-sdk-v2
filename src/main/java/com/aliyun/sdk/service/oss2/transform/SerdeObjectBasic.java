@@ -82,12 +82,15 @@ public final class SerdeObjectBasic {
     }
 
     public static PutObjectResult toPutObject(OperationOutput output) {
-        Object innerBody = null;
+        String bodyStr = null;
+        if (output.body().isPresent()) {
+            bodyStr = output.body().get().toString();
+        }
         return PutObjectResult.newBuilder()
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(innerBody)
+                .innerBody(bodyStr)
                 .build();
     }
 
