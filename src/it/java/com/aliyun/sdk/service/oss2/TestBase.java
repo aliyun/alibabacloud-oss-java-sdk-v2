@@ -5,8 +5,8 @@ import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.paginator.ListBucketsIterable;
 import com.aliyun.sdk.service.oss2.paginator.ListObjectVersionsIterable;
-import com.aliyun.sdk.service.oss2.paginator.ListObjectsV2Iterable;
 import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClient;
+import com.aliyun.sdk.service.oss2.vectors.models.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -49,6 +49,8 @@ public class TestBase {
     protected static String bucketNamePrefix;
 
     protected static String bucketName;
+
+    protected static final String VECTOR_BUCKET_PREFIX = String.format("acs:ossvector:%s:%s:", OSS_TEST_REGION, OSS_TEST_RAM_UID);
 
     public static String region() {
         return Optional.ofNullable(OSS_TEST_REGION).orElse(System.getenv().get("OSS_TEST_REGION"));
@@ -127,6 +129,46 @@ public class TestBase {
                 .build());
         waitForCacheExpiration(1);
     }
+
+    public static void createVectorBucket(String bucketName) {
+        getVectorsClient().putVectorBucket(PutVectorBucketRequest.newBuilder()
+                .bucket(bucketName)
+                .build());
+        waitForCacheExpiration(1);
+    }
+
+    public static void cleanVectorBucket(String bucketName) {
+        getVectorsClient().deleteVectorBucket(DeleteVectorBucketRequest.newBuilder()
+                .bucket(bucketName)
+                .build());
+    }
+
+    public static void cleanVectorBuckets(String prefix) {
+        ListVectorBucketsResult result = getVectorsClient().listVectorBuckets(
+                ListVectorBucketsRequest.newBuilder()
+                        .prefix(prefix)
+                        .build()
+        );
+
+        if (result.buckets() != null) {
+            for (VectorBucketProperties bucket : result.buckets()) {
+                getVectorsClient().deleteVectorBucket(
+                        DeleteVectorBucketRequest.newBuilder()
+                                .bucket(getBucketNameWithoutPrefix(bucket.name()))
+                                .build()
+                );
+            }
+        }
+    }
+
+    public static String getBucketNameWithoutPrefix(String fullBucketName) {
+        String prefix = VECTOR_BUCKET_PREFIX;
+        if (fullBucketName.startsWith(prefix)) {
+            return fullBucketName.substring(prefix.length());
+        }
+        return fullBucketName;
+    }
+
 
     public static void cleanBucket(String bucket, String region) {
         OSSClient client = getDefaultClient();

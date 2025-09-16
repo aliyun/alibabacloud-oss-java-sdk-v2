@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.BucketInfoJson;
 
 /**
  * The result for the GetVectorBucket operation.
@@ -17,10 +18,10 @@ public final class GetVectorBucketResult extends ResultModel {
     }
 
     /**
-     * BucketInfo defines Bucket information.
+     * BucketInfoJson defines Bucket information.
      */
-    public BucketInfoResponse bucketInfoResponse() {
-        return (BucketInfoResponse) innerBody;
+    public BucketInfoJson bucketInfoJson() {
+        return (BucketInfoJson) innerBody;
     }
 
     public Builder toBuilder() {
