@@ -284,4 +284,9 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAcl(this.clientImpl, request, options);
     }
+
+    @Override
+    public SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
+        return ObjectBasic.sealAppendObject(this.clientImpl, request, options);
+    }
 }

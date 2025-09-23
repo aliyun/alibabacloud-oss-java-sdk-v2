@@ -1267,7 +1267,30 @@ public interface OSSAsyncClient extends AutoCloseable {
                 })
                 .build(), options).thenApply(x -> x.toBuilder().innerBody(null).build());
     }
+    //-----------------------------------------------------------------------
 
+    // seal append object api
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request) {
+        return sealAppendObjectAsync(request, OperationOptions.defaults());
+    }
 
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @param options The operation options.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 }
