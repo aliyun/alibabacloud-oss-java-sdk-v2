@@ -2,26 +2,31 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
-import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorIndexBasic;
+import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorsBasic;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DeleteVectorIndexRequestTest {
+public class GetVectorsRequestTest {
 
     @Test
     public void testEmptyBuilder() {
-        DeleteVectorIndexRequest request = DeleteVectorIndexRequest.newBuilder().build();
+        GetVectorsRequest request = GetVectorsRequest.newBuilder().build();
         assertThat(request).isNotNull();
         assertThat(request.headers()).isNotNull();
         assertThat(request.headers().isEmpty()).isTrue();
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.vectorIndexNameInfoJson()).isNotNull();
-        assertThat(request.vectorIndexNameInfoJson().indexName).isNull();
+        assertThat(request.getVectorsRequestJson()).isNotNull();
+        assertThat(request.getVectorsRequestJson().indexName).isNull();
+        assertThat(request.getVectorsRequestJson().keys).isNull();
+        assertThat(request.getVectorsRequestJson().returnData).isNull();
+        assertThat(request.getVectorsRequestJson().returnMetadata).isNull();
     }
 
     @Test
@@ -31,16 +36,24 @@ public class DeleteVectorIndexRequestTest {
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
-        DeleteVectorIndexRequest request = DeleteVectorIndexRequest.newBuilder()
+        List<String> keys = Arrays.asList("key1", "key2");
+
+        GetVectorsRequest request = GetVectorsRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("test-index")
+                .keys(keys)
+                .returnData(true)
+                .returnMetadata(false)
                 .headers(headers)
                 .parameter("param1", "value1")
                 .parameter("param2", "value2")
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.vectorIndexNameInfoJson().indexName).isEqualTo("test-index");
+        assertThat(request.getVectorsRequestJson().indexName).isEqualTo("test-index");
+        assertThat(request.getVectorsRequestJson().keys).isEqualTo(keys);
+        assertThat(request.getVectorsRequestJson().returnData).isEqualTo(true);
+        assertThat(request.getVectorsRequestJson().returnMetadata).isEqualTo(false);
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).containsEntry("param1", "value1");
@@ -54,18 +67,26 @@ public class DeleteVectorIndexRequestTest {
                 "ETag", "\"original-etag\""
         );
 
-        DeleteVectorIndexRequest original = DeleteVectorIndexRequest.newBuilder()
+        List<String> keys = Arrays.asList("key3", "key4");
+
+        GetVectorsRequest original = GetVectorsRequest.newBuilder()
                 .bucket("testbucket")
                 .indexName("original-index")
+                .keys(keys)
+                .returnData(false)
+                .returnMetadata(true)
                 .headers(headers)
                 .parameter("param3", "value3")
                 .parameter("param4", "value4")
                 .build();
 
-        DeleteVectorIndexRequest copy = original.toBuilder().build();
+        GetVectorsRequest copy = original.toBuilder().build();
 
         assertThat(copy.bucket()).isEqualTo("testbucket");
-        assertThat(copy.vectorIndexNameInfoJson().indexName).isEqualTo("original-index");
+        assertThat(copy.getVectorsRequestJson().indexName).isEqualTo("original-index");
+        assertThat(copy.getVectorsRequestJson().keys).isEqualTo(keys);
+        assertThat(copy.getVectorsRequestJson().returnData).isEqualTo(false);
+        assertThat(copy.getVectorsRequestJson().returnMetadata).isEqualTo(true);
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.parameters()).containsEntry("param3", "value3");
@@ -74,7 +95,7 @@ public class DeleteVectorIndexRequestTest {
 
     @Test
     public void testHeaderProperties() {
-        DeleteVectorIndexRequest request = DeleteVectorIndexRequest.newBuilder()
+        GetVectorsRequest request = GetVectorsRequest.newBuilder()
                 .bucket("anotherbucket")
                 .indexName("header-test-index")
                 .header("x-oss-meta-custom", "custom-value")
@@ -82,23 +103,28 @@ public class DeleteVectorIndexRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("anotherbucket");
-        assertThat(request.vectorIndexNameInfoJson().indexName).isEqualTo("header-test-index");
+        assertThat(request.getVectorsRequestJson().indexName).isEqualTo("header-test-index");
         assertThat(request.headers()).containsEntry("x-oss-meta-custom", "custom-value");
         assertThat(request.headers()).containsEntry("Cache-Control", "no-cache");
     }
 
     @Test
     public void xmlBuilder() throws Exception {
-        String jsonStr = "{\"indexName\": \"test-index\"}";
+        String jsonStr = "{\"indexName\": \"test-index\", \"keys\": [\"key1\", \"key2\"], \"returnData\": true, \"returnMetadata\": false}";
 
-        DeleteVectorIndexRequest request = DeleteVectorIndexRequest.newBuilder()
+        List<String> keys = Arrays.asList("key1", "key2");
+
+        GetVectorsRequest request = GetVectorsRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("test-index")
+                .keys(keys)
+                .returnData(true)
+                .returnMetadata(false)
                 .header("x-oss-request-id", "test-request-id")
                 .parameter("test-param", "test-value")
                 .build();
 
-        OperationInput input = SerdeVectorIndexBasic.fromDeleteVectorIndex(request);
+        OperationInput input = SerdeVectorsBasic.fromGetVectors(request);
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(jsonStr);
@@ -109,7 +135,7 @@ public class DeleteVectorIndexRequestTest {
         assertThat(input.headers()).containsEntry("x-oss-request-id", "test-request-id");
         assertThat(input.parameters()).containsEntry("test-param", "test-value");
         assertThat(input.method()).isEqualTo("POST");
-        assertThat(input.opName()).isEqualTo("DeleteVectorIndex");
+        assertThat(input.opName()).isEqualTo("GetVectors");
         assertThat(input.body().get().toString()).isEqualTo(compactJson);
     }
 }

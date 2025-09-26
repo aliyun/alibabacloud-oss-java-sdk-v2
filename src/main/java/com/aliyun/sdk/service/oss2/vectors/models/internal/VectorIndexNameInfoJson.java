@@ -3,12 +3,12 @@ package com.aliyun.sdk.service.oss2.vectors.models.internal;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * JSON model for get vector index request
+ * JSON model for vector index name info
  */
-public class GetVectorIndexRequestJson {
+public class VectorIndexNameInfoJson {
     @JsonProperty("indexName")
     public String indexName;
 
-    public GetVectorIndexRequestJson() {
+    public VectorIndexNameInfoJson() {
     }
 }

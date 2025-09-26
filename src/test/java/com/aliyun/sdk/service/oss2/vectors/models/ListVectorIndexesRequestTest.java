@@ -3,6 +3,8 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorIndexBasic;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,9 +20,10 @@ public class ListVectorIndexesRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.maxResults()).isNull();
-        assertThat(request.nextToken()).isNull();
-        assertThat(request.prefix()).isNull();
+        assertThat(request.listVectorIndexesRequestJson()).isNotNull();
+        assertThat(request.listVectorIndexesRequestJson().maxResults).isNull();
+        assertThat(request.listVectorIndexesRequestJson().nextToken).isNull();
+        assertThat(request.listVectorIndexesRequestJson().prefix).isNull();
     }
 
     @Test
@@ -32,7 +35,7 @@ public class ListVectorIndexesRequestTest {
 
         ListVectorIndexesRequest request = ListVectorIndexesRequest.newBuilder()
                 .bucket("test-bucket")
-                .maxResults(100)
+                .maxResults(100L)
                 .nextToken("test-token")
                 .prefix("test-")
                 .headers(headers)
@@ -41,9 +44,9 @@ public class ListVectorIndexesRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.maxResults()).isEqualTo(100);
-        assertThat(request.nextToken()).isEqualTo("test-token");
-        assertThat(request.prefix()).isEqualTo("test-");
+        assertThat(request.listVectorIndexesRequestJson().maxResults).isEqualTo(100);
+        assertThat(request.listVectorIndexesRequestJson().nextToken).isEqualTo("test-token");
+        assertThat(request.listVectorIndexesRequestJson().prefix).isEqualTo("test-");
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).containsEntry("param1", "value1");
@@ -59,7 +62,7 @@ public class ListVectorIndexesRequestTest {
 
         ListVectorIndexesRequest original = ListVectorIndexesRequest.newBuilder()
                 .bucket("testbucket")
-                .maxResults(50)
+                .maxResults(50L)
                 .nextToken("original-token")
                 .prefix("original-")
                 .headers(headers)
@@ -70,9 +73,9 @@ public class ListVectorIndexesRequestTest {
         ListVectorIndexesRequest copy = original.toBuilder().build();
 
         assertThat(copy.bucket()).isEqualTo("testbucket");
-        assertThat(copy.maxResults()).isEqualTo(50);
-        assertThat(copy.nextToken()).isEqualTo("original-token");
-        assertThat(copy.prefix()).isEqualTo("original-");
+        assertThat(copy.listVectorIndexesRequestJson().maxResults).isEqualTo(50);
+        assertThat(copy.listVectorIndexesRequestJson().nextToken).isEqualTo("original-token");
+        assertThat(copy.listVectorIndexesRequestJson().prefix).isEqualTo("original-");
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.parameters()).containsEntry("param3", "value3");
@@ -93,10 +96,12 @@ public class ListVectorIndexesRequestTest {
     }
 
     @Test
-    public void xmlBuilder() {
+    public void xmlBuilder() throws Exception {
+        String jsonStr = "{\"maxResults\": 100, \"nextToken\": \"test-token\", \"prefix\": \"test-\"}";
+
         ListVectorIndexesRequest request = ListVectorIndexesRequest.newBuilder()
                 .bucket("test-bucket")
-                .maxResults(100)
+                .maxResults(100L)
                 .nextToken("test-token")
                 .prefix("test-")
                 .header("x-oss-request-id", "test-request-id")
@@ -105,11 +110,16 @@ public class ListVectorIndexesRequestTest {
 
         OperationInput input = SerdeVectorIndexBasic.fromListVectorIndexes(request);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(jsonStr);
+        String compactJson = objectMapper.writeValueAsString(jsonNode);
+
         assertThat(input.bucket().get()).isEqualTo("test-bucket");
         assertThat(input.headers()).containsEntry("Content-Type", "application/json");
         assertThat(input.headers()).containsEntry("x-oss-request-id", "test-request-id");
         assertThat(input.parameters()).containsEntry("test-param", "test-value");
         assertThat(input.method()).isEqualTo("POST");
         assertThat(input.opName()).isEqualTo("ListVectorIndexes");
+        assertThat(input.body().get().toString()).isEqualTo(compactJson);
     }
 }

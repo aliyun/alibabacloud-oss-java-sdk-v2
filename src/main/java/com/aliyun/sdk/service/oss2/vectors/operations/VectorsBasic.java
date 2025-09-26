@@ -5,89 +5,89 @@ import com.aliyun.sdk.service.oss2.OperationOptions;
 import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
-import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorBasic;
+import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorsBasic;
 import java.util.concurrent.CompletableFuture;
 import static java.util.Objects.requireNonNull;
 
-public final class VectorBasic {
+public final class VectorsBasic {
 
     public static PutVectorsResult putVectors(ClientImpl impl, PutVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromPutVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromPutVectors(request);
         OperationOutput output = impl.execute(input, options);
-        return SerdeVectorBasic.toPutVectors(output);
+        return SerdeVectorsBasic.toPutVectors(output);
     }
 
     public static CompletableFuture<PutVectorsResult> putVectorsAsync(ClientImpl impl, PutVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromPutVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromPutVectors(request);
         return impl.executeAsync(input, options)
-                .thenApply(SerdeVectorBasic::toPutVectors);
+                .thenApply(SerdeVectorsBasic::toPutVectors);
     }
 
     public static GetVectorsResult getVectors(ClientImpl impl, GetVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromGetVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromGetVectors(request);
         OperationOutput output = impl.execute(input, options);
-        return SerdeVectorBasic.toGetVectors(output);
+        return SerdeVectorsBasic.toGetVectors(output);
     }
 
     public static CompletableFuture<GetVectorsResult> getVectorsAsync(ClientImpl impl, GetVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromGetVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromGetVectors(request);
         return impl.executeAsync(input, options)
-                .thenApply(SerdeVectorBasic::toGetVectors);
+                .thenApply(SerdeVectorsBasic::toGetVectors);
     }
 
     public static ListVectorsResult listVectors(ClientImpl impl, ListVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromListVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromListVectors(request);
         OperationOutput output = impl.execute(input, options);
-        return SerdeVectorBasic.toListVectors(output);
+        return SerdeVectorsBasic.toListVectors(output);
     }
 
     public static CompletableFuture<ListVectorsResult> listVectorsAsync(ClientImpl impl, ListVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromListVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromListVectors(request);
         return impl.executeAsync(input, options)
-                .thenApply(SerdeVectorBasic::toListVectors);
+                .thenApply(SerdeVectorsBasic::toListVectors);
     }
 
     public static DeleteVectorsResult deleteVectors(ClientImpl impl, DeleteVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromDeleteVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromDeleteVectors(request);
         OperationOutput output = impl.execute(input, options);
-        return SerdeVectorBasic.toDeleteVectors(output);
+        return SerdeVectorsBasic.toDeleteVectors(output);
     }
 
     public static CompletableFuture<DeleteVectorsResult> deleteVectorsAsync(ClientImpl impl, DeleteVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromDeleteVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromDeleteVectors(request);
         return impl.executeAsync(input, options)
-                .thenApply(SerdeVectorBasic::toDeleteVectors);
+                .thenApply(SerdeVectorsBasic::toDeleteVectors);
     }
 
     public static QueryVectorsResult queryVectors(ClientImpl impl, QueryVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromQueryVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromQueryVectors(request);
         OperationOutput output = impl.execute(input, options);
-        return SerdeVectorBasic.toQueryVectors(output);
+        return SerdeVectorsBasic.toQueryVectors(output);
     }
 
     public static CompletableFuture<QueryVectorsResult> queryVectorsAsync(ClientImpl impl, QueryVectorsRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
-        OperationInput input = SerdeVectorBasic.fromQueryVectors(request);
+        OperationInput input = SerdeVectorsBasic.fromQueryVectors(request);
         return impl.executeAsync(input, options)
-                .thenApply(SerdeVectorBasic::toQueryVectors);
+                .thenApply(SerdeVectorsBasic::toQueryVectors);
     }
 }

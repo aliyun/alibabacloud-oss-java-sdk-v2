@@ -21,13 +21,13 @@ import java.util.Random;
 
 public class TestBase {
 
-
     protected static final String BUCKET_NAME_PREFIX = "java-sdk-test-bucket-";
     protected static final String OJBJECT_NAME_PREFIX = "java-sdk-test-object-";
     protected static final long DELETE_OBJECTS_ONETIME_LIMIT = 1000;
     // OSS test configuration
     public static String OSS_TEST_REGION = null;
     public static String OSS_TEST_ENDPOINT = null;
+    public static String OSS_TEST_VECTORS_ENDPOINT = null;
     public static String OSS_TEST_ACCESS_KEY_ID = null;
     public static String OSS_TEST_ACCESS_KEY_SECRET = null;
     public static String OSS_TEST_RAM_ROLE_ARN = null;
@@ -58,6 +58,10 @@ public class TestBase {
 
     public static String endpoint() {
         return Optional.ofNullable(OSS_TEST_ENDPOINT).orElse(System.getenv().get("OSS_TEST_ENDPOINT"));
+    }
+
+    public static String vectorEndpoint() {
+        return Optional.ofNullable(OSS_TEST_VECTORS_ENDPOINT).orElse(System.getenv().get("OSS_TEST_VECTORS_ENDPOINT"));
     }
 
     public static String accessKeyId() {
@@ -264,7 +268,7 @@ public class TestBase {
         CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
         return OSSVectorsClient.newBuilder()
                 .region(region())
-                .endpoint(endpoint())
+                .endpoint(vectorEndpoint())
                 .accountId(accountId())
                 .credentialsProvider(provider)
                 .build();

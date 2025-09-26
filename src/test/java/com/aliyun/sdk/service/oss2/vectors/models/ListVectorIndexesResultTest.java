@@ -22,6 +22,7 @@ public class ListVectorIndexesResultTest {
         assertThat(result.headers().isEmpty()).isTrue();
         assertThat(result.indexes()).isNull();
         assertThat(result.nextToken()).isNull();
+        assertThat(result.asIndexSummaries()).isNull();
     }
 
     @Test
@@ -47,6 +48,25 @@ public class ListVectorIndexesResultTest {
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-1234567890abcdefg");
+
+        // Test asIndexSummaries method
+        List<IndexSummary> indexSummaries = result.asIndexSummaries();
+        assertThat(indexSummaries).isNotNull();
+        assertThat(indexSummaries).hasSize(1);
+
+        IndexSummary indexSummary = indexSummaries.get(0);
+        assertThat(indexSummary.createTime()).isEqualTo("2023-12-17T00:20:57.000Z");
+        assertThat(indexSummary.indexName()).isEqualTo("test-index1");
+        assertThat(indexSummary.dataType()).isEqualTo("vector");
+        assertThat(indexSummary.dimension()).isEqualTo(128);
+        assertThat(indexSummary.distanceMetric()).isEqualTo("EUCLIDEAN");
+        assertThat(indexSummary.vectorBucketName()).isEqualTo("test-bucket");
+        assertThat(indexSummary.status()).isEqualTo("Active");
+
+        Map<String, Object> metadata = indexSummary.metadata();
+        assertThat(metadata).isNotNull();
+        List<String> nonFilterableKeys = (List<String>) metadata.get("nonFilterableMetadataKeys");
+        assertThat(nonFilterableKeys).containsExactly("key1", "key2");
     }
 
     @Test
@@ -74,6 +94,20 @@ public class ListVectorIndexesResultTest {
         assertThat(copy.status()).isEqualTo("Created");
         assertThat(copy.statusCode()).isEqualTo(201);
         assertThat(copy.requestId()).isEqualTo("req-765432109876543210");
+
+        // Test asIndexSummaries method
+        List<IndexSummary> indexSummaries = copy.asIndexSummaries();
+        assertThat(indexSummaries).isNotNull();
+        assertThat(indexSummaries).hasSize(1);
+
+        IndexSummary indexSummary = indexSummaries.get(0);
+        assertThat(indexSummary.createTime()).isEqualTo("2023-12-17T00:20:57.000Z");
+        assertThat(indexSummary.indexName()).isEqualTo("test-index1");
+        assertThat(indexSummary.dataType()).isEqualTo("vector");
+        assertThat(indexSummary.dimension()).isEqualTo(128);
+        assertThat(indexSummary.distanceMetric()).isEqualTo("EUCLIDEAN");
+        assertThat(indexSummary.vectorBucketName()).isEqualTo("test-bucket");
+        assertThat(indexSummary.status()).isEqualTo("Active");
     }
 
     @Test
@@ -83,9 +117,9 @@ public class ListVectorIndexesResultTest {
                 "    {\n" +
                 "      \"createTime\": \"2023-12-17T00:20:57.000Z\",\n" +
                 "      \"indexName\": \"test-index1\",\n" +
-                "      \"dataType\": \"vector\",\n" +
+                "      \"dataType\": \"float32\",\n" +
                 "      \"dimension\": 128,\n" +
-                "      \"distanceMetric\": \"EUCLIDEAN\",\n" +
+                "      \"distanceMetric\": \"cosine\",\n" +
                 "      \"metadata\": {\n" +
                 "        \"nonFilterableMetadataKeys\": [\"key1\", \"key2\"]\n" +
                 "      },\n" +
@@ -117,9 +151,9 @@ public class ListVectorIndexesResultTest {
         Map<String, Object> index = result.indexes().get(0);
         assertThat(index.get("createTime")).isEqualTo("2023-12-17T00:20:57.000Z");
         assertThat(index.get("indexName")).isEqualTo("test-index1");
-        assertThat(index.get("dataType")).isEqualTo("vector");
+        assertThat(index.get("dataType")).isEqualTo("float32");
         assertThat(index.get("dimension")).isEqualTo(128);
-        assertThat(index.get("distanceMetric")).isEqualTo("EUCLIDEAN");
+        assertThat(index.get("distanceMetric")).isEqualTo("cosine");
         assertThat(index.get("vectorBucketName")).isEqualTo("test-bucket");
         assertThat(index.get("status")).isEqualTo("Active");
 
@@ -137,6 +171,25 @@ public class ListVectorIndexesResultTest {
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-xml-builder-test");
+
+        // Test asIndexSummaries method
+        List<IndexSummary> indexSummaries = result.asIndexSummaries();
+        assertThat(indexSummaries).isNotNull();
+        assertThat(indexSummaries).hasSize(1);
+
+        IndexSummary indexSummary = indexSummaries.get(0);
+        assertThat(indexSummary.createTime()).isEqualTo("2023-12-17T00:20:57.000Z");
+        assertThat(indexSummary.indexName()).isEqualTo("test-index1");
+        assertThat(indexSummary.dataType()).isEqualTo("float32");
+        assertThat(indexSummary.dimension()).isEqualTo(128);
+        assertThat(indexSummary.distanceMetric()).isEqualTo("cosine");
+        assertThat(indexSummary.vectorBucketName()).isEqualTo("test-bucket");
+        assertThat(indexSummary.status()).isEqualTo("Active");
+
+        Map<String, Object> summaryMetadata = indexSummary.metadata();
+        assertThat(summaryMetadata).isNotNull();
+        List<String> summaryNonFilterableKeys = (List<String>) summaryMetadata.get("nonFilterableMetadataKeys");
+        assertThat(summaryNonFilterableKeys).containsExactly("key1", "key2");
     }
 
     private ListVectorIndexesResultJson createTestListResult() {

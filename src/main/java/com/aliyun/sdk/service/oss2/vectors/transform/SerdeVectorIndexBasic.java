@@ -1,3 +1,4 @@
+
 package com.aliyun.sdk.service.oss2.vectors.transform;
 
 import com.aliyun.sdk.service.oss2.OperationInput;
@@ -25,8 +26,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("putVectorIndex", "");
 
         // body
-        BinaryData body = null;
-        body = SerdeJsonUtils.toJson(request.vectorIndexConfigurationJson());
+        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexConfigurationJson());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("PutVectorIndex")
@@ -62,8 +62,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("getVectorIndex", "");
 
         // body
-        BinaryData body = null;
-        body = SerdeJsonUtils.toJson(request.getVectorIndexRequestJson());
+        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexNameInfoJson());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("GetVectorIndex")
@@ -100,12 +99,16 @@ public final class SerdeVectorIndexBasic {
         Map<String, String> parameters = MapUtils.caseSensitiveMap();
         parameters.put("listVectorIndexes", "");
 
+        // body
+        BinaryData body = SerdeJsonUtils.toJson(request.listVectorIndexesRequestJson());
+
         OperationInput input = OperationInput.newBuilder()
                 .opName("ListVectorIndexes")
                 .bucket(request.bucket())
                 .method("POST")
                 .headers(headers)
                 .parameters(parameters)
+                .body(body)
                 .build();
 
         serializeInput(request, input, SerdeUtils.addContentMd5);
@@ -134,12 +137,16 @@ public final class SerdeVectorIndexBasic {
         Map<String, String> parameters = MapUtils.caseSensitiveMap();
         parameters.put("deleteVectorIndex", "");
 
+        // body
+        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexNameInfoJson());
+
         OperationInput input = OperationInput.newBuilder()
                 .opName("DeleteVectorIndex")
                 .bucket(request.bucket())
                 .method("POST")
                 .headers(headers)
                 .parameters(parameters)
+                .body(body)
                 .build();
 
         serializeInput(request, input, SerdeUtils.addContentMd5);

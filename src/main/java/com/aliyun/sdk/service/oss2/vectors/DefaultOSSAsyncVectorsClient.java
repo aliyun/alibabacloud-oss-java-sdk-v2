@@ -9,6 +9,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
 import com.aliyun.sdk.service.oss2.vectors.operations.VectorBucketBasic;
+import com.aliyun.sdk.service.oss2.vectors.operations.VectorIndexBasic;
+import com.aliyun.sdk.service.oss2.vectors.operations.VectorsBasic;
 
 /**
  * Internal implementation of {@link OSSAsyncVectorsClient}.
@@ -58,5 +60,50 @@ public class DefaultOSSAsyncVectorsClient implements OSSAsyncVectorsClient {
     @Override
     public CompletableFuture<ListVectorBucketsResult> listVectorBucketsAsync(ListVectorBucketsRequest request, OperationOptions options) {
         return VectorBucketBasic.listVectorBucketsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutVectorIndexResult> putVectorIndexAsync(PutVectorIndexRequest request, OperationOptions options) {
+        return VectorIndexBasic.putVectorIndexAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetVectorIndexResult> getVectorIndexAsync(GetVectorIndexRequest request, OperationOptions options) {
+        return VectorIndexBasic.getVectorIndexAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListVectorIndexesResult> listVectorIndexesAsync(ListVectorIndexesRequest request, OperationOptions options) {
+        return VectorIndexBasic.listVectorIndexesAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteVectorIndexResult> deleteVectorIndexAsync(DeleteVectorIndexRequest request, OperationOptions options) {
+        return VectorIndexBasic.deleteVectorIndexAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutVectorsResult> putVectorsAsync(PutVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.putVectorsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetVectorsResult> getVectorsAsync(GetVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.getVectorsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListVectorsResult> listVectorsAsync(ListVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.listVectorsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteVectorsResult> deleteVectorsAsync(DeleteVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.deleteVectorsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<QueryVectorsResult> queryVectorsAsync(QueryVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.queryVectorsAsync(this.clientImpl, request, options);
     }
 }

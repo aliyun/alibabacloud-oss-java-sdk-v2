@@ -5,10 +5,10 @@ import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.transform.SerdeUtils;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.VectorListJson;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.*;
 import java.util.Map;
 
-public final class SerdeVectorBasic {
+public final class SerdeVectorsBasic {
 
     public static OperationInput fromPutVectors(PutVectorsRequest request) {
         OperationInput.Builder builder = OperationInput.newBuilder()
@@ -26,6 +26,11 @@ public final class SerdeVectorBasic {
         builder.parameters(parameters);
 
         builder.bucket(request.bucket());
+
+        // body
+        if (request.putVectorsRequestJson() != null) {
+            builder.body(SerdeJsonUtils.toJson(request.putVectorsRequestJson()));
+        }
 
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);
@@ -58,6 +63,11 @@ public final class SerdeVectorBasic {
         builder.parameters(parameters);
 
         builder.bucket(request.bucket());
+
+        // body
+        if (request.getVectorsRequestJson() != null) {
+            builder.body(SerdeJsonUtils.toJson(request.getVectorsRequestJson()));
+        }
 
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);

@@ -83,7 +83,7 @@ public class ClientVectorBucketsTest extends TestBaseVectors {
             // List vector buckets with maxKeys = 1
             ListVectorBucketsResult listResult = vectorsClient.listVectorBuckets(ListVectorBucketsRequest.newBuilder()
                     .prefix(bucketPrefix)
-                    .maxKeys(1)
+                    .maxKeys(1L)
                     .build());
 
             Assert.assertNotNull(listResult);
@@ -96,7 +96,7 @@ public class ClientVectorBucketsTest extends TestBaseVectors {
             ListVectorBucketsResult nextListResult = vectorsClient.listVectorBuckets(ListVectorBucketsRequest.newBuilder()
                     .prefix(bucketPrefix)
                     .marker(listResult.nextMarker())
-                    .maxKeys(1)
+                    .maxKeys(1l)
                     .build());
 
             Assert.assertNotNull(nextListResult);

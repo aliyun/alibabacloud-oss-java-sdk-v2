@@ -1,8 +1,10 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.PutVectorsRequestJson;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -10,14 +12,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class PutVectorsRequest extends RequestModel {
     private final String bucket;
-    private final String indexName;
-    private final List<Map<String, Object>> vectors;
+    private final PutVectorsRequestJson putVectorsRequestJson;
 
     private PutVectorsRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.indexName = builder.indexName;
-        this.vectors = builder.vectors;
+        this.putVectorsRequestJson = builder.putVectorsRequestJson;
     }
 
     public static Builder newBuilder() {
@@ -32,17 +32,10 @@ public final class PutVectorsRequest extends RequestModel {
     }
 
     /**
-     * The name of the index.
+     * The request body schema.
      */
-    public String indexName() {
-        return indexName;
-    }
-
-    /**
-     * The list of vectors to put.
-     */
-    public List<Map<String, Object>> vectors() {
-        return vectors;
+    public PutVectorsRequestJson putVectorsRequestJson() {
+        return putVectorsRequestJson;
     }
 
     public Builder toBuilder() {
@@ -51,18 +44,17 @@ public final class PutVectorsRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private String indexName;
-        private List<Map<String, Object>> vectors;
+        private PutVectorsRequestJson putVectorsRequestJson;
 
         private Builder() {
             super();
+            this.putVectorsRequestJson = new PutVectorsRequestJson();
         }
 
         private Builder(PutVectorsRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.indexName = request.indexName;
-            this.vectors = request.vectors;
+            this.putVectorsRequestJson = request.putVectorsRequestJson;
         }
 
         /**
@@ -78,15 +70,40 @@ public final class PutVectorsRequest extends RequestModel {
          * The name of the index.
          */
         public Builder indexName(String value) {
-            this.indexName = value;
+            this.putVectorsRequestJson.indexName = value;
             return this;
         }
 
         /**
-         * The list of vectors to put.
+         * The vectors to insert (Map<String, Object> type).
          */
-        public Builder vectors(List<Map<String, Object>> value) {
-            this.vectors = value;
+        public Builder vectorsMap(List<Map<String, Object>> value) {
+            this.putVectorsRequestJson.vectors = value;
+            return this;
+        }
+
+        /**
+         * The vectors to insert (PutInputVector type).
+         */
+        public Builder vectors(List<PutInputVector> value) {
+            this.putVectorsRequestJson.vectors = value.stream()
+                    .map(vector -> {
+                        Map<String, Object> vectorMap = new java.util.HashMap<>();
+                        vectorMap.put("data", vector.data());
+                        vectorMap.put("key", vector.key());
+                        vectorMap.put("metadata", vector.metadata());
+                        return vectorMap;
+                    })
+                    .collect(Collectors.toList());
+            return this;
+        }
+
+        /**
+         * The request body schema.
+         */
+        public Builder putVectorsRequestJson(PutVectorsRequestJson putVectorsRequestJson) {
+            requireNonNull(putVectorsRequestJson);
+            this.putVectorsRequestJson = putVectorsRequestJson;
             return this;
         }
 

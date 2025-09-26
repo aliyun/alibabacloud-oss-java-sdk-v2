@@ -1,7 +1,7 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.GetVectorIndexRequestJson;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.VectorIndexNameInfoJson;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -9,12 +9,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class GetVectorIndexRequest extends RequestModel {
     private final String bucket;
-    private final GetVectorIndexRequestJson getVectorIndexRequestJson;
+    private final VectorIndexNameInfoJson vectorIndexNameInfoJson;
 
     private GetVectorIndexRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.getVectorIndexRequestJson = builder.getVectorIndexRequestJson;
+        this.vectorIndexNameInfoJson = builder.vectorIndexNameInfoJson;
     }
 
     public static Builder newBuilder() {
@@ -31,8 +31,8 @@ public final class GetVectorIndexRequest extends RequestModel {
     /**
      * The request body schema.
      */
-    public GetVectorIndexRequestJson getVectorIndexRequestJson() {
-        return getVectorIndexRequestJson;
+    public VectorIndexNameInfoJson vectorIndexNameInfoJson() {
+        return vectorIndexNameInfoJson;
     }
 
     public Builder toBuilder() {
@@ -41,17 +41,17 @@ public final class GetVectorIndexRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private GetVectorIndexRequestJson getVectorIndexRequestJson;
+        private VectorIndexNameInfoJson vectorIndexNameInfoJson;
 
         private Builder() {
             super();
-            this.getVectorIndexRequestJson = new GetVectorIndexRequestJson();
+            this.vectorIndexNameInfoJson = new VectorIndexNameInfoJson();
         }
 
         private Builder(GetVectorIndexRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.getVectorIndexRequestJson = request.getVectorIndexRequestJson;
+            this.vectorIndexNameInfoJson = request.vectorIndexNameInfoJson;
         }
 
         /**
@@ -67,16 +67,16 @@ public final class GetVectorIndexRequest extends RequestModel {
          * The name of the index.
          */
         public Builder indexName(String value) {
-            this.getVectorIndexRequestJson.indexName = value;
+            this.vectorIndexNameInfoJson.indexName = value;
             return this;
         }
 
         /**
          * The request body schema.
          */
-        public Builder getVectorIndexRequestJson(GetVectorIndexRequestJson getVectorIndexRequestJson) {
-            requireNonNull(getVectorIndexRequestJson);
-            this.getVectorIndexRequestJson = getVectorIndexRequestJson;
+        public Builder vectorIndexNameInfoJson(VectorIndexNameInfoJson vectorIndexNameInfoJson) {
+            requireNonNull(vectorIndexNameInfoJson);
+            this.vectorIndexNameInfoJson = vectorIndexNameInfoJson;
             return this;
         }
 

@@ -33,7 +33,7 @@ public class ListVectorBucketsRequestTest {
 
         ListVectorBucketsRequest request = ListVectorBucketsRequest.newBuilder()
                 .marker("bucket1")
-                .maxKeys(100)
+                .maxKeys(100L)
                 .prefix("test")
                 .resourceGroupId("rg-123456")
                 .headers(headers)
@@ -61,7 +61,7 @@ public class ListVectorBucketsRequestTest {
 
         ListVectorBucketsRequest original = ListVectorBucketsRequest.newBuilder()
                 .marker("bucket2")
-                .maxKeys(50)
+                .maxKeys(50L)
                 .prefix("example")
                 .resourceGroupId("rg-789012")
                 .headers(headers)
@@ -86,7 +86,7 @@ public class ListVectorBucketsRequestTest {
     public void testHeaderProperties() {
         ListVectorBucketsRequest request = ListVectorBucketsRequest.newBuilder()
                 .marker("bucket3")
-                .maxKeys(200)
+                .maxKeys(200L)
                 .prefix("data")
                 .resourceGroupId("rg-345678")
                 .header("x-oss-meta-custom", "custom-value")
@@ -105,7 +105,7 @@ public class ListVectorBucketsRequestTest {
     public void xmlBuilder() {
         ListVectorBucketsRequest request = ListVectorBucketsRequest.newBuilder()
                 .marker("examplebucket")
-                .maxKeys(100)
+                .maxKeys(100L)
                 .prefix("test")
                 .resourceGroupId("test-resource-group")
                 .header("x-oss-request-id", "test-request-id")
