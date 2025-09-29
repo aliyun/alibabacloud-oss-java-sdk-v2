@@ -1454,4 +1454,29 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // seal append object api
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request) {
+        return sealAppendObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @param options The operation options.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }
