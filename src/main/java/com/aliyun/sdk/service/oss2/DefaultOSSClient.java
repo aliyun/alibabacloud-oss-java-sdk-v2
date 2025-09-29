@@ -286,6 +286,16 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public ProcessObjectResult processObject(ProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.processObject(this.clientImpl, request, options);
+    }
+
+    @Override
+    public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.asyncProcessObject(this.clientImpl, request, options);
+    }
+
+    @Override
     public SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObject(this.clientImpl, request, options);
     }

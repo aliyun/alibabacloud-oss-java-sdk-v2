@@ -252,6 +252,16 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     }
 
     @Override
+    public CompletableFuture<ProcessObjectResult> processObjectAsync(ProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.processObjectAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<AsyncProcessObjectResult> asyncProcessObjectAsync(AsyncProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.asyncProcessObjectAsync(this.clientImpl, request, options);
+    }
+
+    @Override
     public CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObjectAsync(this.clientImpl, request, options);
     }

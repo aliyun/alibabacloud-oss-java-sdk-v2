@@ -227,6 +227,16 @@ public class DefaultOSSDualClient implements OSSDualClient {
         return BucketCors.optionObject(this.clientImpl, request, options);
     }
 
+    @Override
+    public ProcessObjectResult processObject(ProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.processObject(this.clientImpl, request, options);
+    }
+
+    @Override
+    public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.asyncProcessObject(this.clientImpl, request, options);
+    }
+
     // async operation
 
     @Override
@@ -507,6 +517,16 @@ public class DefaultOSSDualClient implements OSSDualClient {
     }
 
     @Override
+    public CompletableFuture<ProcessObjectResult> processObjectAsync(ProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.processObjectAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<AsyncProcessObjectResult> asyncProcessObjectAsync(AsyncProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.asyncProcessObjectAsync(this.clientImpl, request, options);
+    }
+
+    @Override
     public SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObject(this.clientImpl, request, options);
     }
@@ -515,5 +535,4 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObjectAsync(this.clientImpl, request, options);
     }
-
 }
