@@ -525,4 +525,14 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<AsyncProcessObjectResult> asyncProcessObjectAsync(AsyncProcessObjectRequest request, OperationOptions options) {
         return ProcessObject.asyncProcessObjectAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
+        return ObjectBasic.sealAppendObject(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request, OperationOptions options) {
+        return ObjectBasic.sealAppendObjectAsync(this.clientImpl, request, options);
+    }
 }
