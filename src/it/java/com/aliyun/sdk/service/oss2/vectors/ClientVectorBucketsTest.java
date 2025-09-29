@@ -32,7 +32,7 @@ public class ClientVectorBucketsTest extends TestBaseVectors {
                     .build());
             Assert.assertNotNull(getResult);
             Assert.assertEquals(200, getResult.statusCode());
-            Assert.assertEquals(fullBucketName, getResult.bucketInfoJson().bucketInfo.name);
+            Assert.assertEquals(fullBucketName, getResult.vectorBucket().name());
 
             // List vector buckets
             ListVectorBucketsResult listResult = vectorsClient.listVectorBuckets(ListVectorBucketsRequest.newBuilder()

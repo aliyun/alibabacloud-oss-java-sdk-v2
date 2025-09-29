@@ -6,7 +6,6 @@ import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.transform.SerdeUtils;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.BucketInfoJson;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.ListAllMyBucketsResultJson;
 
 import java.util.Map;
@@ -66,7 +65,10 @@ public final class SerdeVectorBucketBasic {
 
     public static GetVectorBucketResult toGetVectorBucket(OperationOutput output) {
         Object innerBody = null;
-        innerBody = SerdeJsonUtils.fromJsonBody(output, BucketInfoJson.class);
+        VectorBucketInfo vectorBucketInfo = SerdeJsonUtils.fromJsonBody(output, VectorBucketInfo.class);
+        if (vectorBucketInfo != null) {
+            innerBody = vectorBucketInfo.getBucketInfo();
+        }
 
         return GetVectorBucketResult.newBuilder()
                 .headers(output.headers)
@@ -126,7 +128,10 @@ public final class SerdeVectorBucketBasic {
 
     public static ListVectorBucketsResult toListVectorBuckets(OperationOutput output) {
         Object innerBody = null;
-        innerBody = SerdeJsonUtils.fromJsonBody(output, ListAllMyBucketsResultJson.class);
+        ListAllMyBucketsResultJson wrapper = SerdeJsonUtils.fromJsonBody(output, ListAllMyBucketsResultJson.class);
+        if (wrapper != null) {
+            innerBody = wrapper.vectorBucketSummary;
+        }
 
         return ListVectorBucketsResult.newBuilder()
                 .headers(output.headers)

@@ -42,7 +42,7 @@ public final class ListVectorIndexesResult extends ResultModel {
     /**
      * The list of vector index summaries as IndexSummary objects.
      */
-    public List<IndexSummary> asIndexSummaries() {
+    public List<IndexSummary> asIndex() {
         if (delegate == null || delegate.indexes == null) {
             return null;
         }

@@ -23,9 +23,9 @@ public class PutVectorsRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.putVectorsRequestJson()).isNotNull();
-        assertThat(request.putVectorsRequestJson().indexName).isNull();
-        assertThat(request.putVectorsRequestJson().vectors).isNull();
+        assertThat(request.vectorsConfiguration()).isNotNull();
+        assertThat(request.vectorsConfiguration().indexName()).isNull();
+        assertThat(request.vectorsConfiguration().vectors()).isNull();
     }
 
     @Test
@@ -60,8 +60,8 @@ public class PutVectorsRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.putVectorsRequestJson().indexName).isEqualTo("test-index");
-        assertThat(request.putVectorsRequestJson().vectors).isEqualTo(vectors);
+        assertThat(request.vectorsConfiguration().indexName()).isEqualTo("test-index");
+        assertThat(request.vectorsConfiguration().vectors()).isEqualTo(vectors);
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).containsEntry("param1", "value1");
@@ -101,9 +101,9 @@ public class PutVectorsRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.putVectorsRequestJson().indexName).isEqualTo("test-index");
-        assertThat(request.putVectorsRequestJson().vectors).isNotNull();
-        assertThat(request.putVectorsRequestJson().vectors).hasSize(1);
+        assertThat(request.vectorsConfiguration().indexName()).isEqualTo("test-index");
+        assertThat(request.vectorsConfiguration().vectors()).isNotNull();
+        assertThat(request.vectorsConfiguration().vectors()).hasSize(1);
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).containsEntry("param1", "value1");
@@ -143,8 +143,8 @@ public class PutVectorsRequestTest {
         PutVectorsRequest copy = original.toBuilder().build();
 
         assertThat(copy.bucket()).isEqualTo("testbucket");
-        assertThat(copy.putVectorsRequestJson().indexName).isEqualTo("original-index");
-        assertThat(copy.putVectorsRequestJson().vectors).isEqualTo(vectors);
+        assertThat(copy.vectorsConfiguration().indexName()).isEqualTo("original-index");
+        assertThat(copy.vectorsConfiguration().vectors()).isEqualTo(vectors);
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.parameters()).containsEntry("param3", "value3");
@@ -165,7 +165,7 @@ public class PutVectorsRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("anotherbucket");
-        assertThat(request.putVectorsRequestJson().indexName).isEqualTo("header-test-index");
+        assertThat(request.vectorsConfiguration().indexName()).isEqualTo("header-test-index");
         assertThat(request.headers()).containsEntry("x-oss-meta-custom", "custom-value");
         assertThat(request.headers()).containsEntry("Cache-Control", "no-cache");
     }

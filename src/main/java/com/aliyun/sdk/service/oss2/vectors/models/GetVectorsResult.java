@@ -2,7 +2,6 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.GetOutputVector;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.VectorListJson;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,11 +10,11 @@ import java.util.stream.Collectors;
  * The result for the GetVectors operation.
  */
 public final class GetVectorsResult extends ResultModel {
-    private final VectorListJson delegate;
+    private final VectorsInfo delegate;
 
     private GetVectorsResult(Builder builder) {
         super(builder);
-        this.delegate = (VectorListJson) innerBody;
+        this.delegate = (VectorsInfo) innerBody;
     }
 
     public static Builder newBuilder() {
@@ -26,24 +25,17 @@ public final class GetVectorsResult extends ResultModel {
      * The list of vectors retrieved.
      */
     public List<Map<String, Object>> vectors() {
-        return delegate != null ? delegate.vectors : null;
-    }
-
-    /**
-     * The token for the next page of vectors.
-     */
-    public String nextToken() {
-        return delegate != null ? delegate.nextToken : null;
+        return delegate != null ? delegate.vectors() : null;
     }
 
     /**
      * The list of vectors retrieved as GetOutputVector objects.
      */
-    public List<GetOutputVector> asGetOutputVectors() {
-        if (delegate == null || delegate.vectors == null) {
+    public List<GetOutputVector> asVectors() {
+        if (delegate == null || delegate.vectors() == null) {
             return null;
         }
-        return delegate.vectors.stream()
+        return delegate.vectors().stream()
                 .map(vectorMap -> {
                     if (vectorMap == null) {
                         return GetOutputVector.newBuilder().build();

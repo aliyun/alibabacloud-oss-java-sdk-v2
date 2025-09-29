@@ -22,7 +22,7 @@ public class ListVectorIndexesResultTest {
         assertThat(result.headers().isEmpty()).isTrue();
         assertThat(result.indexes()).isNull();
         assertThat(result.nextToken()).isNull();
-        assertThat(result.asIndexSummaries()).isNull();
+        assertThat(result.asIndex()).isNull();
     }
 
     @Test
@@ -49,8 +49,8 @@ public class ListVectorIndexesResultTest {
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-1234567890abcdefg");
 
-        // Test asIndexSummaries method
-        List<IndexSummary> indexSummaries = result.asIndexSummaries();
+        // Test asIndex method
+        List<IndexSummary> indexSummaries = result.asIndex();
         assertThat(indexSummaries).isNotNull();
         assertThat(indexSummaries).hasSize(1);
 
@@ -95,8 +95,8 @@ public class ListVectorIndexesResultTest {
         assertThat(copy.statusCode()).isEqualTo(201);
         assertThat(copy.requestId()).isEqualTo("req-765432109876543210");
 
-        // Test asIndexSummaries method
-        List<IndexSummary> indexSummaries = copy.asIndexSummaries();
+        // Test asIndex method
+        List<IndexSummary> indexSummaries = copy.asIndex();
         assertThat(indexSummaries).isNotNull();
         assertThat(indexSummaries).hasSize(1);
 
@@ -172,8 +172,8 @@ public class ListVectorIndexesResultTest {
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-xml-builder-test");
 
-        // Test asIndexSummaries method
-        List<IndexSummary> indexSummaries = result.asIndexSummaries();
+        // Test asIndex method
+        List<IndexSummary> indexSummaries = result.asIndex();
         assertThat(indexSummaries).isNotNull();
         assertThat(indexSummaries).hasSize(1);
 

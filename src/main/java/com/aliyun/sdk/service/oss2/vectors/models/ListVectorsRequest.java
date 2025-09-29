@@ -8,24 +8,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ListVectorsRequest extends RequestModel {
     private final String bucket;
-    private final String indexName;
-    private final Integer maxResults;
-    private final String nextToken;
-    private final Boolean returnData;
-    private final Boolean returnMetadata;
-    private final Integer segmentCount;
-    private final Integer segmentIndex;
+    private final ListVectorsConfiguration listVectorsConfiguration;
 
     private ListVectorsRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.indexName = builder.indexName;
-        this.maxResults = builder.maxResults;
-        this.nextToken = builder.nextToken;
-        this.returnData = builder.returnData;
-        this.returnMetadata = builder.returnMetadata;
-        this.segmentCount = builder.segmentCount;
-        this.segmentIndex = builder.segmentIndex;
+        this.listVectorsConfiguration = builder.listVectorsConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -40,52 +28,10 @@ public final class ListVectorsRequest extends RequestModel {
     }
 
     /**
-     * The name of the index.
+     * The request body schema.
      */
-    public String indexName() {
-        return indexName;
-    }
-
-    /**
-     * The maximum number of vectors to return.
-     */
-    public Integer maxResults() {
-        return maxResults;
-    }
-
-    /**
-     * The token for the next page of vectors.
-     */
-    public String nextToken() {
-        return nextToken;
-    }
-
-    /**
-     * Whether to return vector data.
-     */
-    public Boolean returnData() {
-        return returnData;
-    }
-
-    /**
-     * Whether to return vector metadata.
-     */
-    public Boolean returnMetadata() {
-        return returnMetadata;
-    }
-
-    /**
-     * Number of concurrent segments.
-     */
-    public Integer segmentCount() {
-        return segmentCount;
-    }
-
-    /**
-     * Current segment index.
-     */
-    public Integer segmentIndex() {
-        return segmentIndex;
+    public ListVectorsConfiguration listVectorsConfiguration() {
+        return listVectorsConfiguration;
     }
 
     public Builder toBuilder() {
@@ -94,28 +40,17 @@ public final class ListVectorsRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private String indexName;
-        private Integer maxResults;
-        private String nextToken;
-        private Boolean returnData;
-        private Boolean returnMetadata;
-        private Integer segmentCount;
-        private Integer segmentIndex;
+        private ListVectorsConfiguration listVectorsConfiguration;
 
         private Builder() {
             super();
+            this.listVectorsConfiguration = new ListVectorsConfiguration();
         }
 
         private Builder(ListVectorsRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.indexName = request.indexName;
-            this.maxResults = request.maxResults;
-            this.nextToken = request.nextToken;
-            this.returnData = request.returnData;
-            this.returnMetadata = request.returnMetadata;
-            this.segmentCount = request.segmentCount;
-            this.segmentIndex = request.segmentIndex;
+            this.listVectorsConfiguration = request.listVectorsConfiguration;
         }
 
         /**
@@ -131,7 +66,7 @@ public final class ListVectorsRequest extends RequestModel {
          * The name of the index.
          */
         public Builder indexName(String value) {
-            this.indexName = value;
+            this.listVectorsConfiguration = this.listVectorsConfiguration.toBuilder().indexName(value).build();
             return this;
         }
 
@@ -139,7 +74,7 @@ public final class ListVectorsRequest extends RequestModel {
          * The maximum number of vectors to return.
          */
         public Builder maxResults(Integer value) {
-            this.maxResults = value;
+            this.listVectorsConfiguration = this.listVectorsConfiguration.toBuilder().maxResults(value).build();
             return this;
         }
 
@@ -147,7 +82,7 @@ public final class ListVectorsRequest extends RequestModel {
          * The token for the next page of vectors.
          */
         public Builder nextToken(String value) {
-            this.nextToken = value;
+            this.listVectorsConfiguration = this.listVectorsConfiguration.toBuilder().nextToken(value).build();
             return this;
         }
 
@@ -155,7 +90,7 @@ public final class ListVectorsRequest extends RequestModel {
          * Whether to return vector data.
          */
         public Builder returnData(Boolean value) {
-            this.returnData = value;
+            this.listVectorsConfiguration = this.listVectorsConfiguration.toBuilder().returnData(value).build();
             return this;
         }
 
@@ -163,7 +98,7 @@ public final class ListVectorsRequest extends RequestModel {
          * Whether to return vector metadata.
          */
         public Builder returnMetadata(Boolean value) {
-            this.returnMetadata = value;
+            this.listVectorsConfiguration = this.listVectorsConfiguration.toBuilder().returnMetadata(value).build();
             return this;
         }
 
@@ -171,7 +106,7 @@ public final class ListVectorsRequest extends RequestModel {
          * Number of concurrent segments.
          */
         public Builder segmentCount(Integer value) {
-            this.segmentCount = value;
+            this.listVectorsConfiguration = this.listVectorsConfiguration.toBuilder().segmentCount(value).build();
             return this;
         }
 
@@ -179,7 +114,16 @@ public final class ListVectorsRequest extends RequestModel {
          * Current segment index.
          */
         public Builder segmentIndex(Integer value) {
-            this.segmentIndex = value;
+            this.listVectorsConfiguration = this.listVectorsConfiguration.toBuilder().segmentIndex(value).build();
+            return this;
+        }
+
+        /**
+         * The request body schema.
+         */
+        public Builder listVectorsConfiguration(ListVectorsConfiguration listVectorsConfiguration) {
+            requireNonNull(listVectorsConfiguration);
+            this.listVectorsConfiguration = listVectorsConfiguration;
             return this;
         }
 
@@ -188,4 +132,3 @@ public final class ListVectorsRequest extends RequestModel {
         }
     }
 }
-

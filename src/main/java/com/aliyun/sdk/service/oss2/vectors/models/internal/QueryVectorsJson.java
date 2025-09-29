@@ -5,13 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The request body schema for PutVectors operation.
+ * JSON model for vector list result
  */
-public class PutVectorsRequestJson {
-    @JsonProperty("indexName")
-    public String indexName;
-
+public class QueryVectorsJson {
     @JsonProperty("vectors")
     public List<Map<String, Object>> vectors;
-
+    
+    public QueryVectorsJson() {
+    }
 }

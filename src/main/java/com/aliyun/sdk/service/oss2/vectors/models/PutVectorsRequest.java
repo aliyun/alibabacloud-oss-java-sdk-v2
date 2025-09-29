@@ -1,7 +1,6 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.PutVectorsRequestJson;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,12 +11,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class PutVectorsRequest extends RequestModel {
     private final String bucket;
-    private final PutVectorsRequestJson putVectorsRequestJson;
+    private final VectorsConfiguration vectorsConfiguration;
 
     private PutVectorsRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.putVectorsRequestJson = builder.putVectorsRequestJson;
+        this.vectorsConfiguration = builder.vectorsConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -34,8 +33,8 @@ public final class PutVectorsRequest extends RequestModel {
     /**
      * The request body schema.
      */
-    public PutVectorsRequestJson putVectorsRequestJson() {
-        return putVectorsRequestJson;
+    public VectorsConfiguration vectorsConfiguration() {
+        return vectorsConfiguration;
     }
 
     public Builder toBuilder() {
@@ -44,17 +43,17 @@ public final class PutVectorsRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private PutVectorsRequestJson putVectorsRequestJson;
+        private VectorsConfiguration vectorsConfiguration;
 
         private Builder() {
             super();
-            this.putVectorsRequestJson = new PutVectorsRequestJson();
+            this.vectorsConfiguration = new VectorsConfiguration();
         }
 
         private Builder(PutVectorsRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.putVectorsRequestJson = request.putVectorsRequestJson;
+            this.vectorsConfiguration = request.vectorsConfiguration;
         }
 
         /**
@@ -70,7 +69,7 @@ public final class PutVectorsRequest extends RequestModel {
          * The name of the index.
          */
         public Builder indexName(String value) {
-            this.putVectorsRequestJson.indexName = value;
+            this.vectorsConfiguration = this.vectorsConfiguration.toBuilder().indexName(value).build();
             return this;
         }
 
@@ -78,7 +77,7 @@ public final class PutVectorsRequest extends RequestModel {
          * The vectors to insert (Map<String, Object> type).
          */
         public Builder vectorsMap(List<Map<String, Object>> value) {
-            this.putVectorsRequestJson.vectors = value;
+            this.vectorsConfiguration = this.vectorsConfiguration.toBuilder().vectors(value).build();
             return this;
         }
 
@@ -86,7 +85,7 @@ public final class PutVectorsRequest extends RequestModel {
          * The vectors to insert (PutInputVector type).
          */
         public Builder vectors(List<PutInputVector> value) {
-            this.putVectorsRequestJson.vectors = value.stream()
+            List<Map<String, Object>> vectorMaps = value.stream()
                     .map(vector -> {
                         Map<String, Object> vectorMap = new java.util.HashMap<>();
                         vectorMap.put("data", vector.data());
@@ -95,15 +94,16 @@ public final class PutVectorsRequest extends RequestModel {
                         return vectorMap;
                     })
                     .collect(Collectors.toList());
+            this.vectorsConfiguration = this.vectorsConfiguration.toBuilder().vectors(vectorMaps).build();
             return this;
         }
 
         /**
          * The request body schema.
          */
-        public Builder putVectorsRequestJson(PutVectorsRequestJson putVectorsRequestJson) {
-            requireNonNull(putVectorsRequestJson);
-            this.putVectorsRequestJson = putVectorsRequestJson;
+        public Builder vectorsConfiguration(VectorsConfiguration vectorsConfiguration) {
+            requireNonNull(vectorsConfiguration);
+            this.vectorsConfiguration = vectorsConfiguration;
             return this;
         }
 

@@ -5,16 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * JSON model for list vector indexes result
+ * JSON model for list vectors result
  */
-public class ListVectorIndexesResultJson {
-
-    @JsonProperty("indexes")
-    public List<Map<String, Object>> indexes;
-
+public class ListVectorsResultJson {
     @JsonProperty("nextToken")
     public String nextToken;
 
-    public ListVectorIndexesResultJson() {
+    @JsonProperty("vectors")
+    public List<Map<String, Object>> vectors;
+
+    public ListVectorsResultJson() {
     }
 }

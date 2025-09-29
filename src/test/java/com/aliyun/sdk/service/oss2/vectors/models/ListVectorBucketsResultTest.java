@@ -51,22 +51,22 @@ public class ListVectorBucketsResultTest {
 
         List<VectorBucketProperties> buckets = Arrays.asList(bucket1, bucket2);
 
-        ListAllMyBucketsResultJson.ListAllMyBucketsResult listAllMyBucketsResult =
-                new ListAllMyBucketsResultJson.ListAllMyBucketsResult();
-        listAllMyBucketsResult.prefix = "test";
-        listAllMyBucketsResult.marker = "marker1";
-        listAllMyBucketsResult.maxKeys = 100;
-        listAllMyBucketsResult.isTruncated = false;
-        listAllMyBucketsResult.nextMarker = "";
-        listAllMyBucketsResult.buckets = buckets;
+        ListAllMyBucketsResultJson.VectorBucketSummary vectorBucketSummary =
+                new ListAllMyBucketsResultJson.VectorBucketSummary();
+        vectorBucketSummary.prefix = "test";
+        vectorBucketSummary.marker = "marker1";
+        vectorBucketSummary.maxKeys = 100;
+        vectorBucketSummary.isTruncated = false;
+        vectorBucketSummary.nextMarker = "";
+        vectorBucketSummary.buckets = buckets;
 
         ListAllMyBucketsResultJson listAllMyBucketsResultJson =
                 new ListAllMyBucketsResultJson();
-        listAllMyBucketsResultJson.listAllMyBucketsResult = listAllMyBucketsResult;
+        listAllMyBucketsResultJson.vectorBucketSummary = vectorBucketSummary;
 
         ListVectorBucketsResult result = ListVectorBucketsResult.newBuilder()
                 .headers(headers)
-                .innerBody(listAllMyBucketsResultJson)
+                .innerBody(listAllMyBucketsResultJson.vectorBucketSummary)
                 .status("OK")
                 .statusCode(200)
                 .build();
@@ -126,22 +126,22 @@ public class ListVectorBucketsResultTest {
 
         List<VectorBucketProperties> buckets = Arrays.asList(bucket);
 
-        ListAllMyBucketsResultJson.ListAllMyBucketsResult listAllMyBucketsResult =
-                new ListAllMyBucketsResultJson.ListAllMyBucketsResult();
-        listAllMyBucketsResult.prefix = "example";
-        listAllMyBucketsResult.marker = "marker2";
-        listAllMyBucketsResult.maxKeys = 50;
-        listAllMyBucketsResult.isTruncated = true;
-        listAllMyBucketsResult.nextMarker = "next-marker-value";
-        listAllMyBucketsResult.buckets = buckets;
+        ListAllMyBucketsResultJson.VectorBucketSummary vectorBucketSummary =
+                new ListAllMyBucketsResultJson.VectorBucketSummary();
+        vectorBucketSummary.prefix = "example";
+        vectorBucketSummary.marker = "marker2";
+        vectorBucketSummary.maxKeys = 50;
+        vectorBucketSummary.isTruncated = true;
+        vectorBucketSummary.nextMarker = "next-marker-value";
+        vectorBucketSummary.buckets = buckets;
 
         ListAllMyBucketsResultJson listAllMyBucketsResultJson =
                 new ListAllMyBucketsResultJson();
-        listAllMyBucketsResultJson.listAllMyBucketsResult = listAllMyBucketsResult;
+        listAllMyBucketsResultJson.vectorBucketSummary = vectorBucketSummary;
 
         ListVectorBucketsResult original = ListVectorBucketsResult.newBuilder()
                 .headers(headers)
-                .innerBody(listAllMyBucketsResultJson)
+                .innerBody(listAllMyBucketsResultJson.vectorBucketSummary)
                 .status("Partial")
                 .statusCode(206)
                 .build();

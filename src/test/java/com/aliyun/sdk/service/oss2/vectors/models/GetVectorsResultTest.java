@@ -5,7 +5,6 @@ import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.GetOutputVector;
 import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorsBasic;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.VectorListJson;
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,11 +33,11 @@ public class GetVectorsResultTest {
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
-        VectorListJson vectorList = createTestVectorList();
+        VectorsInfo vectorsInfo = createTestVectorsInfo();
 
         GetVectorsResult result = GetVectorsResult.newBuilder()
                 .headers(headers)
-                .innerBody(vectorList)
+                .innerBody(vectorsInfo)
                 .status("OK")
                 .statusCode(200)
                 .build();
@@ -47,7 +46,7 @@ public class GetVectorsResultTest {
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.requestId()).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
-        assertThat(result.vectors()).isEqualTo(vectorList.vectors);
+        assertThat(result.vectors()).isEqualTo(vectorsInfo.vectors());
     }
 
     @Test
@@ -57,11 +56,11 @@ public class GetVectorsResultTest {
                 "ETag", "\"original-etag\""
         );
 
-        VectorListJson vectorList = createTestVectorList();
+        VectorsInfo vectorsInfo = createTestVectorsInfo();
 
         GetVectorsResult original = GetVectorsResult.newBuilder()
                 .headers(headers)
-                .innerBody(vectorList)
+                .innerBody(vectorsInfo)
                 .status("Created")
                 .statusCode(201)
                 .build();
@@ -72,7 +71,7 @@ public class GetVectorsResultTest {
         assertThat(copy.status()).isEqualTo("Created");
         assertThat(copy.requestId()).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
-        assertThat(copy.vectors()).isEqualTo(vectorList.vectors);
+        assertThat(copy.vectors()).isEqualTo(vectorsInfo.vectors());
     }
 
     @Test
@@ -132,16 +131,16 @@ public class GetVectorsResultTest {
     }
 
     @Test
-    public void testAsGetOutputVectors() {
-        VectorListJson vectorList = createTestVectorList();
+    public void testAsVectors() {
+        VectorsInfo vectorsInfo = createTestVectorsInfo();
 
         GetVectorsResult result = GetVectorsResult.newBuilder()
-                .innerBody(vectorList)
+                .innerBody(vectorsInfo)
                 .status("OK")
                 .statusCode(200)
                 .build();
 
-        List<GetOutputVector> vectors = result.asGetOutputVectors();
+        List<GetOutputVector> vectors = result.asVectors();
         assertThat(vectors).isNotNull();
         assertThat(vectors).hasSize(1);
 
@@ -154,9 +153,7 @@ public class GetVectorsResultTest {
         assertThat(vector.metadata()).containsEntry("key2", "value2");
     }
 
-    private VectorListJson createTestVectorList() {
-        VectorListJson vectorList = new VectorListJson();
-
+    private VectorsInfo createTestVectorsInfo() {
         Map<String, Object> vectorData = new HashMap<>();
         vectorData.put("float32", Arrays.asList(0.1, 0.2, 0.3));
 
@@ -169,8 +166,8 @@ public class GetVectorsResultTest {
         vector.put("key", "vector-key-1");
         vector.put("metadata", metadata);
 
-        vectorList.vectors = Arrays.asList(vector);
-        return vectorList;
+        return VectorsInfo.newBuilder()
+                .vectors(Arrays.asList(vector))
+                .build();
     }
 }
-

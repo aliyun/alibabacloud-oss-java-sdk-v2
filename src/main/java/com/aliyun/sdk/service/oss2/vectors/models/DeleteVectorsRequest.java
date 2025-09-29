@@ -9,14 +9,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class DeleteVectorsRequest extends RequestModel {
     private final String bucket;
-    private final String indexName;
-    private final List<String> keys;
+    private final DeleteVectorsConfiguration deleteVectorsConfiguration;
 
     private DeleteVectorsRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.indexName = builder.indexName;
-        this.keys = builder.keys;
+        this.deleteVectorsConfiguration = builder.deleteVectorsConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -31,17 +29,10 @@ public final class DeleteVectorsRequest extends RequestModel {
     }
 
     /**
-     * The name of the index.
+     * The request body schema.
      */
-    public String indexName() {
-        return indexName;
-    }
-
-    /**
-     * The list of vector keys to delete.
-     */
-    public List<String> keys() {
-        return keys;
+    public DeleteVectorsConfiguration deleteVectorsConfiguration() {
+        return deleteVectorsConfiguration;
     }
 
     public Builder toBuilder() {
@@ -50,18 +41,17 @@ public final class DeleteVectorsRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private String indexName;
-        private List<String> keys;
+        private DeleteVectorsConfiguration deleteVectorsConfiguration;
 
         private Builder() {
             super();
+            this.deleteVectorsConfiguration = new DeleteVectorsConfiguration();
         }
 
         private Builder(DeleteVectorsRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.indexName = request.indexName;
-            this.keys = request.keys;
+            this.deleteVectorsConfiguration = request.deleteVectorsConfiguration;
         }
 
         /**
@@ -77,7 +67,7 @@ public final class DeleteVectorsRequest extends RequestModel {
          * The name of the index.
          */
         public Builder indexName(String value) {
-            this.indexName = value;
+            this.deleteVectorsConfiguration = this.deleteVectorsConfiguration.toBuilder().indexName(value).build();
             return this;
         }
 
@@ -85,7 +75,16 @@ public final class DeleteVectorsRequest extends RequestModel {
          * The list of vector keys to delete.
          */
         public Builder keys(List<String> value) {
-            this.keys = value;
+            this.deleteVectorsConfiguration = this.deleteVectorsConfiguration.toBuilder().keys(value).build();
+            return this;
+        }
+
+        /**
+         * The request body schema.
+         */
+        public Builder deleteVectorsConfiguration(DeleteVectorsConfiguration deleteVectorsConfiguration) {
+            requireNonNull(deleteVectorsConfiguration);
+            this.deleteVectorsConfiguration = deleteVectorsConfiguration;
             return this;
         }
 
@@ -94,4 +93,3 @@ public final class DeleteVectorsRequest extends RequestModel {
         }
     }
 }
-

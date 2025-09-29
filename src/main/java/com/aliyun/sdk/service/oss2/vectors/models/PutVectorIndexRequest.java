@@ -1,7 +1,7 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.VectorIndexConfigurationJson;
+import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -9,12 +9,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class PutVectorIndexRequest extends RequestModel {
     private final String bucket;
-    private final VectorIndexConfigurationJson vectorIndexConfigurationJson;
+    private final VectorIndexConfiguration vectorIndexConfiguration;
 
     private PutVectorIndexRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.vectorIndexConfigurationJson = builder.vectorIndexConfigurationJson;
+        this.vectorIndexConfiguration = builder.vectorIndexConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -29,10 +29,17 @@ public final class PutVectorIndexRequest extends RequestModel {
     }
 
     /**
-     * The request body schema.
+     * The name of the vector index.
      */
-    public VectorIndexConfigurationJson vectorIndexConfigurationJson() {
-        return vectorIndexConfigurationJson;
+    public String indexName() {
+        return vectorIndexConfiguration.indexName();
+    }
+
+    /**
+     * The configuration for the vector index.
+     */
+    public VectorIndexConfiguration vectorIndexConfiguration() {
+        return vectorIndexConfiguration;
     }
 
     public Builder toBuilder() {
@@ -41,17 +48,17 @@ public final class PutVectorIndexRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private VectorIndexConfigurationJson vectorIndexConfigurationJson;
+        private VectorIndexConfiguration vectorIndexConfiguration;
 
         private Builder() {
             super();
-            this.vectorIndexConfigurationJson = new VectorIndexConfigurationJson();
+            this.vectorIndexConfiguration = VectorIndexConfiguration.newBuilder().build();
         }
 
-        private Builder(PutVectorIndexRequest request) {
-            super(request);
-            this.bucket = request.bucket;
-            this.vectorIndexConfigurationJson = request.vectorIndexConfigurationJson;
+        private Builder(PutVectorIndexRequest from) {
+            super(from);
+            this.bucket = from.bucket;
+            this.vectorIndexConfiguration = from.vectorIndexConfiguration;
         }
 
         /**
@@ -64,10 +71,20 @@ public final class PutVectorIndexRequest extends RequestModel {
         }
 
         /**
+         * The name of the vector index.
+         */
+        public Builder indexName(String value) {
+            requireNonNull(value);
+            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().indexName(value).build();
+            return this;
+        }
+
+        /**
          * The data type of the vector.
          */
         public Builder dataType(String value) {
-            this.vectorIndexConfigurationJson.dataType = value;
+            requireNonNull(value);
+            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().dataType(value).build();
             return this;
         }
 
@@ -75,40 +92,32 @@ public final class PutVectorIndexRequest extends RequestModel {
          * The dimension of the vector.
          */
         public Builder dimension(Integer value) {
-            this.vectorIndexConfigurationJson.dimension = value;
+            requireNonNull(value);
+            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().dimension(value).build();
             return this;
         }
 
         /**
-         * The distance metric of the vector.
+         * The distance metric used for the index.
          */
         public Builder distanceMetric(String value) {
-            this.vectorIndexConfigurationJson.distanceMetric = value;
-            return this;
-        }
-
-        /**
-         * The name of the index.
-         */
-        public Builder indexName(String value) {
-            this.vectorIndexConfigurationJson.indexName = value;
-            return this;
-        }
-
-        /**
-         * The metadata of the vector index.
-         */
-        public Builder metadata(java.util.Map<String, Object> value) {
-            this.vectorIndexConfigurationJson.metadata = value;
-            return this;
-        }
-
-        /**
-         * The request body schema.
-         */
-        public Builder vectorIndexConfigurationJson(VectorIndexConfigurationJson value) {
             requireNonNull(value);
-            this.vectorIndexConfigurationJson = value;
+            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().distanceMetric(value).build();
+            return this;
+        }
+
+        /**
+         * The metadata of the index.
+         */
+        public Builder metadata(Map<String, Object> value) {
+            requireNonNull(value);
+            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().metadata(value).build();
+            return this;
+        }
+
+        public Builder vectorIndexConfiguration(VectorIndexConfiguration value) {
+            requireNonNull(value);
+            this.vectorIndexConfiguration = value;
             return this;
         }
 

@@ -1,19 +1,21 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.VectorListJson;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.ListVectorsResultJson;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.QueryVectorsJson;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The result for the QueryVectors operation.
  */
 public final class QueryVectorsResult extends ResultModel {
-    private final VectorListJson delegate;
+    private final QueryVectorsJson delegate;
 
     private QueryVectorsResult(Builder builder) {
         super(builder);
-        this.delegate = (VectorListJson) innerBody;
+        this.delegate = (QueryVectorsJson) innerBody;
     }
 
     public static Builder newBuilder() {
@@ -25,6 +27,62 @@ public final class QueryVectorsResult extends ResultModel {
      */
     public List<Map<String, Object>> vectors() {
         return delegate != null ? delegate.vectors : null;
+    }
+
+    /**
+     * The list of vectors retrieved as QueryOutputVector and QueryVectorsInfo objects.
+     */
+    public QueryVectorsInfo asVectors() {
+        if (delegate == null) {
+            return null;
+        }
+        
+        List<QueryOutputVector> vectorList = null;
+        if (delegate.vectors != null) {
+            vectorList = delegate.vectors.stream()
+                    .map(vectorMap -> {
+                        if (vectorMap == null) {
+                            return QueryOutputVector.newBuilder().build();
+                        }
+
+                        QueryOutputVector vector = QueryOutputVector.newBuilder()
+                                .distance(getIntegerValue(vectorMap, "distance"))
+                                .key(getStringValue(vectorMap, "key"))
+                                .metadata(getMapValue(vectorMap, "metadata"))
+                                .build();
+                        return vector;
+                    })
+                    .collect(Collectors.toList());
+        }
+        
+        return QueryVectorsInfo.newBuilder()
+                .vectors(vectorList)
+                .build();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getMapValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        if (value instanceof Map) {
+            return (Map<String, Object>) value;
+        }
+        return null;
+    }
+
+    private String getStringValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        if (value instanceof String) {
+            return (String) value;
+        }
+        return null;
+    }
+    
+    private Integer getIntegerValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        if (value instanceof Integer) {
+            return (Integer) value;
+        }
+        return null;
     }
 
     public Builder toBuilder() {

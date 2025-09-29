@@ -4,15 +4,14 @@ import com.aliyun.sdk.service.oss2.vectors.models.VectorBucketProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
-
 public class ListAllMyBucketsResultJson {
     @JsonProperty("ListAllMyBucketsResult")
-    public ListAllMyBucketsResult listAllMyBucketsResult;
+    public VectorBucketSummary vectorBucketSummary;
 
     public ListAllMyBucketsResultJson() {
     }
 
-    public static class ListAllMyBucketsResult {
+    public static class VectorBucketSummary {
         @JsonProperty("Prefix")
         public String prefix;
 
@@ -31,9 +30,7 @@ public class ListAllMyBucketsResultJson {
         @JsonProperty("Buckets")
         public List<VectorBucketProperties> buckets;
 
-        public ListAllMyBucketsResult() {
+        public VectorBucketSummary() {
         }
-
-
     }
 }

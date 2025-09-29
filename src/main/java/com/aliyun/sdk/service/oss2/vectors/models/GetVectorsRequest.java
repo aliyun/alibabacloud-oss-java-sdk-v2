@@ -1,7 +1,6 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.GetVectorsRequestJson;
 import java.util.List;
 import static java.util.Objects.requireNonNull;
 
@@ -10,12 +9,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class GetVectorsRequest extends RequestModel {
     private final String bucket;
-    private final GetVectorsRequestJson getVectorsRequestJson;
+    private final GetVectorsConfiguration getVectorsConfiguration;
 
     private GetVectorsRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.getVectorsRequestJson = builder.getVectorsRequestJson;
+        this.getVectorsConfiguration = builder.getVectorsConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -32,8 +31,8 @@ public final class GetVectorsRequest extends RequestModel {
     /**
      * The request body schema.
      */
-    public GetVectorsRequestJson getVectorsRequestJson() {
-        return getVectorsRequestJson;
+    public GetVectorsConfiguration getVectorsConfiguration() {
+        return getVectorsConfiguration;
     }
 
     public Builder toBuilder() {
@@ -42,17 +41,17 @@ public final class GetVectorsRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private GetVectorsRequestJson getVectorsRequestJson;
+        private GetVectorsConfiguration getVectorsConfiguration;
 
         private Builder() {
             super();
-            this.getVectorsRequestJson = new GetVectorsRequestJson();
+            this.getVectorsConfiguration = new GetVectorsConfiguration();
         }
 
         private Builder(GetVectorsRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.getVectorsRequestJson = request.getVectorsRequestJson;
+            this.getVectorsConfiguration = request.getVectorsConfiguration;
         }
 
         /**
@@ -68,7 +67,7 @@ public final class GetVectorsRequest extends RequestModel {
          * The name of the index.
          */
         public Builder indexName(String value) {
-            this.getVectorsRequestJson.indexName = value;
+            this.getVectorsConfiguration = this.getVectorsConfiguration.toBuilder().indexName(value).build();
             return this;
         }
 
@@ -76,7 +75,7 @@ public final class GetVectorsRequest extends RequestModel {
          * The list of vector keys to retrieve.
          */
         public Builder keys(List<String> value) {
-            this.getVectorsRequestJson.keys = value;
+            this.getVectorsConfiguration = this.getVectorsConfiguration.toBuilder().keys(value).build();
             return this;
         }
 
@@ -84,7 +83,7 @@ public final class GetVectorsRequest extends RequestModel {
          * Whether to return vector data.
          */
         public Builder returnData(Boolean value) {
-            this.getVectorsRequestJson.returnData = value;
+            this.getVectorsConfiguration = this.getVectorsConfiguration.toBuilder().returnData(value).build();
             return this;
         }
 
@@ -92,16 +91,16 @@ public final class GetVectorsRequest extends RequestModel {
          * Whether to return vector metadata.
          */
         public Builder returnMetadata(Boolean value) {
-            this.getVectorsRequestJson.returnMetadata = value;
+            this.getVectorsConfiguration = this.getVectorsConfiguration.toBuilder().returnMetadata(value).build();
             return this;
         }
 
         /**
          * The request body schema.
          */
-        public Builder getVectorsRequestJson(GetVectorsRequestJson getVectorsRequestJson) {
-            requireNonNull(getVectorsRequestJson);
-            this.getVectorsRequestJson = getVectorsRequestJson;
+        public Builder getVectorsConfiguration(GetVectorsConfiguration getVectorsConfiguration) {
+            requireNonNull(getVectorsConfiguration);
+            this.getVectorsConfiguration = getVectorsConfiguration;
             return this;
         }
 

@@ -61,7 +61,7 @@ public final class VectorIndexBasic {
 
     public static DeleteVectorIndexResult deleteVectorIndex(ClientImpl impl, DeleteVectorIndexRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.vectorIndexNameInfoJson().indexName, "request.indexName is required");
+        requireNonNull(request.vectorIndexNameInfo().indexName(), "request.indexName is required");
 
         OperationInput input = SerdeVectorIndexBasic.fromDeleteVectorIndex(request);
         OperationOutput output = impl.execute(input, options);
@@ -70,7 +70,7 @@ public final class VectorIndexBasic {
 
     public static CompletableFuture<DeleteVectorIndexResult> deleteVectorIndexAsync(ClientImpl impl, DeleteVectorIndexRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.vectorIndexNameInfoJson().indexName, "request.indexName is required");
+        requireNonNull(request.vectorIndexNameInfo().indexName(), "request.indexName is required");
 
         OperationInput input = SerdeVectorIndexBasic.fromDeleteVectorIndex(request);
         return impl.executeAsync(input, options)

@@ -4,7 +4,6 @@ import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorBucketBasic;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.BucketInfoJson;
 import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Map;
@@ -18,7 +17,7 @@ public class GetVectorBucketResultTest {
         assertThat(result).isNotNull();
         assertThat(result.headers()).isNotNull();
         assertThat(result.headers().isEmpty()).isTrue();
-        assertThat(result.bucketInfoJson()).isNull();
+        assertThat(result.vectorBucket()).isNull();
     }
 
     @Test
@@ -28,18 +27,18 @@ public class GetVectorBucketResultTest {
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
-        BucketInfoJson bucketInfo = new BucketInfoJson();
-        bucketInfo.bucketInfo = new BucketInfoJson.BucketInfo();
-        bucketInfo.bucketInfo.name = "oss-example";
-        bucketInfo.bucketInfo.location = "oss-cn-hangzhou";
-        bucketInfo.bucketInfo.creationDate = Instant.parse("2013-07-31T10:56:21.000Z");
-        bucketInfo.bucketInfo.extranetEndpoint = "oss-cn-hangzhou.aliyuncs.com";
-        bucketInfo.bucketInfo.intranetEndpoint = "oss-cn-hangzhou-internal.aliyuncs.com";
-        bucketInfo.bucketInfo.resourceGroupId = "rg-aek27t";
+        VectorBucket vectorBucket = VectorBucket.newBuilder()
+                .name("oss-example")
+                .location("oss-cn-hangzhou")
+                .creationDate(Instant.parse("2013-07-31T10:56:21.000Z"))
+                .extranetEndpoint("oss-cn-hangzhou.aliyuncs.com")
+                .intranetEndpoint("oss-cn-hangzhou-internal.aliyuncs.com")
+                .resourceGroupId("rg-aek27t")
+                .build();
 
         GetVectorBucketResult result = GetVectorBucketResult.newBuilder()
                 .headers(headers)
-                .innerBody(bucketInfo)
+                .innerBody(vectorBucket)
                 .status("OK")
                 .statusCode(200)
                 .build();
@@ -47,14 +46,14 @@ public class GetVectorBucketResultTest {
         assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
 
-        BucketInfoJson resultBucketInfo = result.bucketInfoJson();
-        assertThat(resultBucketInfo).isNotNull();
-        assertThat(resultBucketInfo.bucketInfo.name).isEqualTo("oss-example");
-        assertThat(resultBucketInfo.bucketInfo.location).isEqualTo("oss-cn-hangzhou");
-        assertThat(resultBucketInfo.bucketInfo.creationDate).isEqualTo(Instant.parse("2013-07-31T10:56:21.000Z"));
-        assertThat(resultBucketInfo.bucketInfo.extranetEndpoint).isEqualTo("oss-cn-hangzhou.aliyuncs.com");
-        assertThat(resultBucketInfo.bucketInfo.intranetEndpoint).isEqualTo("oss-cn-hangzhou-internal.aliyuncs.com");
-        assertThat(resultBucketInfo.bucketInfo.resourceGroupId).isEqualTo("rg-aek27t");
+        VectorBucket resultVectorBucket = result.vectorBucket();
+        assertThat(resultVectorBucket).isNotNull();
+        assertThat(resultVectorBucket.name()).isEqualTo("oss-example");
+        assertThat(resultVectorBucket.location()).isEqualTo("oss-cn-hangzhou");
+        assertThat(resultVectorBucket.creationDate()).isEqualTo(Instant.parse("2013-07-31T10:56:21.000Z"));
+        assertThat(resultVectorBucket.extranetEndpoint()).isEqualTo("oss-cn-hangzhou.aliyuncs.com");
+        assertThat(resultVectorBucket.intranetEndpoint()).isEqualTo("oss-cn-hangzhou-internal.aliyuncs.com");
+        assertThat(resultVectorBucket.resourceGroupId()).isEqualTo("rg-aek27t");
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-1234567890abcdefg");
@@ -67,18 +66,18 @@ public class GetVectorBucketResultTest {
                 "ETag", "\"original-etag\""
         );
 
-        BucketInfoJson bucketInfo = new BucketInfoJson();
-        bucketInfo.bucketInfo = new BucketInfoJson.BucketInfo();
-        bucketInfo.bucketInfo.name = "oss-example-copy";
-        bucketInfo.bucketInfo.location = "oss-cn-shanghai";
-        bucketInfo.bucketInfo.creationDate = Instant.parse("2014-08-01T11:57:22.000Z");
-        bucketInfo.bucketInfo.extranetEndpoint = "oss-cn-shanghai.aliyuncs.com";
-        bucketInfo.bucketInfo.intranetEndpoint = "oss-cn-shanghai-internal.aliyuncs.com";
-        bucketInfo.bucketInfo.resourceGroupId = "rg-bfk38u";
+        VectorBucket vectorBucket = VectorBucket.newBuilder()
+                .name("oss-example-copy")
+                .location("oss-cn-shanghai")
+                .creationDate(Instant.parse("2014-08-01T11:57:22.000Z"))
+                .extranetEndpoint("oss-cn-shanghai.aliyuncs.com")
+                .intranetEndpoint("oss-cn-shanghai-internal.aliyuncs.com")
+                .resourceGroupId("rg-bfk38u")
+                .build();
 
         GetVectorBucketResult original = GetVectorBucketResult.newBuilder()
                 .headers(headers)
-                .innerBody(bucketInfo)
+                .innerBody(vectorBucket)
                 .status("Created")
                 .statusCode(201)
                 .build();
@@ -88,14 +87,14 @@ public class GetVectorBucketResultTest {
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
 
-        BucketInfoJson resultBucketInfo = copy.bucketInfoJson();
-        assertThat(resultBucketInfo).isNotNull();
-        assertThat(resultBucketInfo.bucketInfo.name).isEqualTo("oss-example-copy");
-        assertThat(resultBucketInfo.bucketInfo.location).isEqualTo("oss-cn-shanghai");
-        assertThat(resultBucketInfo.bucketInfo.creationDate).isEqualTo(Instant.parse("2014-08-01T11:57:22.000Z"));
-        assertThat(resultBucketInfo.bucketInfo.extranetEndpoint).isEqualTo("oss-cn-shanghai.aliyuncs.com");
-        assertThat(resultBucketInfo.bucketInfo.intranetEndpoint).isEqualTo("oss-cn-shanghai-internal.aliyuncs.com");
-        assertThat(resultBucketInfo.bucketInfo.resourceGroupId).isEqualTo("rg-bfk38u");
+        VectorBucket resultVectorBucket = copy.vectorBucket();
+        assertThat(resultVectorBucket).isNotNull();
+        assertThat(resultVectorBucket.name()).isEqualTo("oss-example-copy");
+        assertThat(resultVectorBucket.location()).isEqualTo("oss-cn-shanghai");
+        assertThat(resultVectorBucket.creationDate()).isEqualTo(Instant.parse("2014-08-01T11:57:22.000Z"));
+        assertThat(resultVectorBucket.extranetEndpoint()).isEqualTo("oss-cn-shanghai.aliyuncs.com");
+        assertThat(resultVectorBucket.intranetEndpoint()).isEqualTo("oss-cn-shanghai-internal.aliyuncs.com");
+        assertThat(resultVectorBucket.resourceGroupId()).isEqualTo("rg-bfk38u");
         assertThat(copy.status()).isEqualTo("Created");
         assertThat(copy.statusCode()).isEqualTo(201);
         assertThat(copy.requestId()).isEqualTo("req-765432109876543210");
@@ -129,14 +128,14 @@ public class GetVectorBucketResultTest {
         assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-xml-builder-test");
         assertThat(result.headers().get("ETag")).isEqualTo("\"xml-builder-etag\"");
 
-        BucketInfoJson resultBucketInfo = result.bucketInfoJson();
-        assertThat(resultBucketInfo).isNotNull();
-        assertThat(resultBucketInfo.bucketInfo.name).isEqualTo("oss-example");
-        assertThat(resultBucketInfo.bucketInfo.location).isEqualTo("oss-cn-hangzhou");
-        assertThat(resultBucketInfo.bucketInfo.creationDate).isEqualTo(Instant.parse("2013-07-31T10:56:21.000Z"));
-        assertThat(resultBucketInfo.bucketInfo.extranetEndpoint).isEqualTo("oss-cn-hangzhou.aliyuncs.com");
-        assertThat(resultBucketInfo.bucketInfo.intranetEndpoint).isEqualTo("oss-cn-hangzhou-internal.aliyuncs.com");
-        assertThat(resultBucketInfo.bucketInfo.resourceGroupId).isEqualTo("rg-aek27t");
+        VectorBucket resultVectorBucket = result.vectorBucket();
+        assertThat(resultVectorBucket).isNotNull();
+        assertThat(resultVectorBucket.name()).isEqualTo("oss-example");
+        assertThat(resultVectorBucket.location()).isEqualTo("oss-cn-hangzhou");
+        assertThat(resultVectorBucket.creationDate()).isEqualTo(Instant.parse("2013-07-31T10:56:21.000Z"));
+        assertThat(resultVectorBucket.extranetEndpoint()).isEqualTo("oss-cn-hangzhou.aliyuncs.com");
+        assertThat(resultVectorBucket.intranetEndpoint()).isEqualTo("oss-cn-hangzhou-internal.aliyuncs.com");
+        assertThat(resultVectorBucket.resourceGroupId()).isEqualTo("rg-aek27t");
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-xml-builder-test");

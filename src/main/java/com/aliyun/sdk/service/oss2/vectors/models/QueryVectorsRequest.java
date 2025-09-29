@@ -9,22 +9,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class QueryVectorsRequest extends RequestModel {
     private final String bucket;
-    private final Map<String, Object> filter;
-    private final String indexName;
-    private final Map<String, Object> queryVector;
-    private final Boolean returnDistance;
-    private final Boolean returnMetadata;
-    private final Integer topK;
+    private final QueryVectorsConfiguration queryVectorsConfiguration;
 
     private QueryVectorsRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.filter = builder.filter;
-        this.indexName = builder.indexName;
-        this.queryVector = builder.queryVector;
-        this.returnDistance = builder.returnDistance;
-        this.returnMetadata = builder.returnMetadata;
-        this.topK = builder.topK;
+        this.queryVectorsConfiguration = builder.queryVectorsConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -39,45 +29,10 @@ public final class QueryVectorsRequest extends RequestModel {
     }
 
     /**
-     * The filter conditions for querying vectors.
+     * The request body schema.
      */
-    public Map<String, Object> filter() {
-        return filter;
-    }
-
-    /**
-     * The name of the index.
-     */
-    public String indexName() {
-        return indexName;
-    }
-
-    /**
-     * The query vector data.
-     */
-    public Map<String, Object> queryVector() {
-        return queryVector;
-    }
-
-    /**
-     * Whether to return distance values.
-     */
-    public Boolean returnDistance() {
-        return returnDistance;
-    }
-
-    /**
-     * Whether to return vector metadata.
-     */
-    public Boolean returnMetadata() {
-        return returnMetadata;
-    }
-
-    /**
-     * The number of nearest neighbors to return.
-     */
-    public Integer topK() {
-        return topK;
+    public QueryVectorsConfiguration queryVectorsConfiguration() {
+        return queryVectorsConfiguration;
     }
 
     public Builder toBuilder() {
@@ -86,26 +41,17 @@ public final class QueryVectorsRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private Map<String, Object> filter;
-        private String indexName;
-        private Map<String, Object> queryVector;
-        private Boolean returnDistance;
-        private Boolean returnMetadata;
-        private Integer topK;
+        private QueryVectorsConfiguration queryVectorsConfiguration;
 
         private Builder() {
             super();
+            this.queryVectorsConfiguration = new QueryVectorsConfiguration();
         }
 
         private Builder(QueryVectorsRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.filter = request.filter;
-            this.indexName = request.indexName;
-            this.queryVector = request.queryVector;
-            this.returnDistance = request.returnDistance;
-            this.returnMetadata = request.returnMetadata;
-            this.topK = request.topK;
+            this.queryVectorsConfiguration = request.queryVectorsConfiguration;
         }
 
         /**
@@ -118,10 +64,10 @@ public final class QueryVectorsRequest extends RequestModel {
         }
 
         /**
-         * The filter conditions for querying vectors.
+         * The filter for querying vectors.
          */
         public Builder filter(Map<String, Object> value) {
-            this.filter = value;
+            this.queryVectorsConfiguration = this.queryVectorsConfiguration.toBuilder().filter(value).build();
             return this;
         }
 
@@ -129,39 +75,48 @@ public final class QueryVectorsRequest extends RequestModel {
          * The name of the index.
          */
         public Builder indexName(String value) {
-            this.indexName = value;
+            this.queryVectorsConfiguration = this.queryVectorsConfiguration.toBuilder().indexName(value).build();
             return this;
         }
 
         /**
-         * The query vector data.
+         * The query vector.
          */
-        public Builder queryVector(Map<String, Object> value) {
-            this.queryVector = value;
+        public Builder queryVector(QueryVectorsConfiguration.QueryVector value) {
+            this.queryVectorsConfiguration = this.queryVectorsConfiguration.toBuilder().queryVector(value).build();
             return this;
         }
 
         /**
-         * Whether to return distance values.
+         * Whether to return distance.
          */
         public Builder returnDistance(Boolean value) {
-            this.returnDistance = value;
+            this.queryVectorsConfiguration = this.queryVectorsConfiguration.toBuilder().returnDistance(value).build();
             return this;
         }
 
         /**
-         * Whether to return vector metadata.
+         * Whether to return metadata.
          */
         public Builder returnMetadata(Boolean value) {
-            this.returnMetadata = value;
+            this.queryVectorsConfiguration = this.queryVectorsConfiguration.toBuilder().returnMetadata(value).build();
             return this;
         }
 
         /**
-         * The number of nearest neighbors to return.
+         * The number of top K vectors to return.
          */
         public Builder topK(Integer value) {
-            this.topK = value;
+            this.queryVectorsConfiguration = this.queryVectorsConfiguration.toBuilder().topK(value).build();
+            return this;
+        }
+
+        /**
+         * The request body schema.
+         */
+        public Builder queryVectorsConfiguration(QueryVectorsConfiguration queryVectorsConfiguration) {
+            requireNonNull(queryVectorsConfiguration);
+            this.queryVectorsConfiguration = queryVectorsConfiguration;
             return this;
         }
 

@@ -1,7 +1,6 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.VectorIndexNameInfoJson;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -9,12 +8,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class DeleteVectorIndexRequest extends RequestModel {
     private final String bucket;
-    private final VectorIndexNameInfoJson vectorIndexNameInfoJson;
+    private final VectorIndexNameInfo vectorIndexNameInfo;
 
     private DeleteVectorIndexRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.vectorIndexNameInfoJson = builder.vectorIndexNameInfoJson;
+        this.vectorIndexNameInfo = builder.vectorIndexNameInfo;
     }
 
     public static Builder newBuilder() {
@@ -29,10 +28,17 @@ public final class DeleteVectorIndexRequest extends RequestModel {
     }
 
     /**
-     * The request body schema.
+     * The name of the vector index.
      */
-    public VectorIndexNameInfoJson vectorIndexNameInfoJson() {
-        return vectorIndexNameInfoJson;
+    public String indexName() {
+        return vectorIndexNameInfo.indexName();
+    }
+
+    /**
+     * The index name info.
+     */
+    public VectorIndexNameInfo vectorIndexNameInfo() {
+        return vectorIndexNameInfo;
     }
 
     public Builder toBuilder() {
@@ -41,17 +47,17 @@ public final class DeleteVectorIndexRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private VectorIndexNameInfoJson vectorIndexNameInfoJson;
+        private VectorIndexNameInfo vectorIndexNameInfo;
 
         private Builder() {
             super();
-            this.vectorIndexNameInfoJson = new VectorIndexNameInfoJson();
+            this.vectorIndexNameInfo = VectorIndexNameInfo.newBuilder().build();
         }
 
-        private Builder(DeleteVectorIndexRequest request) {
-            super(request);
-            this.bucket = request.bucket;
-            this.vectorIndexNameInfoJson = request.vectorIndexNameInfoJson;
+        private Builder(DeleteVectorIndexRequest from) {
+            super(from);
+            this.bucket = from.bucket;
+            this.vectorIndexNameInfo = from.vectorIndexNameInfo;
         }
 
         /**
@@ -64,19 +70,17 @@ public final class DeleteVectorIndexRequest extends RequestModel {
         }
 
         /**
-         * The name of the index to delete.
+         * The name of the vector index.
          */
         public Builder indexName(String value) {
-            this.vectorIndexNameInfoJson.indexName = value;
+            requireNonNull(value);
+            this.vectorIndexNameInfo = this.vectorIndexNameInfo.toBuilder().indexName(value).build();
             return this;
         }
 
-        /**
-         * The request body schema.
-         */
-        public Builder vectorIndexNameInfoJson(VectorIndexNameInfoJson vectorIndexNameInfoJson) {
-            requireNonNull(vectorIndexNameInfoJson);
-            this.vectorIndexNameInfoJson = vectorIndexNameInfoJson;
+        public Builder vectorIndexNameInfo(VectorIndexNameInfo value) {
+            requireNonNull(value);
+            this.vectorIndexNameInfo = value;
             return this;
         }
 

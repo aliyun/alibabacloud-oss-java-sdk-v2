@@ -1,13 +1,12 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.OperationInput;
-import com.aliyun.sdk.service.oss2.utils.MapUtils;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.VectorIndexConfigurationJson;
 import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorIndexBasic;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -25,98 +24,97 @@ public class PutVectorIndexRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
+        assertThat(request.indexName()).isNull();
+        assertThat(request.vectorIndexConfiguration()).isNotNull();
     }
 
     @Test
     public void testFullBuilder() {
-        Map<String, String> headers = MapUtils.of(
-                "x-oss-request-id", "req-1234567890abcdefg",
-                "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
-        );
-
         Map<String, Object> metadata = new HashMap<>();
-        List<String> nonFilterableKeys = Arrays.asList("key1", "key2");
-        metadata.put("nonFilterableMetadataKeys", nonFilterableKeys);
+        metadata.put("key1", "value1");
+        metadata.put("key2", 123);
 
         PutVectorIndexRequest request = PutVectorIndexRequest.newBuilder()
                 .bucket("test-bucket")
-                .dataType("vector")
-                .dimension(128)
-                .distanceMetric("EUCLIDEAN")
                 .indexName("test-index")
+                .dataType("float32")
+                .dimension(128)
+                .distanceMetric("euclidean")
                 .metadata(metadata)
-                .headers(headers)
                 .parameter("param1", "value1")
                 .parameter("param2", "value2")
+                .header("x-oss-header1", "header-value1")
+                .header("x-oss-header2", "header-value2")
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.vectorIndexConfigurationJson().dataType).isEqualTo("vector");
-        assertThat(request.vectorIndexConfigurationJson().dimension).isEqualTo(128);
-        assertThat(request.vectorIndexConfigurationJson().distanceMetric).isEqualTo("EUCLIDEAN");
-        assertThat(request.vectorIndexConfigurationJson().indexName).isEqualTo("test-index");
-        assertThat(request.vectorIndexConfigurationJson().metadata).isEqualTo(metadata);
-        assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
-        assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
-        assertThat(request.parameters()).containsEntry("param1", "value1");
-        assertThat(request.parameters()).containsEntry("param2", "value2");
+        assertThat(request.indexName()).isEqualTo("test-index");
+        assertThat(request.vectorIndexConfiguration().dataType()).isEqualTo("float32");
+        assertThat(request.vectorIndexConfiguration().dimension()).isEqualTo(128);
+        assertThat(request.vectorIndexConfiguration().distanceMetric()).isEqualTo("euclidean");
+        assertThat(request.vectorIndexConfiguration().metadata()).containsEntry("key1", "value1");
+        assertThat(request.vectorIndexConfiguration().metadata()).containsEntry("key2", 123);
+
+        assertThat(request.headers()).contains(
+                new AbstractMap.SimpleEntry<>("x-oss-header1", "header-value1"),
+                new AbstractMap.SimpleEntry<>("x-oss-header2", "header-value2")
+        );
+
+        assertThat(request.parameters()).contains(
+                new AbstractMap.SimpleEntry<>("param1", "value1"),
+                new AbstractMap.SimpleEntry<>("param2", "value2")
+        );
     }
 
     @Test
-    public void testToBuilderPreserveState() throws JsonProcessingException {
-        Map<String, String> headers = MapUtils.of(
-                "x-oss-request-id", "req-765432109876543210",
-                "ETag", "\"original-etag\""
-        );
-
+    public void testToBuilderPreserveState() {
         Map<String, Object> metadata = new HashMap<>();
-        List<String> nonFilterableKeys = Arrays.asList("key3", "key4");
-        metadata.put("nonFilterableMetadataKeys", nonFilterableKeys);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String metadataJson = objectMapper.writeValueAsString(metadata);
+        metadata.put("key1", "value1");
 
         PutVectorIndexRequest original = PutVectorIndexRequest.newBuilder()
-                .bucket("testbucket")
-                .dataType("vector")
-                .dimension(256)
-                .distanceMetric("COSINE")
+                .bucket("original-bucket")
                 .indexName("original-index")
+                .dataType("float32")
+                .dimension(256)
+                .distanceMetric("cosine")
                 .metadata(metadata)
-                .headers(headers)
-                .parameter("param3", "value3")
-                .parameter("param4", "value4")
+                .parameter("original-param", "original-value")
+                .header("x-oss-original", "original-header")
                 .build();
 
         PutVectorIndexRequest copy = original.toBuilder().build();
 
-        String copyMetadataJson = objectMapper.writeValueAsString(copy.vectorIndexConfigurationJson().metadata);
+        assertThat(copy.bucket()).isEqualTo("original-bucket");
+        assertThat(copy.indexName()).isEqualTo("original-index");
+        assertThat(copy.vectorIndexConfiguration().dataType()).isEqualTo("float32");
+        assertThat(copy.vectorIndexConfiguration().dimension()).isEqualTo(256);
+        assertThat(copy.vectorIndexConfiguration().distanceMetric()).isEqualTo("cosine");
+        assertThat(copy.vectorIndexConfiguration().metadata()).containsEntry("key1", "value1");
 
-        assertThat(copy.bucket()).isEqualTo("testbucket");
-        assertThat(copy.vectorIndexConfigurationJson().dataType).isEqualTo("vector");
-        assertThat(copy.vectorIndexConfigurationJson().dimension).isEqualTo(256);
-        assertThat(copy.vectorIndexConfigurationJson().distanceMetric).isEqualTo("COSINE");
-        assertThat(copy.vectorIndexConfigurationJson().indexName).isEqualTo("original-index");
-        assertThat(copyMetadataJson).isEqualTo(metadataJson);
-        assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
-        assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
-        assertThat(copy.parameters()).containsEntry("param3", "value3");
-        assertThat(copy.parameters()).containsEntry("param4", "value4");
+        assertThat(copy.headers().get("x-oss-original")).isEqualTo("original-header");
+        assertThat(copy.parameters().get("original-param")).isEqualTo("original-value");
     }
 
     @Test
-    public void testHeaderProperties() {
+    public void bodyBuilder() throws JsonProcessingException {
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("env", "test");
+        metadata.put("version", "1.0");
+
         PutVectorIndexRequest request = PutVectorIndexRequest.newBuilder()
-                .bucket("anotherbucket")
-                .indexName("header-test-index")
-                .header("x-oss-meta-custom", "custom-value")
-                .header("Cache-Control", "no-cache")
+                .bucket("body-test-bucket")
+                .indexName("body-test-index")
+                .dataType("float32")
+                .dimension(512)
+                .distanceMetric("inner_product")
+                .metadata(metadata)
                 .build();
 
-        assertThat(request.bucket()).isEqualTo("anotherbucket");
-        assertThat(request.vectorIndexConfigurationJson().indexName).isEqualTo("header-test-index");
-        assertThat(request.headers()).containsEntry("x-oss-meta-custom", "custom-value");
-        assertThat(request.headers()).containsEntry("Cache-Control", "no-cache");
+        OperationInput input = SerdeVectorIndexBasic.fromPutVectorIndex(request);
+
+        assertThat(input.bucket().get()).isEqualTo("body-test-bucket");
+        // Note: indexName is part of the configuration, not a separate parameter
+        assertThat(input.parameters().get("indexName")).isNull();
     }
 
     @Test

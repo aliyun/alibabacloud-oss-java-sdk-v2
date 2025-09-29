@@ -28,8 +28,8 @@ public final class SerdeVectorsBasic {
         builder.bucket(request.bucket());
 
         // body
-        if (request.putVectorsRequestJson() != null) {
-            builder.body(SerdeJsonUtils.toJson(request.putVectorsRequestJson()));
+        if (request.vectorsConfiguration() != null) {
+            builder.body(SerdeJsonUtils.toJson(request.vectorsConfiguration()));
         }
 
         OperationInput input = builder.build();
@@ -65,8 +65,8 @@ public final class SerdeVectorsBasic {
         builder.bucket(request.bucket());
 
         // body
-        if (request.getVectorsRequestJson() != null) {
-            builder.body(SerdeJsonUtils.toJson(request.getVectorsRequestJson()));
+        if (request.getVectorsConfiguration() != null) {
+            builder.body(SerdeJsonUtils.toJson(request.getVectorsConfiguration()));
         }
 
         OperationInput input = builder.build();
@@ -76,7 +76,7 @@ public final class SerdeVectorsBasic {
 
     public static GetVectorsResult toGetVectors(OperationOutput output) {
         Object innerBody = null;
-        innerBody = SerdeJsonUtils.fromJsonBody(output, VectorListJson.class);
+        innerBody = SerdeJsonUtils.fromJsonBody(output, VectorsInfo.class);
 
         return GetVectorsResult.newBuilder()
                 .headers(output.headers)
@@ -103,6 +103,11 @@ public final class SerdeVectorsBasic {
 
         builder.bucket(request.bucket());
 
+        // body
+        if (request.listVectorsConfiguration() != null) {
+            builder.body(SerdeJsonUtils.toJson(request.listVectorsConfiguration()));
+        }
+
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);
         return input;
@@ -110,7 +115,7 @@ public final class SerdeVectorsBasic {
 
     public static ListVectorsResult toListVectors(OperationOutput output) {
         Object innerBody = null;
-        innerBody = SerdeJsonUtils.fromJsonBody(output, VectorListJson.class);
+        innerBody = SerdeJsonUtils.fromJsonBody(output, ListVectorsResultJson.class);
 
         return ListVectorsResult.newBuilder()
                 .headers(output.headers)
@@ -136,6 +141,11 @@ public final class SerdeVectorsBasic {
         builder.parameters(parameters);
 
         builder.bucket(request.bucket());
+
+        // body
+        if (request.deleteVectorsConfiguration() != null) {
+            builder.body(SerdeJsonUtils.toJson(request.deleteVectorsConfiguration()));
+        }
 
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);
@@ -169,6 +179,11 @@ public final class SerdeVectorsBasic {
 
         builder.bucket(request.bucket());
 
+        // body
+        if (request.queryVectorsConfiguration() != null) {
+            builder.body(SerdeJsonUtils.toJson(request.queryVectorsConfiguration()));
+        }
+
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);
         return input;
@@ -176,7 +191,7 @@ public final class SerdeVectorsBasic {
 
     public static QueryVectorsResult toQueryVectors(OperationOutput output) {
         Object innerBody = null;
-        innerBody = SerdeJsonUtils.fromJsonBody(output, VectorListJson.class);
+        innerBody = SerdeJsonUtils.fromJsonBody(output, QueryVectorsJson.class);
 
         return QueryVectorsResult.newBuilder()
                 .headers(output.headers)

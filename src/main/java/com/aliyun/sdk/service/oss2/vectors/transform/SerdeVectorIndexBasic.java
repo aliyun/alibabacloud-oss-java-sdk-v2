@@ -7,9 +7,7 @@ import com.aliyun.sdk.service.oss2.transform.SerdeUtils;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.IndexInfoJson;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.ListVectorIndexesResultJson;
-
 import java.util.Map;
 
 import static com.aliyun.sdk.service.oss2.transform.SerdeUtils.serializeInput;
@@ -26,7 +24,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("putVectorIndex", "");
 
         // body
-        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexConfigurationJson());
+        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexConfiguration());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("PutVectorIndex")
@@ -62,7 +60,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("getVectorIndex", "");
 
         // body
-        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexNameInfoJson());
+        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexNameInfo());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("GetVectorIndex")
@@ -80,7 +78,7 @@ public final class SerdeVectorIndexBasic {
 
     public static GetVectorIndexResult toGetVectorIndex(OperationOutput output) {
         Object innerBody = null;
-        innerBody = SerdeJsonUtils.fromJsonBody(output, IndexInfoJson.class);
+        innerBody = SerdeJsonUtils.fromJsonBody(output, IndexInfo.class);
 
         return GetVectorIndexResult.newBuilder()
                 .headers(output.headers)
@@ -100,7 +98,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("listVectorIndexes", "");
 
         // body
-        BinaryData body = SerdeJsonUtils.toJson(request.listVectorIndexesRequestJson());
+        BinaryData body = SerdeJsonUtils.toJson(request.listVectorIndexesInfo());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("ListVectorIndexes")
@@ -138,7 +136,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("deleteVectorIndex", "");
 
         // body
-        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexNameInfoJson());
+        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexNameInfo());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("DeleteVectorIndex")

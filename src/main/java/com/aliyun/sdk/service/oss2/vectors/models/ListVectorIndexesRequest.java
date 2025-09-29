@@ -1,7 +1,6 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.ListVectorIndexesRequestJson;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -9,12 +8,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ListVectorIndexesRequest extends RequestModel {
     private final String bucket;
-    private final ListVectorIndexesRequestJson listVectorIndexesRequestJson;
+    private final ListVectorIndexesInfo listVectorIndexesInfo;
 
     private ListVectorIndexesRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.listVectorIndexesRequestJson = builder.listVectorIndexesRequestJson;
+        this.listVectorIndexesInfo = builder.listVectorIndexesInfo;
     }
 
     public static Builder newBuilder() {
@@ -31,8 +30,8 @@ public final class ListVectorIndexesRequest extends RequestModel {
     /**
      * The request body schema.
      */
-    public ListVectorIndexesRequestJson listVectorIndexesRequestJson() {
-        return listVectorIndexesRequestJson;
+    public ListVectorIndexesInfo listVectorIndexesInfo() {
+        return listVectorIndexesInfo;
     }
 
     public Builder toBuilder() {
@@ -41,17 +40,17 @@ public final class ListVectorIndexesRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private ListVectorIndexesRequestJson listVectorIndexesRequestJson;
+        private ListVectorIndexesInfo listVectorIndexesInfo;
 
         private Builder() {
             super();
-            this.listVectorIndexesRequestJson = new ListVectorIndexesRequestJson();
+            this.listVectorIndexesInfo = new ListVectorIndexesInfo();
         }
 
         private Builder(ListVectorIndexesRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.listVectorIndexesRequestJson = request.listVectorIndexesRequestJson;
+            this.listVectorIndexesInfo = request.listVectorIndexesInfo;
         }
 
         /**
@@ -67,7 +66,7 @@ public final class ListVectorIndexesRequest extends RequestModel {
          * The maximum number of indexes to return.
          */
         public Builder maxResults(Long value) {
-            this.listVectorIndexesRequestJson.maxResults = value;
+            this.listVectorIndexesInfo = this.listVectorIndexesInfo.toBuilder().maxResults(value).build();
             return this;
         }
 
@@ -75,7 +74,7 @@ public final class ListVectorIndexesRequest extends RequestModel {
          * The token for the next page of indexes.
          */
         public Builder nextToken(String value) {
-            this.listVectorIndexesRequestJson.nextToken = value;
+            this.listVectorIndexesInfo = this.listVectorIndexesInfo.toBuilder().nextToken(value).build();
             return this;
         }
 
@@ -83,16 +82,16 @@ public final class ListVectorIndexesRequest extends RequestModel {
          * The prefix to filter indexes by name.
          */
         public Builder prefix(String value) {
-            this.listVectorIndexesRequestJson.prefix = value;
+            this.listVectorIndexesInfo = this.listVectorIndexesInfo.toBuilder().prefix(value).build();
             return this;
         }
 
         /**
          * The request body schema.
          */
-        public Builder listVectorIndexesRequestJson(ListVectorIndexesRequestJson listVectorIndexesRequestJson) {
-            requireNonNull(listVectorIndexesRequestJson);
-            this.listVectorIndexesRequestJson = listVectorIndexesRequestJson;
+        public Builder listVectorIndexesInfo(ListVectorIndexesInfo listVectorIndexesInfo) {
+            requireNonNull(listVectorIndexesInfo);
+            this.listVectorIndexesInfo = listVectorIndexesInfo;
             return this;
         }
 
