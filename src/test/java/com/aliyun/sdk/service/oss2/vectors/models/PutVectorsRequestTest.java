@@ -23,9 +23,8 @@ public class PutVectorsRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.vectorsConfiguration()).isNotNull();
-        assertThat(request.vectorsConfiguration().indexName()).isNull();
-        assertThat(request.vectorsConfiguration().vectors()).isNull();
+        assertThat(request.indexName()).isNull();
+        assertThat(request.vectors()).isNull();
     }
 
     @Test
@@ -53,15 +52,15 @@ public class PutVectorsRequestTest {
         PutVectorsRequest request = PutVectorsRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("test-index")
-                .vectorsMap(vectors)
+                .vectors(vectors)
                 .headers(headers)
                 .parameter("param1", "value1")
                 .parameter("param2", "value2")
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.vectorsConfiguration().indexName()).isEqualTo("test-index");
-        assertThat(request.vectorsConfiguration().vectors()).isEqualTo(vectors);
+        assertThat(request.indexName()).isEqualTo("test-index");
+        assertThat(request.vectors()).isEqualTo(vectors);
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).containsEntry("param1", "value1");
@@ -101,9 +100,9 @@ public class PutVectorsRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.vectorsConfiguration().indexName()).isEqualTo("test-index");
-        assertThat(request.vectorsConfiguration().vectors()).isNotNull();
-        assertThat(request.vectorsConfiguration().vectors()).hasSize(1);
+        assertThat(request.indexName()).isEqualTo("test-index");
+        assertThat(request.vectors()).isNotNull();
+        assertThat(request.vectors()).hasSize(1);
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).containsEntry("param1", "value1");
@@ -134,7 +133,7 @@ public class PutVectorsRequestTest {
         PutVectorsRequest original = PutVectorsRequest.newBuilder()
                 .bucket("testbucket")
                 .indexName("original-index")
-                .vectorsMap(vectors)
+                .vectors(vectors)
                 .headers(headers)
                 .parameter("param3", "value3")
                 .parameter("param4", "value4")
@@ -143,8 +142,8 @@ public class PutVectorsRequestTest {
         PutVectorsRequest copy = original.toBuilder().build();
 
         assertThat(copy.bucket()).isEqualTo("testbucket");
-        assertThat(copy.vectorsConfiguration().indexName()).isEqualTo("original-index");
-        assertThat(copy.vectorsConfiguration().vectors()).isEqualTo(vectors);
+        assertThat(copy.indexName()).isEqualTo("original-index");
+        assertThat(copy.vectors()).isEqualTo(vectors);
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.parameters()).containsEntry("param3", "value3");
@@ -165,7 +164,7 @@ public class PutVectorsRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("anotherbucket");
-        assertThat(request.vectorsConfiguration().indexName()).isEqualTo("header-test-index");
+        assertThat(request.indexName()).isEqualTo("header-test-index");
         assertThat(request.headers()).containsEntry("x-oss-meta-custom", "custom-value");
         assertThat(request.headers()).containsEntry("Cache-Control", "no-cache");
     }
@@ -191,7 +190,7 @@ public class PutVectorsRequestTest {
         PutVectorsRequest request = PutVectorsRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("test-index")
-                .vectorsMap(vectors)
+                .vectors(vectors)
                 .header("x-oss-request-id", "test-request-id")
                 .parameter("test-param", "test-value")
                 .build();

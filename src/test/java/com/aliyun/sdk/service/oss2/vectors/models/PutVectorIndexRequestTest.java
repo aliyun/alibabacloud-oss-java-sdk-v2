@@ -25,7 +25,6 @@ public class PutVectorIndexRequestTest {
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
         assertThat(request.indexName()).isNull();
-        assertThat(request.vectorIndexConfiguration()).isNotNull();
     }
 
     @Test
@@ -49,11 +48,11 @@ public class PutVectorIndexRequestTest {
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
         assertThat(request.indexName()).isEqualTo("test-index");
-        assertThat(request.vectorIndexConfiguration().dataType()).isEqualTo("float32");
-        assertThat(request.vectorIndexConfiguration().dimension()).isEqualTo(128);
-        assertThat(request.vectorIndexConfiguration().distanceMetric()).isEqualTo("euclidean");
-        assertThat(request.vectorIndexConfiguration().metadata()).containsEntry("key1", "value1");
-        assertThat(request.vectorIndexConfiguration().metadata()).containsEntry("key2", 123);
+        assertThat(request.dataType()).isEqualTo("float32");
+        assertThat(request.dimension()).isEqualTo(128);
+        assertThat(request.distanceMetric()).isEqualTo("euclidean");
+        assertThat(request.metadata()).containsEntry("key1", "value1");
+        assertThat(request.metadata()).containsEntry("key2", 123);
 
         assertThat(request.headers()).contains(
                 new AbstractMap.SimpleEntry<>("x-oss-header1", "header-value1"),
@@ -86,10 +85,10 @@ public class PutVectorIndexRequestTest {
 
         assertThat(copy.bucket()).isEqualTo("original-bucket");
         assertThat(copy.indexName()).isEqualTo("original-index");
-        assertThat(copy.vectorIndexConfiguration().dataType()).isEqualTo("float32");
-        assertThat(copy.vectorIndexConfiguration().dimension()).isEqualTo(256);
-        assertThat(copy.vectorIndexConfiguration().distanceMetric()).isEqualTo("cosine");
-        assertThat(copy.vectorIndexConfiguration().metadata()).containsEntry("key1", "value1");
+        assertThat(copy.dataType()).isEqualTo("float32");
+        assertThat(copy.dimension()).isEqualTo(256);
+        assertThat(copy.distanceMetric()).isEqualTo("cosine");
+        assertThat(copy.metadata()).containsEntry("key1", "value1");
 
         assertThat(copy.headers().get("x-oss-original")).isEqualTo("original-header");
         assertThat(copy.parameters().get("original-param")).isEqualTo("original-value");
@@ -120,7 +119,7 @@ public class PutVectorIndexRequestTest {
     @Test
     public void xmlBuilder() throws JsonProcessingException {
 
-        String jsonStr = "{\"dataType\": \"vector\", \"dimension\": 128, \"distanceMetric\": \"EUCLIDEAN\", \"indexName\": \"test-index\", \"metadata\": {\"nonFilterableMetadataKeys\": [\"key1\", \"key2\"]}}";
+        String jsonStr = "{\"metadata\":{\"nonFilterableMetadataKeys\":[\"key1\",\"key2\"]},\"indexName\":\"test-index\",\"dataType\":\"vector\",\"distanceMetric\":\"EUCLIDEAN\",\"dimension\":128}";
 
         Map<String, Object> metadata = new HashMap<>();
         List<String> nonFilterableKeys = Arrays.asList("key1", "key2");
@@ -143,7 +142,8 @@ public class PutVectorIndexRequestTest {
         JsonNode jsonNode = objectMapper.readTree(jsonStr);
         String compactJson = objectMapper.writeValueAsString(jsonNode);
 
-        assertThat(input.bucket().get()).isEqualTo("test-bucket");
+        assertThat(input.bucket()).isPresent();
+        assertThat(input.bucket()).hasValue("test-bucket");
         assertThat(input.headers()).containsEntry("Content-Type", "application/json");
         assertThat(input.headers()).containsEntry("x-oss-request-id", "test-request-id");
         assertThat(input.parameters()).containsEntry("test-param", "test-value");

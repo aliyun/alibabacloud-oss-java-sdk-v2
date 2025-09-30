@@ -3,16 +3,13 @@ package com.aliyun.sdk.service.oss2.vectors.transform;
 
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.OperationOutput;
-import com.aliyun.sdk.service.oss2.transform.SerdeUtils;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.ListVectorIndexesResultJson;
 import java.util.Map;
 
-import static com.aliyun.sdk.service.oss2.transform.SerdeUtils.serializeInput;
-import static com.aliyun.sdk.service.oss2.vectors.transform.SerdeJsonUtils.serializeVectorInput;
-import static com.aliyun.sdk.service.oss2.vectors.transform.SerdeJsonUtils.vectorAddContentMd5;
+import static com.aliyun.sdk.service.oss2.vectors.transform.SerdeJsonUtils.addContentMd5;
 
 public final class SerdeVectorIndexBasic {
 
@@ -26,7 +23,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("putVectorIndex", "");
 
         // body
-        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexConfiguration());
+        BinaryData body = SerdeJsonUtils.toJson(request.bodyFields());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("PutVectorIndex")
@@ -37,7 +34,7 @@ public final class SerdeVectorIndexBasic {
                 .body(body)
                 .build();
 
-        serializeInput(request, input, SerdeUtils.addContentMd5);
+        SerdeJsonUtils.serializeInput(request, input, addContentMd5);
 
         return input;
     }
@@ -62,7 +59,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("getVectorIndex", "");
 
         // body
-        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexNameInfo());
+        BinaryData body = SerdeJsonUtils.toJson(request.bodyFields());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("GetVectorIndex")
@@ -73,7 +70,7 @@ public final class SerdeVectorIndexBasic {
                 .body(body)
                 .build();
 
-        serializeInput(request, input, SerdeUtils.addContentMd5);
+        SerdeJsonUtils.serializeInput(request, input, addContentMd5);
 
         return input;
     }
@@ -100,7 +97,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("listVectorIndexes", "");
 
         // body
-        BinaryData body = SerdeJsonUtils.toJson(request.listVectorIndexesInfo());
+        BinaryData body = SerdeJsonUtils.toJson(request.bodyFields());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("ListVectorIndexes")
@@ -111,7 +108,7 @@ public final class SerdeVectorIndexBasic {
                 .body(body)
                 .build();
 
-        serializeInput(request, input, SerdeUtils.addContentMd5);
+        SerdeJsonUtils.serializeInput(request, input, addContentMd5);
 
         return input;
     }
@@ -149,7 +146,7 @@ public final class SerdeVectorIndexBasic {
                 .body(body)
                 .build();
 
-        serializeVectorInput(request, input, vectorAddContentMd5);
+        SerdeJsonUtils.serializeInput(request, input, addContentMd5);
 
         return input;
     }

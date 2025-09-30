@@ -23,7 +23,13 @@ public class ListVectorsRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.listVectorsConfiguration()).isNotNull();
+        assertThat(request.indexName()).isNull();
+        assertThat(request.maxResults()).isNull();
+        assertThat(request.nextToken()).isNull();
+        assertThat(request.returnData()).isNull();
+        assertThat(request.returnMetadata()).isNull();
+        assertThat(request.segmentCount()).isNull();
+        assertThat(request.segmentIndex()).isNull();
     }
 
     @Test
@@ -49,14 +55,13 @@ public class ListVectorsRequestTest {
 
         assertThat(request.bucket()).isEqualTo("examplebucket");
 
-        ListVectorsConfiguration config = request.listVectorsConfiguration();
-        assertThat(config.indexName()).isEqualTo("example-index");
-        assertThat(config.maxResults()).isEqualTo(100);
-        assertThat(config.nextToken()).isEqualTo("next-token-value");
-        assertThat(config.returnData()).isEqualTo(true);
-        assertThat(config.returnMetadata()).isEqualTo(false);
-        assertThat(config.segmentCount()).isEqualTo(5);
-        assertThat(config.segmentIndex()).isEqualTo(2);
+        assertThat(request.indexName()).isEqualTo("example-index");
+        assertThat(request.maxResults()).isEqualTo(100);
+        assertThat(request.nextToken()).isEqualTo("next-token-value");
+        assertThat(request.returnData()).isEqualTo(true);
+        assertThat(request.returnMetadata()).isEqualTo(false);
+        assertThat(request.segmentCount()).isEqualTo(5);
+        assertThat(request.segmentIndex()).isEqualTo(2);
 
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
@@ -91,14 +96,13 @@ public class ListVectorsRequestTest {
 
         assertThat(copy.bucket()).isEqualTo("examplebucket");
 
-        ListVectorsConfiguration config = copy.listVectorsConfiguration();
-        assertThat(config.indexName()).isEqualTo("example-index");
-        assertThat(config.maxResults()).isEqualTo(50);
-        assertThat(config.nextToken()).isEqualTo("original-token");
-        assertThat(config.returnData()).isEqualTo(false);
-        assertThat(config.returnMetadata()).isEqualTo(true);
-        assertThat(config.segmentCount()).isEqualTo(3);
-        assertThat(config.segmentIndex()).isEqualTo(1);
+        assertThat(copy.indexName()).isEqualTo("example-index");
+        assertThat(copy.maxResults()).isEqualTo(50);
+        assertThat(copy.nextToken()).isEqualTo("original-token");
+        assertThat(copy.returnData()).isEqualTo(false);
+        assertThat(copy.returnMetadata()).isEqualTo(true);
+        assertThat(copy.segmentCount()).isEqualTo(3);
+        assertThat(copy.segmentIndex()).isEqualTo(1);
 
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
@@ -110,30 +114,25 @@ public class ListVectorsRequestTest {
 
     @Test
     public void testListVectorsConfigurationDirectSetter() {
-        ListVectorsConfiguration config = ListVectorsConfiguration.newBuilder()
+
+        ListVectorsRequest request = ListVectorsRequest.newBuilder()
+                .bucket("config-bucket")
                 .indexName("direct-index")
                 .maxResults(200)
                 .nextToken("direct-token")
                 .returnData(true)
                 .returnMetadata(true)
                 .segmentCount(10)
-                .segmentIndex(0)
-                .build();
-
-        ListVectorsRequest request = ListVectorsRequest.newBuilder()
-                .bucket("config-bucket")
-                .listVectorsConfiguration(config)
-                .build();
+                .segmentIndex(0)                .build();
 
         assertThat(request.bucket()).isEqualTo("config-bucket");
-        assertThat(request.listVectorsConfiguration()).isSameAs(config);
-        assertThat(request.listVectorsConfiguration().indexName()).isEqualTo("direct-index");
-        assertThat(request.listVectorsConfiguration().maxResults()).isEqualTo(200);
-        assertThat(request.listVectorsConfiguration().nextToken()).isEqualTo("direct-token");
-        assertThat(request.listVectorsConfiguration().returnData()).isEqualTo(true);
-        assertThat(request.listVectorsConfiguration().returnMetadata()).isEqualTo(true);
-        assertThat(request.listVectorsConfiguration().segmentCount()).isEqualTo(10);
-        assertThat(request.listVectorsConfiguration().segmentIndex()).isEqualTo(0);
+        assertThat(request.indexName()).isEqualTo("direct-index");
+        assertThat(request.maxResults()).isEqualTo(200);
+        assertThat(request.nextToken()).isEqualTo("direct-token");
+        assertThat(request.returnData()).isEqualTo(true);
+        assertThat(request.returnMetadata()).isEqualTo(true);
+        assertThat(request.segmentCount()).isEqualTo(10);
+        assertThat(request.segmentIndex()).isEqualTo(0);
     }
 
     @Test

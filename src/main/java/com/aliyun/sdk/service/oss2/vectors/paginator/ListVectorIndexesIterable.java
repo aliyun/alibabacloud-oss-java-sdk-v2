@@ -44,8 +44,7 @@ public class ListVectorIndexesIterable implements PaginatedIterable<ListVectorIn
                 .bucket(this.firstRequest.bucket())
                 .headers(this.firstRequest.headers())
                 .parameters(this.firstRequest.parameters())
-                .maxResults(this.firstRequest.listVectorIndexesInfo().maxResults())
-                .prefix(this.firstRequest.listVectorIndexesInfo().prefix())
+                .bodyFields(this.firstRequest.bodyFields())
                 .build();
     }
 

@@ -20,10 +20,9 @@ public class ListVectorIndexesRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.listVectorIndexesInfo()).isNotNull();
-        assertThat(request.listVectorIndexesInfo().maxResults()).isNull();
-        assertThat(request.listVectorIndexesInfo().nextToken()).isNull();
-        assertThat(request.listVectorIndexesInfo().prefix()).isNull();
+        assertThat(request.maxResults()).isNull();
+        assertThat(request.nextToken()).isNull();
+        assertThat(request.prefix()).isNull();
     }
 
     @Test
@@ -44,9 +43,9 @@ public class ListVectorIndexesRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.listVectorIndexesInfo().maxResults()).isEqualTo(100);
-        assertThat(request.listVectorIndexesInfo().nextToken()).isEqualTo("test-token");
-        assertThat(request.listVectorIndexesInfo().prefix()).isEqualTo("test-");
+        assertThat(request.maxResults()).isEqualTo(100);
+        assertThat(request.nextToken()).isEqualTo("test-token");
+        assertThat(request.prefix()).isEqualTo("test-");
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).containsEntry("param1", "value1");
@@ -73,9 +72,9 @@ public class ListVectorIndexesRequestTest {
         ListVectorIndexesRequest copy = original.toBuilder().build();
 
         assertThat(copy.bucket()).isEqualTo("testbucket");
-        assertThat(copy.listVectorIndexesInfo().maxResults()).isEqualTo(50);
-        assertThat(copy.listVectorIndexesInfo().nextToken()).isEqualTo("original-token");
-        assertThat(copy.listVectorIndexesInfo().prefix()).isEqualTo("original-");
+        assertThat(copy.maxResults()).isEqualTo(50);
+        assertThat(copy.nextToken()).isEqualTo("original-token");
+        assertThat(copy.prefix()).isEqualTo("original-");
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.parameters()).containsEntry("param3", "value3");

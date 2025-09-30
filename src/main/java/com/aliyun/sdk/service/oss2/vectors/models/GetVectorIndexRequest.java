@@ -1,19 +1,16 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
-import com.aliyun.sdk.service.oss2.models.RequestModel;
 import static java.util.Objects.requireNonNull;
 
 /**
  * The request for the GetVectorIndex operation.
  */
-public final class GetVectorIndexRequest extends RequestModel {
+public final class GetVectorIndexRequest extends VectorRequestModel {
     private final String bucket;
-    private final VectorIndexNameInfo vectorIndexNameInfo;
 
     private GetVectorIndexRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.vectorIndexNameInfo = builder.vectorIndexNameInfo;
     }
 
     public static Builder newBuilder() {
@@ -31,33 +28,24 @@ public final class GetVectorIndexRequest extends RequestModel {
      * The name of the vector index.
      */
     public String indexName() {
-        return vectorIndexNameInfo.indexName();
-    }
-
-    /**
-     * The index name info.
-     */
-    public VectorIndexNameInfo vectorIndexNameInfo() {
-        return vectorIndexNameInfo;
+        return (String)this.bodyFields.get("indexName");
     }
 
     public Builder toBuilder() {
         return new Builder(this);
     }
 
-    public static class Builder extends RequestModel.Builder<Builder> {
+    public static class Builder extends VectorRequestModel.Builder<Builder> {
         private String bucket;
         private VectorIndexNameInfo vectorIndexNameInfo;
 
         private Builder() {
             super();
-            this.vectorIndexNameInfo = VectorIndexNameInfo.newBuilder().build();
         }
 
         private Builder(GetVectorIndexRequest from) {
             super(from);
             this.bucket = from.bucket;
-            this.vectorIndexNameInfo = from.vectorIndexNameInfo;
         }
 
         /**
@@ -74,13 +62,7 @@ public final class GetVectorIndexRequest extends RequestModel {
          */
         public Builder indexName(String value) {
             requireNonNull(value);
-            this.vectorIndexNameInfo = this.vectorIndexNameInfo.toBuilder().indexName(value).build();
-            return this;
-        }
-
-        public Builder vectorIndexNameInfo(VectorIndexNameInfo value) {
-            requireNonNull(value);
-            this.vectorIndexNameInfo = value;
+            this.bodyFields.put("indexName", value);
             return this;
         }
 

@@ -1,20 +1,17 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
-import com.aliyun.sdk.service.oss2.models.RequestModel;
 import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
  * The request for the GetVectors operation.
  */
-public final class GetVectorsRequest extends RequestModel {
+public final class GetVectorsRequest extends VectorRequestModel {
     private final String bucket;
-    private final GetVectorsConfiguration getVectorsConfiguration;
 
     private GetVectorsRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.getVectorsConfiguration = builder.getVectorsConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -29,29 +26,47 @@ public final class GetVectorsRequest extends RequestModel {
     }
 
     /**
-     * The request body schema.
+     * The name of the index.
      */
-    public GetVectorsConfiguration getVectorsConfiguration() {
-        return getVectorsConfiguration;
+    public String indexName() {
+        return (String)this.bodyFields.get("indexName");
+    }
+
+    /**
+     * The list of vector keys to retrieve.
+     */
+    public List<String> keys() {
+        return (List<String>)this.bodyFields.get("keys");
+    }
+
+    /**
+     * Whether to return vector data.
+     */
+    public Boolean returnData() {
+        return (Boolean) this.bodyFields.get("returnData");
+    }
+
+    /**
+     * Whether to return vector metadata.
+     */
+    public Boolean returnMetadata() {
+        return (Boolean) this.bodyFields.get("returnMetadata");
     }
 
     public Builder toBuilder() {
         return new Builder(this);
     }
 
-    public static class Builder extends RequestModel.Builder<Builder> {
+    public static class Builder extends VectorRequestModel.Builder<Builder> {
         private String bucket;
-        private GetVectorsConfiguration getVectorsConfiguration;
 
         private Builder() {
             super();
-            this.getVectorsConfiguration = new GetVectorsConfiguration();
         }
 
         private Builder(GetVectorsRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.getVectorsConfiguration = request.getVectorsConfiguration;
         }
 
         /**
@@ -67,7 +82,8 @@ public final class GetVectorsRequest extends RequestModel {
          * The name of the index.
          */
         public Builder indexName(String value) {
-            this.getVectorsConfiguration = this.getVectorsConfiguration.toBuilder().indexName(value).build();
+            requireNonNull(value);
+            this.bodyFields.put("indexName", value);
             return this;
         }
 
@@ -75,7 +91,8 @@ public final class GetVectorsRequest extends RequestModel {
          * The list of vector keys to retrieve.
          */
         public Builder keys(List<String> value) {
-            this.getVectorsConfiguration = this.getVectorsConfiguration.toBuilder().keys(value).build();
+            requireNonNull(value);
+            this.bodyFields.put("keys", value);
             return this;
         }
 
@@ -83,7 +100,8 @@ public final class GetVectorsRequest extends RequestModel {
          * Whether to return vector data.
          */
         public Builder returnData(Boolean value) {
-            this.getVectorsConfiguration = this.getVectorsConfiguration.toBuilder().returnData(value).build();
+            requireNonNull(value);
+            this.bodyFields.put("returnData", value);
             return this;
         }
 
@@ -91,16 +109,8 @@ public final class GetVectorsRequest extends RequestModel {
          * Whether to return vector metadata.
          */
         public Builder returnMetadata(Boolean value) {
-            this.getVectorsConfiguration = this.getVectorsConfiguration.toBuilder().returnMetadata(value).build();
-            return this;
-        }
-
-        /**
-         * The request body schema.
-         */
-        public Builder getVectorsConfiguration(GetVectorsConfiguration getVectorsConfiguration) {
-            requireNonNull(getVectorsConfiguration);
-            this.getVectorsConfiguration = getVectorsConfiguration;
+            requireNonNull(value);
+            this.bodyFields.put("returnMetadata", value);
             return this;
         }
 

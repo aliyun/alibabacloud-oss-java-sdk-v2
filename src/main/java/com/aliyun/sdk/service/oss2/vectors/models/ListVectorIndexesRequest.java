@@ -6,14 +6,12 @@ import static java.util.Objects.requireNonNull;
 /**
  * The request for the ListVectorIndexes operation.
  */
-public final class ListVectorIndexesRequest extends RequestModel {
+public final class ListVectorIndexesRequest extends VectorRequestModel {
     private final String bucket;
-    private final ListVectorIndexesInfo listVectorIndexesInfo;
 
     private ListVectorIndexesRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.listVectorIndexesInfo = builder.listVectorIndexesInfo;
     }
 
     public static Builder newBuilder() {
@@ -28,29 +26,41 @@ public final class ListVectorIndexesRequest extends RequestModel {
     }
 
     /**
-     * The request body schema.
+     * The maximum number of indexes to return.
      */
-    public ListVectorIndexesInfo listVectorIndexesInfo() {
-        return listVectorIndexesInfo;
+    public Long maxResults() {
+        return (Long)this.bodyFields.get("maxResults");
     }
+
+    /**
+     * The token for the next page of indexes.
+     */
+    public String nextToken() {
+        return (String)this.bodyFields.get("nextToken");
+    }
+
+    /**
+     * The prefix to filter indexes by name.
+     */
+    public String prefix() {
+        return (String)this.bodyFields.get("prefix");
+    }
+
 
     public Builder toBuilder() {
         return new Builder(this);
     }
 
-    public static class Builder extends RequestModel.Builder<Builder> {
+    public static class Builder extends VectorRequestModel.Builder<Builder> {
         private String bucket;
-        private ListVectorIndexesInfo listVectorIndexesInfo;
 
         private Builder() {
             super();
-            this.listVectorIndexesInfo = new ListVectorIndexesInfo();
         }
 
         private Builder(ListVectorIndexesRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.listVectorIndexesInfo = request.listVectorIndexesInfo;
         }
 
         /**
@@ -66,7 +76,8 @@ public final class ListVectorIndexesRequest extends RequestModel {
          * The maximum number of indexes to return.
          */
         public Builder maxResults(Long value) {
-            this.listVectorIndexesInfo = this.listVectorIndexesInfo.toBuilder().maxResults(value).build();
+            requireNonNull(value);
+            this.bodyFields.put("maxResults", value);
             return this;
         }
 
@@ -74,7 +85,8 @@ public final class ListVectorIndexesRequest extends RequestModel {
          * The token for the next page of indexes.
          */
         public Builder nextToken(String value) {
-            this.listVectorIndexesInfo = this.listVectorIndexesInfo.toBuilder().nextToken(value).build();
+            requireNonNull(value);
+            this.bodyFields.put("nextToken", value);
             return this;
         }
 
@@ -82,16 +94,8 @@ public final class ListVectorIndexesRequest extends RequestModel {
          * The prefix to filter indexes by name.
          */
         public Builder prefix(String value) {
-            this.listVectorIndexesInfo = this.listVectorIndexesInfo.toBuilder().prefix(value).build();
-            return this;
-        }
-
-        /**
-         * The request body schema.
-         */
-        public Builder listVectorIndexesInfo(ListVectorIndexesInfo listVectorIndexesInfo) {
-            requireNonNull(listVectorIndexesInfo);
-            this.listVectorIndexesInfo = listVectorIndexesInfo;
+            requireNonNull(value);
+            this.bodyFields.put("prefix", value);
             return this;
         }
 

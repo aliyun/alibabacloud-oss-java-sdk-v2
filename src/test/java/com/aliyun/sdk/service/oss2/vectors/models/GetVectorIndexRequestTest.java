@@ -21,7 +21,6 @@ public class GetVectorIndexRequestTest {
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
         assertThat(request.indexName()).isNull();
-        assertThat(request.vectorIndexNameInfo()).isNotNull();
     }
 
     @Test
@@ -41,7 +40,6 @@ public class GetVectorIndexRequestTest {
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
         assertThat(request.indexName()).isEqualTo("test-index");
-        assertThat(request.vectorIndexNameInfo().indexName()).isEqualTo("test-index");
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).containsEntry("param1", "value1");
@@ -67,7 +65,6 @@ public class GetVectorIndexRequestTest {
 
         assertThat(copy.bucket()).isEqualTo("testbucket");
         assertThat(copy.indexName()).isEqualTo("original-index");
-        assertThat(copy.vectorIndexNameInfo().indexName()).isEqualTo("original-index");
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.parameters()).containsEntry("param3", "value3");
@@ -85,7 +82,6 @@ public class GetVectorIndexRequestTest {
 
         assertThat(request.bucket()).isEqualTo("anotherbucket");
         assertThat(request.indexName()).isEqualTo("header-test-index");
-        assertThat(request.vectorIndexNameInfo().indexName()).isEqualTo("header-test-index");
         assertThat(request.headers()).containsEntry("x-oss-meta-custom", "custom-value");
         assertThat(request.headers()).containsEntry("Cache-Control", "no-cache");
     }
@@ -107,7 +103,7 @@ public class GetVectorIndexRequestTest {
         JsonNode jsonNode = objectMapper.readTree(jsonStr);
         String compactJson = objectMapper.writeValueAsString(jsonNode);
 
-        assertThat(input.bucket().get()).isEqualTo("test-bucket");
+        assertThat(input.bucket()).hasValue("test-bucket");
         assertThat(input.headers()).containsEntry("Content-Type", "application/json");
         assertThat(input.headers()).containsEntry("x-oss-request-id", "test-request-id");
         assertThat(input.parameters()).containsEntry("test-param", "test-value");

@@ -22,11 +22,10 @@ public class GetVectorsRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.getVectorsConfiguration()).isNotNull();
-        assertThat(request.getVectorsConfiguration().indexName()).isNull();
-        assertThat(request.getVectorsConfiguration().keys()).isNull();
-        assertThat(request.getVectorsConfiguration().returnData()).isNull();
-        assertThat(request.getVectorsConfiguration().returnMetadata()).isNull();
+        assertThat(request.indexName()).isNull();
+        assertThat(request.keys()).isNull();
+        assertThat(request.returnData()).isNull();
+        assertThat(request.returnMetadata()).isNull();
     }
 
     @Test
@@ -50,10 +49,10 @@ public class GetVectorsRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.getVectorsConfiguration().indexName()).isEqualTo("test-index");
-        assertThat(request.getVectorsConfiguration().keys()).isEqualTo(keys);
-        assertThat(request.getVectorsConfiguration().returnData()).isEqualTo(true);
-        assertThat(request.getVectorsConfiguration().returnMetadata()).isEqualTo(false);
+        assertThat(request.indexName()).isEqualTo("test-index");
+        assertThat(request.keys()).isEqualTo(keys);
+        assertThat(request.returnData()).isEqualTo(true);
+        assertThat(request.returnMetadata()).isEqualTo(false);
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
         assertThat(request.parameters()).containsEntry("param1", "value1");
@@ -83,10 +82,10 @@ public class GetVectorsRequestTest {
         GetVectorsRequest copy = original.toBuilder().build();
 
         assertThat(copy.bucket()).isEqualTo("testbucket");
-        assertThat(copy.getVectorsConfiguration().indexName()).isEqualTo("original-index");
-        assertThat(copy.getVectorsConfiguration().keys()).isEqualTo(keys);
-        assertThat(copy.getVectorsConfiguration().returnData()).isEqualTo(false);
-        assertThat(copy.getVectorsConfiguration().returnMetadata()).isEqualTo(true);
+        assertThat(copy.indexName()).isEqualTo("original-index");
+        assertThat(copy.keys()).isEqualTo(keys);
+        assertThat(copy.returnData()).isEqualTo(false);
+        assertThat(copy.returnMetadata()).isEqualTo(true);
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
         assertThat(copy.parameters()).containsEntry("param3", "value3");
@@ -103,14 +102,14 @@ public class GetVectorsRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("anotherbucket");
-        assertThat(request.getVectorsConfiguration().indexName()).isEqualTo("header-test-index");
+        assertThat(request.indexName()).isEqualTo("header-test-index");
         assertThat(request.headers()).containsEntry("x-oss-meta-custom", "custom-value");
         assertThat(request.headers()).containsEntry("Cache-Control", "no-cache");
     }
 
     @Test
     public void xmlBuilder() throws Exception {
-        String jsonStr = "{\"indexName\": \"test-index\", \"keys\": [\"key1\", \"key2\"], \"returnData\": true, \"returnMetadata\": false}";
+        String jsonStr = "{\"returnMetadata\":false,\"indexName\":\"test-index\",\"keys\":[\"key1\",\"key2\"],\"returnData\":true}";
 
         List<String> keys = Arrays.asList("key1", "key2");
 

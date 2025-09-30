@@ -21,9 +21,8 @@ public class DeleteVectorsRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.deleteVectorsConfiguration()).isNotNull();
-        assertThat(request.deleteVectorsConfiguration().indexName()).isNull();
-        assertThat(request.deleteVectorsConfiguration().keys()).isNull();
+        assertThat(request.indexName()).isNull();
+        assertThat(request.keys()).isNull();
     }
 
     @Test
@@ -39,8 +38,8 @@ public class DeleteVectorsRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.deleteVectorsConfiguration().indexName()).isEqualTo("test-index");
-        assertThat(request.deleteVectorsConfiguration().keys()).isEqualTo(keys);
+        assertThat(request.indexName()).isEqualTo("test-index");
+        assertThat(request.keys()).isEqualTo(keys);
         assertThat(request.headers()).containsEntry("x-oss-request-id", "req-1234567890abcdefg");
         assertThat(request.parameters()).containsEntry("param1", "value1");
     }
@@ -60,8 +59,8 @@ public class DeleteVectorsRequestTest {
         DeleteVectorsRequest copy = original.toBuilder().build();
 
         assertThat(copy.bucket()).isEqualTo("testbucket");
-        assertThat(copy.deleteVectorsConfiguration().indexName()).isEqualTo("original-index");
-        assertThat(copy.deleteVectorsConfiguration().keys()).isEqualTo(keys);
+        assertThat(copy.indexName()).isEqualTo("original-index");
+        assertThat(copy.keys()).isEqualTo(keys);
         assertThat(copy.headers()).containsEntry("x-oss-request-id", "req-765432109876543210");
         assertThat(copy.parameters()).containsEntry("param3", "value3");
     }

@@ -1,15 +1,11 @@
 package com.aliyun.sdk.service.oss2.vectors;
 
 import com.aliyun.sdk.service.oss2.ClientConfiguration;
-import com.aliyun.sdk.service.oss2.DefaultOSSClient;
-import com.aliyun.sdk.service.oss2.OSSClient;
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.credentials.AnonymousCredentialsProvider;
 import com.aliyun.sdk.service.oss2.signer.VectorsSignerV4;
-import com.aliyun.sdk.service.oss2.transport.apache4client.Apache4HttpClient;
-import com.aliyun.sdk.service.oss2.transport.apache5client.Apache5HttpClient;
 import org.junit.Test;
-import java.lang.reflect.Field;
+
 import java.net.URI;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;

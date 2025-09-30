@@ -7,14 +7,12 @@ import static java.util.Objects.requireNonNull;
 /**
  * The request for the PutVectorIndex operation.
  */
-public final class PutVectorIndexRequest extends RequestModel {
+public final class PutVectorIndexRequest extends VectorRequestModel {
     private final String bucket;
-    private final VectorIndexConfiguration vectorIndexConfiguration;
 
     private PutVectorIndexRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.vectorIndexConfiguration = builder.vectorIndexConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -29,36 +27,54 @@ public final class PutVectorIndexRequest extends RequestModel {
     }
 
     /**
-     * The name of the vector index.
+     * The data type of the vector.
      */
-    public String indexName() {
-        return vectorIndexConfiguration.indexName();
+    public String dataType() {
+        return (String)this.bodyFields.get("dataType");
     }
 
     /**
-     * The configuration for the vector index.
+     * The dimension of the vector.
      */
-    public VectorIndexConfiguration vectorIndexConfiguration() {
-        return vectorIndexConfiguration;
+    public Integer dimension() {
+        return (Integer)this.bodyFields.get("dimension");
+    }
+
+    /**
+     * The distance metric used for the index.
+     */
+    public String distanceMetric() {
+        return (String)this.bodyFields.get("distanceMetric");
+    }
+
+    /**
+     * The name of the index.
+     */
+    public String indexName() {
+        return (String)this.bodyFields.get("indexName");
+    }
+
+    /**
+     * The metadata of the index.
+     */
+    public Map<String, Object> metadata() {
+        return (Map<String, Object>)this.bodyFields.get("metadata");
     }
 
     public Builder toBuilder() {
         return new Builder(this);
     }
 
-    public static class Builder extends RequestModel.Builder<Builder> {
+    public static class Builder extends VectorRequestModel.Builder<Builder> {
         private String bucket;
-        private VectorIndexConfiguration vectorIndexConfiguration;
 
         private Builder() {
             super();
-            this.vectorIndexConfiguration = VectorIndexConfiguration.newBuilder().build();
         }
 
         private Builder(PutVectorIndexRequest from) {
             super(from);
             this.bucket = from.bucket;
-            this.vectorIndexConfiguration = from.vectorIndexConfiguration;
         }
 
         /**
@@ -75,7 +91,7 @@ public final class PutVectorIndexRequest extends RequestModel {
          */
         public Builder indexName(String value) {
             requireNonNull(value);
-            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().indexName(value).build();
+            this.bodyFields.put("indexName", value);
             return this;
         }
 
@@ -84,7 +100,7 @@ public final class PutVectorIndexRequest extends RequestModel {
          */
         public Builder dataType(String value) {
             requireNonNull(value);
-            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().dataType(value).build();
+            this.bodyFields.put("dataType", value);
             return this;
         }
 
@@ -93,7 +109,7 @@ public final class PutVectorIndexRequest extends RequestModel {
          */
         public Builder dimension(Integer value) {
             requireNonNull(value);
-            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().dimension(value).build();
+            this.bodyFields.put("dimension", value);
             return this;
         }
 
@@ -102,7 +118,7 @@ public final class PutVectorIndexRequest extends RequestModel {
          */
         public Builder distanceMetric(String value) {
             requireNonNull(value);
-            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().distanceMetric(value).build();
+            this.bodyFields.put("distanceMetric", value);
             return this;
         }
 
@@ -111,13 +127,7 @@ public final class PutVectorIndexRequest extends RequestModel {
          */
         public Builder metadata(Map<String, Object> value) {
             requireNonNull(value);
-            this.vectorIndexConfiguration = this.vectorIndexConfiguration.toBuilder().metadata(value).build();
-            return this;
-        }
-
-        public Builder vectorIndexConfiguration(VectorIndexConfiguration value) {
-            requireNonNull(value);
-            this.vectorIndexConfiguration = value;
+            this.bodyFields.put("metadata", value);
             return this;
         }
 

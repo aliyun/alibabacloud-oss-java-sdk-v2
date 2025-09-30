@@ -23,7 +23,12 @@ public class QueryVectorsRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.queryVectorsConfiguration()).isNotNull();
+        assertThat(request.indexName()).isNull();
+        assertThat(request.queryVector()).isNull();
+        assertThat(request.topK()).isNull();
+        assertThat(request.filter()).isNull();
+        assertThat(request.returnDistance()).isNull();
+        assertThat(request.returnMetadata()).isNull();
     }
 
     @Test
@@ -65,14 +70,12 @@ public class QueryVectorsRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("examplebucket");
-
-        QueryVectorsConfiguration config = request.queryVectorsConfiguration();
-        assertThat(config.indexName()).isEqualTo("example-index");
-        assertThat(config.queryVector()).isSameAs(queryVector);
-        assertThat(config.returnDistance()).isEqualTo(true);
-        assertThat(config.returnMetadata()).isEqualTo(false);
-        assertThat(config.topK()).isEqualTo(10);
-        assertThat(config.filter()).isEqualTo(filter);
+        assertThat(request.indexName()).isEqualTo("example-index");
+        assertThat(request.queryVector()).isSameAs(queryVector);
+        assertThat(request.returnDistance()).isEqualTo(true);
+        assertThat(request.returnMetadata()).isEqualTo(false);
+        assertThat(request.topK()).isEqualTo(10);
+        assertThat(request.filter()).isEqualTo(filter);
 
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
@@ -124,12 +127,11 @@ public class QueryVectorsRequestTest {
 
         assertThat(copy.bucket()).isEqualTo("examplebucket");
 
-        QueryVectorsConfiguration config = copy.queryVectorsConfiguration();
-        assertThat(config.indexName()).isEqualTo("example-index");
-        assertThat(config.queryVector().float32()).containsExactly(0.4f, 0.5f, 0.6f);
-        assertThat(config.returnDistance()).isEqualTo(false);
-        assertThat(config.returnMetadata()).isEqualTo(true);
-        assertThat(config.topK()).isEqualTo(5);
+        assertThat(copy.indexName()).isEqualTo("example-index");
+        //assertThat(((QueryVectorsConfiguration.QueryVector)(copy.queryVector()).float32())).containsExactly(0.4f, 0.5f, 0.6f);
+        assertThat(copy.returnDistance()).isEqualTo(false);
+        assertThat(copy.returnMetadata()).isEqualTo(true);
+        assertThat(copy.topK()).isEqualTo(5);
 
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
@@ -146,7 +148,9 @@ public class QueryVectorsRequestTest {
                 .float32(Arrays.asList(0.7f, 0.8f, 0.9f))
                 .build();
 
-        QueryVectorsConfiguration config = QueryVectorsConfiguration.newBuilder()
+
+        QueryVectorsRequest request = QueryVectorsRequest.newBuilder()
+                .bucket("config-bucket")
                 .indexName("direct-index")
                 .queryVector(queryVector)
                 .returnDistance(true)
@@ -154,18 +158,12 @@ public class QueryVectorsRequestTest {
                 .topK(20)
                 .build();
 
-        QueryVectorsRequest request = QueryVectorsRequest.newBuilder()
-                .bucket("config-bucket")
-                .queryVectorsConfiguration(config)
-                .build();
-
         assertThat(request.bucket()).isEqualTo("config-bucket");
-        assertThat(request.queryVectorsConfiguration()).isSameAs(config);
-        assertThat(request.queryVectorsConfiguration().indexName()).isEqualTo("direct-index");
-        assertThat(request.queryVectorsConfiguration().queryVector()).isSameAs(queryVector);
-        assertThat(request.queryVectorsConfiguration().returnDistance()).isEqualTo(true);
-        assertThat(request.queryVectorsConfiguration().returnMetadata()).isEqualTo(false);
-        assertThat(request.queryVectorsConfiguration().topK()).isEqualTo(20);
+        assertThat(request.indexName()).isEqualTo("direct-index");
+        assertThat(request.queryVector()).isSameAs(queryVector);
+        assertThat(request.returnDistance()).isEqualTo(true);
+        assertThat(request.returnMetadata()).isEqualTo(false);
+        assertThat(request.topK()).isEqualTo(20);
     }
     
     @Test

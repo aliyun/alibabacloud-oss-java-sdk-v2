@@ -2,11 +2,13 @@ package com.aliyun.sdk.service.oss2.vectors.transform;
 
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.OperationOutput;
-import com.aliyun.sdk.service.oss2.transform.SerdeUtils;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.*;
 import java.util.Map;
+
+import static com.aliyun.sdk.service.oss2.vectors.transform.SerdeJsonUtils.serializeInput;
+import static com.aliyun.sdk.service.oss2.vectors.transform.SerdeJsonUtils.addContentMd5;
 
 public final class SerdeVectorsBasic {
 
@@ -27,13 +29,10 @@ public final class SerdeVectorsBasic {
 
         builder.bucket(request.bucket());
 
-        // body
-        if (request.vectorsConfiguration() != null) {
-            builder.body(SerdeJsonUtils.toJson(request.vectorsConfiguration()));
-        }
+        builder.body(SerdeJsonUtils.toJson(request.bodyFields()));
 
         OperationInput input = builder.build();
-        SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);
+        serializeInput(request, input, addContentMd5);
         return input;
     }
 
@@ -65,12 +64,11 @@ public final class SerdeVectorsBasic {
         builder.bucket(request.bucket());
 
         // body
-        if (request.getVectorsConfiguration() != null) {
-            builder.body(SerdeJsonUtils.toJson(request.getVectorsConfiguration()));
-        }
+        builder.body(SerdeJsonUtils.toJson(request.bodyFields()));
+
 
         OperationInput input = builder.build();
-        SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);
+        serializeInput(request, input, addContentMd5);
         return input;
     }
 
@@ -104,12 +102,10 @@ public final class SerdeVectorsBasic {
         builder.bucket(request.bucket());
 
         // body
-        if (request.listVectorsConfiguration() != null) {
-            builder.body(SerdeJsonUtils.toJson(request.listVectorsConfiguration()));
-        }
+        builder.body(SerdeJsonUtils.toJson(request.bodyFields()));
 
         OperationInput input = builder.build();
-        SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);
+        serializeInput(request, input, addContentMd5);
         return input;
     }
 
@@ -143,12 +139,10 @@ public final class SerdeVectorsBasic {
         builder.bucket(request.bucket());
 
         // body
-        if (request.deleteVectorsConfiguration() != null) {
-            builder.body(SerdeJsonUtils.toJson(request.deleteVectorsConfiguration()));
-        }
+        builder.body(SerdeJsonUtils.toJson(request.bodyFields()));
 
         OperationInput input = builder.build();
-        SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);
+        serializeInput(request, input, addContentMd5);
         return input;
     }
 
@@ -180,12 +174,10 @@ public final class SerdeVectorsBasic {
         builder.bucket(request.bucket());
 
         // body
-        if (request.queryVectorsConfiguration() != null) {
-            builder.body(SerdeJsonUtils.toJson(request.queryVectorsConfiguration()));
-        }
+        builder.body(SerdeJsonUtils.toJson(request.bodyFields()));
 
         OperationInput input = builder.build();
-        SerdeUtils.serializeInput(request, input, SerdeJsonUtils.addContentMd5);
+        serializeInput(request, input, addContentMd5);
         return input;
     }
 
