@@ -17,7 +17,7 @@ public class GetVectorBucketResultTest {
         assertThat(result).isNotNull();
         assertThat(result.headers()).isNotNull();
         assertThat(result.headers().isEmpty()).isTrue();
-        assertThat(result.vectorBucket()).isNull();
+        assertThat(result.bucketInfo()).isNull();
     }
 
     @Test
@@ -27,7 +27,7 @@ public class GetVectorBucketResultTest {
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
-        VectorBucket vectorBucket = VectorBucket.newBuilder()
+        VectorBucketInfo vectorBucket = VectorBucketInfo.newBuilder()
                 .name("oss-example")
                 .location("oss-cn-hangzhou")
                 .creationDate(Instant.parse("2013-07-31T10:56:21.000Z"))
@@ -46,7 +46,7 @@ public class GetVectorBucketResultTest {
         assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
 
-        VectorBucket resultVectorBucket = result.vectorBucket();
+        VectorBucketInfo resultVectorBucket = result.bucketInfo();
         assertThat(resultVectorBucket).isNotNull();
         assertThat(resultVectorBucket.name()).isEqualTo("oss-example");
         assertThat(resultVectorBucket.location()).isEqualTo("oss-cn-hangzhou");
@@ -66,7 +66,7 @@ public class GetVectorBucketResultTest {
                 "ETag", "\"original-etag\""
         );
 
-        VectorBucket vectorBucket = VectorBucket.newBuilder()
+        VectorBucketInfo vectorBucket = VectorBucketInfo.newBuilder()
                 .name("oss-example-copy")
                 .location("oss-cn-shanghai")
                 .creationDate(Instant.parse("2014-08-01T11:57:22.000Z"))
@@ -87,7 +87,7 @@ public class GetVectorBucketResultTest {
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
 
-        VectorBucket resultVectorBucket = copy.vectorBucket();
+        VectorBucketInfo resultVectorBucket = copy.bucketInfo();
         assertThat(resultVectorBucket).isNotNull();
         assertThat(resultVectorBucket.name()).isEqualTo("oss-example-copy");
         assertThat(resultVectorBucket.location()).isEqualTo("oss-cn-shanghai");
@@ -128,7 +128,7 @@ public class GetVectorBucketResultTest {
         assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-xml-builder-test");
         assertThat(result.headers().get("ETag")).isEqualTo("\"xml-builder-etag\"");
 
-        VectorBucket resultVectorBucket = result.vectorBucket();
+        VectorBucketInfo resultVectorBucket = result.bucketInfo();
         assertThat(resultVectorBucket).isNotNull();
         assertThat(resultVectorBucket.name()).isEqualTo("oss-example");
         assertThat(resultVectorBucket.location()).isEqualTo("oss-cn-hangzhou");

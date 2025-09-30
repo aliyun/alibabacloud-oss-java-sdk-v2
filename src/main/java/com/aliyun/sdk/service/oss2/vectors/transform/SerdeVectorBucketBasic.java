@@ -67,7 +67,7 @@ public final class SerdeVectorBucketBasic {
         Object innerBody = null;
         VectorBucketInfo vectorBucketInfo = SerdeJsonUtils.fromJsonBody(output, VectorBucketInfo.class);
         if (vectorBucketInfo != null) {
-            innerBody = vectorBucketInfo.getBucketInfo();
+            innerBody = vectorBucketInfo;
         }
 
         return GetVectorBucketResult.newBuilder()

@@ -11,6 +11,8 @@ import com.aliyun.sdk.service.oss2.vectors.models.internal.ListVectorIndexesResu
 import java.util.Map;
 
 import static com.aliyun.sdk.service.oss2.transform.SerdeUtils.serializeInput;
+import static com.aliyun.sdk.service.oss2.vectors.transform.SerdeJsonUtils.serializeVectorInput;
+import static com.aliyun.sdk.service.oss2.vectors.transform.SerdeJsonUtils.vectorAddContentMd5;
 
 public final class SerdeVectorIndexBasic {
 
@@ -136,7 +138,7 @@ public final class SerdeVectorIndexBasic {
         parameters.put("deleteVectorIndex", "");
 
         // body
-        BinaryData body = SerdeJsonUtils.toJson(request.vectorIndexNameInfo());
+        BinaryData body = SerdeJsonUtils.toJson(request.bodyFields());
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("DeleteVectorIndex")
@@ -147,7 +149,7 @@ public final class SerdeVectorIndexBasic {
                 .body(body)
                 .build();
 
-        serializeInput(request, input, SerdeUtils.addContentMd5);
+        serializeVectorInput(request, input, vectorAddContentMd5);
 
         return input;
     }

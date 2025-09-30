@@ -1,4 +1,4 @@
-package com.aliyun.sdk.service.oss2.vectors.models.internal;
+package com.aliyun.sdk.service.oss2.vectors.models;
 
 import java.util.Map;
 

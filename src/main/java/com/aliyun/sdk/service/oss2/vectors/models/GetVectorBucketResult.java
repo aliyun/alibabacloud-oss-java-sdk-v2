@@ -16,10 +16,10 @@ public final class GetVectorBucketResult extends ResultModel {
     }
 
     /**
-     * VectorBucket defines Bucket information.
+     * Gets the vector bucket information.
      */
-    public VectorBucket vectorBucket() {
-        return (VectorBucket) innerBody;
+    public VectorBucketInfo bucketInfo() {
+        return (VectorBucketInfo) innerBody;
     }
 
     public Builder toBuilder() {

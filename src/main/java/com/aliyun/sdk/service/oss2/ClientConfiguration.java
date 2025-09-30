@@ -160,7 +160,7 @@ public final class ClientConfiguration {
         return Optional.ofNullable(disableUploadCRC64Check);
     }
 
-    public Optional<String> userId() {
+    public Optional<String> accountId() {
         return Optional.ofNullable(accountId);
     }
 

@@ -34,7 +34,7 @@ class DefaultOSSVectorsClientBuilder extends DefaultBaseClientBuilder<OSSVectors
         config = updateEndpoint(config);
         config = updateSinger(config);
         config = updateUserAgent(config);
-        final String accountId = config.userId().orElse("");
+        final String accountId = config.accountId().orElse("");
         return new DefaultOSSVectorsClient(config,
                 x -> x.toBuilder()
                         .endpointProvider(new VectorsEndpointProvider(x.endpoint(), accountId))
@@ -83,7 +83,7 @@ class DefaultOSSVectorsClientBuilder extends DefaultBaseClientBuilder<OSSVectors
     }
 
     static ClientConfiguration updateSinger(ClientConfiguration config) {
-        return config.toBuilder().signer(new VectorsSignerV4(config.userId().orElse(null))).build();
+        return config.toBuilder().signer(new VectorsSignerV4(config.accountId().orElse(null))).build();
     }
 
     static ClientConfiguration updateUserAgent(ClientConfiguration config) {

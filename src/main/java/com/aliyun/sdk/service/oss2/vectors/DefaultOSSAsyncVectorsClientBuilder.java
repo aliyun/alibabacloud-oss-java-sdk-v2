@@ -21,7 +21,7 @@ class DefaultOSSAsyncVectorsClientBuilder extends DefaultBaseClientBuilder<OSSAs
         config = DefaultOSSVectorsClientBuilder.updateSinger(config);
         config = DefaultOSSVectorsClientBuilder.updateUserAgent(config);
 
-        final String accountId = config.userId().orElse("");
+        final String accountId = config.accountId().orElse("");
         return new DefaultOSSAsyncVectorsClient(config,
                 x -> x.toBuilder()
                         .endpointProvider(new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(x.endpoint(), accountId))

@@ -74,7 +74,7 @@ public final class PutVectorsRequest extends RequestModel {
         }
 
         /**
-         * The vectors to insert (Map<String, Object> type).
+         * The vectors to insert.
          */
         public Builder vectorsMap(List<Map<String, Object>> value) {
             this.vectorsConfiguration = this.vectorsConfiguration.toBuilder().vectors(value).build();
@@ -82,7 +82,7 @@ public final class PutVectorsRequest extends RequestModel {
         }
 
         /**
-         * The vectors to insert (PutInputVector type).
+         * The vectors to insert.
          */
         public Builder vectors(List<PutInputVector> value) {
             List<Map<String, Object>> vectorMaps = value.stream()

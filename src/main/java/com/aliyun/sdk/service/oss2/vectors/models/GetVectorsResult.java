@@ -1,7 +1,6 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.GetOutputVector;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

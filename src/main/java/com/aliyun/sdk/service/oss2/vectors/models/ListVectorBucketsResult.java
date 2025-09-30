@@ -1,8 +1,10 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.CastUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.ListAllMyBucketsResultJson;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The result for the ListVectorBuckets operation.
@@ -12,7 +14,9 @@ public final class ListVectorBucketsResult extends ResultModel {
 
     private ListVectorBucketsResult(Builder builder) {
         super(builder);
-        this.delegate = (ListAllMyBucketsResultJson.VectorBucketSummary) innerBody;
+        this.delegate = (ListAllMyBucketsResultJson.VectorBucketSummary) Optional
+                .ofNullable(innerBody)
+                .orElse(new ListAllMyBucketsResultJson.VectorBucketSummary());
     }
 
     public static Builder newBuilder() {
@@ -23,42 +27,42 @@ public final class ListVectorBucketsResult extends ResultModel {
      * The prefix that the names of returned buckets must contain.
      */
     public String prefix() {
-        return delegate != null ? delegate.prefix : null;
+        return delegate.prefix;
     }
 
     /**
      * The name of the bucket from which the list operation begins.
      */
     public String marker() {
-        return delegate != null ? delegate.marker : null;
+        return delegate.marker;
     }
 
     /**
      * The maximum number of buckets that can be returned in the single query.
      */
     public Integer maxKeys() {
-        return delegate != null ? delegate.maxKeys : null;
+        return delegate.maxKeys;
     }
 
     /**
      * Indicates whether the list of buckets is truncated.
      */
     public Boolean isTruncated() {
-        return delegate != null ? delegate.isTruncated : null;
+        return delegate.isTruncated;
     }
 
     /**
      * The marker for the next list operation.
      */
     public String nextMarker() {
-        return delegate != null ? delegate.nextMarker : null;
+        return delegate.nextMarker;
     }
 
     /**
      * The list of buckets.
      */
     public List<VectorBucketProperties> buckets() {
-        return delegate != null ? delegate.buckets : null;
+        return CastUtils.ensureList(delegate.buckets);
     }
 
     public Builder toBuilder() {
