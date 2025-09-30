@@ -7,7 +7,7 @@ import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClientBuilder;
 import com.aliyun.sdk.service.oss2.vectors.models.ListVectorBucketsRequest;
 import com.aliyun.sdk.service.oss2.vectors.models.ListVectorBucketsResult;
 import com.example.oss.Example;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.BucketProperties;
+import com.aliyun.sdk.service.oss2.vectors.models.VectorBucketProperties;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -70,7 +70,7 @@ public class ListVectorBuckets implements Example {
 
             if (result.buckets() != null) {
                 System.out.println("Buckets:");
-                for (BucketProperties bucket : result.buckets()) {
+                for (VectorBucketProperties bucket : result.buckets()) {
                     System.out.printf("  Name: %s\n", bucket.name());
                     System.out.printf("  Location: %s\n", bucket.location());
                     System.out.printf("  Creation date: %s\n", bucket.creationDate());
@@ -115,4 +115,3 @@ public class ListVectorBuckets implements Example {
         execute(endpoint, region, prefix, marker, maxKeys, resourceGroupId, accountId);
     }
 }
-

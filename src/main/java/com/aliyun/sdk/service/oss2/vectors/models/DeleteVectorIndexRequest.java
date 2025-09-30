@@ -8,12 +8,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class DeleteVectorIndexRequest extends RequestModel {
     private final String bucket;
-    private final String indexName;
+    private final VectorIndexNameInfo vectorIndexNameInfo;
 
     private DeleteVectorIndexRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.indexName = builder.indexName;
+        this.vectorIndexNameInfo = builder.vectorIndexNameInfo;
     }
 
     public static Builder newBuilder() {
@@ -28,10 +28,17 @@ public final class DeleteVectorIndexRequest extends RequestModel {
     }
 
     /**
-     * The name of the index to delete.
+     * The name of the vector index.
      */
     public String indexName() {
-        return indexName;
+        return vectorIndexNameInfo.indexName();
+    }
+
+    /**
+     * The index name info.
+     */
+    public VectorIndexNameInfo vectorIndexNameInfo() {
+        return vectorIndexNameInfo;
     }
 
     public Builder toBuilder() {
@@ -40,16 +47,17 @@ public final class DeleteVectorIndexRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private String indexName;
+        private VectorIndexNameInfo vectorIndexNameInfo;
 
         private Builder() {
             super();
+            this.vectorIndexNameInfo = VectorIndexNameInfo.newBuilder().build();
         }
 
-        private Builder(DeleteVectorIndexRequest request) {
-            super(request);
-            this.bucket = request.bucket;
-            this.indexName = request.indexName;
+        private Builder(DeleteVectorIndexRequest from) {
+            super(from);
+            this.bucket = from.bucket;
+            this.vectorIndexNameInfo = from.vectorIndexNameInfo;
         }
 
         /**
@@ -62,10 +70,17 @@ public final class DeleteVectorIndexRequest extends RequestModel {
         }
 
         /**
-         * The name of the index to delete.
+         * The name of the vector index.
          */
         public Builder indexName(String value) {
-            this.indexName = value;
+            requireNonNull(value);
+            this.vectorIndexNameInfo = this.vectorIndexNameInfo.toBuilder().indexName(value).build();
+            return this;
+        }
+
+        public Builder vectorIndexNameInfo(VectorIndexNameInfo value) {
+            requireNonNull(value);
+            this.vectorIndexNameInfo = value;
             return this;
         }
 
@@ -74,4 +89,3 @@ public final class DeleteVectorIndexRequest extends RequestModel {
         }
     }
 }
-

@@ -1,6 +1,5 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
-
 import com.aliyun.sdk.service.oss2.models.ResultModel;
 
 /**
@@ -17,10 +16,10 @@ public final class GetVectorBucketResult extends ResultModel {
     }
 
     /**
-     * BucketInfo defines Bucket information.
+     * VectorBucket defines Bucket information.
      */
-    public BucketInfoResponse bucketInfo() {
-        return (BucketInfoResponse) innerBody;
+    public VectorBucket vectorBucket() {
+        return (VectorBucket) innerBody;
     }
 
     public Builder toBuilder() {
@@ -42,4 +41,3 @@ public final class GetVectorBucketResult extends ResultModel {
         }
     }
 }
-

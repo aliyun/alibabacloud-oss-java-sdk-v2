@@ -1,4 +1,4 @@
-package com.aliyun.sdk.service.oss2.vectors.models.internal;
+package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
@@ -7,7 +7,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Stores the metadata of the bucket.
  */
-public final class BucketProperties {
+public final class VectorBucketProperties {
     @JsonProperty("ExtranetEndpoint")
     private String extranetEndpoint;
 
@@ -29,10 +29,10 @@ public final class BucketProperties {
     @JsonProperty("Region")
     private String region;
 
-    public BucketProperties() {
+    public VectorBucketProperties() {
     }
 
-    private BucketProperties(Builder builder) {
+    private VectorBucketProperties(Builder builder) {
         this.extranetEndpoint = builder.extranetEndpoint;
         this.resourceGroupId = builder.resourceGroupId;
         this.location = builder.location;
@@ -113,7 +113,7 @@ public final class BucketProperties {
             super();
         }
 
-        private Builder(BucketProperties from) {
+        private Builder(VectorBucketProperties from) {
             this.extranetEndpoint = from.extranetEndpoint;
             this.resourceGroupId = from.resourceGroupId;
             this.location = from.location;
@@ -181,9 +181,8 @@ public final class BucketProperties {
             return this;
         }
 
-        public BucketProperties build() {
-            return new BucketProperties(this);
+        public VectorBucketProperties build() {
+            return new VectorBucketProperties(this);
         }
     }
 }
-

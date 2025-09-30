@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.function.Function;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
 import com.aliyun.sdk.service.oss2.vectors.operations.VectorBucketBasic;
+import com.aliyun.sdk.service.oss2.vectors.operations.VectorIndexBasic;
+import com.aliyun.sdk.service.oss2.vectors.operations.VectorsBasic;
 
 /**
  * Internal implementation of {@link OSSClient}.
@@ -52,6 +54,52 @@ public class DefaultOSSVectorsClient implements OSSVectorsClient {
     public ListVectorBucketsResult listVectorBuckets(ListVectorBucketsRequest request, OperationOptions options) {
         return VectorBucketBasic.listVectorBuckets(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutVectorIndexResult putVectorIndex(PutVectorIndexRequest request, OperationOptions options) {
+        return VectorIndexBasic.putVectorIndex(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetVectorIndexResult getVectorIndex(GetVectorIndexRequest request, OperationOptions options) {
+        return VectorIndexBasic.getVectorIndex(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListVectorIndexesResult listVectorIndexes(ListVectorIndexesRequest request, OperationOptions options) {
+        return VectorIndexBasic.listVectorIndexes(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteVectorIndexResult deleteVectorIndex(DeleteVectorIndexRequest request, OperationOptions options) {
+        return VectorIndexBasic.deleteVectorIndex(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutVectorsResult putVectors(PutVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.putVectors(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetVectorsResult getVectors(GetVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.getVectors(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListVectorsResult listVectors(ListVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.listVectors(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteVectorsResult deleteVectors(DeleteVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.deleteVectors(this.clientImpl, request, options);
+    }
+
+    @Override
+    public QueryVectorsResult queryVectors(QueryVectorsRequest request, OperationOptions options) {
+        return VectorsBasic.queryVectors(this.clientImpl, request, options);
+    }
+
 
     @Override
     public void close() throws Exception {

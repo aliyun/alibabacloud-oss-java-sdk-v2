@@ -1,16 +1,13 @@
-package com.aliyun.sdk.service.oss2.vectors.models.internal;
-
+package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.time.Instant;
 import static java.util.Objects.requireNonNull;
 
 /**
- * BucketInfo defines Bucket information.
+ * The information about the vector bucket.
  */
-
-public final class BucketInfoJson {
+public class VectorBucket {
     @JsonProperty("Name")
     private String name;
 
@@ -29,10 +26,10 @@ public final class BucketInfoJson {
     @JsonProperty("ResourceGroupId")
     private String resourceGroupId;
 
-    public BucketInfoJson() {
+    public VectorBucket() {
     }
 
-    private BucketInfoJson(Builder builder) {
+    private VectorBucket(Builder builder) {
         this.name = builder.name;
         this.location = builder.location;
         this.creationDate = builder.creationDate;
@@ -49,42 +46,42 @@ public final class BucketInfoJson {
      * The name of the bucket.
      */
     public String name() {
-        return this.name;
+        return name;
     }
 
     /**
-     * The region in which the bucket is located.
+     * The region ID where the bucket is located.
      */
     public String location() {
-        return this.location;
+        return location;
     }
 
     /**
-     * The time when the bucket is created. The time is in UTC.
+     * The creation date of the bucket.
      */
     public Instant creationDate() {
-        return this.creationDate;
+        return creationDate;
     }
 
     /**
-     * The public endpoint that is used to access the bucket over the Internet.
+     * The public endpoint of the bucket.
      */
     public String extranetEndpoint() {
-        return this.extranetEndpoint;
+        return extranetEndpoint;
     }
 
     /**
-     * The internal endpoint that is used to access the bucket from Elastic.
+     * The internal endpoint of the bucket.
      */
     public String intranetEndpoint() {
-        return this.intranetEndpoint;
+        return intranetEndpoint;
     }
 
     /**
-     * The ID of the resource group to which the bucket belongs.
+     * The resource group ID of the bucket.
      */
     public String resourceGroupId() {
-        return this.resourceGroupId;
+        return resourceGroupId;
     }
 
     public Builder toBuilder() {
@@ -100,10 +97,9 @@ public final class BucketInfoJson {
         private String resourceGroupId;
 
         private Builder() {
-            super();
         }
 
-        private Builder(BucketInfoJson from) {
+        private Builder(VectorBucket from) {
             this.name = from.name;
             this.location = from.location;
             this.creationDate = from.creationDate;
@@ -115,54 +111,59 @@ public final class BucketInfoJson {
         /**
          * The name of the bucket.
          */
-        public Builder name(String value) {
-            requireNonNull(value);
-            this.name = value;
+        public Builder name(String name) {
+            requireNonNull(name);
+            this.name = name;
             return this;
         }
 
         /**
-         * The region in which the bucket is located.
+         * The region ID where the bucket is located.
          */
-        public Builder location(String value) {
-            this.location = value;
+        public Builder location(String location) {
+            requireNonNull(location);
+            this.location = location;
             return this;
         }
 
         /**
-         * The time when the bucket is created. The time is in UTC.
+         * The creation date of the bucket.
          */
-        public Builder creationDate(Instant value) {
-            this.creationDate = value;
+        public Builder creationDate(Instant creationDate) {
+            requireNonNull(creationDate);
+            this.creationDate = creationDate;
             return this;
         }
 
         /**
-         * The public endpoint that is used to access the bucket over the Internet.
+         * The public endpoint of the bucket.
          */
-        public Builder extranetEndpoint(String value) {
-            this.extranetEndpoint = value;
+        public Builder extranetEndpoint(String extranetEndpoint) {
+            requireNonNull(extranetEndpoint);
+            this.extranetEndpoint = extranetEndpoint;
             return this;
         }
 
         /**
-         * The internal endpoint that is used to access the bucket from Elastic.
+         * The internal endpoint of the bucket.
          */
-        public Builder intranetEndpoint(String value) {
-            this.intranetEndpoint = value;
+        public Builder intranetEndpoint(String intranetEndpoint) {
+            requireNonNull(intranetEndpoint);
+            this.intranetEndpoint = intranetEndpoint;
             return this;
         }
 
         /**
-         * The ID of the resource group to which the bucket belongs.
+         * The resource group ID of the bucket.
          */
-        public Builder resourceGroupId(String value) {
-            this.resourceGroupId = value;
+        public Builder resourceGroupId(String resourceGroupId) {
+            requireNonNull(resourceGroupId);
+            this.resourceGroupId = resourceGroupId;
             return this;
         }
 
-        public BucketInfoJson build() {
-            return new BucketInfoJson(this);
+        public VectorBucket build() {
+            return new VectorBucket(this);
         }
     }
 }

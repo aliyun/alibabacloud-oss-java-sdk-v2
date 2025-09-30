@@ -74,9 +74,9 @@ class DefaultOSSVectorsClientBuilder extends DefaultBaseClientBuilder<OSSVectors
         }
 
         if (config.useInternalEndpoint().orElse(false)) {
-            value = String.format("oss-%s-internal.oss-vectors.aliyuncs.com", value);
+            value = String.format("%s-internal.oss-vectors.aliyuncs.com", value);
         } else {
-            value = String.format("oss-%s.oss-vectors.aliyuncs.com", value);
+            value = String.format("%s.oss-vectors.aliyuncs.com", value);
         }
 
         return config.toBuilder().endpoint(value).build();

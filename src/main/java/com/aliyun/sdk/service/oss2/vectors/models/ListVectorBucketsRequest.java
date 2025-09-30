@@ -27,9 +27,9 @@ public final class ListVectorBucketsRequest extends RequestModel {
      * The maximum number of buckets that can be returned in the single query.
      * Valid values: 1 to 1000.
      */
-    public Integer maxKeys() {
+    public Long maxKeys() {
         String value = parameters.get("max-keys");
-        return value != null ? Integer.valueOf(value) : null;
+        return value != null ? Long.valueOf(value) : null;
     }
 
     /**
@@ -73,7 +73,7 @@ public final class ListVectorBucketsRequest extends RequestModel {
          * The maximum number of buckets that can be returned in the single query.
          * Valid values: 1 to 1000.
          */
-        public Builder maxKeys(Integer value) {
+        public Builder maxKeys(Long value) {
             this.parameters.put("max-keys", String.valueOf(value));
             return this;
         }

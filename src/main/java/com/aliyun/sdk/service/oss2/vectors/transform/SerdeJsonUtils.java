@@ -4,6 +4,7 @@ import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.exceptions.DeserializationException;
 import com.aliyun.sdk.service.oss2.models.RequestModel;
+import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.Md5Utils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -39,6 +40,23 @@ public final class SerdeJsonUtils {
             return objectMapper.readValue(jsonBytes, clazz);
         } catch (Exception e) {
             throw new DeserializationException("Failed to parse JSON", e);
+        }
+    }
+
+    public static BinaryData toJson(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            byte[] jsonBytes = objectMapper.writeValueAsBytes(value);
+            return BinaryData.fromBytes(jsonBytes);
+        } catch (Exception e) {
+            throw new DeserializationException("Failed to serialize object to JSON", e);
         }
     }
 
