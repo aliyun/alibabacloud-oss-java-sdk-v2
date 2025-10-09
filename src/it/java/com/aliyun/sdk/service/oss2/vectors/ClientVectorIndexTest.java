@@ -58,9 +58,9 @@ public class ClientVectorIndexTest extends TestBaseVectors {
             Assert.assertNotNull(getResult.index());
 
             // Assert retrieved index details match the created ones
-            Assert.assertEquals(indexName, getResult.index().get("indexName"));
-            Assert.assertEquals(dimension, getResult.index().get("dimension"));
-            Assert.assertEquals(distanceMetric, getResult.index().get("distanceMetric"));
+            Assert.assertEquals(indexName, getResult.index().indexName());
+            Assert.assertEquals(Integer.valueOf(dimension), getResult.index().dimension());
+            Assert.assertEquals(distanceMetric, getResult.index().distanceMetric());
 
             // 4. List vector indexes and verify our index is included
             ListVectorIndexesResult listResult = vectorsClient.listVectorIndexes(

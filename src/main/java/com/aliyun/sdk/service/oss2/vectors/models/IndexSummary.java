@@ -1,18 +1,28 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Map;
 
 /**
  * The summary of a vector index.
  */
 public class IndexSummary {
+    @JsonProperty("createTime")
     private String createTime;
+    @JsonProperty("indexName")
     private String indexName;
+    @JsonProperty("dataType")
     private String dataType;
+    @JsonProperty("dimension")
     private Integer dimension;
+    @JsonProperty("distanceMetric")
     private String distanceMetric;
+    @JsonProperty("metadata")
     private Map<String, Object> metadata;
+    @JsonProperty("vectorBucketName")
     private String vectorBucketName;
+    @JsonProperty("status")
     private String status;
 
     public IndexSummary() {

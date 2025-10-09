@@ -1,17 +1,21 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
-import java.util.Map;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.GetVectorIndexResultJson;
+
+import java.util.Optional;
 
 /**
  * The result for the GetVectorIndex operation.
  */
 public final class GetVectorIndexResult extends ResultModel {
-    private final IndexInfo delegate;
+    private final GetVectorIndexResultJson delegate;
 
     private GetVectorIndexResult(Builder builder) {
         super(builder);
-        this.delegate = (IndexInfo) innerBody;
+        this.delegate = (GetVectorIndexResultJson) Optional
+                .ofNullable(innerBody)
+                .orElse(new GetVectorIndexResultJson());;
     }
 
     public static Builder newBuilder() {
@@ -21,30 +25,8 @@ public final class GetVectorIndexResult extends ResultModel {
     /**
      * The index information.
      */
-    public Map<String, Object> index() {
-        return delegate != null ? delegate.index() : null;
-    }
-
-    /**
-     * Convert to IndexSummary object.
-     */
-    public IndexSummary asIndex() {
-        Map<String, Object> indexMap = index();
-        if (indexMap == null) {
-            return null;
-        }
-
-        IndexSummary.Builder builder = IndexSummary.newBuilder();
-        builder.createTime((String) indexMap.get("createTime"));
-        builder.indexName((String) indexMap.get("indexName"));
-        builder.dataType((String) indexMap.get("dataType"));
-        builder.dimension((Integer) indexMap.get("dimension"));
-        builder.distanceMetric((String) indexMap.get("distanceMetric"));
-        builder.metadata((Map<String, Object>) indexMap.get("metadata"));
-        builder.vectorBucketName((String) indexMap.get("vectorBucketName"));
-        builder.status((String) indexMap.get("status"));
-
-        return builder.build();
+    public IndexSummary index() {
+        return delegate.index;
     }
 
     public Builder toBuilder() {

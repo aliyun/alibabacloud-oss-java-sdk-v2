@@ -6,6 +6,7 @@ import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.GetVectorIndexResultJson;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.ListVectorIndexesResultJson;
 import java.util.Map;
 
@@ -77,7 +78,7 @@ public final class SerdeVectorIndexBasic {
 
     public static GetVectorIndexResult toGetVectorIndex(OperationOutput output) {
         Object innerBody = null;
-        innerBody = SerdeJsonUtils.fromJsonBody(output, IndexInfo.class);
+        innerBody = SerdeJsonUtils.fromJsonBody(output, GetVectorIndexResultJson.class);
 
         return GetVectorIndexResult.newBuilder()
                 .headers(output.headers)
