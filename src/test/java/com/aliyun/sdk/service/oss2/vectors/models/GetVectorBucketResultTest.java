@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.GetVectorBucketResultJson;
 import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorBucketBasic;
 import org.junit.jupiter.api.Test;
 import java.time.Instant;
@@ -17,6 +18,9 @@ public class GetVectorBucketResultTest {
         assertThat(result).isNotNull();
         assertThat(result.headers()).isNotNull();
         assertThat(result.headers().isEmpty()).isTrue();
+        assertThat(result.statusCode()).isEqualTo(0);
+        assertThat(result.status()).isEqualTo("");
+        assertThat(result.requestId()).isEqualTo("");
         assertThat(result.bucketInfo()).isNull();
     }
 
@@ -36,9 +40,12 @@ public class GetVectorBucketResultTest {
                 .resourceGroupId("rg-aek27t")
                 .build();
 
+        GetVectorBucketResultJson json = new GetVectorBucketResultJson();
+        json.bucketInfo = vectorBucket;
+
         GetVectorBucketResult result = GetVectorBucketResult.newBuilder()
                 .headers(headers)
-                .innerBody(vectorBucket)
+                .innerBody(json)
                 .status("OK")
                 .statusCode(200)
                 .build();
@@ -75,9 +82,12 @@ public class GetVectorBucketResultTest {
                 .resourceGroupId("rg-bfk38u")
                 .build();
 
+        GetVectorBucketResultJson json = new GetVectorBucketResultJson();
+        json.bucketInfo = vectorBucket;
+
         GetVectorBucketResult original = GetVectorBucketResult.newBuilder()
                 .headers(headers)
-                .innerBody(vectorBucket)
+                .innerBody(json)
                 .status("Created")
                 .statusCode(201)
                 .build();

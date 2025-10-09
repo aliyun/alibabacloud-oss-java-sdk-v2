@@ -74,18 +74,13 @@ public class ClientVectorIndexTest extends TestBaseVectors {
             Assert.assertNotNull(listResult.indexes());
             Assert.assertEquals(1, listResult.indexes().size());
 
-            // Find our specific index in the list
-            Map<String, Object> foundIndex = null;
-            for (Map<String, Object> index : listResult.indexes()) {
-                if (indexName.equals(index.get("indexName"))) {
-                    foundIndex = index;
-                    break;
-                }
-            }
-
+            // Get our specific index from the list
+            IndexSummary foundIndex = listResult.indexes().get(0);
+            
             Assert.assertNotNull("Index '" + indexName + "' not found in the list", foundIndex);
-            Assert.assertEquals(dimension, foundIndex.get("dimension"));
-            Assert.assertEquals(distanceMetric, foundIndex.get("distanceMetric"));
+            Assert.assertEquals(indexName, foundIndex.indexName());
+            Assert.assertEquals(Integer.valueOf(dimension), foundIndex.dimension());
+            Assert.assertEquals(distanceMetric, foundIndex.distanceMetric());
 
             // 5. Delete the vector index
             DeleteVectorIndexResult deleteResult = vectorsClient.deleteVectorIndex(
@@ -110,4 +105,3 @@ public class ClientVectorIndexTest extends TestBaseVectors {
         }
     }
 }
-

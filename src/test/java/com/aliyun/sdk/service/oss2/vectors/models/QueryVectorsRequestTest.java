@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,10 +39,9 @@ public class QueryVectorsRequestTest {
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
-        // Create query vector
-        QueryVectorsConfiguration.QueryVector queryVector = QueryVectorsConfiguration.QueryVector.newBuilder()
-                .float32(Arrays.asList(0.1f, 0.2f, 0.3f))
-                .build();
+        // Create query vector using Map
+        Map<String, Object> queryVector = new HashMap<>();
+        queryVector.put("float32", Arrays.asList(0.1f, 0.2f, 0.3f));
 
         // Create filter
         Map<String, Object> andConditions = new HashMap<>();
@@ -92,10 +92,9 @@ public class QueryVectorsRequestTest {
                 "ETag", "\"original-etag\""
         );
 
-        // Create query vector
-        QueryVectorsConfiguration.QueryVector queryVector = QueryVectorsConfiguration.QueryVector.newBuilder()
-                .float32(Arrays.asList(0.4f, 0.5f, 0.6f))
-                .build();
+        // Create query vector using Map
+        Map<String, Object> queryVector = new HashMap<>();
+        queryVector.put("float32", Arrays.asList(0.4f, 0.5f, 0.6f));
 
         // Create filter
         Map<String, Object> andConditions = new HashMap<>();
@@ -128,7 +127,6 @@ public class QueryVectorsRequestTest {
         assertThat(copy.bucket()).isEqualTo("examplebucket");
 
         assertThat(copy.indexName()).isEqualTo("example-index");
-        //assertThat(((QueryVectorsConfiguration.QueryVector)(copy.queryVector()).float32())).containsExactly(0.4f, 0.5f, 0.6f);
         assertThat(copy.returnDistance()).isEqualTo(false);
         assertThat(copy.returnMetadata()).isEqualTo(true);
         assertThat(copy.topK()).isEqualTo(5);
@@ -142,12 +140,10 @@ public class QueryVectorsRequestTest {
     }
 
     @Test
-    public void testQueryVectorsConfigurationDirectSetter() {
-        // Create query vector
-        QueryVectorsConfiguration.QueryVector queryVector = QueryVectorsConfiguration.QueryVector.newBuilder()
-                .float32(Arrays.asList(0.7f, 0.8f, 0.9f))
-                .build();
-
+    public void testQueryVectorDirectSetter() {
+        // Create query vector using Map
+        Map<String, Object> queryVector = new HashMap<>();
+        queryVector.put("float32", Arrays.asList(0.7f, 0.8f, 0.9f));
 
         QueryVectorsRequest request = QueryVectorsRequest.newBuilder()
                 .bucket("config-bucket")
@@ -170,10 +166,9 @@ public class QueryVectorsRequestTest {
     public void xmlBuilder() throws Exception {
         String jsonStr = "{\"filter\": {\"$and\": [{\"type\": {\"$in\": [\"comedy\", \"documentary\"]}}, {\"year\": {\"$gte\": 2020}}]}, \"indexName\": \"test-index\", \"queryVector\": {\"float32\": [0.1, 0.2, 0.3]}, \"returnDistance\": true, \"returnMetadata\": false, \"topK\": 10}";
 
-        // Create query vector
-        QueryVectorsConfiguration.QueryVector queryVector = QueryVectorsConfiguration.QueryVector.newBuilder()
-                .float32(Arrays.asList(0.1f, 0.2f, 0.3f))
-                .build();
+        // Create query vector using Map
+        Map<String, Object> queryVector = new HashMap<>();
+        queryVector.put("float32", Arrays.asList(0.1f, 0.2f, 0.3f));
 
         // Create filter
         Map<String, Object> typeCondition = new HashMap<>();

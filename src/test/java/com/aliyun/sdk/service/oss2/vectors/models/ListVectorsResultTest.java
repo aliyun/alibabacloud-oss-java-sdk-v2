@@ -20,9 +20,10 @@ public class ListVectorsResultTest {
         assertThat(result).isNotNull();
         assertThat(result.headers()).isNotNull();
         assertThat(result.headers().isEmpty()).isTrue();
+        assertThat(result.statusCode()).isEqualTo(0);
+        assertThat(result.status()).isEqualTo("");
+        assertThat(result.requestId()).isEqualTo("");
         assertThat(result.nextToken()).isNull();
-        assertThat(result.vectors()).isNull();
-        assertThat(result.asVectors()).isNull();
     }
 
     @Test
@@ -48,29 +49,6 @@ public class ListVectorsResultTest {
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-1234567890abcdefg");
-
-        // Test asVectors method
-        ListVectorsInfo vectorsInfo = result.asVectors();
-        assertThat(vectorsInfo).isNotNull();
-        assertThat(vectorsInfo.nextToken()).isEqualTo("next-token");
-        assertThat(vectorsInfo.vectors()).isNotNull();
-        assertThat(vectorsInfo.vectors()).hasSize(1);
-
-        ListOutputVector vector = vectorsInfo.vectors().get(0);
-        assertThat(vector.key()).isEqualTo("vector-key-1");
-        assertThat(vector.data()).isNotNull();
-        assertThat(vector.metadata()).isNotNull();
-        
-        Map<String, Object> data = vector.data();
-        assertThat(data).containsKey("float32");
-        Object float32Obj = data.get("float32");
-        assertThat(float32Obj).isInstanceOf(List.class);
-        List<Float> float32 = (List<Float>) float32Obj;
-        assertThat(float32).containsExactly(0.1f, 0.2f, 0.3f);
-        
-        Map<String, Object> metadata = vector.metadata();
-        assertThat(metadata).containsEntry("key1", "value1");
-        assertThat(metadata).containsEntry("key2", "value2");
     }
 
     @Test
@@ -98,29 +76,6 @@ public class ListVectorsResultTest {
         assertThat(copy.status()).isEqualTo("Partial");
         assertThat(copy.statusCode()).isEqualTo(206);
         assertThat(copy.requestId()).isEqualTo("req-765432109876543210");
-
-        // Test asVectors method
-        ListVectorsInfo vectorsInfo = copy.asVectors();
-        assertThat(vectorsInfo).isNotNull();
-        assertThat(vectorsInfo.nextToken()).isEqualTo("next-token");
-        assertThat(vectorsInfo.vectors()).isNotNull();
-        assertThat(vectorsInfo.vectors()).hasSize(1);
-
-        ListOutputVector vector = vectorsInfo.vectors().get(0);
-        assertThat(vector.key()).isEqualTo("vector-key-1");
-        assertThat(vector.data()).isNotNull();
-        assertThat(vector.metadata()).isNotNull();
-        
-        Map<String, Object> data = vector.data();
-        assertThat(data).containsKey("float32");
-        Object float32Obj = data.get("float32");
-        assertThat(float32Obj).isInstanceOf(List.class);
-        List<Float> float32 = (List<Float>) float32Obj;
-        assertThat(float32).containsExactly(0.1f, 0.2f, 0.3f);
-        
-        Map<String, Object> metadata = vector.metadata();
-        assertThat(metadata).containsEntry("key1", "value1");
-        assertThat(metadata).containsEntry("key2", "value2");
     }
 
     @Test
@@ -162,69 +117,42 @@ public class ListVectorsResultTest {
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-xml-builder-test");
 
-        Map<String, Object> vector = result.vectors().get(0);
-        assertThat(vector).containsKey("key");
-        assertThat(vector.get("key")).isEqualTo("vector-key-1");
+        VectorsSummary vector = result.vectors().get(0);
+        assertThat(vector.key()).isEqualTo("vector-key-1");
+        assertThat(vector.data()).isNotNull();
+        assertThat(vector.metadata()).isNotNull();
         
-        assertThat(vector).containsKey("data");
-        Object dataObj = vector.get("data");
-        assertThat(dataObj).isInstanceOf(Map.class);
-        Map<String, Object> data = (Map<String, Object>) dataObj;
+        Map<String, Object> data = vector.data();
         assertThat(data).containsKey("float32");
         Object float32Obj = data.get("float32");
         assertThat(float32Obj).isInstanceOf(List.class);
         List<Double> float32 = (List<Double>) float32Obj;
         assertThat(float32).containsExactly(0.1, 0.2, 0.3);
         
-        assertThat(vector).containsKey("metadata");
-        Object metadataObj = vector.get("metadata");
-        assertThat(metadataObj).isInstanceOf(Map.class);
-        Map<String, Object> metadata = (Map<String, Object>) metadataObj;
+        Map<String, Object> metadata = vector.metadata();
         assertThat(metadata).containsEntry("key1", "value1");
         assertThat(metadata).containsEntry("key2", "value2");
-
-        // Test asVectors method
-        ListVectorsInfo vectorsInfo = result.asVectors();
-        assertThat(vectorsInfo).isNotNull();
-        assertThat(vectorsInfo.nextToken()).isEqualTo("next-token");
-        assertThat(vectorsInfo.vectors()).isNotNull();
-        assertThat(vectorsInfo.vectors()).hasSize(1);
-
-        ListOutputVector outputVector = vectorsInfo.vectors().get(0);
-        assertThat(outputVector.key()).isEqualTo("vector-key-1");
-        assertThat(outputVector.data()).isNotNull();
-        assertThat(outputVector.metadata()).isNotNull();
-        
-        Map<String, Object> outputData = outputVector.data();
-        assertThat(outputData).containsKey("float32");
-        Object outputFloat32Obj = outputData.get("float32");
-        assertThat(outputFloat32Obj).isInstanceOf(List.class);
-        List<Double> outputFloat32 = (List<Double>) outputFloat32Obj;
-        assertThat(outputFloat32).containsExactly(0.1, 0.2, 0.3);
-        
-        Map<String, Object> outputMetadata = outputVector.metadata();
-        assertThat(outputMetadata).containsEntry("key1", "value1");
-        assertThat(outputMetadata).containsEntry("key2", "value2");
     }
 
     private ListVectorsResultJson createTestListResult() {
         ListVectorsResultJson listResult = new ListVectorsResultJson();
         listResult.nextToken = "next-token";
 
-        Map<String, Object> vector = new HashMap<>();
-        vector.put("key", "vector-key-1");
+        VectorsSummary vectorSummary = VectorsSummary.newBuilder()
+                .key("vector-key-1")
+                .build();
 
         Map<String, Object> data = new HashMap<>();
         List<Float> float32 = Arrays.asList(0.1f, 0.2f, 0.3f);
         data.put("float32", float32);
-        vector.put("data", data);
+        vectorSummary = vectorSummary.toBuilder().data(data).build();
 
         Map<String, Object> metadata = new HashMap<>();
         metadata.put("key1", "value1");
         metadata.put("key2", "value2");
-        vector.put("metadata", metadata);
+        vectorSummary = vectorSummary.toBuilder().metadata(metadata).build();
 
-        listResult.vectors = Arrays.asList(vector);
+        listResult.vectors = Arrays.asList(vectorSummary);
         return listResult;
     }
 }

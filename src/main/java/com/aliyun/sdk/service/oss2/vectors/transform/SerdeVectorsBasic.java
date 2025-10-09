@@ -74,7 +74,7 @@ public final class SerdeVectorsBasic {
 
     public static GetVectorsResult toGetVectors(OperationOutput output) {
         Object innerBody = null;
-        innerBody = SerdeJsonUtils.fromJsonBody(output, VectorsInfo.class);
+        innerBody = SerdeJsonUtils.fromJsonBody(output, GetVectorsResultJson.class);
 
         return GetVectorsResult.newBuilder()
                 .headers(output.headers)

@@ -4,7 +4,7 @@ import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorBucketBasic;
-import com.aliyun.sdk.service.oss2.vectors.models.internal.ListAllMyBucketsResultJson;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.ListVectorBucketsResultJson;
 import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Arrays;
@@ -29,7 +29,7 @@ public class ListVectorBucketsResultTest {
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
-        VectorBucketProperties bucket1 = VectorBucketProperties.newBuilder()
+        VectorBucketSummary bucket1 = VectorBucketSummary.newBuilder()
                 .name("test-bucket-3")
                 .location("oss-cn-shanghai")
                 .creationDate(Instant.parse("2014-02-07T18:12:43.000Z"))
@@ -39,7 +39,7 @@ public class ListVectorBucketsResultTest {
                 .resourceGroupId("rg-default-id")
                 .build();
 
-        VectorBucketProperties bucket2 = VectorBucketProperties.newBuilder()
+        VectorBucketSummary bucket2 = VectorBucketSummary.newBuilder()
                 .name("test-bucket-4")
                 .location("oss-cn-hangzhou")
                 .creationDate(Instant.parse("2014-02-05T11:21:04.000Z"))
@@ -49,24 +49,23 @@ public class ListVectorBucketsResultTest {
                 .resourceGroupId("rg-default-id")
                 .build();
 
-        List<VectorBucketProperties> buckets = Arrays.asList(bucket1, bucket2);
+        List<VectorBucketSummary> buckets = Arrays.asList(bucket1, bucket2);
 
-        ListAllMyBucketsResultJson.VectorBucketSummary vectorBucketSummary =
-                new ListAllMyBucketsResultJson.VectorBucketSummary();
-        vectorBucketSummary.prefix = "test";
-        vectorBucketSummary.marker = "marker1";
-        vectorBucketSummary.maxKeys = 100;
-        vectorBucketSummary.isTruncated = false;
-        vectorBucketSummary.nextMarker = "";
-        vectorBucketSummary.buckets = buckets;
+        BucketsSummary bucketsSummary = BucketsSummary.newBuilder()
+                .prefix("test")
+                .marker("marker1")
+                .maxKeys(100L)
+                .isTruncated(false)
+                .nextMarker("")
+                .buckets(buckets)
+                .build();
 
-        ListAllMyBucketsResultJson listAllMyBucketsResultJson =
-                new ListAllMyBucketsResultJson();
-        listAllMyBucketsResultJson.vectorBucketSummary = vectorBucketSummary;
+        ListVectorBucketsResultJson listVectorBucketsResultJson = new ListVectorBucketsResultJson();
+        listVectorBucketsResultJson.bucketsSummary = bucketsSummary;
 
         ListVectorBucketsResult result = ListVectorBucketsResult.newBuilder()
                 .headers(headers)
-                .innerBody(listAllMyBucketsResultJson.vectorBucketSummary)
+                .innerBody(listVectorBucketsResultJson)
                 .status("OK")
                 .statusCode(200)
                 .build();
@@ -76,15 +75,15 @@ public class ListVectorBucketsResultTest {
 
         assertThat(result.prefix()).isEqualTo("test");
         assertThat(result.marker()).isEqualTo("marker1");
-        assertThat(result.maxKeys()).isEqualTo(100);
+        assertThat(result.maxKeys()).isEqualTo(100L);
         assertThat(result.isTruncated()).isEqualTo(false);
         assertThat(result.nextMarker()).isEqualTo("");
 
-        List<VectorBucketProperties> resultBuckets = result.buckets();
+        List<VectorBucketSummary> resultBuckets = result.buckets();
         assertThat(resultBuckets).isNotNull();
         assertThat(resultBuckets).hasSize(2);
 
-        VectorBucketProperties resultBucket1 = resultBuckets.get(0);
+        VectorBucketSummary resultBucket1 = resultBuckets.get(0);
         assertThat(resultBucket1.name()).isEqualTo("test-bucket-3");
         assertThat(resultBucket1.location()).isEqualTo("oss-cn-shanghai");
         assertThat(resultBucket1.creationDate()).isEqualTo(Instant.parse("2014-02-07T18:12:43.000Z"));
@@ -93,7 +92,7 @@ public class ListVectorBucketsResultTest {
         assertThat(resultBucket1.region()).isEqualTo("cn-shanghai");
         assertThat(resultBucket1.resourceGroupId()).isEqualTo("rg-default-id");
 
-        VectorBucketProperties resultBucket2 = resultBuckets.get(1);
+        VectorBucketSummary resultBucket2 = resultBuckets.get(1);
         assertThat(resultBucket2.name()).isEqualTo("test-bucket-4");
         assertThat(resultBucket2.location()).isEqualTo("oss-cn-hangzhou");
         assertThat(resultBucket2.creationDate()).isEqualTo(Instant.parse("2014-02-05T11:21:04.000Z"));
@@ -114,7 +113,7 @@ public class ListVectorBucketsResultTest {
                 "ETag", "\"original-etag\""
         );
 
-        VectorBucketProperties bucket = VectorBucketProperties.newBuilder()
+        VectorBucketSummary bucket = VectorBucketSummary.newBuilder()
                 .name("test-bucket-5")
                 .location("oss-cn-beijing")
                 .creationDate(Instant.parse("2015-03-08T19:13:44.000Z"))
@@ -124,24 +123,23 @@ public class ListVectorBucketsResultTest {
                 .resourceGroupId("rg-another-id")
                 .build();
 
-        List<VectorBucketProperties> buckets = Arrays.asList(bucket);
+        List<VectorBucketSummary> buckets = Arrays.asList(bucket);
 
-        ListAllMyBucketsResultJson.VectorBucketSummary vectorBucketSummary =
-                new ListAllMyBucketsResultJson.VectorBucketSummary();
-        vectorBucketSummary.prefix = "example";
-        vectorBucketSummary.marker = "marker2";
-        vectorBucketSummary.maxKeys = 50;
-        vectorBucketSummary.isTruncated = true;
-        vectorBucketSummary.nextMarker = "next-marker-value";
-        vectorBucketSummary.buckets = buckets;
+        BucketsSummary bucketsSummary = BucketsSummary.newBuilder()
+                .prefix("example")
+                .marker("marker2")
+                .maxKeys(50L)
+                .isTruncated(true)
+                .nextMarker("next-marker-value")
+                .buckets(buckets)
+                .build();
 
-        ListAllMyBucketsResultJson listAllMyBucketsResultJson =
-                new ListAllMyBucketsResultJson();
-        listAllMyBucketsResultJson.vectorBucketSummary = vectorBucketSummary;
+        ListVectorBucketsResultJson listVectorBucketsResultJson = new ListVectorBucketsResultJson();
+        listVectorBucketsResultJson.bucketsSummary = bucketsSummary;
 
         ListVectorBucketsResult original = ListVectorBucketsResult.newBuilder()
                 .headers(headers)
-                .innerBody(listAllMyBucketsResultJson.vectorBucketSummary)
+                .innerBody(listVectorBucketsResultJson)
                 .status("Partial")
                 .statusCode(206)
                 .build();
@@ -153,15 +151,15 @@ public class ListVectorBucketsResultTest {
 
         assertThat(copy.prefix()).isEqualTo("example");
         assertThat(copy.marker()).isEqualTo("marker2");
-        assertThat(copy.maxKeys()).isEqualTo(50);
+        assertThat(copy.maxKeys()).isEqualTo(50L);
         assertThat(copy.isTruncated()).isEqualTo(true);
         assertThat(copy.nextMarker()).isEqualTo("next-marker-value");
 
-        List<VectorBucketProperties> resultBuckets = copy.buckets();
+        List<VectorBucketSummary> resultBuckets = copy.buckets();
         assertThat(resultBuckets).isNotNull();
         assertThat(resultBuckets).hasSize(1);
 
-        VectorBucketProperties resultBucket = resultBuckets.get(0);
+        VectorBucketSummary resultBucket = resultBuckets.get(0);
         assertThat(resultBucket.name()).isEqualTo("test-bucket-5");
         assertThat(resultBucket.location()).isEqualTo("oss-cn-beijing");
         assertThat(resultBucket.creationDate()).isEqualTo(Instant.parse("2015-03-08T19:13:44.000Z"));
@@ -224,15 +222,15 @@ public class ListVectorBucketsResultTest {
 
         assertThat(result.prefix()).isEqualTo("test");
         assertThat(result.marker()).isEqualTo("marker1");
-        assertThat(result.maxKeys()).isEqualTo(100);
+        assertThat(result.maxKeys()).isEqualTo(100L);
         assertThat(result.isTruncated()).isEqualTo(false);
         assertThat(result.nextMarker()).isEqualTo("");
 
-        List<VectorBucketProperties> resultBuckets = result.buckets();
+        List<VectorBucketSummary> resultBuckets = result.buckets();
         assertThat(resultBuckets).isNotNull();
         assertThat(resultBuckets).hasSize(2);
 
-        VectorBucketProperties resultBucket1 = resultBuckets.get(0);
+        VectorBucketSummary resultBucket1 = resultBuckets.get(0);
         assertThat(resultBucket1.name()).isEqualTo("test-bucket-3");
         assertThat(resultBucket1.location()).isEqualTo("oss-cn-shanghai");
         assertThat(resultBucket1.creationDate()).isEqualTo(Instant.parse("2014-02-07T18:12:43.000Z"));
@@ -241,7 +239,7 @@ public class ListVectorBucketsResultTest {
         assertThat(resultBucket1.region()).isEqualTo("cn-shanghai");
         assertThat(resultBucket1.resourceGroupId()).isEqualTo("rg-default-id");
 
-        VectorBucketProperties resultBucket2 = resultBuckets.get(1);
+        VectorBucketSummary resultBucket2 = resultBuckets.get(1);
         assertThat(resultBucket2.name()).isEqualTo("test-bucket-4");
         assertThat(resultBucket2.location()).isEqualTo("oss-cn-hangzhou");
         assertThat(resultBucket2.creationDate()).isEqualTo(Instant.parse("2014-02-05T11:21:04.000Z"));

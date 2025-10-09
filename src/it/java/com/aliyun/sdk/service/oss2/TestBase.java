@@ -21,6 +21,7 @@ import java.util.Random;
 
 public class TestBase {
 
+
     protected static final String BUCKET_NAME_PREFIX = "java-sdk-test-bucket-";
     protected static final String OJBJECT_NAME_PREFIX = "java-sdk-test-object-";
     protected static final long DELETE_OBJECTS_ONETIME_LIMIT = 1000;
@@ -155,7 +156,7 @@ public class TestBase {
         );
 
         if (result.buckets() != null) {
-            for (VectorBucketProperties bucket : result.buckets()) {
+            for (VectorBucketSummary bucket : result.buckets()) {
                 getVectorsClient().deleteVectorBucket(
                         DeleteVectorBucketRequest.newBuilder()
                                 .bucket(getBucketNameWithoutPrefix(bucket.name()))

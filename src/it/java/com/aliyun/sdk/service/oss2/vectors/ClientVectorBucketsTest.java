@@ -65,8 +65,9 @@ public class ClientVectorBucketsTest extends TestBaseVectors {
     public void testListVectorBucketsWithPagination() {
         OSSVectorsClient vectorsClient = getVectorsClient();
         String bucketPrefix = "test-page";
-        String bucketName1 = bucketPrefix + "1";
-        String bucketName2 = bucketPrefix + "2";
+        String bucketName1 = bucketPrefix + "1" + (int) (Math.random() * 10000);
+        String bucketName2 = bucketPrefix + "2" + (int) (Math.random() * 10000);
+
 
         // Create two vector buckets
         vectorsClient.putVectorBucket(PutVectorBucketRequest.newBuilder()
@@ -115,11 +116,10 @@ public class ClientVectorBucketsTest extends TestBaseVectors {
         }
     }
 
-    @Ignore
     @Test
     public void testVectorBucketNotFound() {
         OSSVectorsClient vectorsClient = getVectorsClient();
-        String nonExistentBucket = "non-existent-bucket-" + UUID.randomUUID().toString();
+        String nonExistentBucket = "non-existent-bucket";
 
         try {
             vectorsClient.getVectorBucket(GetVectorBucketRequest.newBuilder()
@@ -127,7 +127,6 @@ public class ClientVectorBucketsTest extends TestBaseVectors {
                     .build());
             Assert.fail("Expected ServiceException for non-existent bucket");
         } catch (Exception e) {
-            e.printStackTrace();
             ServiceException serviceException = findCause(e, ServiceException.class);
             Assert.assertNotNull(serviceException);
             Assert.assertEquals(404, serviceException.statusCode());

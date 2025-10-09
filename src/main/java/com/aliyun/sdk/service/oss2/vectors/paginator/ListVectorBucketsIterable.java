@@ -44,8 +44,6 @@ public class ListVectorBucketsIterable implements PaginatedIterable<ListVectorBu
         return ListVectorBucketsRequest.newBuilder()
                 .headers(this.firstRequest.headers())
                 .parameters(this.firstRequest.parameters())
-                .maxKeys(this.firstRequest.maxKeys())
-                .prefix(this.firstRequest.prefix())
                 .build();
     }
 

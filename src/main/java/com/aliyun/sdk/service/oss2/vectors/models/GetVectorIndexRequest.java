@@ -37,7 +37,6 @@ public final class GetVectorIndexRequest extends VectorRequestModel {
 
     public static class Builder extends VectorRequestModel.Builder<Builder> {
         private String bucket;
-        private VectorIndexNameInfo vectorIndexNameInfo;
 
         private Builder() {
             super();

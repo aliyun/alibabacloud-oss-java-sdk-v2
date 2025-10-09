@@ -68,48 +68,6 @@ public class PutVectorsRequestTest {
     }
 
     @Test
-    public void testFullBuilderWithPutInputVector() {
-        Map<String, String> headers = MapUtils.of(
-                "x-oss-request-id", "req-1234567890abcdefg",
-                "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
-        );
-
-        // Test using PutInputVector type vector data
-        Map<String, Object> vectorData = new HashMap<>();
-        vectorData.put("float32", Arrays.asList(0.1f, 0.2f, 0.3f));
-
-        Map<String, Object> metadata = new HashMap<>();
-        metadata.put("key1", "value1");
-        metadata.put("key2", "value2");
-
-        PutInputVector vector = PutInputVector.newBuilder()
-                .data(vectorData)
-                .key("vector-key-1")
-                .metadata(metadata)
-                .build();
-
-        List<PutInputVector> vectors = Arrays.asList(vector);
-
-        PutVectorsRequest request = PutVectorsRequest.newBuilder()
-                .bucket("test-bucket")
-                .indexName("test-index")
-                .vectors(vectors)
-                .headers(headers)
-                .parameter("param1", "value1")
-                .parameter("param2", "value2")
-                .build();
-
-        assertThat(request.bucket()).isEqualTo("test-bucket");
-        assertThat(request.indexName()).isEqualTo("test-index");
-        assertThat(request.vectors()).isNotNull();
-        assertThat(request.vectors()).hasSize(1);
-        assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
-        assertThat(request.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
-        assertThat(request.parameters()).containsEntry("param1", "value1");
-        assertThat(request.parameters()).containsEntry("param2", "value2");
-    }
-
-    @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
                 "x-oss-request-id", "req-765432109876543210",
