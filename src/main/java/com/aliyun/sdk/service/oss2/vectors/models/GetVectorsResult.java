@@ -1,19 +1,22 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.GetVectorsResultJson;
+
+import java.util.Optional;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * The result for the GetVectors operation.
  */
 public final class GetVectorsResult extends ResultModel {
-    private final VectorsInfo delegate;
+    private final GetVectorsResultJson delegate;
 
     private GetVectorsResult(Builder builder) {
         super(builder);
-        this.delegate = (VectorsInfo) innerBody;
+        this.delegate = (GetVectorsResultJson) Optional
+                .ofNullable(innerBody)
+                .orElse(new GetVectorsResultJson());;
     }
 
     public static Builder newBuilder() {
@@ -21,50 +24,10 @@ public final class GetVectorsResult extends ResultModel {
     }
 
     /**
-     * The list of vectors retrieved.
+     * The vectors information.
      */
-    public List<Map<String, Object>> vectors() {
-        return delegate != null ? delegate.vectors() : null;
-    }
-
-    /**
-     * The list of vectors retrieved as GetOutputVector objects.
-     */
-    public List<GetOutputVector> asVectors() {
-        if (delegate == null || delegate.vectors() == null) {
-            return null;
-        }
-        return delegate.vectors().stream()
-                .map(vectorMap -> {
-                    if (vectorMap == null) {
-                        return GetOutputVector.newBuilder().build();
-                    }
-
-                    GetOutputVector vector = GetOutputVector.newBuilder()
-                            .data(getMapValue(vectorMap, "data"))
-                            .key(getStringValue(vectorMap, "key"))
-                            .metadata(getMapValue(vectorMap, "metadata"))
-                            .build();
-                    return vector;
-                })
-                .collect(Collectors.toList());
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> getMapValue(Map<String, Object> map, String key) {
-        Object value = map.get(key);
-        if (value instanceof Map) {
-            return (Map<String, Object>) value;
-        }
-        return null;
-    }
-
-    private String getStringValue(Map<String, Object> map, String key) {
-        Object value = map.get(key);
-        if (value instanceof String) {
-            return (String) value;
-        }
-        return null;
+    public List<VectorsSummary> vectors() {
+        return delegate.vectors;
     }
 
     public Builder toBuilder() {
@@ -77,8 +40,8 @@ public final class GetVectorsResult extends ResultModel {
             super();
         }
 
-        private Builder(GetVectorsResult result) {
-            super(result);
+        private Builder(GetVectorsResult from) {
+            super(from);
         }
 
         public GetVectorsResult build() {

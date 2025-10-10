@@ -3,7 +3,7 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
-import com.aliyun.sdk.service.oss2.vectors.models.GetOutputVector;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.GetVectorsResultJson;
 import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorsBasic;
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;
@@ -23,7 +23,6 @@ public class GetVectorsResultTest {
         assertThat(result.statusCode()).isEqualTo(0);
         assertThat(result.status()).isEqualTo("");
         assertThat(result.requestId()).isEqualTo("");
-        assertThat(result.vectors()).isNull();
     }
 
     @Test
@@ -33,11 +32,11 @@ public class GetVectorsResultTest {
                 "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
         );
 
-        VectorsInfo vectorsInfo = createTestVectorsInfo();
+        VectorsSummary vectorSummary = createTestVectorsSummary();
 
         GetVectorsResult result = GetVectorsResult.newBuilder()
                 .headers(headers)
-                .innerBody(vectorsInfo)
+                .innerBody(createGetVectorsResultJson(Arrays.asList(vectorSummary)))
                 .status("OK")
                 .statusCode(200)
                 .build();
@@ -46,7 +45,7 @@ public class GetVectorsResultTest {
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.requestId()).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
-        assertThat(result.vectors()).isEqualTo(vectorsInfo.vectors());
+        assertThat(result.vectors()).containsExactly(vectorSummary);
     }
 
     @Test
@@ -56,11 +55,11 @@ public class GetVectorsResultTest {
                 "ETag", "\"original-etag\""
         );
 
-        VectorsInfo vectorsInfo = createTestVectorsInfo();
+        VectorsSummary vectorSummary = createTestVectorsSummary();
 
         GetVectorsResult original = GetVectorsResult.newBuilder()
                 .headers(headers)
-                .innerBody(vectorsInfo)
+                .innerBody(createGetVectorsResultJson(Arrays.asList(vectorSummary)))
                 .status("Created")
                 .statusCode(201)
                 .build();
@@ -71,7 +70,7 @@ public class GetVectorsResultTest {
         assertThat(copy.status()).isEqualTo("Created");
         assertThat(copy.requestId()).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
-        assertThat(copy.vectors()).isEqualTo(vectorsInfo.vectors());
+        assertThat(copy.vectors()).containsExactly(vectorSummary);
     }
 
     @Test
@@ -110,50 +109,23 @@ public class GetVectorsResultTest {
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
 
-        Map<String, Object> vector = result.vectors().get(0);
-        assertThat(vector.get("key")).isEqualTo("vector-key-1");
-
-        Object dataObj = vector.get("data");
-        assertThat(dataObj).isNotNull();
-        assertThat(dataObj).isInstanceOf(Map.class);
-        Map<String, Object> data = (Map<String, Object>) dataObj;
+        VectorsSummary vector = result.vectors().get(0);
+        assertThat(vector.key()).isEqualTo("vector-key-1");
+        assertThat(vector.data()).isNotNull();
+        assertThat(vector.metadata()).isNotNull();
+        
+        Map<String, Object> data = vector.data();
         assertThat(data.get("float32")).isNotNull();
         assertThat(data.get("float32")).isInstanceOf(List.class);
         List<Double> float32 = (List<Double>) data.get("float32");
         assertThat(float32).containsExactly(0.1, 0.2, 0.3);
 
-        Object metadataObj = vector.get("metadata");
-        assertThat(metadataObj).isNotNull();
-        assertThat(metadataObj).isInstanceOf(Map.class);
-        Map<String, Object> metadata = (Map<String, Object>) metadataObj;
+        Map<String, Object> metadata = vector.metadata();
         assertThat(metadata).containsEntry("key1", "value1");
         assertThat(metadata).containsEntry("key2", "value2");
     }
 
-    @Test
-    public void testAsVectors() {
-        VectorsInfo vectorsInfo = createTestVectorsInfo();
-
-        GetVectorsResult result = GetVectorsResult.newBuilder()
-                .innerBody(vectorsInfo)
-                .status("OK")
-                .statusCode(200)
-                .build();
-
-        List<GetOutputVector> vectors = result.asVectors();
-        assertThat(vectors).isNotNull();
-        assertThat(vectors).hasSize(1);
-
-        GetOutputVector vector = vectors.get(0);
-        assertThat(vector.key()).isEqualTo("vector-key-1");
-        assertThat(vector.data()).isNotNull();
-        assertThat(vector.metadata()).isNotNull();
-        assertThat(vector.data()).containsKey("float32");
-        assertThat(vector.metadata()).containsEntry("key1", "value1");
-        assertThat(vector.metadata()).containsEntry("key2", "value2");
-    }
-
-    private VectorsInfo createTestVectorsInfo() {
+    private VectorsSummary createTestVectorsSummary() {
         Map<String, Object> vectorData = new HashMap<>();
         vectorData.put("float32", Arrays.asList(0.1, 0.2, 0.3));
 
@@ -161,13 +133,16 @@ public class GetVectorsResultTest {
         metadata.put("key1", "value1");
         metadata.put("key2", "value2");
 
-        Map<String, Object> vector = new HashMap<>();
-        vector.put("data", vectorData);
-        vector.put("key", "vector-key-1");
-        vector.put("metadata", metadata);
-
-        return VectorsInfo.newBuilder()
-                .vectors(Arrays.asList(vector))
+        return VectorsSummary.newBuilder()
+                .data(vectorData)
+                .key("vector-key-1")
+                .metadata(metadata)
                 .build();
+    }
+    
+    private GetVectorsResultJson createGetVectorsResultJson(List<VectorsSummary> vectorSummaries) {
+        GetVectorsResultJson json = new GetVectorsResultJson();
+        json.vectors = vectorSummaries;
+        return json;
     }
 }

@@ -1,8 +1,8 @@
 package com.aliyun.sdk.service.oss2.vectors.models.internal;
 
+import com.aliyun.sdk.service.oss2.vectors.models.IndexSummary;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import java.util.Map;
 
 /**
  * JSON model for list vector indexes result
@@ -10,7 +10,7 @@ import java.util.Map;
 public class ListVectorIndexesResultJson {
 
     @JsonProperty("indexes")
-    public List<Map<String, Object>> indexes;
+    public List<IndexSummary> indexes;
 
     @JsonProperty("nextToken")
     public String nextToken;

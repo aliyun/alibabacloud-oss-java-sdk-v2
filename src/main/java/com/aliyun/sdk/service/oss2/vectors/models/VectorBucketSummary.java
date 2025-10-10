@@ -7,7 +7,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Stores the metadata of the bucket.
  */
-public final class VectorBucketProperties {
+public final class VectorBucketSummary {
     @JsonProperty("ExtranetEndpoint")
     private String extranetEndpoint;
 
@@ -29,10 +29,10 @@ public final class VectorBucketProperties {
     @JsonProperty("Region")
     private String region;
 
-    public VectorBucketProperties() {
+    public VectorBucketSummary() {
     }
 
-    private VectorBucketProperties(Builder builder) {
+    private VectorBucketSummary(Builder builder) {
         this.extranetEndpoint = builder.extranetEndpoint;
         this.resourceGroupId = builder.resourceGroupId;
         this.location = builder.location;
@@ -113,7 +113,7 @@ public final class VectorBucketProperties {
             super();
         }
 
-        private Builder(VectorBucketProperties from) {
+        private Builder(VectorBucketSummary from) {
             this.extranetEndpoint = from.extranetEndpoint;
             this.resourceGroupId = from.resourceGroupId;
             this.location = from.location;
@@ -181,8 +181,8 @@ public final class VectorBucketProperties {
             return this;
         }
 
-        public VectorBucketProperties build() {
-            return new VectorBucketProperties(this);
+        public VectorBucketSummary build() {
+            return new VectorBucketSummary(this);
         }
     }
 }

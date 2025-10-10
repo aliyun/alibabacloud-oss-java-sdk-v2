@@ -1,14 +1,21 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
+import com.aliyun.sdk.service.oss2.vectors.models.internal.GetVectorBucketResultJson;
+
+import java.util.Optional;
 
 /**
  * The result for the GetVectorBucket operation.
  */
 public final class GetVectorBucketResult extends ResultModel {
+    private final GetVectorBucketResultJson delegate;
 
-    GetVectorBucketResult(Builder builder) {
+    private GetVectorBucketResult(Builder builder) {
         super(builder);
+        this.delegate = (GetVectorBucketResultJson) Optional
+                .ofNullable(innerBody)
+                .orElse(new GetVectorBucketResultJson());;
     }
 
     public static Builder newBuilder() {
@@ -19,7 +26,7 @@ public final class GetVectorBucketResult extends ResultModel {
      * Gets the vector bucket information.
      */
     public VectorBucketInfo bucketInfo() {
-        return (VectorBucketInfo) innerBody;
+        return delegate.bucketInfo;
     }
 
     public Builder toBuilder() {
@@ -32,8 +39,8 @@ public final class GetVectorBucketResult extends ResultModel {
             super();
         }
 
-        private Builder(GetVectorBucketResult result) {
-            super(result);
+        private Builder(GetVectorBucketResult from) {
+            super(from);
         }
 
         public GetVectorBucketResult build() {

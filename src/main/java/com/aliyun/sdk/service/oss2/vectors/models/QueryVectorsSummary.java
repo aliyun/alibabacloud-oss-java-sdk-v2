@@ -2,53 +2,51 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
-import static java.util.Objects.requireNonNull;
 
 /**
- * The information about the query output vector.
+ * The summary of query vectors with distance information.
  */
-public class QueryOutputVector {
+public class QueryVectorsSummary {
+    @JsonProperty("data")
+    private Map<String, Object> data;
+    
+    @JsonProperty("key")
+    private String key;
+    
+    @JsonProperty("metadata")
+    private Map<String, Object> metadata;
+    
     @JsonProperty("distance")
     private Integer distance;
 
-    @JsonProperty("key")
-    private String key;
-
-    @JsonProperty("metadata")
-    private Map<String, Object> metadata;
-
-    public QueryOutputVector() {
+    public QueryVectorsSummary() {
     }
 
-    private QueryOutputVector(Builder builder) {
-        this.distance = builder.distance;
+    private QueryVectorsSummary(Builder builder) {
+        this.data = builder.data;
         this.key = builder.key;
         this.metadata = builder.metadata;
+        this.distance = builder.distance;
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    /**
-     * The distance of the vector.
-     */
-    public Integer distance() {
-        return distance;
+    public Map<String, Object> data() {
+        return data;
     }
 
-    /**
-     * The key of the vector.
-     */
     public String key() {
         return key;
     }
 
-    /**
-     * The metadata of the vector.
-     */
     public Map<String, Object> metadata() {
         return metadata;
+    }
+    
+    public Integer distance() {
+        return distance;
     }
 
     public Builder toBuilder() {
@@ -56,46 +54,43 @@ public class QueryOutputVector {
     }
 
     public static class Builder {
-        private Integer distance;
+        private Map<String, Object> data;
         private String key;
         private Map<String, Object> metadata;
+        private Integer distance;
 
         private Builder() {
         }
 
-        private Builder(QueryOutputVector from) {
-            this.distance = from.distance;
+        private Builder(QueryVectorsSummary from) {
+            this.data = from.data;
             this.key = from.key;
             this.metadata = from.metadata;
+            this.distance = from.distance;
         }
 
-        /**
-         * The distance of the vector.
-         */
+        public Builder data(Map<String, Object> data) {
+            this.data = data;
+            return this;
+        }
+
+        public Builder key(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public Builder metadata(Map<String, Object> metadata) {
+            this.metadata = metadata;
+            return this;
+        }
+        
         public Builder distance(Integer distance) {
             this.distance = distance;
             return this;
         }
 
-        /**
-         * The key of the vector.
-         */
-        public Builder key(String key) {
-            requireNonNull(key);
-            this.key = key;
-            return this;
-        }
-
-        /**
-         * The metadata of the vector.
-         */
-        public Builder metadata(Map<String, Object> metadata) {
-            this.metadata = metadata;
-            return this;
-        }
-
-        public QueryOutputVector build() {
-            return new QueryOutputVector(this);
+        public QueryVectorsSummary build() {
+            return new QueryVectorsSummary(this);
         }
     }
 }
