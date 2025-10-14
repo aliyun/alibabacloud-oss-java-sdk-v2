@@ -16,7 +16,7 @@ public final class ListVectorBucketsResult extends ResultModel {
         super(builder);
         this.delegate = Optional.ofNullable((ListVectorBucketsResultJson) innerBody)
                 .map(result -> result.bucketsSummary)
-                .orElse(null);
+                .orElse(new BucketsSummary());
     }
 
     public static Builder newBuilder() {
