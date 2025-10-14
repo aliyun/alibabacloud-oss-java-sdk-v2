@@ -2,8 +2,8 @@ package com.example.oss.vectors;
 
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
-import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClient;
-import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClientBuilder;
+import com.aliyun.sdk.service.oss2.vectors.OSSAsyncVectorsClient;
+import com.aliyun.sdk.service.oss2.vectors.OSSAsyncVectorsClientBuilder;
 import com.aliyun.sdk.service.oss2.vectors.models.ListVectorBucketsRequest;
 import com.aliyun.sdk.service.oss2.vectors.models.ListVectorBucketsResult;
 import com.example.oss.Example;
@@ -12,8 +12,9 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import java.util.concurrent.CompletableFuture;
 
-public class ListVectorBuckets implements Example {
+public class ListVectorBucketsAsync implements Example {
 
     private static void execute(
             String endpoint,
@@ -25,7 +26,7 @@ public class ListVectorBuckets implements Example {
             String accountId) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
-        OSSVectorsClientBuilder clientBuilder = OSSVectorsClient.newBuilder()
+        OSSAsyncVectorsClientBuilder clientBuilder = OSSAsyncVectorsClient.newBuilder()
                 .credentialsProvider(provider)
                 .region(region);
 
@@ -37,7 +38,7 @@ public class ListVectorBuckets implements Example {
             clientBuilder.accountId(accountId);
         }
 
-        try (OSSVectorsClient client = clientBuilder.build()) {
+        try (OSSAsyncVectorsClient client = clientBuilder.build()) {
 
             ListVectorBucketsRequest.Builder requestBuilder = ListVectorBucketsRequest.newBuilder();
 
@@ -57,7 +58,9 @@ public class ListVectorBuckets implements Example {
                 requestBuilder.resourceGroupId(resourceGroupId);
             }
 
-            ListVectorBucketsResult result = client.listVectorBuckets(requestBuilder.build());
+            CompletableFuture<ListVectorBucketsResult> future = client.listVectorBucketsAsync(requestBuilder.build());
+
+            ListVectorBucketsResult result = future.get();
 
             System.out.printf("Status code:%d, request id:%s%n",
                     result.statusCode(), result.requestId());

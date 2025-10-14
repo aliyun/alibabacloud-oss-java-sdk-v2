@@ -41,20 +41,20 @@ public class GetVectorBucket implements Example {
 
             GetVectorBucketResult result = client.getVectorBucket(request);
 
-            System.out.printf("Status code:%d, request id:%s\n",
+            System.out.printf("Status code:%d, request id:%s%n",
                     result.statusCode(), result.requestId());
 
-            if (result.bucketInfoJson() != null) {
-                System.out.printf("Bucket name: %s\n", result.bucketInfoJson().bucketInfo.name);
-                System.out.printf("Location: %s\n", result.bucketInfoJson().bucketInfo.location);
-                System.out.printf("Creation date: %s\n", result.bucketInfoJson().bucketInfo.creationDate);
-                System.out.printf("Extranet endpoint: %s\n", result.bucketInfoJson().bucketInfo.extranetEndpoint);
-                System.out.printf("Intranet endpoint: %s\n", result.bucketInfoJson().bucketInfo.intranetEndpoint);
-                System.out.printf("Resource group ID: %s\n", result.bucketInfoJson().bucketInfo.resourceGroupId);
+            if (result.bucketInfo() != null) {
+                System.out.printf("Bucket name: %s%n", result.bucketInfo().name());
+                System.out.printf("Location: %s%n", result.bucketInfo().location());
+                System.out.printf("Creation date: %s%n", result.bucketInfo().creationDate());
+                System.out.printf("Extranet endpoint: %s%n", result.bucketInfo().extranetEndpoint());
+                System.out.printf("Intranet endpoint: %s%n", result.bucketInfo().intranetEndpoint());
+                System.out.printf("Resource group ID: %s%n", result.bucketInfo().resourceGroupId());
             }
 
         } catch (Exception e) {
-            System.out.printf("error:\n%s", e);
+            System.out.printf("error:%n%s", e);
         }
     }
 

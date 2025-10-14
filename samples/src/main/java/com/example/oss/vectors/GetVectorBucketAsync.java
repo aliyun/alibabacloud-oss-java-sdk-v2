@@ -2,28 +2,27 @@ package com.example.oss.vectors;
 
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
-import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClient;
-import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClientBuilder;
-import com.aliyun.sdk.service.oss2.vectors.models.PutVectorBucketRequest;
-import com.aliyun.sdk.service.oss2.vectors.models.PutVectorBucketResult;
+import com.aliyun.sdk.service.oss2.vectors.OSSAsyncVectorsClient;
+import com.aliyun.sdk.service.oss2.vectors.OSSAsyncVectorsClientBuilder;
+import com.aliyun.sdk.service.oss2.vectors.models.GetVectorBucketRequest;
+import com.aliyun.sdk.service.oss2.vectors.models.GetVectorBucketResult;
 import com.example.oss.Example;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import java.util.concurrent.CompletableFuture;
 
-public class PutVectorBucket implements Example {
+public class GetVectorBucketAsync implements Example {
 
     private static void execute(
             String endpoint,
             String region,
             String bucket,
-            String resourceGroupId,
-            String bucketTagging,
             String accountId) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
-        OSSVectorsClientBuilder clientBuilder = OSSVectorsClient.newBuilder()
+        OSSAsyncVectorsClientBuilder clientBuilder = OSSAsyncVectorsClient.newBuilder()
                 .credentialsProvider(provider)
                 .region(region);
 
@@ -35,23 +34,27 @@ public class PutVectorBucket implements Example {
             clientBuilder.accountId(accountId);
         }
 
-        try (OSSVectorsClient client = clientBuilder.build()) {
+        try (OSSAsyncVectorsClient client = clientBuilder.build()) {
 
-            PutVectorBucketRequest.Builder requestBuilder = PutVectorBucketRequest.newBuilder()
-                    .bucket(bucket);
+            GetVectorBucketRequest request = GetVectorBucketRequest.newBuilder()
+                    .bucket(bucket)
+                    .build();
 
-            if (resourceGroupId != null) {
-                requestBuilder.resourceGroupId(resourceGroupId);
-            }
+            CompletableFuture<GetVectorBucketResult> future = client.getVectorBucketAsync(request);
 
-            if (bucketTagging != null) {
-                requestBuilder.bucketTagging(bucketTagging);
-            }
-
-            PutVectorBucketResult result = client.putVectorBucket(requestBuilder.build());
+            GetVectorBucketResult result = future.get();
 
             System.out.printf("Status code:%d, request id:%s%n",
                     result.statusCode(), result.requestId());
+
+            if (result.bucketInfo() != null) {
+                System.out.printf("Bucket name: %s%n", result.bucketInfo().name());
+                System.out.printf("Location: %s%n", result.bucketInfo().location());
+                System.out.printf("Creation date: %s%n", result.bucketInfo().creationDate());
+                System.out.printf("Extranet endpoint: %s%n", result.bucketInfo().extranetEndpoint());
+                System.out.printf("Intranet endpoint: %s%n", result.bucketInfo().intranetEndpoint());
+                System.out.printf("Resource group ID: %s%n", result.bucketInfo().resourceGroupId());
+            }
 
         } catch (Exception e) {
             System.out.printf("error:%n%s", e);
@@ -64,8 +67,6 @@ public class PutVectorBucket implements Example {
         opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS.").hasArg().get());
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("resourceGroupId").desc("The ID of the resource group.").hasArg().get());
-        opts.addOption(Option.builder().longOpt("bucketTagging").desc("The tagging information for the bucket.").hasArg().get());
         opts.addOption(Option.builder().longOpt("accountId").desc("The account ID for the vector bucket.").hasArg().get());
         return opts;
     }
@@ -75,9 +76,7 @@ public class PutVectorBucket implements Example {
         String endpoint = cmd.getParsedOptionValue("endpoint");
         String region = cmd.getParsedOptionValue("region");
         String bucket = cmd.getParsedOptionValue("bucket");
-        String resourceGroupId = cmd.getParsedOptionValue("resourceGroupId");
-        String bucketTagging = cmd.getParsedOptionValue("bucketTagging");
         String accountId = cmd.getParsedOptionValue("accountId");
-        execute(endpoint, region, bucket, resourceGroupId, bucketTagging, accountId);
+        execute(endpoint, region, bucket, accountId);
     }
 }

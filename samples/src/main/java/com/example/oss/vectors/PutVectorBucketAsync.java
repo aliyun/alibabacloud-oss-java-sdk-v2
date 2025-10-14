@@ -2,8 +2,8 @@ package com.example.oss.vectors;
 
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
-import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClient;
-import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClientBuilder;
+import com.aliyun.sdk.service.oss2.vectors.OSSAsyncVectorsClient;
+import com.aliyun.sdk.service.oss2.vectors.OSSAsyncVectorsClientBuilder;
 import com.aliyun.sdk.service.oss2.vectors.models.PutVectorBucketRequest;
 import com.aliyun.sdk.service.oss2.vectors.models.PutVectorBucketResult;
 import com.example.oss.Example;
@@ -11,8 +11,9 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import java.util.concurrent.CompletableFuture;
 
-public class PutVectorBucket implements Example {
+public class PutVectorBucketAsync implements Example {
 
     private static void execute(
             String endpoint,
@@ -23,7 +24,7 @@ public class PutVectorBucket implements Example {
             String accountId) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
-        OSSVectorsClientBuilder clientBuilder = OSSVectorsClient.newBuilder()
+        OSSAsyncVectorsClientBuilder clientBuilder = OSSAsyncVectorsClient.newBuilder()
                 .credentialsProvider(provider)
                 .region(region);
 
@@ -35,7 +36,7 @@ public class PutVectorBucket implements Example {
             clientBuilder.accountId(accountId);
         }
 
-        try (OSSVectorsClient client = clientBuilder.build()) {
+        try (OSSAsyncVectorsClient client = clientBuilder.build()) {
 
             PutVectorBucketRequest.Builder requestBuilder = PutVectorBucketRequest.newBuilder()
                     .bucket(bucket);
@@ -48,7 +49,9 @@ public class PutVectorBucket implements Example {
                 requestBuilder.bucketTagging(bucketTagging);
             }
 
-            PutVectorBucketResult result = client.putVectorBucket(requestBuilder.build());
+            CompletableFuture<PutVectorBucketResult> future = client.putVectorBucketAsync(requestBuilder.build());
+
+            PutVectorBucketResult result = future.get();
 
             System.out.printf("Status code:%d, request id:%s%n",
                     result.statusCode(), result.requestId());
