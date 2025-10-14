@@ -41,11 +41,11 @@ public class DeleteVectorBucket implements Example {
 
             DeleteVectorBucketResult result = client.deleteVectorBucket(request);
 
-            System.out.printf("Status code:%d, request id:%s\n",
+            System.out.printf("Status code:%d, request id:%s%n",
                     result.statusCode(), result.requestId());
 
         } catch (Exception e) {
-            System.out.printf("error:\n%s", e);
+            System.out.printf("error:%n%s", e);
         }
     }
 
@@ -68,4 +68,3 @@ public class DeleteVectorBucket implements Example {
         execute(endpoint, region, bucket, accountId);
     }
 }
-

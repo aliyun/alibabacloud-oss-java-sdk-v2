@@ -1,6 +1,7 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
+import com.aliyun.sdk.service.oss2.models.internal.CastUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.ListVectorsResultJson;
 import java.util.Optional;
 import java.util.List;
@@ -26,7 +27,7 @@ public final class ListVectorsResult extends ResultModel {
      * The list of vectors.
      */
     public List<VectorsSummary> vectors() {
-        return delegate.vectors;
+        return CastUtils.ensureList(delegate.vectors);
     }
     
     /**
