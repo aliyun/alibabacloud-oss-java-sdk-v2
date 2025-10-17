@@ -250,4 +250,19 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<PutPublicAccessBlockResult> putPublicAccessBlockAsync(PutPublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.putPublicAccessBlockAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetPublicAccessBlockResult> getPublicAccessBlockAsync(GetPublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.getPublicAccessBlockAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeletePublicAccessBlockResult> deletePublicAccessBlockAsync(DeletePublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.deletePublicAccessBlockAsync(this.clientImpl, request, options);
+    }
 }
