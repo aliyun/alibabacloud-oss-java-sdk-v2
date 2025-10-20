@@ -1407,4 +1407,76 @@ public interface OSSClient extends AutoCloseable, Presignable {
 
     //-----------------------------------------------------------------------
 
+    
+    // bucket public access block api
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutBucketPublicAccessBlockRequest} for PutBucketPublicAccessBlock operation.
+     * @return A {@link PutBucketPublicAccessBlockResult} for PutBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPublicAccessBlockResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest request) {
+        return putBucketPublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutBucketPublicAccessBlockRequest} for PutBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketPublicAccessBlockResult} for PutBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPublicAccessBlockResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the block public access configuration of a bucket.
+     *
+     * @param request A {@link GetBucketPublicAccessBlockRequest} for GetBucketPublicAccessBlock operation.
+     * @return A {@link GetBucketPublicAccessBlockResult} for GetBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(GetBucketPublicAccessBlockRequest request) {
+        return getBucketPublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the block public access configuration of a bucket.
+     *
+     * @param request A {@link GetBucketPublicAccessBlockRequest} for GetBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketPublicAccessBlockResult} for GetBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(GetBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the block public access configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketPublicAccessBlockRequest} for DeleteBucketPublicAccessBlock operation.
+     * @return A {@link DeleteBucketPublicAccessBlockResult} for DeleteBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPublicAccessBlockResult deleteBucketPublicAccessBlock(DeleteBucketPublicAccessBlockRequest request) {
+        return deleteBucketPublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the block public access configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketPublicAccessBlockRequest} for DeleteBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketPublicAccessBlockResult} for DeleteBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPublicAccessBlockResult deleteBucketPublicAccessBlock(DeleteBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
 }

@@ -505,4 +505,33 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketPublicAccessBlockResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest request, OperationOptions options) {
+        return BucketPublicAccessBlock.putBucketPublicAccessBlock(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(GetBucketPublicAccessBlockRequest request, OperationOptions options) {
+        return BucketPublicAccessBlock.getBucketPublicAccessBlock(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketPublicAccessBlockResult deleteBucketPublicAccessBlock(DeleteBucketPublicAccessBlockRequest request, OperationOptions options) {
+        return BucketPublicAccessBlock.deleteBucketPublicAccessBlock(this.clientImpl, request, options);
+    }
+    @Override
+    public CompletableFuture<PutBucketPublicAccessBlockResult> putBucketPublicAccessBlockAsync(PutBucketPublicAccessBlockRequest request, OperationOptions options) {
+        return BucketPublicAccessBlock.putBucketPublicAccessBlockAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketPublicAccessBlockResult> getBucketPublicAccessBlockAsync(GetBucketPublicAccessBlockRequest request, OperationOptions options) {
+        return BucketPublicAccessBlock.getBucketPublicAccessBlockAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketPublicAccessBlockResult> deleteBucketPublicAccessBlockAsync(DeleteBucketPublicAccessBlockRequest request, OperationOptions options) {
+        return BucketPublicAccessBlock.deleteBucketPublicAccessBlockAsync(this.clientImpl, request, options);
+    }
 }
