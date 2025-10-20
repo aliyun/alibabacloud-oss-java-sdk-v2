@@ -299,4 +299,19 @@ public class DefaultOSSClient implements OSSClient {
     public DeletePublicAccessBlockResult deletePublicAccessBlock(DeletePublicAccessBlockRequest request, OperationOptions options) {
         return PublicAccessBlock.deletePublicAccessBlock(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketPublicAccessBlockResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest request, OperationOptions options) {
+        return BucketPublicAccessBlock.putBucketPublicAccessBlock(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(GetBucketPublicAccessBlockRequest request, OperationOptions options) {
+        return BucketPublicAccessBlock.getBucketPublicAccessBlock(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketPublicAccessBlockResult deleteBucketPublicAccessBlock(DeleteBucketPublicAccessBlockRequest request, OperationOptions options) {
+        return BucketPublicAccessBlock.deleteBucketPublicAccessBlock(this.clientImpl, request, options);
+    }
 }
