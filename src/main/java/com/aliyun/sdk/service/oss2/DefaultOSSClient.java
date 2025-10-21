@@ -284,4 +284,34 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAcl(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketLoggingResult putBucketLogging(PutBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.putBucketLogging(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketLoggingResult getBucketLogging(GetBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.getBucketLogging(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketLoggingResult deleteBucketLogging(DeleteBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.deleteBucketLogging(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutUserDefinedLogFieldsConfigResult putUserDefinedLogFieldsConfig(PutUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.putUserDefinedLogFieldsConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetUserDefinedLogFieldsConfigResult getUserDefinedLogFieldsConfig(GetUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.getUserDefinedLogFieldsConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteUserDefinedLogFieldsConfigResult deleteUserDefinedLogFieldsConfig(DeleteUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.deleteUserDefinedLogFieldsConfig(this.clientImpl, request, options);
+    }
 }
