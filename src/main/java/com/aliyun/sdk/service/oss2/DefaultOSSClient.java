@@ -284,4 +284,14 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAcl(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketRefererResult putBucketReferer(PutBucketRefererRequest request, OperationOptions options) {
+        return BucketReferer.putBucketReferer(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketRefererResult getBucketReferer(GetBucketRefererRequest request, OperationOptions options) {
+        return BucketReferer.getBucketReferer(this.clientImpl, request, options);
+    }
 }

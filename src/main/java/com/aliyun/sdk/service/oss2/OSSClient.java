@@ -1407,4 +1407,52 @@ public interface OSSClient extends AutoCloseable, Presignable {
 
     //-----------------------------------------------------------------------
 
+    // bucket referer api
+    /**
+     * Configures the referer whitelist and blacklist for a bucket.
+     *
+     * @param request A {@link PutBucketRefererRequest} for PutBucketReferer operation.
+     * @return A {@link PutBucketRefererResult} for PutBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketRefererResult putBucketReferer(PutBucketRefererRequest request) {
+        return putBucketReferer(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the referer whitelist and blacklist for a bucket.
+     *
+     * @param request A {@link PutBucketRefererRequest} for PutBucketReferer operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketRefererResult} for PutBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketRefererResult putBucketReferer(PutBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the referer whitelist and blacklist of a bucket.
+     *
+     * @param request A {@link GetBucketRefererRequest} for GetBucketReferer operation.
+     * @return A {@link GetBucketRefererResult} for GetBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketRefererResult getBucketReferer(GetBucketRefererRequest request) {
+        return getBucketReferer(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the referer whitelist and blacklist of a bucket.
+     *
+     * @param request A {@link GetBucketRefererRequest} for GetBucketReferer operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketRefererResult} for GetBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketRefererResult getBucketReferer(GetBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
 }

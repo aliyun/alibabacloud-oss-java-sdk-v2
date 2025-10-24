@@ -505,4 +505,24 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketRefererResult putBucketReferer(PutBucketRefererRequest request, OperationOptions options) {
+        return BucketReferer.putBucketReferer(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketRefererResult getBucketReferer(GetBucketRefererRequest request, OperationOptions options) {
+        return BucketReferer.getBucketReferer(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketRefererResult> putBucketRefererAsync(PutBucketRefererRequest request, OperationOptions options) {
+        return BucketReferer.putBucketRefererAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketRefererResult> getBucketRefererAsync(GetBucketRefererRequest request, OperationOptions options) {
+        return BucketReferer.getBucketRefererAsync(this.clientImpl, request, options);
+    }
 }

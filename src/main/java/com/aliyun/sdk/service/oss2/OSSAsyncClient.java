@@ -1270,4 +1270,53 @@ public interface OSSAsyncClient extends AutoCloseable {
 
 
     //-----------------------------------------------------------------------
+
+    // bucket referer api
+    /**
+     * Configures the referer whitelist and blacklist for a bucket.
+     *
+     * @param request A {@link PutBucketRefererRequest} for PutBucketReferer operation.
+     * @return A Java Future containing the {@link PutBucketRefererResult} of the PutBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketRefererResult> putBucketRefererAsync(PutBucketRefererRequest request) {
+        return putBucketRefererAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the referer whitelist and blacklist for a bucket.
+     *
+     * @param request A {@link PutBucketRefererRequest} for PutBucketReferer operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketRefererResult} of the PutBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketRefererResult> putBucketRefererAsync(PutBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the referer whitelist and blacklist of a bucket.
+     *
+     * @param request A {@link GetBucketRefererRequest} for GetBucketReferer operation.
+     * @return A Java Future containing the {@link GetBucketRefererResult} of the GetBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketRefererResult> getBucketRefererAsync(GetBucketRefererRequest request) {
+        return getBucketRefererAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the referer whitelist and blacklist of a bucket.
+     *
+     * @param request A {@link GetBucketRefererRequest} for GetBucketReferer operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketRefererResult} of the GetBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketRefererResult> getBucketRefererAsync(GetBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
 }
