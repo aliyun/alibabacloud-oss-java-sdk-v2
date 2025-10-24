@@ -284,4 +284,19 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAcl(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.putBucketLifecycle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketLifecycleResult getBucketLifecycle(GetBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.getBucketLifecycle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketLifecycleResult deleteBucketLifecycle(DeleteBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.deleteBucketLifecycle(this.clientImpl, request, options);
+    }
 }
