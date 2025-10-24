@@ -1270,4 +1270,75 @@ public interface OSSAsyncClient extends AutoCloseable {
 
 
     //-----------------------------------------------------------------------
+
+    // bucket lifecycle api
+    /**
+     * Configures the lifecycle rules for a bucket.
+     *
+     * @param request A {@link PutBucketLifecycleRequest} for PutBucketLifecycle operation.
+     * @return A Java Future containing the {@link PutBucketLifecycleResult} of the PutBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketLifecycleResult> putBucketLifecycleAsync(PutBucketLifecycleRequest request) {
+        return putBucketLifecycleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the lifecycle rules for a bucket.
+     *
+     * @param request A {@link PutBucketLifecycleRequest} for PutBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketLifecycleResult} of the PutBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketLifecycleResult> putBucketLifecycleAsync(PutBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the lifecycle rules configured for a bucket.
+     *
+     * @param request A {@link GetBucketLifecycleRequest} for GetBucketLifecycle operation.
+     * @return A Java Future containing the {@link GetBucketLifecycleResult} of the GetBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketLifecycleResult> getBucketLifecycleAsync(GetBucketLifecycleRequest request) {
+        return getBucketLifecycleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the lifecycle rules configured for a bucket.
+     *
+     * @param request A {@link GetBucketLifecycleRequest} for GetBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketLifecycleResult} of the GetBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketLifecycleResult> getBucketLifecycleAsync(GetBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Disables the lifecycle feature and deletes all lifecycle rules for a bucket.
+     *
+     * @param request A {@link DeleteBucketLifecycleRequest} for DeleteBucketLifecycle operation.
+     * @return A Java Future containing the {@link DeleteBucketLifecycleResult} of the DeleteBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketLifecycleResult> deleteBucketLifecycleAsync(DeleteBucketLifecycleRequest request) {
+        return deleteBucketLifecycleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Disables the lifecycle feature and deletes all lifecycle rules for a bucket.
+     *
+     * @param request A {@link DeleteBucketLifecycleRequest} for DeleteBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketLifecycleResult} of the DeleteBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketLifecycleResult> deleteBucketLifecycleAsync(DeleteBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }
