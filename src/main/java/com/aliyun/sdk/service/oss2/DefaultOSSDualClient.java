@@ -505,4 +505,24 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketAccessMonitorResult putBucketAccessMonitor(PutBucketAccessMonitorRequest request, OperationOptions options) {
+        return BucketAccessmonitor.putBucketAccessMonitor(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketAccessMonitorResult getBucketAccessMonitor(GetBucketAccessMonitorRequest request, OperationOptions options) {
+        return BucketAccessmonitor.getBucketAccessMonitor(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketAccessMonitorResult> putBucketAccessMonitorAsync(PutBucketAccessMonitorRequest request, OperationOptions options) {
+        return BucketAccessmonitor.putBucketAccessMonitorAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketAccessMonitorResult> getBucketAccessMonitorAsync(GetBucketAccessMonitorRequest request, OperationOptions options) {
+        return BucketAccessmonitor.getBucketAccessMonitorAsync(this.clientImpl, request, options);
+    }
 }
