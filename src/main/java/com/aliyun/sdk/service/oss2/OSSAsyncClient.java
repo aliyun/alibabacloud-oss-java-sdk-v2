@@ -1002,6 +1002,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+
     // bucket acl api
     /**
      * Configures or modifies the access control list (ACL) for a bucket.
@@ -1269,5 +1270,77 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
 
 
+    //-----------------------------------------------------------------------
+
+    // bucket tags api
+
+    /**
+     * You can call this operation to add tags to or modify the tags of a bucket.
+     *
+     * @param request A {@link PutBucketTagsRequest} for PutBucketTags operation.
+     * @return A Java Future containing the {@link PutBucketTagsResult} of the PutBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketTagsResult> putBucketTagsAsync(PutBucketTagsRequest request) {
+        return putBucketTagsAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to add tags to or modify the tags of a bucket.
+     *
+     * @param request A {@link PutBucketTagsRequest} for PutBucketTags operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketTagsResult} of the PutBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketTagsResult> putBucketTagsAsync(PutBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to query the tags of a bucket.
+     *
+     * @param request A {@link GetBucketTagsRequest} for GetBucketTags operation.
+     * @return A Java Future containing the {@link GetBucketTagsResult} of the GetBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketTagsResult> getBucketTagsAsync(GetBucketTagsRequest request) {
+        return getBucketTagsAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the tags of a bucket.
+     *
+     * @param request A {@link GetBucketTagsRequest} for GetBucketTags operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketTagsResult} of the GetBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketTagsResult> getBucketTagsAsync(GetBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to delete the tags of a specified bucket.
+     *
+     * @param request A {@link DeleteBucketTagsRequest} for DeleteBucketTags operation.
+     * @return A Java Future containing the {@link DeleteBucketTagsResult} of the DeleteBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketTagsResult> deleteBucketTagsAsync(DeleteBucketTagsRequest request) {
+        return deleteBucketTagsAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to delete the tags of a specified bucket.
+     *
+     * @param request A {@link DeleteBucketTagsRequest} for DeleteBucketTags operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketTagsResult} of the DeleteBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketTagsResult> deleteBucketTagsAsync(DeleteBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 }

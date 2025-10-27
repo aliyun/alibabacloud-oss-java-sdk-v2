@@ -1407,4 +1407,76 @@ public interface OSSClient extends AutoCloseable, Presignable {
 
     //-----------------------------------------------------------------------
 
+
+    // bucket tags api
+
+    /**
+     * You can call this operation to add tags to or modify the tags of a bucket.
+     *
+     * @param request A {@link PutBucketTagsRequest} for PutBucketTags operation.
+     * @return A {@link PutBucketTagsResult} for PutBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTagsResult putBucketTags(PutBucketTagsRequest request) {
+        return putBucketTags(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to add tags to or modify the tags of a bucket.
+     *
+     * @param request A {@link PutBucketTagsRequest} for PutBucketTags operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketTagsResult} for PutBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTagsResult putBucketTags(PutBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to query the tags of a bucket.
+     *
+     * @param request A {@link GetBucketTagsRequest} for GetBucketTags operation.
+     * @return A {@link GetBucketTagsResult} for GetBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTagsResult getBucketTags(GetBucketTagsRequest request) {
+        return getBucketTags(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the tags of a bucket.
+     *
+     * @param request A {@link GetBucketTagsRequest} for GetBucketTags operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketTagsResult} for GetBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTagsResult getBucketTags(GetBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to delete the tags of a specified bucket.
+     *
+     * @param request A {@link DeleteBucketTagsRequest} for DeleteBucketTags operation.
+     * @return A {@link DeleteBucketTagsResult} for DeleteBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketTagsResult deleteBucketTags(DeleteBucketTagsRequest request) {
+        return deleteBucketTags(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to delete the tags of a specified bucket.
+     *
+     * @param request A {@link DeleteBucketTagsRequest} for DeleteBucketTags operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketTagsResult} for DeleteBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketTagsResult deleteBucketTags(DeleteBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }

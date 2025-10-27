@@ -505,4 +505,34 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketTagsResult putBucketTags(PutBucketTagsRequest request, OperationOptions options) {
+        return BucketTags.putBucketTags(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketTagsResult getBucketTags(GetBucketTagsRequest request, OperationOptions options) {
+        return BucketTags.getBucketTags(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketTagsResult deleteBucketTags(DeleteBucketTagsRequest request, OperationOptions options) {
+        return BucketTags.deleteBucketTags(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketTagsResult> putBucketTagsAsync(PutBucketTagsRequest request, OperationOptions options) {
+        return BucketTags.putBucketTagsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketTagsResult> getBucketTagsAsync(GetBucketTagsRequest request, OperationOptions options) {
+        return BucketTags.getBucketTagsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketTagsResult> deleteBucketTagsAsync(DeleteBucketTagsRequest request, OperationOptions options) {
+        return BucketTags.deleteBucketTagsAsync(this.clientImpl, request, options);
+    }
 }
