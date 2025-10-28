@@ -284,4 +284,14 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAcl(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketResourceGroupResult putBucketResourceGroup(PutBucketResourceGroupRequest request, OperationOptions options) {
+        return BucketResourceGroup.putBucketResourceGroup(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketResourceGroupResult getBucketResourceGroup(GetBucketResourceGroupRequest request, OperationOptions options) {
+        return BucketResourceGroup.getBucketResourceGroup(this.clientImpl, request, options);
+    }
 }

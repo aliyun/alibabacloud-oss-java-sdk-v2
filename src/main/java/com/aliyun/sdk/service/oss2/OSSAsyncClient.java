@@ -1270,4 +1270,52 @@ public interface OSSAsyncClient extends AutoCloseable {
 
 
     //-----------------------------------------------------------------------
+
+    // bucket resource group api
+    /**
+     * You can call this operation to configure the resource group of a bucket.
+     *
+     * @param request A {@link PutBucketResourceGroupRequest} for PutBucketResourceGroup operation.
+     * @return A Java Future containing the {@link PutBucketResourceGroupResult} of the PutBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketResourceGroupResult> putBucketResourceGroupAsync(PutBucketResourceGroupRequest request) {
+        return putBucketResourceGroupAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to configure the resource group of a bucket.
+     *
+     * @param request A {@link PutBucketResourceGroupRequest} for PutBucketResourceGroup operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketResourceGroupResult} of the PutBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketResourceGroupResult> putBucketResourceGroupAsync(PutBucketResourceGroupRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to query the resource group information of a bucket.
+     *
+     * @param request A {@link GetBucketResourceGroupRequest} for GetBucketResourceGroup operation.
+     * @return A Java Future containing the {@link GetBucketResourceGroupResult} of the GetBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketResourceGroupResult> getBucketResourceGroupAsync(GetBucketResourceGroupRequest request) {
+        return getBucketResourceGroupAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the resource group information of a bucket.
+     *
+     * @param request A {@link GetBucketResourceGroupRequest} for GetBucketResourceGroup operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketResourceGroupResult} of the GetBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketResourceGroupResult> getBucketResourceGroupAsync(GetBucketResourceGroupRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }
