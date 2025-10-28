@@ -1407,4 +1407,76 @@ public interface OSSClient extends AutoCloseable, Presignable {
 
     //-----------------------------------------------------------------------
 
+    // bucket encryption api
+
+    /**
+     * You can call this operation to configure the encryption rule for a bucket.
+     *
+     * @param request A {@link PutBucketEncryptionRequest} for PutBucketEncryption operation.
+     * @return A {@link PutBucketEncryptionResult} for PutBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketEncryptionResult putBucketEncryption(PutBucketEncryptionRequest request) {
+        return putBucketEncryption(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to configure the encryption rule for a bucket.
+     *
+     * @param request A {@link PutBucketEncryptionRequest} for PutBucketEncryption operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketEncryptionResult} for PutBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketEncryptionResult putBucketEncryption(PutBucketEncryptionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to query the encryption rule configured for a bucket.
+     *
+     * @param request A {@link GetBucketEncryptionRequest} for GetBucketEncryption operation.
+     * @return A {@link GetBucketEncryptionResult} for GetBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketEncryptionResult getBucketEncryption(GetBucketEncryptionRequest request) {
+        return getBucketEncryption(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the encryption rule configured for a bucket.
+     *
+     * @param request A {@link GetBucketEncryptionRequest} for GetBucketEncryption operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketEncryptionResult} for GetBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketEncryptionResult getBucketEncryption(GetBucketEncryptionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to delete the encryption rule configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketEncryptionRequest} for DeleteBucketEncryption operation.
+     * @return A {@link DeleteBucketEncryptionResult} for DeleteBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketEncryptionResult deleteBucketEncryption(DeleteBucketEncryptionRequest request) {
+        return deleteBucketEncryption(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to delete the encryption rule configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketEncryptionRequest} for DeleteBucketEncryption operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketEncryptionResult} for DeleteBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketEncryptionResult deleteBucketEncryption(DeleteBucketEncryptionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
 }

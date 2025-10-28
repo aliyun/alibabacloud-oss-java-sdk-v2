@@ -250,4 +250,19 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<PutBucketEncryptionResult> putBucketEncryptionAsync(PutBucketEncryptionRequest request, OperationOptions options) {
+        return BucketEncryption.putBucketEncryptionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketEncryptionResult> getBucketEncryptionAsync(GetBucketEncryptionRequest request, OperationOptions options) {
+        return BucketEncryption.getBucketEncryptionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketEncryptionResult> deleteBucketEncryptionAsync(DeleteBucketEncryptionRequest request, OperationOptions options) {
+        return BucketEncryption.deleteBucketEncryptionAsync(this.clientImpl, request, options);
+    }
 }
