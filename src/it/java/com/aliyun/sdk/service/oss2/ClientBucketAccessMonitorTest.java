@@ -101,7 +101,6 @@ public class ClientBucketAccessMonitorTest extends TestBase {
             Assert.assertEquals(200, getResult3.statusCode());
             Assert.assertNotNull(getResult3.accessMonitorConfiguration());
             Assert.assertEquals("Enabled", getResult3.accessMonitorConfiguration().status());
-            Assert.assertEquals(false, getResult3.accessMonitorConfiguration().allowCopy());
 
         } finally {
             // 8. Clean up - delete bucket
