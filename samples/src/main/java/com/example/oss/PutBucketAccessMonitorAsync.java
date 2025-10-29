@@ -22,10 +22,14 @@ public class PutBucketAccessMonitorAsync implements Example {
 
         try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
             
-            AccessMonitorConfiguration accessMonitorConfiguration = AccessMonitorConfiguration.newBuilder()
-                    .status(status)
-                    .allowCopy(Boolean.valueOf(allowCopy))
-                    .build();
+            AccessMonitorConfiguration.Builder configBuilder = AccessMonitorConfiguration.newBuilder()
+                    .status(status);
+
+            if (allowCopy != null) {
+                configBuilder.allowCopy(Boolean.valueOf(allowCopy));
+            }
+            
+            AccessMonitorConfiguration accessMonitorConfiguration = configBuilder.build();
 
             PutBucketAccessMonitorResult result = client.putBucketAccessMonitorAsync(PutBucketAccessMonitorRequest.newBuilder()
                             .bucket(bucket)

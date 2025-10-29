@@ -30,10 +30,14 @@ public class PutBucketAccessMonitor implements Example {
 
         try (OSSClient client = clientBuilder.build()) {
             
-            AccessMonitorConfiguration accessMonitorConfiguration = AccessMonitorConfiguration.newBuilder()
-                    .status(status)
-                    .allowCopy(Boolean.valueOf(allowCopy))
-                    .build();
+            AccessMonitorConfiguration.Builder configBuilder = AccessMonitorConfiguration.newBuilder()
+                    .status(status);
+
+            if (allowCopy != null) {
+                configBuilder.allowCopy(Boolean.valueOf(allowCopy));
+            }
+            
+            AccessMonitorConfiguration accessMonitorConfiguration = configBuilder.build();
 
             PutBucketAccessMonitorRequest request = PutBucketAccessMonitorRequest.newBuilder()
                     .bucket(bucket)
