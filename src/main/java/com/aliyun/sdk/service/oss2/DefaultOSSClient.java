@@ -284,4 +284,31 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketAclResult getBucketAcl(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAcl(this.clientImpl, request, options);
     }
+
+    @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.createBucketDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.getBucketDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketDataRedundancyTransitionResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.deleteBucketDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
+
+    @Override
+    public ListBucketDataRedundancyTransitionResult listBucketDataRedundancyTransition(ListBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.listBucketDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.listUserDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
 }

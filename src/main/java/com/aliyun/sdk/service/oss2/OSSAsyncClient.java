@@ -1270,4 +1270,122 @@ public interface OSSAsyncClient extends AutoCloseable {
 
 
     //-----------------------------------------------------------------------
+
+    // bucket redundancy transition api
+
+    /**
+     * Creates a bucket data redundancy transition.
+     *
+     * @param request A {@link CreateBucketDataRedundancyTransitionRequest} for CreateBucketDataRedundancyTransition operation.
+     * @return A Java Future containing the {@link CreateBucketDataRedundancyTransitionResult} of the CreateBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateBucketDataRedundancyTransitionResult> createBucketDataRedundancyTransitionAsync(CreateBucketDataRedundancyTransitionRequest request) {
+        return createBucketDataRedundancyTransitionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a bucket data redundancy transition.
+     *
+     * @param request A {@link CreateBucketDataRedundancyTransitionRequest} for CreateBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link CreateBucketDataRedundancyTransitionResult} of the CreateBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateBucketDataRedundancyTransitionResult> createBucketDataRedundancyTransitionAsync(CreateBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries a bucket data redundancy transition.
+     *
+     * @param request A {@link GetBucketDataRedundancyTransitionRequest} for GetBucketDataRedundancyTransition operation.
+     * @return A Java Future containing the {@link GetBucketDataRedundancyTransitionResult} of the GetBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketDataRedundancyTransitionResult> getBucketDataRedundancyTransitionAsync(GetBucketDataRedundancyTransitionRequest request) {
+        return getBucketDataRedundancyTransitionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries a bucket data redundancy transition.
+     *
+     * @param request A {@link GetBucketDataRedundancyTransitionRequest} for GetBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketDataRedundancyTransitionResult} of the GetBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketDataRedundancyTransitionResult> getBucketDataRedundancyTransitionAsync(GetBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes a bucket data redundancy transition.
+     *
+     * @param request A {@link DeleteBucketDataRedundancyTransitionRequest} for DeleteBucketDataRedundancyTransition operation.
+     * @return A Java Future containing the {@link DeleteBucketDataRedundancyTransitionResult} of the DeleteBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketDataRedundancyTransitionResult> deleteBucketDataRedundancyTransitionAsync(DeleteBucketDataRedundancyTransitionRequest request) {
+        return deleteBucketDataRedundancyTransitionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes a bucket data redundancy transition.
+     *
+     * @param request A {@link DeleteBucketDataRedundancyTransitionRequest} for DeleteBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketDataRedundancyTransitionResult} of the DeleteBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketDataRedundancyTransitionResult> deleteBucketDataRedundancyTransitionAsync(DeleteBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists bucket data redundancy transitions.
+     *
+     * @param request A {@link ListBucketDataRedundancyTransitionRequest} for ListBucketDataRedundancyTransition operation.
+     * @return A Java Future containing the {@link ListBucketDataRedundancyTransitionResult} of the ListBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransitionAsync(ListBucketDataRedundancyTransitionRequest request) {
+        return listBucketDataRedundancyTransitionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists bucket data redundancy transitions.
+     *
+     * @param request A {@link ListBucketDataRedundancyTransitionRequest} for ListBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListBucketDataRedundancyTransitionResult} of the ListBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransitionAsync(ListBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists user data redundancy transitions.
+     *
+     * @param request A {@link ListUserDataRedundancyTransitionRequest} for ListUserDataRedundancyTransition operation.
+     * @return A Java Future containing the {@link ListUserDataRedundancyTransitionResult} of the ListUserDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListUserDataRedundancyTransitionResult> listUserDataRedundancyTransitionAsync(ListUserDataRedundancyTransitionRequest request) {
+        return listUserDataRedundancyTransitionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists user data redundancy transitions.
+     *
+     * @param request A {@link ListUserDataRedundancyTransitionRequest} for ListUserDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListUserDataRedundancyTransitionResult} of the ListUserDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListUserDataRedundancyTransitionResult> listUserDataRedundancyTransitionAsync(ListUserDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }

@@ -1407,4 +1407,123 @@ public interface OSSClient extends AutoCloseable, Presignable {
 
     //-----------------------------------------------------------------------
 
+    // bucket redundancy transition api
+
+    /**
+     * Creates a bucket data redundancy transition.
+     *
+     * @param request A {@link CreateBucketDataRedundancyTransitionRequest} for CreateBucketDataRedundancyTransition operation.
+     * @return A {@link CreateBucketDataRedundancyTransitionResult} for CreateBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest request) {
+        return createBucketDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a bucket data redundancy transition.
+     *
+     * @param request A {@link CreateBucketDataRedundancyTransitionRequest} for CreateBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link CreateBucketDataRedundancyTransitionResult} for CreateBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries a bucket data redundancy transition.
+     *
+     * @param request A {@link GetBucketDataRedundancyTransitionRequest} for GetBucketDataRedundancyTransition operation.
+     * @return A {@link GetBucketDataRedundancyTransitionResult} for GetBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest request) {
+        return getBucketDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries a bucket data redundancy transition.
+     *
+     * @param request A {@link GetBucketDataRedundancyTransitionRequest} for GetBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketDataRedundancyTransitionResult} for GetBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes a bucket data redundancy transition.
+     *
+     * @param request A {@link DeleteBucketDataRedundancyTransitionRequest} for DeleteBucketDataRedundancyTransition operation.
+     * @return A {@link DeleteBucketDataRedundancyTransitionResult} for DeleteBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketDataRedundancyTransitionResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest request) {
+        return deleteBucketDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes a bucket data redundancy transition.
+     *
+     * @param request A {@link DeleteBucketDataRedundancyTransitionRequest} for DeleteBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketDataRedundancyTransitionResult} for DeleteBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketDataRedundancyTransitionResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists bucket data redundancy transitions.
+     *
+     * @param request A {@link ListBucketDataRedundancyTransitionRequest} for ListBucketDataRedundancyTransition operation.
+     * @return A {@link ListBucketDataRedundancyTransitionResult} for ListBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListBucketDataRedundancyTransitionResult listBucketDataRedundancyTransition(ListBucketDataRedundancyTransitionRequest request) {
+        return listBucketDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists bucket data redundancy transitions.
+     *
+     * @param request A {@link ListBucketDataRedundancyTransitionRequest} for ListBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link ListBucketDataRedundancyTransitionResult} for ListBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListBucketDataRedundancyTransitionResult listBucketDataRedundancyTransition(ListBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists user data redundancy transitions.
+     *
+     * @param request A {@link ListUserDataRedundancyTransitionRequest} for ListUserDataRedundancyTransition operation.
+     * @return A {@link ListUserDataRedundancyTransitionResult} for ListUserDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest request) {
+        return listUserDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists user data redundancy transitions.
+     *
+     * @param request A {@link ListUserDataRedundancyTransitionRequest} for ListUserDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link ListUserDataRedundancyTransitionResult} for ListUserDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
+
 }

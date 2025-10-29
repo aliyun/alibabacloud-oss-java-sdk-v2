@@ -250,4 +250,30 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<CreateBucketDataRedundancyTransitionResult> createBucketDataRedundancyTransitionAsync(CreateBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.createBucketDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketDataRedundancyTransitionResult> getBucketDataRedundancyTransitionAsync(GetBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.getBucketDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketDataRedundancyTransitionResult> deleteBucketDataRedundancyTransitionAsync(DeleteBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.deleteBucketDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransitionAsync(ListBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.listBucketDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListUserDataRedundancyTransitionResult> listUserDataRedundancyTransitionAsync(ListUserDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.listUserDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
+
 }

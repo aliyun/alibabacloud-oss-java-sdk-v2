@@ -505,4 +505,54 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketAclResult> getBucketAclAsync(GetBucketAclRequest request, OperationOptions options) {
         return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.createBucketDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CreateBucketDataRedundancyTransitionResult> createBucketDataRedundancyTransitionAsync(CreateBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.createBucketDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.getBucketDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketDataRedundancyTransitionResult> getBucketDataRedundancyTransitionAsync(GetBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.getBucketDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketDataRedundancyTransitionResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.deleteBucketDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketDataRedundancyTransitionResult> deleteBucketDataRedundancyTransitionAsync(DeleteBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.deleteBucketDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListBucketDataRedundancyTransitionResult listBucketDataRedundancyTransition(ListBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.listBucketDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListBucketDataRedundancyTransitionResult> listBucketDataRedundancyTransitionAsync(ListBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.listBucketDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.listUserDataRedundancyTransition(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListUserDataRedundancyTransitionResult> listUserDataRedundancyTransitionAsync(ListUserDataRedundancyTransitionRequest request, OperationOptions options) {
+        return BucketRedundancyTransition.listUserDataRedundancyTransitionAsync(this.clientImpl, request, options);
+    }
 }
