@@ -1758,6 +1758,77 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
     //-----------------------------------------------------------------------
 
+    // public access block api
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutPublicAccessBlockRequest} for PutPublicAccessBlock operation.
+     * @return A {@link PutPublicAccessBlockResult} for PutPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutPublicAccessBlockResult putPublicAccessBlock(PutPublicAccessBlockRequest request) {
+        return putPublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutPublicAccessBlockRequest} for PutPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link PutPublicAccessBlockResult} for PutPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutPublicAccessBlockResult putPublicAccessBlock(PutPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the block public access configuration of a bucket.
+     *
+     * @param request A {@link GetPublicAccessBlockRequest} for GetPublicAccessBlock operation.
+     * @return A {@link GetPublicAccessBlockResult} for GetPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetPublicAccessBlockResult getPublicAccessBlock(GetPublicAccessBlockRequest request) {
+        return getPublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the block public access configuration of a bucket.
+     *
+     * @param request A {@link GetPublicAccessBlockRequest} for GetPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link GetPublicAccessBlockResult} for GetPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetPublicAccessBlockResult getPublicAccessBlock(GetPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the block public access configuration of a bucket.
+     *
+     * @param request A {@link DeletePublicAccessBlockRequest} for DeletePublicAccessBlock operation.
+     * @return A {@link DeletePublicAccessBlockResult} for DeletePublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeletePublicAccessBlockResult deletePublicAccessBlock(DeletePublicAccessBlockRequest request) {
+        return deletePublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the block public access configuration of a bucket.
+     *
+     * @param request A {@link DeletePublicAccessBlockRequest} for DeletePublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link DeletePublicAccessBlockResult} for DeletePublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeletePublicAccessBlockResult deletePublicAccessBlock(DeletePublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
     // seal append object api
     /**
      * You can call this operation to seal an appended object.

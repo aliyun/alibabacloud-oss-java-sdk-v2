@@ -287,6 +287,21 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public PutPublicAccessBlockResult putPublicAccessBlock(PutPublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.putPublicAccessBlock(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetPublicAccessBlockResult getPublicAccessBlock(GetPublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.getPublicAccessBlock(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeletePublicAccessBlockResult deletePublicAccessBlock(DeletePublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.deletePublicAccessBlock(this.clientImpl, request, options);
+    }
+  
+    @Override
     public PutBucketPublicAccessBlockResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest request, OperationOptions options) {
         return BucketPublicAccessBlock.putBucketPublicAccessBlock(this.clientImpl, request, options);
     }

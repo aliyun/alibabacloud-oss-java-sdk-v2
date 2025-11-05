@@ -1002,6 +1002,79 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+
+    // public access block api
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutPublicAccessBlockRequest} for PutPublicAccessBlock operation.
+     * @return A Java Future containing the {@link PutPublicAccessBlockResult} of the PutPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutPublicAccessBlockResult> putPublicAccessBlockAsync(PutPublicAccessBlockRequest request) {
+        return putPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutPublicAccessBlockRequest} for PutPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutPublicAccessBlockResult} of the PutPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutPublicAccessBlockResult> putPublicAccessBlockAsync(PutPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the block public access configuration for a bucket.
+     *
+     * @param request A {@link GetPublicAccessBlockRequest} for GetPublicAccessBlock operation.
+     * @return A Java Future containing the {@link GetPublicAccessBlockResult} of the GetPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetPublicAccessBlockResult> getPublicAccessBlockAsync(GetPublicAccessBlockRequest request) {
+        return getPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the block public access configuration for a bucket.
+     *
+     * @param request A {@link GetPublicAccessBlockRequest} for GetPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetPublicAccessBlockResult} of the GetPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetPublicAccessBlockResult> getPublicAccessBlockAsync(GetPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the block public access configuration for a bucket.
+     *
+     * @param request A {@link DeletePublicAccessBlockRequest} for DeletePublicAccessBlock operation.
+     * @return A Java Future containing the {@link DeletePublicAccessBlockResult} of the DeletePublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeletePublicAccessBlockResult> deletePublicAccessBlockAsync(DeletePublicAccessBlockRequest request) {
+        return deletePublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the block public access configuration for a bucket.
+     *
+     * @param request A {@link DeletePublicAccessBlockRequest} for DeletePublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeletePublicAccessBlockResult} of the DeletePublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeletePublicAccessBlockResult> deletePublicAccessBlockAsync(DeletePublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
+
     // bucket acl api
     /**
      * Configures or modifies the access control list (ACL) for a bucket.

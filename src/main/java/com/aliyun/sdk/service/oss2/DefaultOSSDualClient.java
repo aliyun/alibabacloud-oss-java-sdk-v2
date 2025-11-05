@@ -518,6 +518,36 @@ public class DefaultOSSDualClient implements OSSDualClient {
     }
 
     @Override
+    public PutPublicAccessBlockResult putPublicAccessBlock(PutPublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.putPublicAccessBlock(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetPublicAccessBlockResult getPublicAccessBlock(GetPublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.getPublicAccessBlock(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeletePublicAccessBlockResult deletePublicAccessBlock(DeletePublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.deletePublicAccessBlock(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutPublicAccessBlockResult> putPublicAccessBlockAsync(PutPublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.putPublicAccessBlockAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetPublicAccessBlockResult> getPublicAccessBlockAsync(GetPublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.getPublicAccessBlockAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeletePublicAccessBlockResult> deletePublicAccessBlockAsync(DeletePublicAccessBlockRequest request, OperationOptions options) {
+        return PublicAccessBlock.deletePublicAccessBlockAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
     public PutBucketPublicAccessBlockResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest request, OperationOptions options) {
         return BucketPublicAccessBlock.putBucketPublicAccessBlock(this.clientImpl, request, options);
     }
