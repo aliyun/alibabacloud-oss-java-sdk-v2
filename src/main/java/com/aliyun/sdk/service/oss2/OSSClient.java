@@ -1407,7 +1407,99 @@ public interface OSSClient extends AutoCloseable, Presignable {
 
     //-----------------------------------------------------------------------
 
+    // bucket policy api
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @return A {@link PutBucketPolicyResult} for PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPolicyResult putBucketPolicy(PutBucketPolicyRequest request) {
+        return putBucketPolicy(request, OperationOptions.defaults());
+    }
 
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketPolicyResult} for PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPolicyResult putBucketPolicy(PutBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+      
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @return A {@link GetBucketPolicyResult} for GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyResult getBucketPolicy(GetBucketPolicyRequest request) {
+        return getBucketPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketPolicyResult} for GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyResult getBucketPolicy(GetBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @return A {@link DeleteBucketPolicyResult} for DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPolicyResult deleteBucketPolicy(DeleteBucketPolicyRequest request) {
+        return deleteBucketPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketPolicyResult} for DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPolicyResult deleteBucketPolicy(DeleteBucketPolicyRequest request, OperationOptions options) {
+            throw new UnsupportedOperationException();
+    }  
+
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @return A {@link GetBucketPolicyStatusResult} for GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyStatusResult getBucketPolicyStatus(GetBucketPolicyStatusRequest request) {
+        return getBucketPolicyStatus(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketPolicyStatusResult} for GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyStatusResult getBucketPolicyStatus(GetBucketPolicyStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }  
+  
     // bucket logging api
     /**
      * Configures logging for a bucket.
@@ -1478,7 +1570,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
 
-    /**
+    /**      
      * Configures the custom field information to be included in the real-time log delivery.
      *
      * @param request A {@link PutUserDefinedLogFieldsConfigRequest} for PutUserDefinedLogFieldsConfig operation.
@@ -1501,7 +1593,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
 
-    /**
+     /**
      * Queries the custom field information configuration for real-time log delivery.
      *
      * @param request A {@link GetUserDefinedLogFieldsConfigRequest} for GetUserDefinedLogFieldsConfig operation.
@@ -1523,7 +1615,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
     default GetUserDefinedLogFieldsConfigResult getUserDefinedLogFieldsConfig(GetUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+  
     /**
      * Deletes the custom field information configuration for real-time log delivery.
      *

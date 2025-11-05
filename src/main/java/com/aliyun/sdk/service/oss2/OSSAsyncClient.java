@@ -1269,6 +1269,101 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket policy api
+
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @return A Java Future containing the {@link PutBucketPolicyResult} of the PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketPolicyResult> putBucketPolicyAsync(PutBucketPolicyRequest request) {
+        return putBucketPolicyAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketPolicyResult} of the PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketPolicyResult> putBucketPolicyAsync(PutBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @return A Java Future containing the {@link GetBucketPolicyResult} of the GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPolicyResult> getBucketPolicyAsync(GetBucketPolicyRequest request) {
+        return getBucketPolicyAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketPolicyResult} of the GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPolicyResult> getBucketPolicyAsync(GetBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @return A Java Future containing the {@link DeleteBucketPolicyResult} of the DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketPolicyResult> deleteBucketPolicyAsync(DeleteBucketPolicyRequest request) {
+        return deleteBucketPolicyAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketPolicyResult} of the DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketPolicyResult> deleteBucketPolicyAsync(DeleteBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @return A Java Future containing the {@link GetBucketPolicyStatusResult} of the GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPolicyStatusResult> getBucketPolicyStatusAsync(GetBucketPolicyStatusRequest request) {
+        return getBucketPolicyStatusAsync(request, OperationOptions.defaults());
+    }
+ 
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketPolicyStatusResult} of the GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPolicyStatusResult> getBucketPolicyStatusAsync(GetBucketPolicyStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
     // seal append object api
     /**
      * You can call this operation to seal an appended object.
@@ -1460,7 +1555,7 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
 
-    /**
+    /**      
      * Deletes the custom field information configuration for real-time log delivery.
      *
      * @param request A {@link DeleteUserDefinedLogFieldsConfigRequest} for DeleteUserDefinedLogFieldsConfig operation.
@@ -1483,4 +1578,5 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
 }
