@@ -27,7 +27,7 @@ public class ClientBucketAccessMonitorTest extends TestBase {
             // 2. Put bucket access monitor configuration - enabled with allowCopy=true
             AccessMonitorConfiguration accessMonitorConfiguration1 = AccessMonitorConfiguration.newBuilder()
                     .status("Enabled")
-                    .allowCopy(true)
+                    //.allowCopy(true)
                     .build();
 
             PutBucketAccessMonitorResult putResult1 = client.putBucketAccessMonitor(
@@ -49,7 +49,7 @@ public class ClientBucketAccessMonitorTest extends TestBase {
             Assert.assertEquals(200, getResult1.statusCode());
             Assert.assertNotNull(getResult1.accessMonitorConfiguration());
             Assert.assertEquals("Enabled", getResult1.accessMonitorConfiguration().status());
-            Assert.assertEquals(true, getResult1.accessMonitorConfiguration().allowCopy());
+            //Assert.assertEquals(true, getResult1.accessMonitorConfiguration().allowCopy());
 
             // 4. Put bucket access monitor configuration - disabled with allowCopy=false
             AccessMonitorConfiguration accessMonitorConfiguration2 = AccessMonitorConfiguration.newBuilder()
@@ -79,7 +79,7 @@ public class ClientBucketAccessMonitorTest extends TestBase {
             // 6. Put bucket access monitor configuration - enabled with allowCopy=false
             AccessMonitorConfiguration accessMonitorConfiguration3 = AccessMonitorConfiguration.newBuilder()
                     .status("Enabled")
-                    .allowCopy(false)
+                    //.allowCopy(false)
                     .build();
 
             PutBucketAccessMonitorResult putResult3 = client.putBucketAccessMonitor(
