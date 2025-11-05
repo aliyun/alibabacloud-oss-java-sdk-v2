@@ -14,12 +14,12 @@ import java.util.List;
  * {@link DefaultOSSDualClientBuilder}
  */
 @SuppressWarnings("unchecked")
-abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>, C> implements BaseClientBuilder<B, C> {
+public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>, C> implements BaseClientBuilder<B, C> {
 
     protected ClientConfiguration.Builder cfgBuilder;
     protected HttpClient httpClient;
 
-    DefaultBaseClientBuilder() {
+    public DefaultBaseClientBuilder() {
         cfgBuilder = ClientConfiguration.defaultBuilder();
         httpClient = null;
     }
@@ -140,6 +140,11 @@ abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>, C> im
 
     public B disableUploadCRC64Check(boolean value) {
         cfgBuilder.disableUploadCRC64Check(value);
+        return (B) this;
+    }
+
+    public B accountId(String value) {
+        cfgBuilder.accountId(value);
         return (B) this;
     }
 
