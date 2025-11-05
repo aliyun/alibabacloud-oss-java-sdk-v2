@@ -253,6 +253,16 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     }
 
     @Override
+    public CompletableFuture<PutBucketRefererResult> putBucketRefererAsync(PutBucketRefererRequest request, OperationOptions options) {
+        return BucketReferer.putBucketRefererAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketRefererResult> getBucketRefererAsync(GetBucketRefererRequest request, OperationOptions options) {
+        return BucketReferer.getBucketRefererAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
     public CompletableFuture<PutPublicAccessBlockResult> putPublicAccessBlockAsync(PutPublicAccessBlockRequest request, OperationOptions options) {
         return PublicAccessBlock.putPublicAccessBlockAsync(this.clientImpl, request, options);
     }
