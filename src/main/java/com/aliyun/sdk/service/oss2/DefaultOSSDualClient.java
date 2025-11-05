@@ -518,6 +518,26 @@ public class DefaultOSSDualClient implements OSSDualClient {
     }
 
     @Override
+    public GetBucketResourceGroupResult getBucketResourceGroup(GetBucketResourceGroupRequest request, OperationOptions options) {
+        return BucketResourceGroup.getBucketResourceGroup(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutBucketResourceGroupResult putBucketResourceGroup(PutBucketResourceGroupRequest request, OperationOptions options) {
+        return BucketResourceGroup.putBucketResourceGroup(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketResourceGroupResult> getBucketResourceGroupAsync(GetBucketResourceGroupRequest request, OperationOptions options) {
+        return BucketResourceGroup.getBucketResourceGroupAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketResourceGroupResult> putBucketResourceGroupAsync(PutBucketResourceGroupRequest request, OperationOptions options) {
+        return BucketResourceGroup.putBucketResourceGroupAsync(this.clientImpl, request, options);
+    }
+
+    @Override
     public PutBucketTagsResult putBucketTags(PutBucketTagsRequest request, OperationOptions options) {
         return BucketTags.putBucketTags(this.clientImpl, request, options);
     }
