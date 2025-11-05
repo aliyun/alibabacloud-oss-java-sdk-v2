@@ -252,6 +252,36 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     }
 
     @Override
+    public CompletableFuture<PutBucketLoggingResult> putBucketLoggingAsync(PutBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.putBucketLoggingAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketLoggingResult> getBucketLoggingAsync(GetBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.getBucketLoggingAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketLoggingResult> deleteBucketLoggingAsync(DeleteBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.deleteBucketLoggingAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutUserDefinedLogFieldsConfigResult> putUserDefinedLogFieldsConfigAsync(PutUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.putUserDefinedLogFieldsConfigAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetUserDefinedLogFieldsConfigResult> getUserDefinedLogFieldsConfigAsync(GetUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.getUserDefinedLogFieldsConfigAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteUserDefinedLogFieldsConfigResult> deleteUserDefinedLogFieldsConfigAsync(DeleteUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.deleteUserDefinedLogFieldsConfigAsync(this.clientImpl, request, options);
+    }
+
+    @Override
     public CompletableFuture<ProcessObjectResult> processObjectAsync(ProcessObjectRequest request, OperationOptions options) {
         return ProcessObject.processObjectAsync(this.clientImpl, request, options);
     }
