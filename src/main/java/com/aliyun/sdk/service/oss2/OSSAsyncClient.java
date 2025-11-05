@@ -1437,6 +1437,55 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+
+    // bucket access monitor api
+    /**
+     * Enables or disables access tracking for a bucket.
+     *
+     * @param request A {@link PutBucketAccessMonitorRequest} for PutBucketAccessMonitor operation.
+     * @return A Java Future containing the {@link PutBucketAccessMonitorResult} of the PutBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketAccessMonitorResult> putBucketAccessMonitorAsync(PutBucketAccessMonitorRequest request) {
+        return putBucketAccessMonitorAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables access tracking for a bucket.
+     *
+     * @param request A {@link PutBucketAccessMonitorRequest} for PutBucketAccessMonitor operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketAccessMonitorResult} of the PutBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketAccessMonitorResult> putBucketAccessMonitorAsync(PutBucketAccessMonitorRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Queries the access tracking status of a bucket.
+     *
+     * @param request A {@link GetBucketAccessMonitorRequest} for GetBucketAccessMonitor operation.
+     * @return A Java Future containing the {@link GetBucketAccessMonitorResult} of the GetBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketAccessMonitorResult> getBucketAccessMonitorAsync(GetBucketAccessMonitorRequest request) {
+        return getBucketAccessMonitorAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the access tracking status of a bucket.
+     *
+     * @param request A {@link GetBucketAccessMonitorRequest} for GetBucketAccessMonitor operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketAccessMonitorResult} of the GetBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketAccessMonitorResult> getBucketAccessMonitorAsync(GetBucketAccessMonitorRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+  
     // seal append object api
     /**
      * You can call this operation to seal an appended object.
@@ -1745,7 +1794,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<PutBucketRefererResult> putBucketRefererAsync(PutBucketRefererRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+  
     /**
      * Queries the referer whitelist and blacklist of a bucket.
      *
