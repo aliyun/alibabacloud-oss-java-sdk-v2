@@ -161,21 +161,32 @@ public final class SerdeObjectMultipart {
     }
 
     public static CompleteMultipartUploadResult toCompleteMultipartUpload(OperationOutput output) {
-        CompleteMultipartUploadResultXml innerBody = (CompleteMultipartUploadResultXml)SerdeUtils.deserializeXmlBody(output, CompleteMultipartUploadResultXml.class);
+        return toCompleteMultipartUpload(output, false);
+    }
 
-        // encoding type
-        if (innerBody != null && "url".equals(innerBody.encodingType())) {
-            String key = innerBody.key();
-            if (key != null) {
-                innerBody = innerBody.toBuilder().key(HttpUtils.urlDecode(key)).build();
+    public static CompleteMultipartUploadResult toCompleteMultipartUpload(OperationOutput output, boolean callback) {
+        Object body = null;
+        if (callback) {
+            if (output.body().isPresent()) {
+                body = output.body().get().toString();
             }
+        } else {
+            CompleteMultipartUploadResultXml innerBody = (CompleteMultipartUploadResultXml)SerdeUtils.deserializeXmlBody(output, CompleteMultipartUploadResultXml.class);
+            // encoding type
+            if (innerBody != null && "url".equals(innerBody.encodingType())) {
+                String key = innerBody.key();
+                if (key != null) {
+                    innerBody = innerBody.toBuilder().key(HttpUtils.urlDecode(key)).build();
+                }
+            }
+            body = innerBody;
         }
 
         return CompleteMultipartUploadResult.newBuilder()
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(innerBody)
+                .innerBody(body)
                 .build();
     }
 

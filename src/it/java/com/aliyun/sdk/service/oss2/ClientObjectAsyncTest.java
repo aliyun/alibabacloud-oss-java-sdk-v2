@@ -838,6 +838,42 @@ public class ClientObjectAsyncTest extends TestBase {
         }
     }
 
+
+    @Test
+    public void testObjectOperations_withCallback() throws Exception {
+        OSSAsyncClient client = getDefaultAsyncClient();
+        String objectName = genObjectName();
+
+        // put object without callback
+        PutObjectResult putResult = client.putObjectAsync(PutObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName)
+                .body(BinaryData.fromString("hello world"))
+                .build()).get();
+        Assert.assertNotNull(putResult);
+        Assert.assertEquals(200, putResult.statusCode());
+        Assert.assertNotNull(putResult.callbackResult());
+        Assert.assertEquals("", putResult.callbackResult());
+
+        // put object with callback
+        CallbackHelper callbackHelper = CallbackHelper.newBuilder()
+                // invalid callback address
+                .callbackUrl("http://223.5.5.5")
+                .callbackBody("bucket=${bucket}&object=${object}")
+                .callbackBodyType(CallbackHelper.CallbackBodyType.URL_ENCODED)
+                .build();
+
+        putResult = client.putObjectAsync(PutObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName)
+                .callback(callbackHelper.toCallbackParameter())
+                .body(BinaryData.fromString("hello world"))
+                .build()).get();
+        Assert.assertNotNull(putResult);
+        Assert.assertEquals(203, putResult.statusCode());
+        assertThat(putResult.callbackResult()).contains("<Code>CallbackFailed</Code>");
+    }
+
     private String genObjectName() {
         long ticks = new Date().getTime() / 1000;
         long val = new Random().nextInt(5000);
