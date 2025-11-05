@@ -1478,6 +1478,54 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket resource group api
+    /**
+     * You can call this operation to configure the resource group of a bucket.
+     *
+     * @param request A {@link PutBucketResourceGroupRequest} for PutBucketResourceGroup operation.
+     * @return A {@link PutBucketResourceGroupResult} for PutBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketResourceGroupResult putBucketResourceGroup(PutBucketResourceGroupRequest request) {
+        return putBucketResourceGroup(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to configure the resource group of a bucket.
+     *
+     * @param request A {@link PutBucketResourceGroupRequest} for PutBucketResourceGroup operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketResourceGroupResult} for PutBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketResourceGroupResult putBucketResourceGroup(PutBucketResourceGroupRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to query the resource group information of a bucket.
+     *
+     * @param request A {@link GetBucketResourceGroupRequest} for GetBucketResourceGroup operation.
+     * @return A {@link GetBucketResourceGroupResult} for GetBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketResourceGroupResult getBucketResourceGroup(GetBucketResourceGroupRequest request) {
+        return getBucketResourceGroup(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the resource group information of a bucket.
+     *
+     * @param request A {@link GetBucketResourceGroupRequest} for GetBucketResourceGroup operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketResourceGroupResult} for GetBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketResourceGroupResult getBucketResourceGroup(GetBucketResourceGroupRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
     // bucket access monitor api
     /**
      * Enables or disables access tracking for a bucket.
