@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2;
 import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.operations.*;
+import com.aliyun.sdk.service.oss2.operations.BucketPolicy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -251,6 +252,26 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
         return BucketAcl.getBucketAclAsync(this.clientImpl, request, options);
     }
 
+    @Override
+    public CompletableFuture<PutBucketPolicyResult> putBucketPolicyAsync(PutBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.putBucketPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketPolicyResult> getBucketPolicyAsync(GetBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.getBucketPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketPolicyResult> deleteBucketPolicyAsync(DeleteBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.deleteBucketPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketPolicyStatusResult> getBucketPolicyStatusAsync(GetBucketPolicyStatusRequest request, OperationOptions options) {
+        return BucketPolicy.getBucketPolicyStatusAsync(this.clientImpl, request, options);
+    }
+  
     @Override
     public CompletableFuture<PutBucketLoggingResult> putBucketLoggingAsync(PutBucketLoggingRequest request, OperationOptions options) {
         return BucketLogging.putBucketLoggingAsync(this.clientImpl, request, options);

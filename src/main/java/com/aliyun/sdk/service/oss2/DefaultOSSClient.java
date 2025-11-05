@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2;
 import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.operations.*;
+import com.aliyun.sdk.service.oss2.operations.BucketPolicy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -285,6 +286,26 @@ public class DefaultOSSClient implements OSSClient {
         return BucketAcl.getBucketAcl(this.clientImpl, request, options);
     }
 
+    @Override
+    public PutBucketPolicyResult putBucketPolicy(PutBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.putBucketPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketPolicyResult getBucketPolicy(GetBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.getBucketPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketPolicyResult deleteBucketPolicy(DeleteBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.deleteBucketPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketPolicyStatusResult getBucketPolicyStatus(GetBucketPolicyStatusRequest request, OperationOptions options) {
+        return BucketPolicy.getBucketPolicyStatus(this.clientImpl, request, options);
+    }
+  
     @Override
     public PutBucketLoggingResult putBucketLogging(PutBucketLoggingRequest request, OperationOptions options) {
         return BucketLogging.putBucketLogging(this.clientImpl, request, options);
