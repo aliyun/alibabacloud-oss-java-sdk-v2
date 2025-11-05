@@ -1438,6 +1438,76 @@ public interface OSSAsyncClient extends AutoCloseable {
 
     //-----------------------------------------------------------------------
 
+    // bucket public access block api
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutBucketPublicAccessBlockRequest} for PutBucketPublicAccessBlock operation.
+     * @return A Java Future containing the {@link PutBucketPublicAccessBlockResult} of the PutBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketPublicAccessBlockResult> putBucketPublicAccessBlockAsync(PutBucketPublicAccessBlockRequest request) {
+        return putBucketPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutBucketPublicAccessBlockRequest} for PutBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketPublicAccessBlockResult} of the PutBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketPublicAccessBlockResult> putBucketPublicAccessBlockAsync(PutBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the block public access configuration for a bucket.
+     *
+     * @param request A {@link GetBucketPublicAccessBlockRequest} for GetBucketPublicAccessBlock operation.
+     * @return A Java Future containing the {@link GetBucketPublicAccessBlockResult} of the GetBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPublicAccessBlockResult> getBucketPublicAccessBlockAsync(GetBucketPublicAccessBlockRequest request) {
+        return getBucketPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the block public access configuration for a bucket.
+     *
+     * @param request A {@link GetBucketPublicAccessBlockRequest} for GetBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketPublicAccessBlockResult} of the GetBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPublicAccessBlockResult> getBucketPublicAccessBlockAsync(GetBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Deletes the block public access configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketPublicAccessBlockRequest} for DeleteBucketPublicAccessBlock operation.
+     * @return A Java Future containing the {@link DeleteBucketPublicAccessBlockResult} of the DeleteBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketPublicAccessBlockResult> deleteBucketPublicAccessBlockAsync(DeleteBucketPublicAccessBlockRequest request) {
+        return deleteBucketPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the block public access configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketPublicAccessBlockRequest} for DeleteBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketPublicAccessBlockResult} of the DeleteBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketPublicAccessBlockResult> deleteBucketPublicAccessBlockAsync(DeleteBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 
     // bucket logging api
     /**
