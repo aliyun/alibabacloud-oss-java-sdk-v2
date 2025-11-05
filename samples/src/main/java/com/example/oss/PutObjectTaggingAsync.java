@@ -24,8 +24,6 @@ public class PutObjectTaggingAsync implements Example {
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
 
         try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
-            
-            // 解析标签参数
             List<Tag> tagList = new ArrayList<>();
             if (tags != null) {
                 String[] tagPairs = tags.split(",");

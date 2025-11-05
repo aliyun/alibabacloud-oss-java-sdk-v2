@@ -1406,7 +1406,6 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
 
     //-----------------------------------------------------------------------
-
     
     // bucket public access block api
     /**
@@ -1455,7 +1454,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
 
-    /**
+      /**
      * Deletes the block public access configuration of a bucket.
      *
      * @param request A {@link DeleteBucketPublicAccessBlockRequest} for DeleteBucketPublicAccessBlock operation.
@@ -1479,4 +1478,308 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket policy api
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @return A {@link PutBucketPolicyResult} for PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPolicyResult putBucketPolicy(PutBucketPolicyRequest request) {
+        return putBucketPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketPolicyResult} for PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPolicyResult putBucketPolicy(PutBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+      
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @return A {@link GetBucketPolicyResult} for GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyResult getBucketPolicy(GetBucketPolicyRequest request) {
+        return getBucketPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketPolicyResult} for GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyResult getBucketPolicy(GetBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @return A {@link DeleteBucketPolicyResult} for DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPolicyResult deleteBucketPolicy(DeleteBucketPolicyRequest request) {
+        return deleteBucketPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketPolicyResult} for DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPolicyResult deleteBucketPolicy(DeleteBucketPolicyRequest request, OperationOptions options) {
+            throw new UnsupportedOperationException();
+    }  
+
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @return A {@link GetBucketPolicyStatusResult} for GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyStatusResult getBucketPolicyStatus(GetBucketPolicyStatusRequest request) {
+        return getBucketPolicyStatus(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketPolicyStatusResult} for GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyStatusResult getBucketPolicyStatus(GetBucketPolicyStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }  
+  
+    // bucket logging api
+    /**
+     * Configures logging for a bucket.
+     *
+     * @param request A {@link PutBucketLoggingRequest} for PutBucketLogging operation.
+     * @return A {@link PutBucketLoggingResult} for PutBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketLoggingResult putBucketLogging(PutBucketLoggingRequest request) {
+        return putBucketLogging(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures logging for a bucket.
+     *
+     * @param request A {@link PutBucketLoggingRequest} for PutBucketLogging operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketLoggingResult} for PutBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketLoggingResult putBucketLogging(PutBucketLoggingRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the logging configuration of a bucket.
+     *
+     * @param request A {@link GetBucketLoggingRequest} for GetBucketLogging operation.
+     * @return A {@link GetBucketLoggingResult} for GetBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketLoggingResult getBucketLogging(GetBucketLoggingRequest request) {
+        return getBucketLogging(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the logging configuration of a bucket.
+     *
+     * @param request A {@link GetBucketLoggingRequest} for GetBucketLogging operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketLoggingResult} for GetBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketLoggingResult getBucketLogging(GetBucketLoggingRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the logging configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketLoggingRequest} for DeleteBucketLogging operation.
+     * @return A {@link DeleteBucketLoggingResult} for DeleteBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketLoggingResult deleteBucketLogging(DeleteBucketLoggingRequest request) {
+        return deleteBucketLogging(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the logging configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketLoggingRequest} for DeleteBucketLogging operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketLoggingResult} for DeleteBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketLoggingResult deleteBucketLogging(DeleteBucketLoggingRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**      
+     * Configures the custom field information to be included in the real-time log delivery.
+     *
+     * @param request A {@link PutUserDefinedLogFieldsConfigRequest} for PutUserDefinedLogFieldsConfig operation.
+     * @return A {@link PutUserDefinedLogFieldsConfigResult} for PutUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutUserDefinedLogFieldsConfigResult putUserDefinedLogFieldsConfig(PutUserDefinedLogFieldsConfigRequest request) {
+        return putUserDefinedLogFieldsConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the custom field information to be included in the real-time log delivery.
+     *
+     * @param request A {@link PutUserDefinedLogFieldsConfigRequest} for PutUserDefinedLogFieldsConfig operation.
+     * @param options The operation options.
+     * @return A {@link PutUserDefinedLogFieldsConfigResult} for PutUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutUserDefinedLogFieldsConfigResult putUserDefinedLogFieldsConfig(PutUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+     /**
+     * Queries the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link GetUserDefinedLogFieldsConfigRequest} for GetUserDefinedLogFieldsConfig operation.
+     * @return A {@link GetUserDefinedLogFieldsConfigResult} for GetUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetUserDefinedLogFieldsConfigResult getUserDefinedLogFieldsConfig(GetUserDefinedLogFieldsConfigRequest request) {
+        return getUserDefinedLogFieldsConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link GetUserDefinedLogFieldsConfigRequest} for GetUserDefinedLogFieldsConfig operation.
+     * @param options The operation options.
+     * @return A {@link GetUserDefinedLogFieldsConfigResult} for GetUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetUserDefinedLogFieldsConfigResult getUserDefinedLogFieldsConfig(GetUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Deletes the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link DeleteUserDefinedLogFieldsConfigRequest} for DeleteUserDefinedLogFieldsConfig operation.
+     * @return A {@link DeleteUserDefinedLogFieldsConfigResult} for DeleteUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteUserDefinedLogFieldsConfigResult deleteUserDefinedLogFieldsConfig(DeleteUserDefinedLogFieldsConfigRequest request) {
+        return deleteUserDefinedLogFieldsConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link DeleteUserDefinedLogFieldsConfigRequest} for DeleteUserDefinedLogFieldsConfig operation.
+     * @param options The operation options.
+     * @return A {@link DeleteUserDefinedLogFieldsConfigResult} for DeleteUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteUserDefinedLogFieldsConfigResult deleteUserDefinedLogFieldsConfig(DeleteUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    // processObject api
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @return A {@link ProcessObjectResult} for ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ProcessObjectResult processObject(ProcessObjectRequest request) {
+        return processObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @param options The operation options.
+     * @return A {@link ProcessObjectResult} for ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ProcessObjectResult processObject(ProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @return A {@link AsyncProcessObjectResult} for AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request) {
+        return asyncProcessObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @param options The operation options.
+     * @return A {@link AsyncProcessObjectResult} for AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // seal append object api
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request) {
+        return sealAppendObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @param options The operation options.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }

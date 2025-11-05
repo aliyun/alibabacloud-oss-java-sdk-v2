@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2;
 import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.operations.*;
+import com.aliyun.sdk.service.oss2.operations.BucketPolicy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -225,6 +226,16 @@ public class DefaultOSSDualClient implements OSSDualClient {
     @Override
     public OptionObjectResult optionObject(OptionObjectRequest request, OperationOptions options) {
         return BucketCors.optionObject(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ProcessObjectResult processObject(ProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.processObject(this.clientImpl, request, options);
+    }
+
+    @Override
+    public AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.asyncProcessObject(this.clientImpl, request, options);
     }
 
     // async operation
@@ -533,5 +544,125 @@ public class DefaultOSSDualClient implements OSSDualClient {
     @Override
     public CompletableFuture<DeleteBucketPublicAccessBlockResult> deleteBucketPublicAccessBlockAsync(DeleteBucketPublicAccessBlockRequest request, OperationOptions options) {
         return BucketPublicAccessBlock.deleteBucketPublicAccessBlockAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public PutBucketPolicyResult putBucketPolicy(PutBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.putBucketPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketPolicyResult getBucketPolicy(GetBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.getBucketPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketPolicyResult deleteBucketPolicy(DeleteBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.deleteBucketPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketPolicyStatusResult getBucketPolicyStatus(GetBucketPolicyStatusRequest request, OperationOptions options) {
+        return BucketPolicy.getBucketPolicyStatus(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketPolicyResult> putBucketPolicyAsync(PutBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.putBucketPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketPolicyResult> getBucketPolicyAsync(GetBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.getBucketPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketPolicyResult> deleteBucketPolicyAsync(DeleteBucketPolicyRequest request, OperationOptions options) {
+        return BucketPolicy.deleteBucketPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketPolicyStatusResult> getBucketPolicyStatusAsync(GetBucketPolicyStatusRequest request, OperationOptions options) {
+        return BucketPolicy.getBucketPolicyStatusAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutBucketLoggingResult putBucketLogging(PutBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.putBucketLogging(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketLoggingResult getBucketLogging(GetBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.getBucketLogging(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketLoggingResult deleteBucketLogging(DeleteBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.deleteBucketLogging(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketLoggingResult> putBucketLoggingAsync(PutBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.putBucketLoggingAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketLoggingResult> getBucketLoggingAsync(GetBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.getBucketLoggingAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketLoggingResult> deleteBucketLoggingAsync(DeleteBucketLoggingRequest request, OperationOptions options) {
+        return BucketLogging.deleteBucketLoggingAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutUserDefinedLogFieldsConfigResult putUserDefinedLogFieldsConfig(PutUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.putUserDefinedLogFieldsConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetUserDefinedLogFieldsConfigResult getUserDefinedLogFieldsConfig(GetUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.getUserDefinedLogFieldsConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteUserDefinedLogFieldsConfigResult deleteUserDefinedLogFieldsConfig(DeleteUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.deleteUserDefinedLogFieldsConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutUserDefinedLogFieldsConfigResult> putUserDefinedLogFieldsConfigAsync(PutUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.putUserDefinedLogFieldsConfigAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetUserDefinedLogFieldsConfigResult> getUserDefinedLogFieldsConfigAsync(GetUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.getUserDefinedLogFieldsConfigAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteUserDefinedLogFieldsConfigResult> deleteUserDefinedLogFieldsConfigAsync(DeleteUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        return BucketLogging.deleteUserDefinedLogFieldsConfigAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ProcessObjectResult> processObjectAsync(ProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.processObjectAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<AsyncProcessObjectResult> asyncProcessObjectAsync(AsyncProcessObjectRequest request, OperationOptions options) {
+        return ProcessObject.asyncProcessObjectAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
+        return ObjectBasic.sealAppendObject(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request, OperationOptions options) {
+        return ObjectBasic.sealAppendObjectAsync(this.clientImpl, request, options);
     }
 }
