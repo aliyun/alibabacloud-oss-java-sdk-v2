@@ -257,6 +257,16 @@ public final class HeadObjectResult extends ResultModel {
         return value;
     }
 
+    /**
+     * The GMT time when the SealAppendable operation was executed on the object.
+     * If the object has not been sealed, the current operation time is returned.
+     * If the object has been sealed, the corresponding operation time is returned.
+     */
+    public String sealedTime() {
+        String value = headers.get("x-oss-sealed-time");
+        return value;
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }

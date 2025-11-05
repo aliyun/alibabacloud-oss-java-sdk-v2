@@ -65,4 +65,6 @@ public interface BaseClientBuilder<B extends BaseClientBuilder<B, T>, T> {
     B proxyHost(String value);
 
     B disableUploadCRC64Check(boolean value);
+
+    B accountId(String value);
 }
