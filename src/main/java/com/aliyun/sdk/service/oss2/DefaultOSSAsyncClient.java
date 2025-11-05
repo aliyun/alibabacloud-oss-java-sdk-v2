@@ -253,6 +253,16 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     }
 
     @Override
+    public CompletableFuture<PutBucketAccessMonitorResult> putBucketAccessMonitorAsync(PutBucketAccessMonitorRequest request, OperationOptions options) {
+        return BucketAccessmonitor.putBucketAccessMonitorAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketAccessMonitorResult> getBucketAccessMonitorAsync(GetBucketAccessMonitorRequest request, OperationOptions options) {
+        return BucketAccessmonitor.getBucketAccessMonitorAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
     public CompletableFuture<PutBucketRefererResult> putBucketRefererAsync(PutBucketRefererRequest request, OperationOptions options) {
         return BucketReferer.putBucketRefererAsync(this.clientImpl, request, options);
     }

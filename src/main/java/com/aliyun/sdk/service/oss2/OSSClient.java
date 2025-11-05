@@ -1441,7 +1441,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
     default GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(GetBucketPublicAccessBlockRequest request) {
         return getBucketPublicAccessBlock(request, OperationOptions.defaults());
     }
-
+  
     /**
      * Queries the block public access configuration of a bucket.
      *
@@ -1478,6 +1478,53 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket access monitor api
+    /**
+     * Enables or disables access tracking for a bucket.
+     *
+     * @param request A {@link PutBucketAccessMonitorRequest} for PutBucketAccessMonitor operation.
+     * @return A {@link PutBucketAccessMonitorResult} for PutBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketAccessMonitorResult putBucketAccessMonitor(PutBucketAccessMonitorRequest request) {
+        return putBucketAccessMonitor(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables access tracking for a bucket.
+     *
+     * @param request A {@link PutBucketAccessMonitorRequest} for PutBucketAccessMonitor operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketAccessMonitorResult} for PutBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketAccessMonitorResult putBucketAccessMonitor(PutBucketAccessMonitorRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the access tracking status of a bucket.
+     *
+     * @param request A {@link GetBucketAccessMonitorRequest} for GetBucketAccessMonitor operation.
+     * @return A {@link GetBucketAccessMonitorResult} for GetBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketAccessMonitorResult getBucketAccessMonitor(GetBucketAccessMonitorRequest request) {
+        return getBucketAccessMonitor(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the access tracking status of a bucket.
+     *
+     * @param request A {@link GetBucketAccessMonitorRequest} for GetBucketAccessMonitor operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketAccessMonitorResult} for GetBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketAccessMonitorResult getBucketAccessMonitor(GetBucketAccessMonitorRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
     // bucket policy api
     /**
      * Configures or modifies the policy for a bucket.
