@@ -287,6 +287,16 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public PutBucketAccessMonitorResult putBucketAccessMonitor(PutBucketAccessMonitorRequest request, OperationOptions options) {
+        return BucketAccessmonitor.putBucketAccessMonitor(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketAccessMonitorResult getBucketAccessMonitor(GetBucketAccessMonitorRequest request, OperationOptions options) {
+        return BucketAccessmonitor.getBucketAccessMonitor(this.clientImpl, request, options);
+    }
+  
+    @Override
     public PutBucketRefererResult putBucketReferer(PutBucketRefererRequest request, OperationOptions options) {
         return BucketReferer.putBucketReferer(this.clientImpl, request, options);
     }
