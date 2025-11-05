@@ -31,7 +31,20 @@ public final class CompleteMultipartUploadResult extends ResultModel {
      * The container that stores the copy result.
      */
     public CompleteMultipartUploadResultXml completeMultipartUpload() {
-        return (CompleteMultipartUploadResultXml) innerBody;
+        if (innerBody instanceof CompleteMultipartUploadResultXml) {
+            return (CompleteMultipartUploadResultXml) innerBody;
+        }
+        return null;
+    }
+
+    /**
+     * Callback result, it is valid only when the callback is set.
+     */
+    public String callbackResult() {
+        if (innerBody instanceof String) {
+            return (String) innerBody;
+        }
+        return null;
     }
 
     public Builder toBuilder() {

@@ -17,9 +17,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.w3c.dom.Element;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
 public final class SerdeUtils {
@@ -153,6 +150,33 @@ public final class SerdeUtils {
         }
         String value = MimeUtils.getMimetype(input.key().orElse(null), MimeUtils.DEFAULT_MIMETYPE);
         input.headers().put("Content-Type",value);
+    }
+
+    public static <T> T fromJsonBody(OperationOutput output, Class<T> clazz) {
+        if (!output.body().isPresent()) {
+            return null;
+        }
+
+        byte[] jsonBytes;
+        try {
+            jsonBytes = output.body().get().toBytes();
+        } catch (Exception e) {
+            throw new DeserializationException("Failed to read content", e);
+        }
+
+        if (jsonBytes == null || jsonBytes.length == 0) {
+            return null;
+        }
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            return objectMapper.readValue(jsonBytes, clazz);
+        } catch (Exception e) {
+            throw new DeserializationException("Failed to parse JSON", e);
+        }
     }
 
 }
