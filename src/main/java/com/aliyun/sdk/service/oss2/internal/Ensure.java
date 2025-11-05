@@ -3,7 +3,7 @@ package com.aliyun.sdk.service.oss2.internal;
 /**
  * Utility class for validating data formats used in OSS operations
  */
-final class Ensure {
+public final class Ensure {
 
     /**
      * Regular expression for validating bucket name format

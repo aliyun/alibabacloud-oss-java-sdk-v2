@@ -8,6 +8,7 @@ import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transform.SerdeObjectMultipart;
 import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
+import com.aliyun.sdk.service.oss2.utils.StringUtils;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -68,7 +69,8 @@ public final class ObjectMultipart {
 
         OperationInput input = SerdeObjectMultipart.fromCompleteMultipartUpload(request);
         OperationOutput output = impl.execute(input, options);
-        return SerdeObjectMultipart.toCompleteMultipartUpload(output);
+        boolean callback = !StringUtils.isNullOrEmpty(request.callback());
+        return SerdeObjectMultipart.toCompleteMultipartUpload(output, callback);
     }
 
     public static CompletableFuture<CompleteMultipartUploadResult> completeMultipartUploadAsync(ClientImpl impl, CompleteMultipartUploadRequest request, OperationOptions options) {
@@ -78,7 +80,8 @@ public final class ObjectMultipart {
         requireNonNull(request.uploadId(), "request.uploadId is required");
 
         OperationInput input = SerdeObjectMultipart.fromCompleteMultipartUpload(request);
-        return impl.executeAsync(input, options).thenApply(SerdeObjectMultipart::toCompleteMultipartUpload);
+        final boolean callback = !StringUtils.isNullOrEmpty(request.callback());
+        return impl.executeAsync(input, options).thenApply(x -> SerdeObjectMultipart.toCompleteMultipartUpload(x, callback));
     }
 
 

@@ -82,12 +82,15 @@ public final class SerdeObjectBasic {
     }
 
     public static PutObjectResult toPutObject(OperationOutput output) {
-        Object innerBody = null;
+        String bodyStr = null;
+        if (output.body().isPresent()) {
+            bodyStr = output.body().get().toString();
+        }
         return PutObjectResult.newBuilder()
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(innerBody)
+                .innerBody(bodyStr)
                 .build();
     }
 
@@ -437,4 +440,35 @@ public final class SerdeObjectBasic {
                 .build();
     }
 
+
+    public static OperationInput fromSealAppendObject(SealAppendObjectRequest request) {
+        OperationInput.Builder builder = OperationInput.newBuilder()
+                .opName("SealAppendObject")
+                .method("POST");
+
+        // parameters
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("seal", "");
+        if (request.position() != null) {
+            parameters.put("position", request.position());
+        }
+        builder.parameters(parameters);
+
+        builder.bucket(request.bucket());
+        builder.key(request.key());
+
+        OperationInput input = builder.build();
+        SerdeUtils.serializeInput(request, input);
+        return input;
+    }
+
+    public static SealAppendObjectResult toSealAppendObject(OperationOutput output) {
+        Object innerBody = null;
+        return SealAppendObjectResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(innerBody)
+                .build();
+    }
 }

@@ -6,6 +6,7 @@ import com.aliyun.sdk.service.oss2.signer.Signer;
 import com.aliyun.sdk.service.oss2.transport.HttpClient;
 import com.aliyun.sdk.service.oss2.types.AddressStyleType;
 import com.aliyun.sdk.service.oss2.types.AuthMethodType;
+import com.aliyun.sdk.service.oss2.types.EndpointProvider;
 
 import java.net.URI;
 import java.util.List;
@@ -22,6 +23,7 @@ public class ClientOptions {
     private final HttpClient httpClient;
     private final List<String> additionalHeaders;
     private final int featureFlags;
+    private final EndpointProvider endpointProvider;
 
     private ClientOptions(Builder builder) {
         this.product = builder.product;
@@ -35,6 +37,7 @@ public class ClientOptions {
         this.httpClient = builder.httpClient;
         this.additionalHeaders = builder.additionalHeaders;
         this.featureFlags = builder.featureFlags;
+        this.endpointProvider = builder.endpointProvider;
     }
 
     public String product() {
@@ -81,6 +84,11 @@ public class ClientOptions {
         return featureFlags;
     }
 
+    public EndpointProvider endpointProvider() {
+        return endpointProvider;
+    }
+
+
     public Builder toBuilder() {
         return new Builder()
                 .product(this.product)
@@ -93,7 +101,9 @@ public class ClientOptions {
                 .authMethod(this.authMethod)
                 .httpClient(this.httpClient)
                 .additionalHeaders(this.additionalHeaders)
-                .featureFlags(this.featureFlags);
+                .featureFlags(this.featureFlags)
+                .endpointProvider(this.endpointProvider);
+
     }
 
     public static class Builder {
@@ -108,6 +118,7 @@ public class ClientOptions {
         private HttpClient httpClient;
         private List<String> additionalHeaders;
         private int featureFlags;
+        private EndpointProvider endpointProvider;
 
         public Builder product(String product) {
             this.product = product;
@@ -161,6 +172,11 @@ public class ClientOptions {
 
         public Builder featureFlags(int value) {
             this.featureFlags = value;
+            return this;
+        }
+
+        public Builder endpointProvider(EndpointProvider value) {
+            this.endpointProvider = value;
             return this;
         }
 
