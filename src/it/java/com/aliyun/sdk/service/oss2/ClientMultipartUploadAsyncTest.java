@@ -109,6 +109,7 @@ public class ClientMultipartUploadAsyncTest extends TestBase {
                         .build()).get();
         Assert.assertNotNull(completeResult);
         Assert.assertEquals(200, completeResult.statusCode());
+        assertThat(completeResult.callbackResult()).isNull();
 
         // 5. Verify uploaded object
         GetObjectMetaResult metaResult = client.getObjectMetaAsync(
@@ -1065,6 +1066,58 @@ public class ClientMultipartUploadAsyncTest extends TestBase {
             Assert.assertEquals(Long.valueOf(content.length), metaResult.contentLength());
             Assert.assertEquals(contentCrc, metaResult.hashCrc64ecma());
         }
+    }
+
+
+    @Test
+    public void testMultipartUpload_withCallback() throws Exception {
+        OSSAsyncClient client = getDefaultAsyncClient();
+
+        String objectName = "1.txt";
+
+        // 1. Initiate multipart upload
+        InitiateMultipartUploadResult initiateResult1 = client.initiateMultipartUploadAsync(
+                InitiateMultipartUploadRequest.newBuilder()
+                        .bucket(bucketName)
+                        .key(objectName)
+                        .build()).get();
+        Assert.assertNotNull(initiateResult1);
+        Assert.assertEquals(200, initiateResult1.statusCode());
+        Assert.assertNotNull(initiateResult1.initiateMultipartUpload().uploadId());
+        Assert.assertEquals(objectName, initiateResult1.initiateMultipartUpload().key());
+
+        // 2. Upload parts
+        UploadPartResult part1Result = client.uploadPartAsync(
+                UploadPartRequest.newBuilder()
+                        .bucket(bucketName)
+                        .key(objectName)
+                        .uploadId(initiateResult1.initiateMultipartUpload().uploadId())
+                        .partNumber(1L)
+                        .body(BinaryData.fromString("hello world)"))
+                        .build()).get();
+        Assert.assertNotNull(part1Result);
+        Assert.assertEquals(200, part1Result.statusCode());
+
+        // 3. complete
+        CallbackHelper callbackHelper = CallbackHelper.newBuilder()
+                // invalid callback address
+                .callbackUrl("http://223.5.5.5")
+                .callbackBody("bucket=${bucket}&object=${object}")
+                .callbackBodyType(CallbackHelper.CallbackBodyType.URL_ENCODED)
+                .build();
+
+        CompleteMultipartUploadResult cmResult = client.completeMultipartUploadAsync(CompleteMultipartUploadRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName)
+                .uploadId(initiateResult1.initiateMultipartUpload().uploadId())
+                .completeAll("yes")
+                .callback(callbackHelper.toCallbackParameter())
+                .build()).get();
+        Assert.assertNotNull(cmResult);
+        Assert.assertEquals(203, cmResult.statusCode());
+        assertThat(cmResult.callbackResult()).isInstanceOf(String.class);
+        assertThat(cmResult.callbackResult()).contains("<Code>CallbackFailed</Code>");
+        assertThat(cmResult.completeMultipartUpload()).isNull();
     }
 
     private List<Part> createCompletedPartList(List<UploadPartResult> uploadParts) {

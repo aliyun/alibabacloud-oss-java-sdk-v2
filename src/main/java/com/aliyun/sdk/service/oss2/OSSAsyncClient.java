@@ -1002,6 +1002,79 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+
+    // public access block api
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutPublicAccessBlockRequest} for PutPublicAccessBlock operation.
+     * @return A Java Future containing the {@link PutPublicAccessBlockResult} of the PutPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutPublicAccessBlockResult> putPublicAccessBlockAsync(PutPublicAccessBlockRequest request) {
+        return putPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutPublicAccessBlockRequest} for PutPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutPublicAccessBlockResult} of the PutPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutPublicAccessBlockResult> putPublicAccessBlockAsync(PutPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the block public access configuration for a bucket.
+     *
+     * @param request A {@link GetPublicAccessBlockRequest} for GetPublicAccessBlock operation.
+     * @return A Java Future containing the {@link GetPublicAccessBlockResult} of the GetPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetPublicAccessBlockResult> getPublicAccessBlockAsync(GetPublicAccessBlockRequest request) {
+        return getPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the block public access configuration for a bucket.
+     *
+     * @param request A {@link GetPublicAccessBlockRequest} for GetPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetPublicAccessBlockResult} of the GetPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetPublicAccessBlockResult> getPublicAccessBlockAsync(GetPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the block public access configuration for a bucket.
+     *
+     * @param request A {@link DeletePublicAccessBlockRequest} for DeletePublicAccessBlock operation.
+     * @return A Java Future containing the {@link DeletePublicAccessBlockResult} of the DeletePublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeletePublicAccessBlockResult> deletePublicAccessBlockAsync(DeletePublicAccessBlockRequest request) {
+        return deletePublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the block public access configuration for a bucket.
+     *
+     * @param request A {@link DeletePublicAccessBlockRequest} for DeletePublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeletePublicAccessBlockResult} of the DeletePublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeletePublicAccessBlockResult> deletePublicAccessBlockAsync(DeletePublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
+
     // bucket acl api
     /**
      * Configures or modifies the access control list (ACL) for a bucket.
@@ -1267,8 +1340,150 @@ public interface OSSAsyncClient extends AutoCloseable {
                 })
                 .build(), options).thenApply(x -> x.toBuilder().innerBody(null).build());
     }
+    //-----------------------------------------------------------------------
+
+    // bucket policy api
+
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @return A Java Future containing the {@link PutBucketPolicyResult} of the PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketPolicyResult> putBucketPolicyAsync(PutBucketPolicyRequest request) {
+        return putBucketPolicyAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketPolicyResult} of the PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketPolicyResult> putBucketPolicyAsync(PutBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @return A Java Future containing the {@link GetBucketPolicyResult} of the GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPolicyResult> getBucketPolicyAsync(GetBucketPolicyRequest request) {
+        return getBucketPolicyAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketPolicyResult} of the GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPolicyResult> getBucketPolicyAsync(GetBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @return A Java Future containing the {@link DeleteBucketPolicyResult} of the DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketPolicyResult> deleteBucketPolicyAsync(DeleteBucketPolicyRequest request) {
+        return deleteBucketPolicyAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketPolicyResult} of the DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketPolicyResult> deleteBucketPolicyAsync(DeleteBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @return A Java Future containing the {@link GetBucketPolicyStatusResult} of the GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPolicyStatusResult> getBucketPolicyStatusAsync(GetBucketPolicyStatusRequest request) {
+        return getBucketPolicyStatusAsync(request, OperationOptions.defaults());
+    }
+ 
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketPolicyStatusResult} of the GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPolicyStatusResult> getBucketPolicyStatusAsync(GetBucketPolicyStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 
 
+    // bucket access monitor api
+    /**
+     * Enables or disables access tracking for a bucket.
+     *
+     * @param request A {@link PutBucketAccessMonitorRequest} for PutBucketAccessMonitor operation.
+     * @return A Java Future containing the {@link PutBucketAccessMonitorResult} of the PutBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketAccessMonitorResult> putBucketAccessMonitorAsync(PutBucketAccessMonitorRequest request) {
+        return putBucketAccessMonitorAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables access tracking for a bucket.
+     *
+     * @param request A {@link PutBucketAccessMonitorRequest} for PutBucketAccessMonitor operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketAccessMonitorResult} of the PutBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketAccessMonitorResult> putBucketAccessMonitorAsync(PutBucketAccessMonitorRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Queries the access tracking status of a bucket.
+     *
+     * @param request A {@link GetBucketAccessMonitorRequest} for GetBucketAccessMonitor operation.
+     * @return A Java Future containing the {@link GetBucketAccessMonitorResult} of the GetBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketAccessMonitorResult> getBucketAccessMonitorAsync(GetBucketAccessMonitorRequest request) {
+        return getBucketAccessMonitorAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the access tracking status of a bucket.
+     *
+     * @param request A {@link GetBucketAccessMonitorRequest} for GetBucketAccessMonitor operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketAccessMonitorResult} of the GetBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketAccessMonitorResult> getBucketAccessMonitorAsync(GetBucketAccessMonitorRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 
     // bucket resource group api
@@ -1294,7 +1509,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<PutBucketResourceGroupResult> putBucketResourceGroupAsync(PutBucketResourceGroupRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+  
     /**
      * You can call this operation to query the resource group information of a bucket.
      *
@@ -1317,5 +1532,410 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<GetBucketResourceGroupResult> getBucketResourceGroupAsync(GetBucketResourceGroupRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+    //-----------------------------------------------------------------------      
+      
+    // seal append object api
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request) {
+        return sealAppendObjectAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @param options The operation options.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
+
+    // processObject api
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @return A Java Future containing the {@link ProcessObjectResult} of the ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ProcessObjectResult> processObjectAsync(ProcessObjectRequest request) {
+        return processObjectAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ProcessObjectResult} of the ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ProcessObjectResult> processObjectAsync(ProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**      
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @return A Java Future containing the {@link AsyncProcessObjectResult} of the AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<AsyncProcessObjectResult> asyncProcessObjectAsync(AsyncProcessObjectRequest request) {
+        return asyncProcessObjectAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link AsyncProcessObjectResult} of the AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<AsyncProcessObjectResult> asyncProcessObjectAsync(AsyncProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
+
+    // bucket public access block api
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutBucketPublicAccessBlockRequest} for PutBucketPublicAccessBlock operation.
+     * @return A Java Future containing the {@link PutBucketPublicAccessBlockResult} of the PutBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketPublicAccessBlockResult> putBucketPublicAccessBlockAsync(PutBucketPublicAccessBlockRequest request) {
+        return putBucketPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutBucketPublicAccessBlockRequest} for PutBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketPublicAccessBlockResult} of the PutBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketPublicAccessBlockResult> putBucketPublicAccessBlockAsync(PutBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the block public access configuration for a bucket.
+     *
+     * @param request A {@link GetBucketPublicAccessBlockRequest} for GetBucketPublicAccessBlock operation.
+     * @return A Java Future containing the {@link GetBucketPublicAccessBlockResult} of the GetBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPublicAccessBlockResult> getBucketPublicAccessBlockAsync(GetBucketPublicAccessBlockRequest request) {
+        return getBucketPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the block public access configuration for a bucket.
+     *
+     * @param request A {@link GetBucketPublicAccessBlockRequest} for GetBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketPublicAccessBlockResult} of the GetBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketPublicAccessBlockResult> getBucketPublicAccessBlockAsync(GetBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Deletes the block public access configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketPublicAccessBlockRequest} for DeleteBucketPublicAccessBlock operation.
+     * @return A Java Future containing the {@link DeleteBucketPublicAccessBlockResult} of the DeleteBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketPublicAccessBlockResult> deleteBucketPublicAccessBlockAsync(DeleteBucketPublicAccessBlockRequest request) {
+        return deleteBucketPublicAccessBlockAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the block public access configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketPublicAccessBlockRequest} for DeleteBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketPublicAccessBlockResult} of the DeleteBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketPublicAccessBlockResult> deleteBucketPublicAccessBlockAsync(DeleteBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket logging api
+    /**
+     * You can call this operation to enable logging for a bucket or modify the logging configuration of a bucket.
+     *
+     * @param request A {@link PutBucketLoggingRequest} for PutBucketLogging operation.
+     * @return A Java Future containing the {@link PutBucketLoggingResult} of the PutBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketLoggingResult> putBucketLoggingAsync(PutBucketLoggingRequest request) {
+        return putBucketLoggingAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to enable logging for a bucket or modify the logging configuration of a bucket.
+     *
+     * @param request A {@link PutBucketLoggingRequest} for PutBucketLogging operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketLoggingResult} of the PutBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketLoggingResult> putBucketLoggingAsync(PutBucketLoggingRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to query the logging configurations of a bucket.
+     *
+     * @param request A {@link GetBucketLoggingRequest} for GetBucketLogging operation.
+     * @return A Java Future containing the {@link GetBucketLoggingResult} of the GetBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketLoggingResult> getBucketLoggingAsync(GetBucketLoggingRequest request) {
+        return getBucketLoggingAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the logging configurations of a bucket.
+     *
+     * @param request A {@link GetBucketLoggingRequest} for GetBucketLogging operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketLoggingResult} of the GetBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketLoggingResult> getBucketLoggingAsync(GetBucketLoggingRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to disable logging or delete the logging configurations of a bucket.
+     *
+     * @param request A {@link DeleteBucketLoggingRequest} for DeleteBucketLogging operation.
+     * @return A Java Future containing the {@link DeleteBucketLoggingResult} of the DeleteBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketLoggingResult> deleteBucketLoggingAsync(DeleteBucketLoggingRequest request) {
+        return deleteBucketLoggingAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to disable logging or delete the logging configurations of a bucket.
+     *
+     * @param request A {@link DeleteBucketLoggingRequest} for DeleteBucketLogging operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketLoggingResult} of the DeleteBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketLoggingResult> deleteBucketLoggingAsync(DeleteBucketLoggingRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Configures the custom field information to be included in the real-time log delivery.
+     *
+     * @param request A {@link PutUserDefinedLogFieldsConfigRequest} for PutUserDefinedLogFieldsConfig operation.
+     * @return A Java Future containing the {@link PutUserDefinedLogFieldsConfigResult} for PutUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutUserDefinedLogFieldsConfigResult> putUserDefinedLogFieldsConfigAsync(PutUserDefinedLogFieldsConfigRequest request) {
+        return putUserDefinedLogFieldsConfigAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the custom field information to be included in the real-time log delivery.
+     *
+     * @param request A {@link PutUserDefinedLogFieldsConfigRequest} for PutUserDefinedLogFieldsConfig operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutUserDefinedLogFieldsConfigResult} for PutUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutUserDefinedLogFieldsConfigResult> putUserDefinedLogFieldsConfigAsync(PutUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link GetUserDefinedLogFieldsConfigRequest} for GetUserDefinedLogFieldsConfig operation.
+     * @return A Java Future containing the {@link GetUserDefinedLogFieldsConfigResult} for GetUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetUserDefinedLogFieldsConfigResult> getUserDefinedLogFieldsConfigAsync(GetUserDefinedLogFieldsConfigRequest request) {
+        return getUserDefinedLogFieldsConfigAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link GetUserDefinedLogFieldsConfigRequest} for GetUserDefinedLogFieldsConfig operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetUserDefinedLogFieldsConfigResult} for GetUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetUserDefinedLogFieldsConfigResult> getUserDefinedLogFieldsConfigAsync(GetUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**      
+     * Deletes the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link DeleteUserDefinedLogFieldsConfigRequest} for DeleteUserDefinedLogFieldsConfig operation.
+     * @return A Java Future containing the {@link DeleteUserDefinedLogFieldsConfigResult} for DeleteUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteUserDefinedLogFieldsConfigResult> deleteUserDefinedLogFieldsConfigAsync(DeleteUserDefinedLogFieldsConfigRequest request) {
+        return deleteUserDefinedLogFieldsConfigAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link DeleteUserDefinedLogFieldsConfigRequest} for DeleteUserDefinedLogFieldsConfig operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteUserDefinedLogFieldsConfigResult} for DeleteUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteUserDefinedLogFieldsConfigResult> deleteUserDefinedLogFieldsConfigAsync(DeleteUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket tags api
+
+    /**
+     * You can call this operation to add tags to or modify the tags of a bucket.
+     *
+     * @param request A {@link PutBucketTagsRequest} for PutBucketTags operation.
+     * @return A Java Future containing the {@link PutBucketTagsResult} of the PutBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketTagsResult> putBucketTagsAsync(PutBucketTagsRequest request) {
+        return putBucketTagsAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to add tags to or modify the tags of a bucket.
+     *
+     * @param request A {@link PutBucketTagsRequest} for PutBucketTags operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketTagsResult} of the PutBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketTagsResult> putBucketTagsAsync(PutBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to query the tags of a bucket.
+     *
+     * @param request A {@link GetBucketTagsRequest} for GetBucketTags operation.
+     * @return A Java Future containing the {@link GetBucketTagsResult} of the GetBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketTagsResult> getBucketTagsAsync(GetBucketTagsRequest request) {
+        return getBucketTagsAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the tags of a bucket.
+     *
+     * @param request A {@link GetBucketTagsRequest} for GetBucketTags operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketTagsResult} of the GetBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketTagsResult> getBucketTagsAsync(GetBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to delete the tags of a specified bucket.
+     *
+     * @param request A {@link DeleteBucketTagsRequest} for DeleteBucketTags operation.
+     * @return A Java Future containing the {@link DeleteBucketTagsResult} of the DeleteBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketTagsResult> deleteBucketTagsAsync(DeleteBucketTagsRequest request) {
+        return deleteBucketTagsAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to delete the tags of a specified bucket.
+     *
+     * @param request A {@link DeleteBucketTagsRequest} for DeleteBucketTags operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketTagsResult} of the DeleteBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketTagsResult> deleteBucketTagsAsync(DeleteBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+    // bucket referer api
+    /**
+     * Configures the referer whitelist and blacklist for a bucket.
+     *
+     * @param request A {@link PutBucketRefererRequest} for PutBucketReferer operation.
+     * @return A Java Future containing the {@link PutBucketRefererResult} of the PutBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketRefererResult> putBucketRefererAsync(PutBucketRefererRequest request) {
+        return putBucketRefererAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the referer whitelist and blacklist for a bucket.
+     *
+     * @param request A {@link PutBucketRefererRequest} for PutBucketReferer operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketRefererResult} of the PutBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketRefererResult> putBucketRefererAsync(PutBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Queries the referer whitelist and blacklist of a bucket.
+     *
+     * @param request A {@link GetBucketRefererRequest} for GetBucketReferer operation.
+     * @return A Java Future containing the {@link GetBucketRefererResult} of the GetBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketRefererResult> getBucketRefererAsync(GetBucketRefererRequest request) {
+        return getBucketRefererAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the referer whitelist and blacklist of a bucket.
+     *
+     * @param request A {@link GetBucketRefererRequest} for GetBucketReferer operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketRefererResult} of the GetBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketRefererResult> getBucketRefererAsync(GetBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
 }
