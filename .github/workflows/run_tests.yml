@@ -59,7 +59,7 @@ jobs:
       - name: Set up Java ${{ matrix.java-version }}
         uses: actions/setup-java@v5
         with:
-          distribution: "zulu",
+          distribution: 'zulu'
           java-version: ${{ matrix.java-version }}
 
       - name: Build with Maven
