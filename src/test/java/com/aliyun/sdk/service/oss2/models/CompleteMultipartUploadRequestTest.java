@@ -30,10 +30,10 @@ public class CompleteMultipartUploadRequestTest {
         assertThat(request.uploadId()).isNull();
         assertThat(request.encodingType()).isNull();
         assertThat(request.acl()).isNull();
+        assertThat(request.objectAcl()).isNull();
         assertThat(request.callback()).isNull();
         assertThat(request.callbackVar()).isNull();
         assertThat(request.requestPayer()).isNull();
-        assertThat(request.completeMultipartUpload()).isNull();
     }
 
     @Test
@@ -66,6 +66,7 @@ public class CompleteMultipartUploadRequestTest {
                 .uploadId("upload-id-123456")
                 .encodingType("url")
                 .acl("public-read")
+                .objectAcl("public-read")
                 .callback("callback-content")
                 .callbackVar("callback-var-content")
                 .requestPayer("requester")
@@ -82,6 +83,7 @@ public class CompleteMultipartUploadRequestTest {
         assertThat(request.uploadId()).isEqualTo("upload-id-123456");
         assertThat(request.encodingType()).isEqualTo("url");
         assertThat(request.acl()).isEqualTo("public-read");
+        assertThat(request.objectAcl()).isEqualTo("public-read");
         assertThat(request.callback()).isEqualTo("callback-content");
         assertThat(request.callbackVar()).isEqualTo("callback-var-content");
         assertThat(request.requestPayer()).isEqualTo("requester");
@@ -125,6 +127,7 @@ public class CompleteMultipartUploadRequestTest {
                 .uploadId("upload-id-654321")
                 .encodingType("url")
                 .acl("private")
+                .objectAcl("private")
                 .callback("callback-content-test")
                 .callbackVar("callback-var-content-test")
                 .requestPayer("requester")
@@ -143,6 +146,7 @@ public class CompleteMultipartUploadRequestTest {
         assertThat(copy.uploadId()).isEqualTo("upload-id-654321");
         assertThat(copy.encodingType()).isEqualTo("url");
         assertThat(copy.acl()).isEqualTo("private");
+        assertThat(copy.objectAcl()).isEqualTo("private");
         assertThat(copy.callback()).isEqualTo("callback-content-test");
         assertThat(copy.callbackVar()).isEqualTo("callback-var-content-test");
         assertThat(copy.requestPayer()).isEqualTo("requester");
@@ -181,6 +185,7 @@ public class CompleteMultipartUploadRequestTest {
                 .uploadId("upload-id-another")
                 .encodingType("url")
                 .acl("public-read-write")
+                .objectAcl("public-read-write")
                 .callback("another-callback-content")
                 .callbackVar("another-callback-var-content")
                 .requestPayer("requester")
@@ -194,6 +199,7 @@ public class CompleteMultipartUploadRequestTest {
         assertThat(request.uploadId()).isEqualTo("upload-id-another");
         assertThat(request.encodingType()).isEqualTo("url");
         assertThat(request.acl()).isEqualTo("public-read-write");
+        assertThat(request.objectAcl()).isEqualTo("public-read-write");
         assertThat(request.callback()).isEqualTo("another-callback-content");
         assertThat(request.callbackVar()).isEqualTo("another-callback-var-content");
         assertThat(request.requestPayer()).isEqualTo("requester");
