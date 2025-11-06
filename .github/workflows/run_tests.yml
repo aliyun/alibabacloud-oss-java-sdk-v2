@@ -18,6 +18,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
+          cache: 'maven'
           java-version: ${{ matrix.java-version }}
 
       - name: Build with Maven
@@ -39,6 +40,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
+          cache: 'maven'
           java-version: ${{ matrix.java-version }}
 
       - name: Build with Maven
@@ -60,6 +62,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
+          cache: 'maven'
           java-version: ${{ matrix.java-version }}
 
       - name: Build with Maven
