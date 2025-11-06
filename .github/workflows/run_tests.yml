@@ -23,7 +23,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B clean package -Dmaven.test.skip=true
+          mvnw -B clean package -Dmaven.test.skip=true
 
   unittest:
     name: Java ${{ matrix.java-version }} Maven Test by ${{ matrix.java-dist }}
