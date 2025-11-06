@@ -336,9 +336,13 @@ public class ClientImpl implements AutoCloseable {
         // request
         // request::host & path & query
         StringBuilder url = new StringBuilder();
-        URI endpoint = options.endpoint();
-        url.append(endpoint.getScheme()).append("://");
-        url.append(buildHostPath(input, endpoint.getAuthority(), options.addressStyle()));
+        if (options.endpointProvider() != null) {
+            url.append(options.endpointProvider().buildURL(input));
+        } else {
+            URI endpoint = options.endpoint();
+            url.append(endpoint.getScheme()).append("://");
+            url.append(buildHostPath(input, endpoint.getAuthority(), options.addressStyle()));
+        }
         Optional<String> query = HttpUtils.encodeQueryParameters(input.parameters());
         query.ifPresent(s -> url.append("?").append(s));
 
@@ -584,24 +588,48 @@ public class ClientImpl implements AutoCloseable {
             }
             data = Optional.ofNullable(data).orElse(new byte[0]);
 
-            try {
-                if (data.length > 0) {
-                    JsonNode root = XmlUtils.getXmlRootElement(data);
-                    if (root.has("Error")) {
-                        Iterator<Map.Entry<String, JsonNode>> iterator = root.get("Error").fields();
-                        while (iterator.hasNext()) {
-                            Map.Entry<String, JsonNode> entry = iterator.next();
-                            errorFields.put(entry.getKey(), entry.getValue().asText());
+            if ("application/json".equals(headers.get("Content-Type"))) {
+                // json format
+                try {
+                    if (data.length > 0) {
+                        JsonNode root = JsonUtils.getJsonRootElement(data);
+                        if (root.has("Error")) {
+                            Iterator<Map.Entry<String, JsonNode>> iterator = root.get("Error").fields();
+                            while (iterator.hasNext()) {
+                                Map.Entry<String, JsonNode> entry = iterator.next();
+                                errorFields.put(entry.getKey(), entry.getValue().asText());
+                            }
+                        } else {
+                            errorFields.put("Message", toErrorMessage("Not found key Error", data));
                         }
                     } else {
-                        errorFields.put("Message", toErrorMessage("Not found tag <Error>", data));
+                        errorFields.put("Message", toErrorMessage("Empty body", data));
                     }
-                } else {
-                    errorFields.put("Message", toErrorMessage("Empty body", data));
+                } catch (Exception ignored) {
+                    // Fail to parse xml
+                    errorFields.put("Message", toErrorMessage("Failed to parse json from response body", data));
                 }
-            } catch (Exception ignored) {
-                // Fail to parse xml
-                errorFields.put("Message", toErrorMessage("Failed to parse xml from response body", data));
+            } else {
+                // xml format
+                try {
+                    if (data.length > 0) {
+                        JsonNode root = XmlUtils.getXmlRootElement(data);
+                        if (root.has("Error")) {
+                            Iterator<Map.Entry<String, JsonNode>> iterator = root.get("Error").fields();
+                            while (iterator.hasNext()) {
+                                Map.Entry<String, JsonNode> entry = iterator.next();
+                                errorFields.put(entry.getKey(), entry.getValue().asText());
+                            }
+                        } else {
+                            errorFields.put("Message", toErrorMessage("Not found tag <Error>", data));
+                        }
+                    } else {
+                        errorFields.put("Message", toErrorMessage("Empty body", data));
+                    }
+                } catch (Exception ignored) {
+                    // Fail to parse xml
+                    errorFields.put("Message", toErrorMessage("Failed to parse xml from response body", data));
+                }
             }
 
             // other

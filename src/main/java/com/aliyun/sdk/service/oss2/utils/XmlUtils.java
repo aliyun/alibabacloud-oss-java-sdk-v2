@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class XmlUtils {
 
-    public static JsonNode getXmlRootElement(byte[] data) throws Exception {
+    public static JsonNode getXmlRootElement(byte[] data) throws IOException {
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.registerModule(new SimpleModule().addDeserializer(JsonNode.class,
                 new JsonNodeDeserializer() {

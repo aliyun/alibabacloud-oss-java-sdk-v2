@@ -32,8 +32,6 @@ public class PutObjectTagging implements Example {
         }
 
         try (OSSClient client = clientBuilder.build()) {
-            
-            // 解析标签参数
             List<Tag> tagList = new ArrayList<>();
             if (tags != null) {
                 String[] tagPairs = tags.split(",");
