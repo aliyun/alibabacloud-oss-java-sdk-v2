@@ -3,8 +3,8 @@ name: Run tests
 on: [push, pull_request]
 
 jobs:
-  build:
-    name: Java ${{ matrix.java-version }} Maven Test on ${{ matrix.operating-system }}
+  build-only:
+    name: Java ${{ matrix.java-version }} Maven Build on ${{ matrix.operating-system }}
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
@@ -23,9 +23,31 @@ jobs:
 
       - name: Build with Maven
         run: |
+          mvn -B clean package -Dmaven.test.skip=true
+
+  unittest:
+    name: Java ${{ matrix.java-version }} Maven Test by ${{ matrix.java-dist }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java-dist: [ "oracle", "dragonwell"]
+        java-version: [ "8", "21" ]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: ${{ matrix.java-dist }}
+          java-version: ${{ matrix.java-version }}
+
+      - name: Build with Maven
+        run: |
           mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java"
 
-  build-graalvm:
+  test-graalvm:
     name: GraalVM Maven Test
     runs-on: ubuntu-latest
     steps:
