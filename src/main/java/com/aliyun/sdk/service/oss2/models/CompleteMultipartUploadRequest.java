@@ -69,8 +69,18 @@ public final class CompleteMultipartUploadRequest extends RequestModel {
 
     /**
      * The access control list (ACL) of the object.
+     * 
+     * @deprecated Use {@link #objectAcl()} instead.
      */
     public String acl() {
+        String value = headers.get("x-oss-object-acl");
+        return value;
+    }
+
+    /**
+     * The access control list (ACL) of the object.
+     */
+    public String objectAcl() {
         String value = headers.get("x-oss-object-acl");
         return value;
     }
@@ -191,8 +201,19 @@ public final class CompleteMultipartUploadRequest extends RequestModel {
 
         /**
          * The access control list (ACL) of the object.
+         * 
+         * @deprecated Use {@link #objectAcl(String)} instead.
          */
         public Builder acl(String value) {
+            requireNonNull(value);
+            this.headers.put("x-oss-object-acl", value);
+            return this;
+        }
+
+        /**
+         * The access control list (ACL) of the object.
+         */
+        public Builder objectAcl(String value) {
             requireNonNull(value);
             this.headers.put("x-oss-object-acl", value);
             return this;
