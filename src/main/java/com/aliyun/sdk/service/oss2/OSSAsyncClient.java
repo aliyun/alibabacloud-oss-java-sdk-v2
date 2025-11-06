@@ -1608,6 +1608,76 @@ public interface OSSAsyncClient extends AutoCloseable {
 
     //-----------------------------------------------------------------------
 
+    // bucket encryption api
+    /**
+     * You can call this operation to configure the encryption rule for a bucket.
+     *
+     * @param request A {@link PutBucketEncryptionRequest} for PutBucketEncryption operation.
+     * @return A Java Future containing the {@link PutBucketEncryptionResult} of the PutBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketEncryptionResult> putBucketEncryptionAsync(PutBucketEncryptionRequest request) {
+        return putBucketEncryptionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to configure the encryption rule for a bucket.
+     *
+     * @param request A {@link PutBucketEncryptionRequest} for PutBucketEncryption operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketEncryptionResult} of the PutBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketEncryptionResult> putBucketEncryptionAsync(PutBucketEncryptionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    /**
+     * You can call this operation to query the encryption rule configured for a bucket.
+     *
+     * @param request A {@link GetBucketEncryptionRequest} for GetBucketEncryption operation.
+     * @return A Java Future containing the {@link GetBucketEncryptionResult} of the GetBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketEncryptionResult> getBucketEncryptionAsync(GetBucketEncryptionRequest request) {
+        return getBucketEncryptionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the encryption rule configured for a bucket.
+     *
+     * @param request A {@link GetBucketEncryptionRequest} for GetBucketEncryption operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketEncryptionResult} of the GetBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketEncryptionResult> getBucketEncryptionAsync(GetBucketEncryptionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to delete the encryption rule configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketEncryptionRequest} for DeleteBucketEncryption operation.
+     * @return A Java Future containing the {@link DeleteBucketEncryptionResult} of the DeleteBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketEncryptionResult> deleteBucketEncryptionAsync(DeleteBucketEncryptionRequest request) {
+        return deleteBucketEncryptionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to delete the encryption rule configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketEncryptionRequest} for DeleteBucketEncryption operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketEncryptionResult} of the DeleteBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketEncryptionResult> deleteBucketEncryptionAsync(DeleteBucketEncryptionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
     // bucket public access block api
     /**
      * Configures the block public access feature for a bucket.
