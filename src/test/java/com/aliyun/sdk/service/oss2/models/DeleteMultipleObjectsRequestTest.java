@@ -33,6 +33,7 @@ public class DeleteMultipleObjectsRequestTest {
         assertThat(request.deleteObjects()).isNull();
         assertThat(request.quiet()).isNull();
         assertThat(request.requestPayer()).isNull();
+        assertThat(request.delete()).isNull();
     }
 
     @Test
@@ -52,11 +53,27 @@ public class DeleteMultipleObjectsRequestTest {
                         .build()
         );
 
+        List<ObjectIdentifier> objectIdentifiers = Arrays.asList(
+                ObjectIdentifier.newBuilder()
+                        .key("multipart.data")
+                        .versionId("CAEQNRiBgICEoPiC0BYiIGMxZWJmYmMzYjE0OTQ0ZmZhYjgzNzkzYjc2NjZk****")
+                        .build(),
+                ObjectIdentifier.newBuilder()
+                        .key("test.jpg")
+                        .build()
+        );
+
+        Delete delete = Delete.newBuilder()
+                .quiet(false)
+                .objectIdentifiers(objectIdentifiers)
+                .build();
+
         DeleteMultipleObjectsRequest request = DeleteMultipleObjectsRequest.newBuilder()
                 .bucket("examplebucket")
                 .encodingType("url")
                 .deleteObjects(deleteObjects)
                 .quiet(false)
+                .delete(delete)
                 .requestPayer("requester")
                 .headers(headers)
                 .parameter("param1", "value1")
@@ -67,6 +84,7 @@ public class DeleteMultipleObjectsRequestTest {
         assertThat(request.encodingType()).isEqualTo("url");
         assertThat(request.deleteObjects()).isEqualTo(deleteObjects);
         assertThat(request.quiet()).isEqualTo(false);
+        assertThat(request.delete()).isEqualTo(delete);
         assertThat(request.requestPayer()).isEqualTo("requester");
 
         assertThat(request.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
@@ -94,11 +112,27 @@ public class DeleteMultipleObjectsRequestTest {
                         .build()
         );
 
+        List<ObjectIdentifier> objectIdentifiers = Arrays.asList(
+                ObjectIdentifier.newBuilder()
+                        .key("sample.data")
+                        .versionId("VERSION123456")
+                        .build(),
+                ObjectIdentifier.newBuilder()
+                        .key("sample.jpg")
+                        .build()
+        );
+
+        Delete delete = Delete.newBuilder()
+                .quiet(true)
+                .objectIdentifiers(objectIdentifiers)
+                .build();
+
         DeleteMultipleObjectsRequest original = DeleteMultipleObjectsRequest.newBuilder()
                 .bucket("testbucket")
                 .encodingType("url")
                 .deleteObjects(deleteObjects)
                 .quiet(true)
+                .delete(delete)
                 .requestPayer("requester")
                 .headers(headers)
                 .parameter("param3", "value3")
@@ -111,6 +145,7 @@ public class DeleteMultipleObjectsRequestTest {
         assertThat(copy.encodingType()).isEqualTo("url");
         assertThat(copy.deleteObjects()).isEqualTo(deleteObjects);
         assertThat(copy.quiet()).isEqualTo(true);
+        assertThat(copy.delete()).isEqualTo(delete);
         assertThat(copy.requestPayer()).isEqualTo("requester");
 
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
@@ -133,11 +168,27 @@ public class DeleteMultipleObjectsRequestTest {
                         .build()
         );
 
+        List<ObjectIdentifier> objectIdentifiers = Arrays.asList(
+                ObjectIdentifier.newBuilder()
+                        .key("object1.txt")
+                        .versionId("VERSION654321")
+                        .build(),
+                ObjectIdentifier.newBuilder()
+                        .key("object2.txt")
+                        .build()
+        );
+
+        Delete delete = Delete.newBuilder()
+                .quiet(false)
+                .objectIdentifiers(objectIdentifiers)
+                .build();
+
         DeleteMultipleObjectsRequest request = DeleteMultipleObjectsRequest.newBuilder()
                 .bucket("anotherbucket")
                 .encodingType("url")
                 .deleteObjects(deleteObjects)
                 .quiet(false)
+                .delete(delete)
                 .requestPayer("requester")
                 .build();
 
@@ -145,9 +196,9 @@ public class DeleteMultipleObjectsRequestTest {
         assertThat(request.encodingType()).isEqualTo("url");
         assertThat(request.deleteObjects()).isEqualTo(deleteObjects);
         assertThat(request.quiet()).isEqualTo(false);
+        assertThat(request.delete()).isEqualTo(delete);
         assertThat(request.requestPayer()).isEqualTo("requester");
     }
-
     @Test
     public void xmlBuilder() throws JsonProcessingException {
         ObjectMapper xmlMapper = new XmlMapper();
@@ -181,6 +232,51 @@ public class DeleteMultipleObjectsRequestTest {
         String xmlContent = new String(body.toBytes(), StandardCharsets.UTF_8);
         assertThat(xmlContent).contains("<Delete>");
         assertThat(xmlContent).contains("<Quiet>false</Quiet>");
+        assertThat(xmlContent).contains("<Object>");
+        assertThat(xmlContent).contains("<Key>multipart.data</Key>");
+        assertThat(xmlContent).contains("<VersionId>CAEQNRiBgICEoPiC0BYiIGMxZWJmYmMzYjE0OTQ0ZmZhYjgzNzkzYjc2NjZk****</VersionId>");
+        assertThat(xmlContent).contains("<Key>test.jpg</Key>");
+        assertThat(xmlContent).contains("</Object>");
+        assertThat(xmlContent).contains("</Delete>");
+    }
+
+    @Test
+    public void xmlBuilderWithNewMode() throws JsonProcessingException {
+        ObjectMapper xmlMapper = new XmlMapper();
+        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        List<ObjectIdentifier> objectIdentifiers = Arrays.asList(
+                ObjectIdentifier.newBuilder()
+                        .key("multipart.data")
+                        .versionId("CAEQNRiBgICEoPiC0BYiIGMxZWJmYmMzYjE0OTQ0ZmZhYjgzNzkzYjc2NjZk****")
+                        .build(),
+                ObjectIdentifier.newBuilder()
+                        .key("test.jpg")
+                        .build()
+        );
+
+        Delete delete = Delete.newBuilder()
+                .quiet(true)
+                .objectIdentifiers(objectIdentifiers)
+                .build();
+
+        DeleteMultipleObjectsRequest request = DeleteMultipleObjectsRequest.newBuilder()
+                .bucket("examplebucket")
+                .delete(delete)
+                .build();
+
+        OperationInput input = SerdeObjectBasic.fromDeleteMultipleObjects(request);
+
+        assertThat(input.bucket().get()).isEqualTo("examplebucket");
+        assertThat(input.parameters().get("delete")).isEqualTo("");
+        assertThat(input.parameters().get("encoding-type")).isEqualTo("url");
+        assertThat(input.headers().get("Content-Type")).isEqualTo("application/xml");
+
+        // Verify the XML body content
+        BinaryData body = input.body().get();
+        String xmlContent = new String(body.toBytes(), StandardCharsets.UTF_8);
+        assertThat(xmlContent).contains("<Delete>");
+        assertThat(xmlContent).contains("<Quiet>true</Quiet>");
         assertThat(xmlContent).contains("<Object>");
         assertThat(xmlContent).contains("<Key>multipart.data</Key>");
         assertThat(xmlContent).contains("<VersionId>CAEQNRiBgICEoPiC0BYiIGMxZWJmYmMzYjE0OTQ0ZmZhYjgzNzkzYjc2NjZk****</VersionId>");

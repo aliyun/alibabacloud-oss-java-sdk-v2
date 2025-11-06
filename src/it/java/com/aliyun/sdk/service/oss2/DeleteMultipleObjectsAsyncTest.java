@@ -396,6 +396,98 @@ public class DeleteMultipleObjectsAsyncTest extends TestBase {
         }
     }
 
+    @Test
+    public void testDeleteMultipleObjectsWithNewDeleteAPI() throws ExecutionException, InterruptedException {
+        OSSAsyncClient client = getDefaultAsyncClient();
+
+        // Generate multiple test objects
+        String objectName1 = genObjectName() + "-multi-delete-new-1";
+        String objectName2 = genObjectName() + "-multi-delete-new-2";
+
+        // Upload test objects
+        PutObjectResult putResult1 = client.putObjectAsync(PutObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName1)
+                .body(new ByteArrayBinaryData("content1".getBytes(StandardCharsets.UTF_8)))
+                .build()).get();
+        Assert.assertNotNull(putResult1);
+        Assert.assertEquals(200, putResult1.statusCode());
+
+        PutObjectResult putResult2 = client.putObjectAsync(PutObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName2)
+                .body(new ByteArrayBinaryData("content2".getBytes(StandardCharsets.UTF_8)))
+                .build()).get();
+        Assert.assertNotNull(putResult2);
+        Assert.assertEquals(200, putResult2.statusCode());
+
+        // Verify objects exist
+        HeadObjectResult headResult1 = client.headObjectAsync(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName1)
+                .build()).get();
+        Assert.assertNotNull(headResult1);
+        Assert.assertEquals(200, headResult1.statusCode());
+
+        HeadObjectResult headResult2 = client.headObjectAsync(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(objectName2)
+                .build()).get();
+        Assert.assertNotNull(headResult2);
+        Assert.assertEquals(200, headResult2.statusCode());
+
+        // Create delete object identifiers
+        ObjectIdentifier identifier1 = ObjectIdentifier.newBuilder()
+                .key(objectName1)
+                .build();
+        ObjectIdentifier identifier2 = ObjectIdentifier.newBuilder()
+                .key(objectName2)
+                .build();
+
+        // Create delete request using new API
+        Delete delete = Delete.newBuilder()
+                .quiet(false)
+                .objectIdentifiers(Arrays.asList(identifier1, identifier2))
+                .build();
+
+        // Delete multiple objects using new API
+        DeleteMultipleObjectsResult deleteMultipleResult = client.deleteMultipleObjectsAsync(DeleteMultipleObjectsRequest.newBuilder()
+                .bucket(bucketName)
+                .delete(delete)
+                .build()).get();
+
+        Assert.assertNotNull(deleteMultipleResult);
+        Assert.assertEquals(200, deleteMultipleResult.statusCode());
+        Assert.assertNotNull(deleteMultipleResult.deletedObjects());
+        Assert.assertEquals(2, deleteMultipleResult.deletedObjects().size());
+
+        try {
+            client.headObjectAsync(HeadObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(objectName1)
+                    .build()).get();
+            Assert.fail("Expected exception for deleted object");
+        } catch (Exception ec) {
+            ServiceException serr = findCause(ec, ServiceException.class);
+            Assert.assertEquals(404, serr.statusCode());
+            Assert.assertEquals("NoSuchKey", serr.errorCode());
+            Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
+        }
+
+        try {
+            client.headObjectAsync(HeadObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(objectName2)
+                    .build()).get();
+            Assert.fail("Expected exception for deleted object");
+        } catch (Exception ec) {
+            ServiceException serr = findCause(ec, ServiceException.class);
+            Assert.assertEquals(404, serr.statusCode());
+            Assert.assertEquals("NoSuchKey", serr.errorCode());
+            Assert.assertEquals("The specified key does not exist.", serr.errorMessage());
+        }
+    }
+
     private String genObjectName() {
         long ticks = new Date().getTime() / 1000;
         long val = new Random().nextInt(5000);

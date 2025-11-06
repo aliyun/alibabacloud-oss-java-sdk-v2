@@ -250,22 +250,53 @@ public final class SerdeObjectBasic {
         parameters.put("encoding-type", "url");
         builder.parameters(parameters);
 
+        // Check if both old and new parameters are set or neither is set
+        boolean hasOldParams = request.deleteObjects() != null;
+        boolean hasNewParams = request.delete() != null;
+        
+        if ((hasOldParams && hasNewParams) || (!hasOldParams && !hasNewParams)) {
+            throw new IllegalArgumentException(
+                "Either old parameters (quiet, deleteObjects) or new parameter (delete) must be set, but not both"
+            );
+        }
+
         // body
         StringBuilder xmlBody = new StringBuilder();
         xmlBody.append("<Delete>");
-        if (request.quiet() != null) {
-            xmlBody.append("<Quiet>").append(request.quiet()).append("</Quiet>");
-        }
-        if (request.deleteObjects() != null) {
-            for (DeleteObject o: request.deleteObjects()) {
-                xmlBody.append("<Object>");
-                xmlBody.append("<Key>").append(XmlUtils.escapeText(o.key())).append("</Key>");
-                if (o.versionId() != null) {
-                    xmlBody.append("<VersionId>").append(XmlUtils.escapeText(o.versionId())).append("</VersionId>");
+        
+        // Handle new parameter (delete)
+        if (hasNewParams) {
+            if (request.delete().quiet() != null) {
+                xmlBody.append("<Quiet>").append(request.delete().quiet()).append("</Quiet>");
+            }
+            if (request.delete().objectIdentifiers() != null) {
+                for (ObjectIdentifier o: request.delete().objectIdentifiers()) {
+                    xmlBody.append("<Object>");
+                    xmlBody.append("<Key>").append(XmlUtils.escapeText(o.key())).append("</Key>");
+                    if (o.versionId() != null) {
+                        xmlBody.append("<VersionId>").append(XmlUtils.escapeText(o.versionId())).append("</VersionId>");
+                    }
+                    xmlBody.append("</Object>");
                 }
-                xmlBody.append("</Object>");
+            }
+        } 
+        // Handle old parameters (quiet, deleteObjects)
+        else if (hasOldParams) {
+            if (request.quiet() != null) {
+                xmlBody.append("<Quiet>").append(request.quiet()).append("</Quiet>");
+            }
+            if (request.deleteObjects() != null) {
+                for (DeleteObject o: request.deleteObjects()) {
+                    xmlBody.append("<Object>");
+                    xmlBody.append("<Key>").append(XmlUtils.escapeText(o.key())).append("</Key>");
+                    if (o.versionId() != null) {
+                        xmlBody.append("<VersionId>").append(XmlUtils.escapeText(o.versionId())).append("</VersionId>");
+                    }
+                    xmlBody.append("</Object>");
+                }
             }
         }
+        
         xmlBody.append("</Delete>");
         String xmlStr = xmlBody.toString();
         builder.body(BinaryData.fromBytes(xmlStr.getBytes(StandardCharsets.UTF_8)));

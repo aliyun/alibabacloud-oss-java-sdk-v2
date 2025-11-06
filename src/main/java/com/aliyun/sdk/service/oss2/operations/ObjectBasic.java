@@ -182,7 +182,6 @@ public final class ObjectBasic {
     public static DeleteMultipleObjectsResult deleteMultipleObjects(ClientImpl impl, DeleteMultipleObjectsRequest request, OperationOptions options) {
 
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.deleteObjects(), "request.deleteObjects is required");
 
         OperationInput input = SerdeObjectBasic.fromDeleteMultipleObjects(request);
         OperationOutput output = impl.execute(input, options);
@@ -192,7 +191,6 @@ public final class ObjectBasic {
     public static CompletableFuture<DeleteMultipleObjectsResult> deleteMultipleObjectsAsync(ClientImpl impl, DeleteMultipleObjectsRequest request, OperationOptions options) {
 
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.deleteObjects(), "request.deleteObjects is required");
 
         OperationInput input = SerdeObjectBasic.fromDeleteMultipleObjects(request);
         return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toDeleteMultipleObjects);
