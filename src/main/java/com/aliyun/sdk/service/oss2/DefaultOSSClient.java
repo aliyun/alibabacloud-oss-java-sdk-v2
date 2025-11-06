@@ -287,6 +287,21 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public PutBucketEncryptionResult putBucketEncryption(PutBucketEncryptionRequest request, OperationOptions options) {
+        return BucketEncryption.putBucketEncryption(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketEncryptionResult getBucketEncryption(GetBucketEncryptionRequest request, OperationOptions options) {
+        return BucketEncryption.getBucketEncryption(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketEncryptionResult deleteBucketEncryption(DeleteBucketEncryptionRequest request, OperationOptions options) {
+        return BucketEncryption.deleteBucketEncryption(this.clientImpl, request, options);
+    }
+  
+    @Override
     public PutBucketResourceGroupResult putBucketResourceGroup(PutBucketResourceGroupRequest request, OperationOptions options) {
         return BucketResourceGroup.putBucketResourceGroup(this.clientImpl, request, options);
     }
