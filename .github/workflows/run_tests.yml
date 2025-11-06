@@ -1,0 +1,41 @@
+name: Run tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Java ${{ matrix.java-version }} Maven Test on ${{ matrix.operating-system }}
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      fail-fast: false
+      matrix:
+        operating-system: [ ubuntu-latest, windows-latest, macos-latest ]
+        java-version: [ "8", "11", "17", "21" ]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+
+      - name: Build with Maven
+        run: |
+          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java"
+
+  build-graalvm:
+    name: GraalVM Maven Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.0'
+          java-version: '17'
+          components: 'native-image'
+
+      - name: Build with Maven
+        run: |
+          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java"
