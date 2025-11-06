@@ -45,19 +45,23 @@
         <!-- Reactive Streams version -->
         <reactive-streams.version>1.0.4</reactive-streams.version>
 
+        <!-- serialize and deserialize xml and json  -->
+        <jackson.dataformat.version>2.18.1</jackson.dataformat.version>
+        <jackson.dataformat.datatype>2.15.3</jackson.dataformat.datatype>
+
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-            <version>2.18.1</version>
+            <version>${jackson.dataformat.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.15.3</version>
+            <version>${jackson.dataformat.datatype}</version>
         </dependency>
 
         <dependency>
@@ -355,7 +359,7 @@
                 <jdk>[11,)</jdk>
             </activation>
             <properties>
-                <maven.compiler.release>${jre.version}</maven.compiler.release>
+                <maven.compiler.release>8</maven.compiler.release>
             </properties>
         </profile>
     </profiles>
