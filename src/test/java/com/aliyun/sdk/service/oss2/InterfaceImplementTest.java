@@ -9,7 +9,7 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 
-public class ClientInterfaceImplementTest {
+public class InterfaceImplementTest {
 
     @Test
     public void checkOSSClientImplement() {
