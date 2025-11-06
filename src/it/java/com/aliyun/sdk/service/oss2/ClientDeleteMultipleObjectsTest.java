@@ -13,7 +13,7 @@ import java.util.Random;
 
 import static com.aliyun.sdk.service.oss2.internal.ClientImplMockTest.findCause;
 
-public class DeleteMultipleObjectsTest extends TestBase {
+public class ClientDeleteMultipleObjectsTest extends TestBase {
 
     @Test
     public void testDeleteMultipleObjectsBasic() {

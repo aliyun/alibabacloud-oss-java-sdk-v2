@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.aliyun.sdk.service.oss2.internal.ClientImplMockTest.findCause;
 
-public class DeleteMultipleObjectsAsyncTest extends TestBase {
+public class ClientDeleteMultipleObjectsAsyncTest extends TestBase {
 
     @Test
     public void testDeleteMultipleObjectsBasic() throws ExecutionException, InterruptedException {
