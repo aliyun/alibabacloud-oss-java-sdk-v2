@@ -11,12 +11,14 @@ public final class DeleteMultipleObjectsRequest extends RequestModel {
     private final String bucket;
     private final Boolean quiet;
     private final List<DeleteObject> deleteObjects;
+    private final Delete delete;
 
     private DeleteMultipleObjectsRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
         this.deleteObjects = builder.deleteObjects;
         this.quiet = builder.quiet;
+        this.delete = builder.delete;
     }
 
     public static Builder newBuilder() {
@@ -40,16 +42,29 @@ public final class DeleteMultipleObjectsRequest extends RequestModel {
 
     /**
      * The list that stores information about you want to delete objects.
+     * 
+     * @deprecated Use {@link #delete()} instead.
      */
+    @Deprecated
     public List<DeleteObject> deleteObjects() {
         return deleteObjects;
     }
 
     /**
      * The quiet mode flag.
+     * 
+     * @deprecated Use {@link #delete()} instead.
      */
+    @Deprecated
     public Boolean quiet() {
         return quiet;
+    }
+
+    /**
+     * The delete object containing quiet mode and object identifiers.
+     */
+    public Delete delete() {
+        return delete;
     }
 
     /**
@@ -68,6 +83,7 @@ public final class DeleteMultipleObjectsRequest extends RequestModel {
         private String bucket;
         private Boolean quiet;
         private List<DeleteObject> deleteObjects;
+        private Delete delete;
 
         private Builder() {
             super();
@@ -78,6 +94,7 @@ public final class DeleteMultipleObjectsRequest extends RequestModel {
             this.bucket = request.bucket;
             this.quiet = request.quiet;
             this.deleteObjects = request.deleteObjects;
+            this.delete = request.delete;
         }
 
         /**
@@ -100,7 +117,10 @@ public final class DeleteMultipleObjectsRequest extends RequestModel {
 
         /**
          * The objects to be deleted.
+         * 
+         * @deprecated Use {@link #delete(Delete)} instead.
          */
+        @Deprecated
         public Builder deleteObjects(List<DeleteObject> value) {
             requireNonNull(value);
             this.deleteObjects = value;
@@ -109,9 +129,20 @@ public final class DeleteMultipleObjectsRequest extends RequestModel {
 
         /**
          * Specifies whether to enable the Quiet return mode.
+         * 
+         * @deprecated Use {@link #delete(Delete)} instead.
          */
+        @Deprecated
         public Builder quiet(boolean value) {
             this.quiet = value;
+            return this;
+        }
+
+        /**
+         * The delete object containing quiet mode and object identifiers.
+         */
+        public Builder delete(Delete value) {
+            this.delete = value;
             return this;
         }
 
