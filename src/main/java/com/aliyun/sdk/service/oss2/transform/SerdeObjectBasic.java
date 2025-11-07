@@ -253,22 +253,50 @@ public final class SerdeObjectBasic {
         parameters.put("encoding-type", "url");
         builder.parameters(parameters);
 
+        // Check if both old and new parameters are set or neither is set
+        if ((request.deleteObjects() != null) && (request.delete() != null)) {
+            throw new IllegalArgumentException(
+                "Either old parameters (objects, quiet) or new parameter (delete) is set, but not both"
+            );
+        }
+
         // body
         StringBuilder xmlBody = new StringBuilder();
         xmlBody.append("<Delete>");
-        if (request.quiet() != null) {
-            xmlBody.append("<Quiet>").append(request.quiet()).append("</Quiet>");
-        }
-        if (request.deleteObjects() != null) {
-            for (DeleteObject o: request.deleteObjects()) {
-                xmlBody.append("<Object>");
-                xmlBody.append("<Key>").append(XmlUtils.escapeText(o.key())).append("</Key>");
-                if (o.versionId() != null) {
-                    xmlBody.append("<VersionId>").append(XmlUtils.escapeText(o.versionId())).append("</VersionId>");
+        
+        // Handle new parameter (delete)
+        if (request.delete() != null) {
+            if (request.delete().quiet() != null) {
+                xmlBody.append("<Quiet>").append(request.delete().quiet()).append("</Quiet>");
+            }
+            if (request.delete().objects() != null) {
+                for (ObjectIdentifier o: request.delete().objects()) {
+                    xmlBody.append("<Object>");
+                    xmlBody.append("<Key>").append(XmlUtils.escapeText(o.key())).append("</Key>");
+                    if (o.versionId() != null) {
+                        xmlBody.append("<VersionId>").append(XmlUtils.escapeText(o.versionId())).append("</VersionId>");
+                    }
+                    xmlBody.append("</Object>");
                 }
-                xmlBody.append("</Object>");
+            }
+        } 
+        // Handle old parameters (quiet, deleteObjects)
+        else {
+            if (request.quiet() != null) {
+                xmlBody.append("<Quiet>").append(request.quiet()).append("</Quiet>");
+            }
+            if (request.deleteObjects() != null) {
+                for (DeleteObject o: request.deleteObjects()) {
+                    xmlBody.append("<Object>");
+                    xmlBody.append("<Key>").append(XmlUtils.escapeText(o.key())).append("</Key>");
+                    if (o.versionId() != null) {
+                        xmlBody.append("<VersionId>").append(XmlUtils.escapeText(o.versionId())).append("</VersionId>");
+                    }
+                    xmlBody.append("</Object>");
+                }
             }
         }
+        
         xmlBody.append("</Delete>");
         String xmlStr = xmlBody.toString();
         builder.body(BinaryData.fromBytes(xmlStr.getBytes(StandardCharsets.UTF_8)));
