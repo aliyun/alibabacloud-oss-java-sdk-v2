@@ -33,7 +33,6 @@ public class PutBucketLogging implements Example {
             LoggingEnabled loggingEnabled = LoggingEnabled.newBuilder()
                     .targetBucket(targetBucket)
                     .targetPrefix(targetPrefix)
-                    .pushSuccessMarker(false)
                     .loggingRole("")
                     .build();
 
