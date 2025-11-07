@@ -22,16 +22,11 @@ public class PutBucketLoggingAsync implements Example {
 
         try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
 
-            TargetSuffix targetSuffix = TargetSuffix.newBuilder()
-                    .useRandomPart(false)
-                    .build();
-            
+
             LoggingEnabled loggingEnabled = LoggingEnabled.newBuilder()
                     .targetBucket(targetBucket)
                     .targetPrefix(targetPrefix)
-                    .pushSuccessMarker(false)
                     .loggingRole("")
-                    .targetSuffix(targetSuffix)
                     .build();
 
             BucketLoggingStatus bucketLoggingStatus = BucketLoggingStatus.newBuilder()

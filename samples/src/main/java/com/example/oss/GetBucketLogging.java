@@ -41,12 +41,8 @@ public class GetBucketLogging implements Example {
                 System.out.printf("Bucket logging configuration:\n");
                 System.out.printf("  Target bucket: %s\n", loggingEnabled.targetBucket());
                 System.out.printf("  Target prefix: %s\n", loggingEnabled.targetPrefix());
-                System.out.printf("  Push success marker: %s\n", loggingEnabled.pushSuccessMarker());
                 System.out.printf("  Logging role: %s\n", loggingEnabled.loggingRole());
-                
-                if (loggingEnabled.targetSuffix() != null) {
-                    System.out.printf("  Target suffix use random part: %s\n", loggingEnabled.targetSuffix().useRandomPart());
-                }
+
             } else {
                 System.out.println("No bucket logging configuration found.");
             }

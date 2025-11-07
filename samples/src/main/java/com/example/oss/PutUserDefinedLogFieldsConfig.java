@@ -33,12 +33,12 @@ public class PutUserDefinedLogFieldsConfig implements Example {
         try (OSSClient client = clientBuilder.build()) {
 
             List<String> headerList = headers != null ? Arrays.asList(headers.split(",")) : null;
-            HeaderSet headerSet = headerList != null ? 
-                    HeaderSet.newBuilder().headers(headerList).build() : null;
+            LoggingHeaderSet headerSet = headerList != null ?
+                    LoggingHeaderSet.newBuilder().headers(headerList).build() : null;
 
             List<String> paramList = parameters != null ? Arrays.asList(parameters.split(",")) : null;
-            ParamSet paramSet = paramList != null ? 
-                    ParamSet.newBuilder().parameters(paramList).build() : null;
+            LoggingParamSet paramSet = paramList != null ?
+                    LoggingParamSet.newBuilder().parameters(paramList).build() : null;
 
             UserDefinedLogFieldsConfiguration userDefinedLogFieldsConfiguration = 
                     UserDefinedLogFieldsConfiguration.newBuilder()
