@@ -431,4 +431,20 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObjectAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<PutBucketWebsiteResult> putBucketWebsiteAsync(PutBucketWebsiteRequest request, OperationOptions options) {
+        return BucketWebsite.putBucketWebsiteAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketWebsiteResult> getBucketWebsiteAsync(GetBucketWebsiteRequest request, OperationOptions options) {
+        return BucketWebsite.getBucketWebsiteAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketWebsiteResult> deleteBucketWebsiteAsync(DeleteBucketWebsiteRequest request, OperationOptions options) {
+        return BucketWebsite.deleteBucketWebsiteAsync(this.clientImpl, request, options);
+    }
+
 }
