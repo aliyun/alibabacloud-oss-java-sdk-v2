@@ -369,7 +369,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<GetObjectAclResult> getObjectAclAsync(GetObjectAclRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+    
     //-----------------------------------------------------------------------
 
     // object multipart api
@@ -2122,6 +2122,122 @@ public interface OSSAsyncClient extends AutoCloseable {
      * @throws RuntimeException If an error occurs
      */
     default CompletableFuture<GetBucketRefererResult> getBucketRefererAsync(GetBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    /**
+     * You can call this operation to create a cname token.
+     *
+     * @param request A {@link CreateCnameTokenRequest} for CreateCnameToken operation.
+     * @return A Java Future containing the {@link CreateCnameTokenResult} of the CreateCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateCnameTokenResult> createCnameTokenAsync(CreateCnameTokenRequest request) {
+        return createCnameTokenAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to create a cname token.
+     *
+     * @param request A {@link CreateCnameTokenRequest} for CreateCnameToken operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link CreateCnameTokenResult} of the CreateCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateCnameTokenResult> createCnameTokenAsync(CreateCnameTokenRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to get a cname token.
+     *
+     * @param request A {@link GetCnameTokenRequest} for GetCnameToken operation.
+     * @return A Java Future containing the {@link GetCnameTokenResult} of the GetCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetCnameTokenResult> getCnameTokenAsync(GetCnameTokenRequest request) {
+        return getCnameTokenAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to get a cname token.
+     *
+     * @param request A {@link GetCnameTokenRequest} for GetCnameToken operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetCnameTokenResult} of the GetCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetCnameTokenResult> getCnameTokenAsync(GetCnameTokenRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to add a cname.
+     *
+     * @param request A {@link PutCnameRequest} for PutCname operation.
+     * @return A Java Future containing the {@link PutCnameResult} of the PutCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutCnameResult> putCnameAsync(PutCnameRequest request) {
+        return putCnameAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to add a cname.
+     *
+     * @param request A {@link PutCnameRequest} for PutCname operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutCnameResult} of the PutCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutCnameResult> putCnameAsync(PutCnameRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the CNAME records of a bucket.
+     *
+     * @param request A {@link ListCnameRequest} for ListCname operation.
+     * @return A Java Future containing the {@link ListCnameResult} for ListCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListCnameResult> listCnameAsync(ListCnameRequest request) {
+        return listCnameAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the CNAME records of a bucket.
+     *
+     * @param request A {@link ListCnameRequest} for ListCname operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListCnameResult} for ListCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListCnameResult> listCnameAsync(ListCnameRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes a CNAME record of a bucket.
+     *
+     * @param request A {@link DeleteCnameRequest} for DeleteCname operation.
+     * @return A Java Future containing the {@link DeleteCnameResult} for DeleteCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteCnameResult> deleteCnameAsync(DeleteCnameRequest request) {
+        return deleteCnameAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes a CNAME record of a bucket.
+     *
+     * @param request A {@link DeleteCnameRequest} for DeleteCname operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteCnameResult} for DeleteCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteCnameResult> deleteCnameAsync(DeleteCnameRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------

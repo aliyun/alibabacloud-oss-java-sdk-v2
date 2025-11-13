@@ -466,4 +466,30 @@ public class DefaultOSSClient implements OSSClient {
     public SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObject(this.clientImpl, request, options);
     }
+
+    @Override
+    public CreateCnameTokenResult createCnameToken(CreateCnameTokenRequest request, OperationOptions options) {
+        return BucketCname.createCnameToken(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetCnameTokenResult getCnameToken(GetCnameTokenRequest request, OperationOptions options) {
+        return BucketCname.getCnameToken(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutCnameResult putCname(PutCnameRequest request, OperationOptions options) {
+        return BucketCname.putCname(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListCnameResult listCname(ListCnameRequest request, OperationOptions options) {
+        return BucketCname.listCname(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteCnameResult deleteCname(DeleteCnameRequest request, OperationOptions options) {
+        return BucketCname.deleteCname(this.clientImpl, request, options);
+    }
+
 }
