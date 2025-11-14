@@ -1,9 +1,7 @@
 package com.aliyun.sdk.service.oss2.retry;
 
 import org.junit.jupiter.api.Test;
-
 import java.time.Duration;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BackoffTest {
