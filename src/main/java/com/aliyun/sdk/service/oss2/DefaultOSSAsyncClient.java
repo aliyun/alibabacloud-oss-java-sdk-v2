@@ -431,4 +431,34 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObjectAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<PutBucketReplicationResult> putBucketReplicationAsync(PutBucketReplicationRequest request, OperationOptions options) {
+        return BucketReplication.putBucketReplicationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketRtcResult> putBucketRtcAsync(PutBucketRtcRequest request, OperationOptions options) {
+        return BucketReplication.putBucketRtcAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketReplicationResult> getBucketReplicationAsync(GetBucketReplicationRequest request, OperationOptions options) {
+        return BucketReplication.getBucketReplicationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketReplicationLocationResult> getBucketReplicationLocationAsync(GetBucketReplicationLocationRequest request, OperationOptions options) {
+        return BucketReplication.getBucketReplicationLocationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketReplicationProgressResult> getBucketReplicationProgressAsync(GetBucketReplicationProgressRequest request, OperationOptions options) {
+        return BucketReplication.getBucketReplicationProgressAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketReplicationResult> deleteBucketReplicationAsync(DeleteBucketReplicationRequest request, OperationOptions options) {
+        return BucketReplication.deleteBucketReplicationAsync(this.clientImpl, request, options);
+    }
 }

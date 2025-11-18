@@ -1737,6 +1737,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
     default DeleteBucketTagsResult deleteBucketTags(DeleteBucketTagsRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+
     //-----------------------------------------------------------------------
 
     // bucket redundancy transition api
@@ -2256,6 +2257,147 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @throws RuntimeException If an error occurs
      */
     default SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket replication api
+    /**
+     * Configures replication rules for a bucket to replicate data to other buckets in the same or different regions.
+     *
+     * @param request A {@link PutBucketReplicationRequest} for PutBucketReplication operation.
+     * @return A {@link PutBucketReplicationResult} for PutBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketReplicationResult putBucketReplication(PutBucketReplicationRequest request) {
+        return putBucketReplication(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures replication rules for a bucket to replicate data to other buckets in the same or different regions.
+     *
+     * @param request A {@link PutBucketReplicationRequest} for PutBucketReplication operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketReplicationResult} for PutBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketReplicationResult putBucketReplication(PutBucketReplicationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    /**
+     * You can call this operation to configure Replication Time Control (RTC).
+     *
+     * @param request A {@link PutBucketRtcRequest} for PutBucketRtc operation.
+     * @return A {@link PutBucketRtcResult} for PutBucketRtc operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketRtcResult putBucketRtc(PutBucketRtcRequest request) {
+        return putBucketRtc(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to configure Replication Time Control (RTC).
+     *
+     * @param request A {@link PutBucketRtcRequest} for PutBucketRtc operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketRtcResult} for PutBucketRtc operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketRtcResult putBucketRtc(PutBucketRtcRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the replication configuration of a bucket.
+     *
+     * @param request A {@link GetBucketReplicationRequest} for GetBucketReplication operation.
+     * @return A {@link GetBucketReplicationResult} for GetBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketReplicationResult getBucketReplication(GetBucketReplicationRequest request) {
+        return getBucketReplication(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the replication configuration of a bucket.
+     *
+     * @param request A {@link GetBucketReplicationRequest} for GetBucketReplication operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketReplicationResult} for GetBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketReplicationResult getBucketReplication(GetBucketReplicationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the regions to which data can be replicated from a bucket.
+     *
+     * @param request A {@link GetBucketReplicationLocationRequest} for GetBucketReplicationLocation operation.
+     * @return A {@link GetBucketReplicationLocationResult} for GetBucketReplicationLocation operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketReplicationLocationResult getBucketReplicationLocation(GetBucketReplicationLocationRequest request) {
+        return getBucketReplicationLocation(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the regions to which data can be replicated from a bucket.
+     *
+     * @param request A {@link GetBucketReplicationLocationRequest} for GetBucketReplicationLocation operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketReplicationLocationResult} for GetBucketReplicationLocation operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketReplicationLocationResult getBucketReplicationLocation(GetBucketReplicationLocationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the progress of a data replication task.
+     *
+     * @param request A {@link GetBucketReplicationProgressRequest} for GetBucketReplicationProgress operation.
+     * @return A {@link GetBucketReplicationProgressResult} for GetBucketReplicationProgress operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketReplicationProgressResult getBucketReplicationProgress(GetBucketReplicationProgressRequest request) {
+        return getBucketReplicationProgress(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the progress of a data replication task.
+     *
+     * @param request A {@link GetBucketReplicationProgressRequest} for GetBucketReplicationProgress operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketReplicationProgressResult} for GetBucketReplicationProgress operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketReplicationProgressResult getBucketReplicationProgress(GetBucketReplicationProgressRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the replication configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketReplicationRequest} for DeleteBucketReplication operation.
+     * @return A {@link DeleteBucketReplicationResult} for DeleteBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketReplicationResult deleteBucketReplication(DeleteBucketReplicationRequest request) {
+        return deleteBucketReplication(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the replication configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketReplicationRequest} for DeleteBucketReplication operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketReplicationResult} for DeleteBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketReplicationResult deleteBucketReplication(DeleteBucketReplicationRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
