@@ -865,4 +865,24 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObjectAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.putBucketTransferAcceleration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.getBucketTransferAcceleration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketTransferAccelerationResult> putBucketTransferAccelerationAsync(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.putBucketTransferAccelerationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketTransferAccelerationResult> getBucketTransferAccelerationAsync(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.getBucketTransferAccelerationAsync(this.clientImpl, request, options);
+    }
 }
