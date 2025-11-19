@@ -1,6 +1,7 @@
 package com.aliyun.sdk.service.oss2.models;
 
 import com.aliyun.sdk.service.oss2.OperationOutput;
+import com.aliyun.sdk.service.oss2.transform.SerdeBucketResourceGroup;
 import com.aliyun.sdk.service.oss2.transform.SerdeBucketTransferAcceleration;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
@@ -64,6 +65,26 @@ public class PutBucketTransferAccelerationResultTest {
         OperationOutput blankOutput = OperationOutput.newBuilder()
                 .body(BinaryData.fromString(blankXml))
                 .build();
-        SerdeBucketTransferAcceleration.toPutBucketTransferAcceleration(blankOutput);
+        PutBucketTransferAccelerationResult putResult = SerdeBucketTransferAcceleration.toPutBucketTransferAcceleration(blankOutput);
+        assertThat(putResult).isNotNull();
+
+        Map<String, String> headers = MapUtils.of(
+                "x-oss-request-id", "req-1234567890abcdefg",
+                "ETag", "\"B5eJF1ptWaXm4bijSPyxw==\""
+        );
+
+        OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(blankXml))
+                .headers(headers)
+                .status("HTTP/1.1 200 OK")
+                .statusCode(200)
+                .build();
+
+        PutBucketTransferAccelerationResult result = SerdeBucketTransferAcceleration.toPutBucketTransferAcceleration(output);
+
+        assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
+        assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
+        assertThat(result.status()).isEqualTo("HTTP/1.1 200 OK");
+        assertThat(result.statusCode()).isEqualTo(200);
     }
 }
