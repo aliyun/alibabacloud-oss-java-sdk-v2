@@ -6,10 +6,7 @@ import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.QueryVectorsJson;
 import com.aliyun.sdk.service.oss2.vectors.transform.SerdeVectorsBasic;
 import org.junit.jupiter.api.Test;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class QueryVectorsResultTest {
@@ -32,7 +29,7 @@ public class QueryVectorsResultTest {
         QueryVectorsSummary vectorSummary = createTestQueryVectorSummary();
 
         QueryVectorsJson queryVectorsJson = new QueryVectorsJson();
-        queryVectorsJson.vectors = Arrays.asList(vectorSummary);
+        queryVectorsJson.vectors = Collections.singletonList(vectorSummary);
 
         QueryVectorsResult result = QueryVectorsResult.newBuilder()
                 .headers(headers)
@@ -43,7 +40,7 @@ public class QueryVectorsResultTest {
 
         assertThat(result.headers().get("x-oss-request-id")).isEqualTo("req-1234567890abcdefg");
         assertThat(result.headers().get("ETag")).isEqualTo("\"B5eJF1ptWaXm4bijSPyxw==\"");
-        assertThat(result.vectors()).isEqualTo(Arrays.asList(vectorSummary));
+        assertThat(result.vectors()).isEqualTo(Collections.singletonList(vectorSummary));
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-1234567890abcdefg");
@@ -59,7 +56,7 @@ public class QueryVectorsResultTest {
         QueryVectorsSummary vectorSummary = createTestQueryVectorSummary();
 
         QueryVectorsJson queryVectorsJson = new QueryVectorsJson();
-        queryVectorsJson.vectors = Arrays.asList(vectorSummary);
+        queryVectorsJson.vectors = Collections.singletonList(vectorSummary);
 
         QueryVectorsResult original = QueryVectorsResult.newBuilder()
                 .headers(headers)
@@ -72,7 +69,7 @@ public class QueryVectorsResultTest {
 
         assertThat(copy.headers().get("x-oss-request-id")).isEqualTo("req-765432109876543210");
         assertThat(copy.headers().get("ETag")).isEqualTo("\"original-etag\"");
-        assertThat(copy.vectors()).isEqualTo(Arrays.asList(vectorSummary));
+        assertThat(copy.vectors()).isEqualTo(Collections.singletonList(vectorSummary));
         assertThat(copy.status()).isEqualTo("Partial");
         assertThat(copy.statusCode()).isEqualTo(206);
         assertThat(copy.requestId()).isEqualTo("req-765432109876543210");
@@ -86,7 +83,7 @@ public class QueryVectorsResultTest {
                 "      \"data\": {\n" +
                 "        \"float32\": [0.1, 0.2, 0.3]\n" +
                 "      },\n" +
-                "      \"distance\": 1,\n" +
+                "      \"distance\": 0.5,\n" +
                 "      \"key\": \"vector-key-1\",\n" +
                 "      \"metadata\": {\n" +
                 "        \"key1\": \"value1\",\n" +
@@ -118,7 +115,7 @@ public class QueryVectorsResultTest {
 
         QueryVectorsSummary vector = result.vectors().get(0);
         assertThat(vector.key()).isEqualTo("vector-key-1");
-        assertThat(vector.distance()).isEqualTo(1);
+        assertThat(vector.distance()).isEqualTo(0.5f);
         assertThat(vector.data()).isNotNull();
         assertThat(vector.metadata()).isNotNull();
         
@@ -126,6 +123,7 @@ public class QueryVectorsResultTest {
         assertThat(data).containsKey("float32");
         Object float32Obj = data.get("float32");
         assertThat(float32Obj).isInstanceOf(List.class);
+        @SuppressWarnings("unchecked")
         List<Double> float32 = (List<Double>) float32Obj;
         assertThat(float32).containsExactly(0.1, 0.2, 0.3);
         
@@ -137,7 +135,7 @@ public class QueryVectorsResultTest {
     private QueryVectorsSummary createTestQueryVectorSummary() {
         QueryVectorsSummary vectorSummary = QueryVectorsSummary.newBuilder()
                 .key("vector-key-1")
-                .distance(1)
+                .distance(0.5f)
                 .build();
 
         Map<String, Object> data = new HashMap<>();
