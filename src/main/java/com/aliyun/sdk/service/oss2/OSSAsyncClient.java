@@ -2078,6 +2078,7 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
     // bucket referer api
     /**
      * Configures the referer whitelist and blacklist for a bucket.
@@ -2122,6 +2123,146 @@ public interface OSSAsyncClient extends AutoCloseable {
      * @throws RuntimeException If an error occurs
      */
     default CompletableFuture<GetBucketRefererResult> getBucketRefererAsync(GetBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket replication api
+    /**
+     * Configures replication rules for a bucket to replicate data to other buckets in the same or different regions.
+     *
+     * @param request A {@link PutBucketReplicationRequest} for PutBucketReplication operation.
+     * @return A Java Future containing the {@link PutBucketReplicationResult} of the PutBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketReplicationResult> putBucketReplicationAsync(PutBucketReplicationRequest request) {
+        return putBucketReplicationAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures replication rules for a bucket to replicate data to other buckets in the same or different regions.
+     *
+     * @param request A {@link PutBucketReplicationRequest} for PutBucketReplication operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketReplicationResult} of the PutBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketReplicationResult> putBucketReplicationAsync(PutBucketReplicationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to configure Replication Time Control (RTC).
+     *
+     * @param request A {@link PutBucketRtcRequest} for PutBucketRtc operation.
+     * @return A Java Future containing the {@link PutBucketRtcResult} of the PutBucketRtc operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketRtcResult> putBucketRtcAsync(PutBucketRtcRequest request) {
+        return putBucketRtcAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to configure Replication Time Control (RTC).
+     *
+     * @param request A {@link PutBucketRtcRequest} for PutBucketRtc operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketRtcResult} of the PutBucketRtc operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketRtcResult> putBucketRtcAsync(PutBucketRtcRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the replication configuration of a bucket.
+     *
+     * @param request A {@link GetBucketReplicationRequest} for GetBucketReplication operation.
+     * @return A Java Future containing the {@link GetBucketReplicationResult} of the GetBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketReplicationResult> getBucketReplicationAsync(GetBucketReplicationRequest request) {
+        return getBucketReplicationAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the replication configuration of a bucket.
+     *
+     * @param request A {@link GetBucketReplicationRequest} for GetBucketReplication operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketReplicationResult} of the GetBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketReplicationResult> getBucketReplicationAsync(GetBucketReplicationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the regions to which data can be replicated from a bucket.
+     *
+     * @param request A {@link GetBucketReplicationLocationRequest} for GetBucketReplicationLocation operation.
+     * @return A Java Future containing the {@link GetBucketReplicationLocationResult} of the GetBucketReplicationLocation operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketReplicationLocationResult> getBucketReplicationLocationAsync(GetBucketReplicationLocationRequest request) {
+        return getBucketReplicationLocationAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the regions to which data can be replicated from a bucket.
+     *
+     * @param request A {@link GetBucketReplicationLocationRequest} for GetBucketReplicationLocation operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketReplicationLocationResult} of the GetBucketReplicationLocation operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketReplicationLocationResult> getBucketReplicationLocationAsync(GetBucketReplicationLocationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the progress of a data replication task.
+     *
+     * @param request A {@link GetBucketReplicationProgressRequest} for GetBucketReplicationProgress operation.
+     * @return A Java Future containing the {@link GetBucketReplicationProgressResult} of the GetBucketReplicationProgress operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketReplicationProgressResult> getBucketReplicationProgressAsync(GetBucketReplicationProgressRequest request) {
+        return getBucketReplicationProgressAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the progress of a data replication task.
+     *
+     * @param request A {@link GetBucketReplicationProgressRequest} for GetBucketReplicationProgress operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketReplicationProgressResult} of the GetBucketReplicationProgress operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketReplicationProgressResult> getBucketReplicationProgressAsync(GetBucketReplicationProgressRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the replication configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketReplicationRequest} for DeleteBucketReplication operation.
+     * @return A Java Future containing the {@link DeleteBucketReplicationResult} of the DeleteBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketReplicationResult> deleteBucketReplicationAsync(DeleteBucketReplicationRequest request) {
+        return deleteBucketReplicationAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the replication configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketReplicationRequest} for DeleteBucketReplication operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketReplicationResult} of the DeleteBucketReplication operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketReplicationResult> deleteBucketReplicationAsync(DeleteBucketReplicationRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
