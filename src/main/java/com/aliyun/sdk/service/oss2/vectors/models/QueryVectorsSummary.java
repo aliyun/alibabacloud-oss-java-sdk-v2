@@ -17,7 +17,7 @@ public class QueryVectorsSummary {
     private Map<String, Object> metadata;
     
     @JsonProperty("distance")
-    private Integer distance;
+    private Float distance;
 
     public QueryVectorsSummary() {
     }
@@ -45,7 +45,7 @@ public class QueryVectorsSummary {
         return metadata;
     }
     
-    public Integer distance() {
+    public Float distance() {
         return distance;
     }
 
@@ -57,7 +57,7 @@ public class QueryVectorsSummary {
         private Map<String, Object> data;
         private String key;
         private Map<String, Object> metadata;
-        private Integer distance;
+        private Float distance;
 
         private Builder() {
         }
@@ -84,7 +84,7 @@ public class QueryVectorsSummary {
             return this;
         }
         
-        public Builder distance(Integer distance) {
+        public Builder distance(Float distance) {
             this.distance = distance;
             return this;
         }
