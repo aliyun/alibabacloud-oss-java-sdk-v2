@@ -466,4 +466,15 @@ public class DefaultOSSClient implements OSSClient {
     public SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObject(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.putBucketTransferAcceleration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.getBucketTransferAcceleration(this.clientImpl, request, options);
+    }
+
 }

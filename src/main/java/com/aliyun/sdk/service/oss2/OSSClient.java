@@ -1406,7 +1406,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
 
     //-----------------------------------------------------------------------
-    
+
     // bucket public access block api
     /**
      * Configures the block public access feature for a bucket.
@@ -2256,6 +2256,55 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @throws RuntimeException If an error occurs
      */
     default SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket transfer acceleration api
+
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @return A {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request) {
+        return putBucketTransferAcceleration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @return A {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request) {
+        return getBucketTransferAcceleration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
