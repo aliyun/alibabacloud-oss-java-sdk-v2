@@ -466,4 +466,20 @@ public class DefaultOSSClient implements OSSClient {
     public SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
         return ObjectBasic.sealAppendObject(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketWebsiteResult putBucketWebsite(PutBucketWebsiteRequest request, OperationOptions options) {
+        return BucketWebsite.putBucketWebsite(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketWebsiteResult getBucketWebsite(GetBucketWebsiteRequest request, OperationOptions options) {
+        return BucketWebsite.getBucketWebsite(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketWebsiteResult deleteBucketWebsite(DeleteBucketWebsiteRequest request, OperationOptions options) {
+        return BucketWebsite.deleteBucketWebsite(this.clientImpl, request, options);
+    }
+
 }
