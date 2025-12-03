@@ -50,6 +50,19 @@ public class SealAppendObjectRequestTest {
     }
 
     @Test
+    public void testIntegerPosition() {
+        SealAppendObjectRequest request = SealAppendObjectRequest.newBuilder()
+                .bucket("examplebucket")
+                .key("exampleobject")
+                .position(12345)
+                .build();
+
+        assertThat(request.bucket()).isEqualTo("examplebucket");
+        assertThat(request.key()).isEqualTo("exampleobject");
+        assertThat(request.position()).isEqualTo("12345");
+    }
+
+    @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
                 "x-oss-request-id", "req-765432109876543210"
