@@ -50,7 +50,7 @@ public class SealAppendObjectRequestTest {
     }
 
     @Test
-    public void testIntegerPosition() {
+    public void testLongPosition() {
         SealAppendObjectRequest request = SealAppendObjectRequest.newBuilder()
                 .bucket("examplebucket")
                 .key("exampleobject")
@@ -113,7 +113,9 @@ public class SealAppendObjectRequestTest {
 
         OperationInput input = SerdeObjectBasic.fromSealAppendObject(request);
 
+        assertThat(input.bucket()).isPresent();
         assertThat(input.bucket().get()).isEqualTo("examplebucket");
+        assertThat(input.key()).isPresent();
         assertThat(input.key().get()).isEqualTo("exampleobject");
         assertThat(input.parameters().get("seal")).isEqualTo("");
         assertThat(input.parameters().get("position")).isEqualTo("12345");
