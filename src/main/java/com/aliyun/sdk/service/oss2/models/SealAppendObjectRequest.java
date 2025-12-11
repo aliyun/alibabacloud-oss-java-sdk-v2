@@ -108,7 +108,7 @@ public final class SealAppendObjectRequest extends RequestModel {
         /**
          * The position from which the AppendObject operation starts.
          */
-        public Builder position(int value) {
+        public Builder position(long value) {
             this.position = String.valueOf(value);
             return this;
         }

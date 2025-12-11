@@ -54,7 +54,7 @@ public class SealAppendObjectRequestTest {
         SealAppendObjectRequest request = SealAppendObjectRequest.newBuilder()
                 .bucket("examplebucket")
                 .key("exampleobject")
-                .position(12345)
+                .position(12345L)
                 .build();
 
         assertThat(request.bucket()).isEqualTo("examplebucket");
