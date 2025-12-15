@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RetryerTest {
 
     @Test
-    void testStandardRetryer_default() {
+    void testStandardRetryDefault() {
         Retryer retry = StandardRetryer.newBuilder().build();
         assertThat(retry.maxAttempts()).isEqualTo(3);
 
@@ -64,7 +64,7 @@ public class RetryerTest {
                         .build()))
                 .isFalse();
 
-        //dealy test
+        //delay test
         Duration min = Duration.ofSeconds(0);
         Duration max = Duration.ofSeconds(20);
         Exception e = new Exception();
@@ -78,7 +78,7 @@ public class RetryerTest {
     }
 
     @Test
-    void testStandardRetryer_withCustomRetryable() {
+    void testStandardRetryWithCustomRetryable() {
         // Arrange
         ErrorRetryable r1 = new TestErrorRetryable();
         ErrorRetryable r2 = new ServiceErrorCodeRetryable();
@@ -127,7 +127,7 @@ public class RetryerTest {
     }
 
     @Test
-    void testStandardRetryer_withCustomMaxAttempts() {
+    void testStandardRetryWithCustomMaxAttempts() {
 
         StandardRetryer retry = StandardRetryer.newBuilder()
                 .maxAttempts(4)
@@ -161,7 +161,7 @@ public class RetryerTest {
     }
 
     @Test
-    void testStandardRetryer_withCustomBackoff() {
+    void testStandardRetryWithCustomBackoff() {
 
         StandardRetryer retry = StandardRetryer.newBuilder()
                 .backoffDelayer(new FixedDelayBackoff(Duration.ofSeconds(3)))
@@ -201,7 +201,7 @@ public class RetryerTest {
     }
 
     @Test
-    void testNopRetryer_default() {
+    void testNopRetryDefault() {
         Retryer retryer = new NopRetryer();
         assertThat(retryer.maxAttempts()).isEqualTo(1);
         assertThat(retryer.isErrorRetryable(ServiceException.newBuilder().statusCode(401).build())).isFalse();
