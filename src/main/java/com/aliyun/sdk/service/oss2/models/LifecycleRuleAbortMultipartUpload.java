@@ -11,17 +11,17 @@ import static java.util.Objects.requireNonNull;
  * The delete operation that you want OSS to perform on the parts that are uploaded in incomplete multipart upload tasks when the parts expire.
  */
 @JacksonXmlRootElement(localName = "AbortMultipartUpload")
-public final class AbortMultipartUpload {
+public final class LifecycleRuleAbortMultipartUpload {
     @JacksonXmlProperty(localName = "Days")
     private Integer days;
 
     @JacksonXmlProperty(localName = "CreatedBeforeDate")
     private Instant createdBeforeDate;
 
-    public AbortMultipartUpload() {
+    public LifecycleRuleAbortMultipartUpload() {
     }
 
-    private AbortMultipartUpload(Builder builder) {
+    private LifecycleRuleAbortMultipartUpload(Builder builder) {
         this.days = builder.days;
         this.createdBeforeDate = builder.createdBeforeDate;
     }
@@ -56,7 +56,7 @@ public final class AbortMultipartUpload {
             super();
         }
 
-        private Builder(AbortMultipartUpload from) {
+        private Builder(LifecycleRuleAbortMultipartUpload from) {
             this.days = from.days;
             this.createdBeforeDate = from.createdBeforeDate;
         }
@@ -79,8 +79,8 @@ public final class AbortMultipartUpload {
             return this;
         }
 
-        public AbortMultipartUpload build() {
-            return new AbortMultipartUpload(this);
+        public LifecycleRuleAbortMultipartUpload build() {
+            return new LifecycleRuleAbortMultipartUpload(this);
         }
     }
 }

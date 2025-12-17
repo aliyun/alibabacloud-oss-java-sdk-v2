@@ -441,5 +441,19 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<GetBucketTransferAccelerationResult> getBucketTransferAccelerationAsync(GetBucketTransferAccelerationRequest request, OperationOptions options) {
         return BucketTransferAcceleration.getBucketTransferAccelerationAsync(this.clientImpl, request, options);
     }
-    
+
+    @Override
+    public CompletableFuture<PutBucketLifecycleResult> putBucketLifecycleAsync(PutBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.putBucketLifecycleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketLifecycleResult> getBucketLifecycleAsync(GetBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.getBucketLifecycleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketLifecycleResult> deleteBucketLifecycleAsync(DeleteBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.deleteBucketLifecycleAsync(this.clientImpl, request, options);
+    }
 }
