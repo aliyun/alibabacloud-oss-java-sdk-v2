@@ -456,4 +456,29 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<DeleteBucketLifecycleResult> deleteBucketLifecycleAsync(DeleteBucketLifecycleRequest request, OperationOptions options) {
         return BucketLifecycle.deleteBucketLifecycleAsync(this.clientImpl, request, options);
     }
+  
+    @Override
+    public CompletableFuture<CreateCnameTokenResult> createCnameTokenAsync(CreateCnameTokenRequest request, OperationOptions options) {
+        return BucketCname.createCnameTokenAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetCnameTokenResult> getCnameTokenAsync(GetCnameTokenRequest request, OperationOptions options) {
+        return BucketCname.getCnameTokenAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutCnameResult> putCnameAsync(PutCnameRequest request, OperationOptions options) {
+        return BucketCname.putCnameAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListCnameResult> listCnameAsync(ListCnameRequest request, OperationOptions options) {
+        return BucketCname.listCnameAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteCnameResult> deleteCnameAsync(DeleteCnameRequest request, OperationOptions options) {
+        return BucketCname.deleteCnameAsync(this.clientImpl, request, options);
+    }  
 }
