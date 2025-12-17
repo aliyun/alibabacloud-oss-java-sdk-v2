@@ -914,5 +914,55 @@ public class DefaultOSSDualClient implements OSSDualClient {
     @Override
     public CompletableFuture<DeleteBucketLifecycleResult> deleteBucketLifecycleAsync(DeleteBucketLifecycleRequest request, OperationOptions options) {
         return BucketLifecycle.deleteBucketLifecycleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CreateCnameTokenResult createCnameToken(CreateCnameTokenRequest request, OperationOptions options) {
+        return BucketCname.createCnameToken(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CreateCnameTokenResult> createCnameTokenAsync(CreateCnameTokenRequest request, OperationOptions options) {
+        return BucketCname.createCnameTokenAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetCnameTokenResult getCnameToken(GetCnameTokenRequest request, OperationOptions options) {
+        return BucketCname.getCnameToken(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetCnameTokenResult> getCnameTokenAsync(GetCnameTokenRequest request, OperationOptions options) {
+        return BucketCname.getCnameTokenAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutCnameResult putCname(PutCnameRequest request, OperationOptions options) {
+        return BucketCname.putCname(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutCnameResult> putCnameAsync(PutCnameRequest request, OperationOptions options) {
+        return BucketCname.putCnameAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListCnameResult listCname(ListCnameRequest request, OperationOptions options) {
+        return BucketCname.listCname(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListCnameResult> listCnameAsync(ListCnameRequest request, OperationOptions options) {
+        return BucketCname.listCnameAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteCnameResult deleteCname(DeleteCnameRequest request, OperationOptions options) {
+        return BucketCname.deleteCname(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteCnameResult> deleteCnameAsync(DeleteCnameRequest request, OperationOptions options) {
+        return BucketCname.deleteCnameAsync(this.clientImpl, request, options);
     }  
 }
