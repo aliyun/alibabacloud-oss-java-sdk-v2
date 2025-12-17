@@ -1406,7 +1406,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
 
     //-----------------------------------------------------------------------
-    
+
     // bucket public access block api
     /**
      * Configures the block public access feature for a bucket.
@@ -2256,6 +2256,126 @@ public interface OSSClient extends AutoCloseable, Presignable {
      * @throws RuntimeException If an error occurs
      */
     default SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket transfer acceleration api
+
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @return A {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request) {
+        return putBucketTransferAcceleration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @return A {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request) {
+        return getBucketTransferAcceleration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+  
+    // bucket lifecycle api
+    /**
+     * Configures the lifecycle rules for a bucket.
+     *
+     * @param request A {@link PutBucketLifecycleRequest} for PutBucketLifecycle operation.
+     * @return A {@link PutBucketLifecycleResult} for PutBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request) {
+        return putBucketLifecycle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the lifecycle rules for a bucket.
+     *
+     * @param request A {@link PutBucketLifecycleRequest} for PutBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketLifecycleResult} for PutBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the lifecycle rules configured for a bucket.
+     *
+     * @param request A {@link GetBucketLifecycleRequest} for GetBucketLifecycle operation.
+     * @return A {@link GetBucketLifecycleResult} for GetBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketLifecycleResult getBucketLifecycle(GetBucketLifecycleRequest request) {
+        return getBucketLifecycle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the lifecycle rules configured for a bucket.
+     *
+     * @param request A {@link GetBucketLifecycleRequest} for GetBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketLifecycleResult} for GetBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketLifecycleResult getBucketLifecycle(GetBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Disables the lifecycle feature and deletes all lifecycle rules for a bucket.
+     *
+     * @param request A {@link DeleteBucketLifecycleRequest} for DeleteBucketLifecycle operation.
+     * @return A {@link DeleteBucketLifecycleResult} for DeleteBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketLifecycleResult deleteBucketLifecycle(DeleteBucketLifecycleRequest request) {
+        return deleteBucketLifecycle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Disables the lifecycle feature and deletes all lifecycle rules for a bucket.
+     *
+     * @param request A {@link DeleteBucketLifecycleRequest} for DeleteBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketLifecycleResult} for DeleteBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketLifecycleResult deleteBucketLifecycle(DeleteBucketLifecycleRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------

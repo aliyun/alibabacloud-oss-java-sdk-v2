@@ -433,6 +433,31 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     }
 
     @Override
+    public CompletableFuture<PutBucketTransferAccelerationResult> putBucketTransferAccelerationAsync(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.putBucketTransferAccelerationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketTransferAccelerationResult> getBucketTransferAccelerationAsync(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.getBucketTransferAccelerationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketLifecycleResult> putBucketLifecycleAsync(PutBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.putBucketLifecycleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketLifecycleResult> getBucketLifecycleAsync(GetBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.getBucketLifecycleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketLifecycleResult> deleteBucketLifecycleAsync(DeleteBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.deleteBucketLifecycleAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
     public CompletableFuture<CreateCnameTokenResult> createCnameTokenAsync(CreateCnameTokenRequest request, OperationOptions options) {
         return BucketCname.createCnameTokenAsync(this.clientImpl, request, options);
     }
@@ -455,6 +480,5 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     @Override
     public CompletableFuture<DeleteCnameResult> deleteCnameAsync(DeleteCnameRequest request, OperationOptions options) {
         return BucketCname.deleteCnameAsync(this.clientImpl, request, options);
-    }
-
+    }  
 }

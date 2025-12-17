@@ -15,7 +15,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.ByteArrayInputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Random;
@@ -852,6 +852,73 @@ public class ClientObjectTest extends TestBase {
         Assert.assertNotNull(putResult);
         Assert.assertEquals(203, putResult.statusCode());
         assertThat(putResult.callbackResult()).contains("<Code>CallbackFailed</Code>");
+    }
+
+    static class ErrorFilterInputStream extends FilterInputStream {
+
+        private final int maxRead;
+        private int readCnt;
+
+        public ErrorFilterInputStream(InputStream is, int maxRead) {
+            super(is);
+            this.maxRead = maxRead;
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            if (this.readCnt > this.maxRead) {
+                throw new IOException("readCnt > maxRead" + this.readCnt + ":" + this.maxRead);
+            }
+            int n = super.read(b, off, len);
+            this.readCnt += n;
+            return n;
+        }
+
+        @Override
+        public boolean markSupported() {
+            return false;
+        }
+    }
+
+    @Test
+    public void testAppendObjectAbortBody() {
+        OSSClient client = getDefaultClient();
+
+        byte[] content = TestUtils.generateTestData(200 * 1024 + 123);
+
+        InputStream is = new ByteArrayInputStream(content);
+
+        InputStream fis = new ErrorFilterInputStream(is, 100*1024);
+
+        // append object
+        String appendObjectName = genObjectName() + "-append";
+
+        try {
+            AppendObjectResult appendResult1 = client.appendObject(AppendObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(appendObjectName)
+                    .body(BinaryData.fromStream(fis))
+                    .position(0L)
+                    .build());
+            fail("should not here");
+        } catch (Exception e) {
+            IOException ioe = findCause(e, IOException.class);
+            assertThat(ioe).isNotNull();
+            assertThat(ioe.getMessage()).contains("readCnt > maxRead");
+        }
+
+        try {
+            // get object meta
+            GetObjectMetaResult metaResult = client.getObjectMeta(GetObjectMetaRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(appendObjectName)
+                    .build());
+            fail("should not here");
+        } catch (Exception e) {
+            ServiceException se = ServiceException.asCause(e);
+            assertThat(se).isNotNull();
+            assertThat(se.errorCode()).isEqualTo("NoSuchKey");
+        }
     }
 
     private String genObjectName() {

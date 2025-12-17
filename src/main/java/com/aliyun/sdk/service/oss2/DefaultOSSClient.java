@@ -468,6 +468,31 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.putBucketTransferAcceleration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.getBucketTransferAcceleration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.putBucketLifecycle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketLifecycleResult getBucketLifecycle(GetBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.getBucketLifecycle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketLifecycleResult deleteBucketLifecycle(DeleteBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.deleteBucketLifecycle(this.clientImpl, request, options);
+    }
+
+    @Override
     public CreateCnameTokenResult createCnameToken(CreateCnameTokenRequest request, OperationOptions options) {
         return BucketCname.createCnameToken(this.clientImpl, request, options);
     }
@@ -490,6 +515,5 @@ public class DefaultOSSClient implements OSSClient {
     @Override
     public DeleteCnameResult deleteCname(DeleteCnameRequest request, OperationOptions options) {
         return BucketCname.deleteCname(this.clientImpl, request, options);
-    }
-
+    }  
 }

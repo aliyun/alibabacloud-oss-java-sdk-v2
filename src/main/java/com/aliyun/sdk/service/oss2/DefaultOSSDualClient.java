@@ -867,6 +867,56 @@ public class DefaultOSSDualClient implements OSSDualClient {
     }
 
     @Override
+    public PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.putBucketTransferAcceleration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.getBucketTransferAcceleration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketTransferAccelerationResult> putBucketTransferAccelerationAsync(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.putBucketTransferAccelerationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketTransferAccelerationResult> getBucketTransferAccelerationAsync(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        return BucketTransferAcceleration.getBucketTransferAccelerationAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.putBucketLifecycle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketLifecycleResult getBucketLifecycle(GetBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.getBucketLifecycle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketLifecycleResult deleteBucketLifecycle(DeleteBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.deleteBucketLifecycle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketLifecycleResult> putBucketLifecycleAsync(PutBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.putBucketLifecycleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketLifecycleResult> getBucketLifecycleAsync(GetBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.getBucketLifecycleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketLifecycleResult> deleteBucketLifecycleAsync(DeleteBucketLifecycleRequest request, OperationOptions options) {
+        return BucketLifecycle.deleteBucketLifecycleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
     public CreateCnameTokenResult createCnameToken(CreateCnameTokenRequest request, OperationOptions options) {
         return BucketCname.createCnameToken(this.clientImpl, request, options);
     }
@@ -914,6 +964,5 @@ public class DefaultOSSDualClient implements OSSDualClient {
     @Override
     public CompletableFuture<DeleteCnameResult> deleteCnameAsync(DeleteCnameRequest request, OperationOptions options) {
         return BucketCname.deleteCnameAsync(this.clientImpl, request, options);
-    }
-
+    }  
 }
