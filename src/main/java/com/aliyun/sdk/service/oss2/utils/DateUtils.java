@@ -13,7 +13,6 @@ import java.time.format.ResolverStyle;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
 import static java.time.ZoneOffset.UTC;
 import static java.time.format.DateTimeFormatter.*;
 
@@ -27,6 +26,15 @@ public final class DateUtils {
     static final DateTimeFormatter ALTERNATE_ISO_8601_DATE_FORMAT =
             new DateTimeFormatterBuilder()
                     .appendPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                    .toFormatter()
+                    .withZone(UTC);
+
+    /**
+     * ISO 8601 format with milliseconds.
+     */
+    public static final DateTimeFormatter ISO8601_DATE_FORMAT =
+            new DateTimeFormatterBuilder()
+                    .appendPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                     .toFormatter()
                     .withZone(UTC);
 
