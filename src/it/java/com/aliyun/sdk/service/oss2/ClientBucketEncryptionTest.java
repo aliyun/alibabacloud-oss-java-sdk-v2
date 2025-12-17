@@ -1,0 +1,110 @@
+package com.aliyun.sdk.service.oss2;
+
+import com.aliyun.sdk.service.oss2.models.*;
+import org.junit.Assert;
+import org.junit.Test;
+
+public class ClientBucketEncryptionTest extends TestBase {
+
+    @Test
+    public void testBucketEncryption_default() throws Exception {
+        try (OSSClient client = getOssClient()) {
+            
+            // 1. PutBucketEncryption
+            ApplyServerSideEncryptionByDefault applyRule = ApplyServerSideEncryptionByDefault.newBuilder()
+                    .sSEAlgorithm("KMS")
+                    .kMSMasterKeyID("9468da86-3509-4f8d-a61e-6eab1eac****")
+                    .kMSDataEncryption("SM4")
+                    .build();
+
+            ServerSideEncryptionRule rule = ServerSideEncryptionRule.newBuilder()
+                    .applyServerSideEncryptionByDefault(applyRule)
+                    .build();
+
+            PutBucketEncryptionResult putResult = client.putBucketEncryption(PutBucketEncryptionRequest.newBuilder()
+                    .bucket(bucketName)
+                    .serverSideEncryptionRule(rule)
+                    .build());
+
+            Assert.assertNotNull(putResult);
+            Assert.assertEquals(200, putResult.statusCode());
+
+            waitForCacheExpiration(1);
+
+            // 2. GetBucketEncryption
+            GetBucketEncryptionResult getResult = client.getBucketEncryption(GetBucketEncryptionRequest.newBuilder()
+                    .bucket(bucketName)
+                    .build());
+
+            Assert.assertNotNull(getResult);
+            Assert.assertEquals(200, getResult.statusCode());
+            
+            ServerSideEncryptionRule resultRule = getResult.serverSideEncryptionRule();
+            Assert.assertNotNull(resultRule);
+            
+            ApplyServerSideEncryptionByDefault resultApplyRule = resultRule.applyServerSideEncryptionByDefault();
+            Assert.assertNotNull(resultApplyRule);
+            Assert.assertEquals("KMS", resultApplyRule.sSEAlgorithm());
+            Assert.assertEquals("9468da86-3509-4f8d-a61e-6eab1eac****", resultApplyRule.kMSMasterKeyID());
+            Assert.assertEquals("SM4", resultApplyRule.kMSDataEncryption());
+
+            // 3. DeleteBucketEncryption
+            DeleteBucketEncryptionResult deleteResult = client.deleteBucketEncryption(DeleteBucketEncryptionRequest.newBuilder()
+                    .bucket(bucketName)
+                    .build());
+
+            Assert.assertNotNull(deleteResult);
+            Assert.assertEquals(204, deleteResult.statusCode());
+        }
+    }
+
+    @Test
+    public void testBucketEncryption_AES256() throws Exception {
+        try (OSSClient client = getOssClient()) {
+            
+            // 1. PutBucketEncryption with AES256
+            ApplyServerSideEncryptionByDefault applyRule = ApplyServerSideEncryptionByDefault.newBuilder()
+                    .sSEAlgorithm("AES256")
+                    .build();
+
+            ServerSideEncryptionRule rule = ServerSideEncryptionRule.newBuilder()
+                    .applyServerSideEncryptionByDefault(applyRule)
+                    .build();
+
+            PutBucketEncryptionResult putResult = client.putBucketEncryption(PutBucketEncryptionRequest.newBuilder()
+                    .bucket(bucketName)
+                    .serverSideEncryptionRule(rule)
+                    .build());
+
+            Assert.assertNotNull(putResult);
+            Assert.assertEquals(200, putResult.statusCode());
+
+            waitForCacheExpiration(1);
+
+            // 2. GetBucketEncryption
+            GetBucketEncryptionResult getResult = client.getBucketEncryption(GetBucketEncryptionRequest.newBuilder()
+                    .bucket(bucketName)
+                    .build());
+
+            Assert.assertNotNull(getResult);
+            Assert.assertEquals(200, getResult.statusCode());
+            
+            ServerSideEncryptionRule resultRule = getResult.serverSideEncryptionRule();
+            Assert.assertNotNull(resultRule);
+            
+            ApplyServerSideEncryptionByDefault resultApplyRule = resultRule.applyServerSideEncryptionByDefault();
+            Assert.assertNotNull(resultApplyRule);
+            Assert.assertEquals("AES256", resultApplyRule.sSEAlgorithm());
+            Assert.assertNull(resultApplyRule.kMSMasterKeyID());
+            Assert.assertNull(resultApplyRule.kMSDataEncryption());
+
+            // 3. DeleteBucketEncryption
+            DeleteBucketEncryptionResult deleteResult = client.deleteBucketEncryption(DeleteBucketEncryptionRequest.newBuilder()
+                    .bucket(bucketName)
+                    .build());
+
+            Assert.assertNotNull(deleteResult);
+            Assert.assertEquals(204, deleteResult.statusCode());
+        }
+    }
+}

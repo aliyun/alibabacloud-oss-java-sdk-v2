@@ -1407,7 +1407,908 @@ public interface OSSClient extends AutoCloseable, Presignable {
 
     //-----------------------------------------------------------------------
 
+    // bucket public access block api
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutBucketPublicAccessBlockRequest} for PutBucketPublicAccessBlock operation.
+     * @return A {@link PutBucketPublicAccessBlockResult} for PutBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPublicAccessBlockResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest request) {
+        return putBucketPublicAccessBlock(request, OperationOptions.defaults());
+    }
 
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutBucketPublicAccessBlockRequest} for PutBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketPublicAccessBlockResult} for PutBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPublicAccessBlockResult putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the block public access configuration of a bucket.
+     *
+     * @param request A {@link GetBucketPublicAccessBlockRequest} for GetBucketPublicAccessBlock operation.
+     * @return A {@link GetBucketPublicAccessBlockResult} for GetBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(GetBucketPublicAccessBlockRequest request) {
+        return getBucketPublicAccessBlock(request, OperationOptions.defaults());
+    }
+  
+    /**
+     * Queries the block public access configuration of a bucket.
+     *
+     * @param request A {@link GetBucketPublicAccessBlockRequest} for GetBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketPublicAccessBlockResult} for GetBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPublicAccessBlockResult getBucketPublicAccessBlock(GetBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+      /**
+     * Deletes the block public access configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketPublicAccessBlockRequest} for DeleteBucketPublicAccessBlock operation.
+     * @return A {@link DeleteBucketPublicAccessBlockResult} for DeleteBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPublicAccessBlockResult deleteBucketPublicAccessBlock(DeleteBucketPublicAccessBlockRequest request) {
+        return deleteBucketPublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the block public access configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketPublicAccessBlockRequest} for DeleteBucketPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketPublicAccessBlockResult} for DeleteBucketPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPublicAccessBlockResult deleteBucketPublicAccessBlock(DeleteBucketPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket resource group api
+    /**
+     * You can call this operation to configure the resource group of a bucket.
+     *
+     * @param request A {@link PutBucketResourceGroupRequest} for PutBucketResourceGroup operation.
+     * @return A {@link PutBucketResourceGroupResult} for PutBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketResourceGroupResult putBucketResourceGroup(PutBucketResourceGroupRequest request) {
+        return putBucketResourceGroup(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to configure the resource group of a bucket.
+     *
+     * @param request A {@link PutBucketResourceGroupRequest} for PutBucketResourceGroup operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketResourceGroupResult} for PutBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketResourceGroupResult putBucketResourceGroup(PutBucketResourceGroupRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to query the resource group information of a bucket.
+     *
+     * @param request A {@link GetBucketResourceGroupRequest} for GetBucketResourceGroup operation.
+     * @return A {@link GetBucketResourceGroupResult} for GetBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketResourceGroupResult getBucketResourceGroup(GetBucketResourceGroupRequest request) {
+        return getBucketResourceGroup(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the resource group information of a bucket.
+     *
+     * @param request A {@link GetBucketResourceGroupRequest} for GetBucketResourceGroup operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketResourceGroupResult} for GetBucketResourceGroup operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketResourceGroupResult getBucketResourceGroup(GetBucketResourceGroupRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket access monitor api
+    /**
+     * Enables or disables access tracking for a bucket.
+     *
+     * @param request A {@link PutBucketAccessMonitorRequest} for PutBucketAccessMonitor operation.
+     * @return A {@link PutBucketAccessMonitorResult} for PutBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketAccessMonitorResult putBucketAccessMonitor(PutBucketAccessMonitorRequest request) {
+        return putBucketAccessMonitor(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables access tracking for a bucket.
+     *
+     * @param request A {@link PutBucketAccessMonitorRequest} for PutBucketAccessMonitor operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketAccessMonitorResult} for PutBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketAccessMonitorResult putBucketAccessMonitor(PutBucketAccessMonitorRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the access tracking status of a bucket.
+     *
+     * @param request A {@link GetBucketAccessMonitorRequest} for GetBucketAccessMonitor operation.
+     * @return A {@link GetBucketAccessMonitorResult} for GetBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketAccessMonitorResult getBucketAccessMonitor(GetBucketAccessMonitorRequest request) {
+        return getBucketAccessMonitor(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the access tracking status of a bucket.
+     *
+     * @param request A {@link GetBucketAccessMonitorRequest} for GetBucketAccessMonitor operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketAccessMonitorResult} for GetBucketAccessMonitor operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketAccessMonitorResult getBucketAccessMonitor(GetBucketAccessMonitorRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    // bucket policy api
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @return A {@link PutBucketPolicyResult} for PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPolicyResult putBucketPolicy(PutBucketPolicyRequest request) {
+        return putBucketPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures or modifies the policy for a bucket.
+     *
+     * @param request A {@link PutBucketPolicyRequest} for PutBucketPolicy operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketPolicyResult} for PutBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketPolicyResult putBucketPolicy(PutBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+      
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @return A {@link GetBucketPolicyResult} for GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyResult getBucketPolicy(GetBucketPolicyRequest request) {
+        return getBucketPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the policy of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyRequest} for GetBucketPolicy operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketPolicyResult} for GetBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyResult getBucketPolicy(GetBucketPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @return A {@link DeleteBucketPolicyResult} for DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPolicyResult deleteBucketPolicy(DeleteBucketPolicyRequest request) {
+        return deleteBucketPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the policy of a bucket.
+     *
+     * @param request A {@link DeleteBucketPolicyRequest} for DeleteBucketPolicy operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketPolicyResult} for DeleteBucketPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketPolicyResult deleteBucketPolicy(DeleteBucketPolicyRequest request, OperationOptions options) {
+            throw new UnsupportedOperationException();
+    }  
+
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @return A {@link GetBucketPolicyStatusResult} for GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyStatusResult getBucketPolicyStatus(GetBucketPolicyStatusRequest request) {
+        return getBucketPolicyStatus(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the policy status of a bucket.
+     *
+     * @param request A {@link GetBucketPolicyStatusRequest} for GetBucketPolicyStatus operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketPolicyStatusResult} for GetBucketPolicyStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketPolicyStatusResult getBucketPolicyStatus(GetBucketPolicyStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket tags api
+
+    /**
+     * You can call this operation to add tags to or modify the tags of a bucket.
+     *
+     * @param request A {@link PutBucketTagsRequest} for PutBucketTags operation.
+     * @return A {@link PutBucketTagsResult} for PutBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTagsResult putBucketTags(PutBucketTagsRequest request) {
+        return putBucketTags(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to add tags to or modify the tags of a bucket.
+     *
+     * @param request A {@link PutBucketTagsRequest} for PutBucketTags operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketTagsResult} for PutBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTagsResult putBucketTags(PutBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to query the tags of a bucket.
+     *
+     * @param request A {@link GetBucketTagsRequest} for GetBucketTags operation.
+     * @return A {@link GetBucketTagsResult} for GetBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTagsResult getBucketTags(GetBucketTagsRequest request) {
+        return getBucketTags(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the tags of a bucket.
+     *
+     * @param request A {@link GetBucketTagsRequest} for GetBucketTags operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketTagsResult} for GetBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTagsResult getBucketTags(GetBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to delete the tags of a specified bucket.
+     *
+     * @param request A {@link DeleteBucketTagsRequest} for DeleteBucketTags operation.
+     * @return A {@link DeleteBucketTagsResult} for DeleteBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketTagsResult deleteBucketTags(DeleteBucketTagsRequest request) {
+        return deleteBucketTags(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to delete the tags of a specified bucket.
+     *
+     * @param request A {@link DeleteBucketTagsRequest} for DeleteBucketTags operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketTagsResult} for DeleteBucketTags operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketTagsResult deleteBucketTags(DeleteBucketTagsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket redundancy transition api
+
+    /**
+     * Creates a bucket data redundancy transition.
+     *
+     * @param request A {@link CreateBucketDataRedundancyTransitionRequest} for CreateBucketDataRedundancyTransition operation.
+     * @return A {@link CreateBucketDataRedundancyTransitionResult} for CreateBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest request) {
+        return createBucketDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a bucket data redundancy transition.
+     *
+     * @param request A {@link CreateBucketDataRedundancyTransitionRequest} for CreateBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link CreateBucketDataRedundancyTransitionResult} for CreateBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateBucketDataRedundancyTransitionResult createBucketDataRedundancyTransition(CreateBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries a bucket data redundancy transition.
+     *
+     * @param request A {@link GetBucketDataRedundancyTransitionRequest} for GetBucketDataRedundancyTransition operation.
+     * @return A {@link GetBucketDataRedundancyTransitionResult} for GetBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest request) {
+        return getBucketDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries a bucket data redundancy transition.
+     *
+     * @param request A {@link GetBucketDataRedundancyTransitionRequest} for GetBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketDataRedundancyTransitionResult} for GetBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketDataRedundancyTransitionResult getBucketDataRedundancyTransition(GetBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes a bucket data redundancy transition.
+     *
+     * @param request A {@link DeleteBucketDataRedundancyTransitionRequest} for DeleteBucketDataRedundancyTransition operation.
+     * @return A {@link DeleteBucketDataRedundancyTransitionResult} for DeleteBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketDataRedundancyTransitionResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest request) {
+        return deleteBucketDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes a bucket data redundancy transition.
+     *
+     * @param request A {@link DeleteBucketDataRedundancyTransitionRequest} for DeleteBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketDataRedundancyTransitionResult} for DeleteBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketDataRedundancyTransitionResult deleteBucketDataRedundancyTransition(DeleteBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists bucket data redundancy transitions.
+     *
+     * @param request A {@link ListBucketDataRedundancyTransitionRequest} for ListBucketDataRedundancyTransition operation.
+     * @return A {@link ListBucketDataRedundancyTransitionResult} for ListBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListBucketDataRedundancyTransitionResult listBucketDataRedundancyTransition(ListBucketDataRedundancyTransitionRequest request) {
+        return listBucketDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists bucket data redundancy transitions.
+     *
+     * @param request A {@link ListBucketDataRedundancyTransitionRequest} for ListBucketDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link ListBucketDataRedundancyTransitionResult} for ListBucketDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListBucketDataRedundancyTransitionResult listBucketDataRedundancyTransition(ListBucketDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists user data redundancy transitions.
+     *
+     * @param request A {@link ListUserDataRedundancyTransitionRequest} for ListUserDataRedundancyTransition operation.
+     * @return A {@link ListUserDataRedundancyTransitionResult} for ListUserDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest request) {
+        return listUserDataRedundancyTransition(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists user data redundancy transitions.
+     *
+     * @param request A {@link ListUserDataRedundancyTransitionRequest} for ListUserDataRedundancyTransition operation.
+     * @param options The operation options.
+     * @return A {@link ListUserDataRedundancyTransitionResult} for ListUserDataRedundancyTransition operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListUserDataRedundancyTransitionResult listUserDataRedundancyTransition(ListUserDataRedundancyTransitionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------  
+
+    // bucket encryption api
+
+    /**
+     * You can call this operation to configure the encryption rule for a bucket.
+     *
+     * @param request A {@link PutBucketEncryptionRequest} for PutBucketEncryption operation.
+     * @return A {@link PutBucketEncryptionResult} for PutBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketEncryptionResult putBucketEncryption(PutBucketEncryptionRequest request) {
+        return putBucketEncryption(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to configure the encryption rule for a bucket.
+     *
+     * @param request A {@link PutBucketEncryptionRequest} for PutBucketEncryption operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketEncryptionResult} for PutBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketEncryptionResult putBucketEncryption(PutBucketEncryptionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * You can call this operation to query the encryption rule configured for a bucket.
+     *
+     * @param request A {@link GetBucketEncryptionRequest} for GetBucketEncryption operation.
+     * @return A {@link GetBucketEncryptionResult} for GetBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketEncryptionResult getBucketEncryption(GetBucketEncryptionRequest request) {
+        return getBucketEncryption(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to query the encryption rule configured for a bucket.
+     *
+     * @param request A {@link GetBucketEncryptionRequest} for GetBucketEncryption operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketEncryptionResult} for GetBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketEncryptionResult getBucketEncryption(GetBucketEncryptionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to delete the encryption rule configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketEncryptionRequest} for DeleteBucketEncryption operation.
+     * @return A {@link DeleteBucketEncryptionResult} for DeleteBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketEncryptionResult deleteBucketEncryption(DeleteBucketEncryptionRequest request) {
+        return deleteBucketEncryption(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to delete the encryption rule configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketEncryptionRequest} for DeleteBucketEncryption operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketEncryptionResult} for DeleteBucketEncryption operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketEncryptionResult deleteBucketEncryption(DeleteBucketEncryptionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+  
+    // bucket referer api
+    /**
+     * Configures the referer whitelist and blacklist for a bucket.
+     *
+     * @param request A {@link PutBucketRefererRequest} for PutBucketReferer operation.
+     * @return A {@link PutBucketRefererResult} for PutBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketRefererResult putBucketReferer(PutBucketRefererRequest request) {
+        return putBucketReferer(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the referer whitelist and blacklist for a bucket.
+     *
+     * @param request A {@link PutBucketRefererRequest} for PutBucketReferer operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketRefererResult} for PutBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketRefererResult putBucketReferer(PutBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the referer whitelist and blacklist of a bucket.
+     *
+     * @param request A {@link GetBucketRefererRequest} for GetBucketReferer operation.
+     * @return A {@link GetBucketRefererResult} for GetBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketRefererResult getBucketReferer(GetBucketRefererRequest request) {
+        return getBucketReferer(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the referer whitelist and blacklist of a bucket.
+     *
+     * @param request A {@link GetBucketRefererRequest} for GetBucketReferer operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketRefererResult} for GetBucketReferer operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketRefererResult getBucketReferer(GetBucketRefererRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket logging api
+    /**
+     * Configures logging for a bucket.
+     *
+     * @param request A {@link PutBucketLoggingRequest} for PutBucketLogging operation.
+     * @return A {@link PutBucketLoggingResult} for PutBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketLoggingResult putBucketLogging(PutBucketLoggingRequest request) {
+        return putBucketLogging(request, OperationOptions.defaults());
+    }
+  
+    /**
+     * Configures logging for a bucket.
+     *
+     * @param request A {@link PutBucketLoggingRequest} for PutBucketLogging operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketLoggingResult} for PutBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketLoggingResult putBucketLogging(PutBucketLoggingRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the logging configuration of a bucket.
+     *
+     * @param request A {@link GetBucketLoggingRequest} for GetBucketLogging operation.
+     * @return A {@link GetBucketLoggingResult} for GetBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketLoggingResult getBucketLogging(GetBucketLoggingRequest request) {
+        return getBucketLogging(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the logging configuration of a bucket.
+     *
+     * @param request A {@link GetBucketLoggingRequest} for GetBucketLogging operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketLoggingResult} for GetBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketLoggingResult getBucketLogging(GetBucketLoggingRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Deletes the logging configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketLoggingRequest} for DeleteBucketLogging operation.
+     * @return A {@link DeleteBucketLoggingResult} for DeleteBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketLoggingResult deleteBucketLogging(DeleteBucketLoggingRequest request) {
+        return deleteBucketLogging(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the logging configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketLoggingRequest} for DeleteBucketLogging operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketLoggingResult} for DeleteBucketLogging operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketLoggingResult deleteBucketLogging(DeleteBucketLoggingRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**      
+     * Configures the custom field information to be included in the real-time log delivery.
+     *
+     * @param request A {@link PutUserDefinedLogFieldsConfigRequest} for PutUserDefinedLogFieldsConfig operation.
+     * @return A {@link PutUserDefinedLogFieldsConfigResult} for PutUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutUserDefinedLogFieldsConfigResult putUserDefinedLogFieldsConfig(PutUserDefinedLogFieldsConfigRequest request) {
+        return putUserDefinedLogFieldsConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the custom field information to be included in the real-time log delivery.
+     *
+     * @param request A {@link PutUserDefinedLogFieldsConfigRequest} for PutUserDefinedLogFieldsConfig operation.
+     * @param options The operation options.
+     * @return A {@link PutUserDefinedLogFieldsConfigResult} for PutUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutUserDefinedLogFieldsConfigResult putUserDefinedLogFieldsConfig(PutUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+     /**
+     * Queries the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link GetUserDefinedLogFieldsConfigRequest} for GetUserDefinedLogFieldsConfig operation.
+     * @return A {@link GetUserDefinedLogFieldsConfigResult} for GetUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetUserDefinedLogFieldsConfigResult getUserDefinedLogFieldsConfig(GetUserDefinedLogFieldsConfigRequest request) {
+        return getUserDefinedLogFieldsConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link GetUserDefinedLogFieldsConfigRequest} for GetUserDefinedLogFieldsConfig operation.
+     * @param options The operation options.
+     * @return A {@link GetUserDefinedLogFieldsConfigResult} for GetUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetUserDefinedLogFieldsConfigResult getUserDefinedLogFieldsConfig(GetUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Deletes the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link DeleteUserDefinedLogFieldsConfigRequest} for DeleteUserDefinedLogFieldsConfig operation.
+     * @return A {@link DeleteUserDefinedLogFieldsConfigResult} for DeleteUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteUserDefinedLogFieldsConfigResult deleteUserDefinedLogFieldsConfig(DeleteUserDefinedLogFieldsConfigRequest request) {
+        return deleteUserDefinedLogFieldsConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the custom field information configuration for real-time log delivery.
+     *
+     * @param request A {@link DeleteUserDefinedLogFieldsConfigRequest} for DeleteUserDefinedLogFieldsConfig operation.
+     * @param options The operation options.
+     * @return A {@link DeleteUserDefinedLogFieldsConfigResult} for DeleteUserDefinedLogFieldsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteUserDefinedLogFieldsConfigResult deleteUserDefinedLogFieldsConfig(DeleteUserDefinedLogFieldsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    // processObject api
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @return A {@link ProcessObjectResult} for ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ProcessObjectResult processObject(ProcessObjectRequest request) {
+        return processObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies process on the specified image file.
+     *
+     * @param request A {@link ProcessObjectRequest} for ProcessObject operation.
+     * @param options The operation options.
+     * @return A {@link ProcessObjectResult} for ProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ProcessObjectResult processObject(ProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @return A {@link AsyncProcessObjectResult} for AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request) {
+        return asyncProcessObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Applies async process on the specified image file.
+     *
+     * @param request A {@link AsyncProcessObjectRequest} for AsyncProcessObject operation.
+     * @param options The operation options.
+     * @return A {@link AsyncProcessObjectResult} for AsyncProcessObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AsyncProcessObjectResult asyncProcessObject(AsyncProcessObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // public access block api
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutPublicAccessBlockRequest} for PutPublicAccessBlock operation.
+     * @return A {@link PutPublicAccessBlockResult} for PutPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutPublicAccessBlockResult putPublicAccessBlock(PutPublicAccessBlockRequest request) {
+        return putPublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the block public access feature for a bucket.
+     *
+     * @param request A {@link PutPublicAccessBlockRequest} for PutPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link PutPublicAccessBlockResult} for PutPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutPublicAccessBlockResult putPublicAccessBlock(PutPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the block public access configuration of a bucket.
+     *
+     * @param request A {@link GetPublicAccessBlockRequest} for GetPublicAccessBlock operation.
+     * @return A {@link GetPublicAccessBlockResult} for GetPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetPublicAccessBlockResult getPublicAccessBlock(GetPublicAccessBlockRequest request) {
+        return getPublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the block public access configuration of a bucket.
+     *
+     * @param request A {@link GetPublicAccessBlockRequest} for GetPublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link GetPublicAccessBlockResult} for GetPublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetPublicAccessBlockResult getPublicAccessBlock(GetPublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the block public access configuration of a bucket.
+     *
+     * @param request A {@link DeletePublicAccessBlockRequest} for DeletePublicAccessBlock operation.
+     * @return A {@link DeletePublicAccessBlockResult} for DeletePublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeletePublicAccessBlockResult deletePublicAccessBlock(DeletePublicAccessBlockRequest request) {
+        return deletePublicAccessBlock(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the block public access configuration of a bucket.
+     *
+     * @param request A {@link DeletePublicAccessBlockRequest} for DeletePublicAccessBlock operation.
+     * @param options The operation options.
+     * @return A {@link DeletePublicAccessBlockResult} for DeletePublicAccessBlock operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeletePublicAccessBlockResult deletePublicAccessBlock(DeletePublicAccessBlockRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // seal append object api
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request) {
+        return sealAppendObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to seal an appended object.
+     *
+     * @param request A {@link SealAppendObjectRequest} for SealAppendObject operation.
+     * @param options The operation options.
+     * @return A {@link SealAppendObjectResult} for SealAppendObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default SealAppendObjectResult sealAppendObject(SealAppendObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket transfer acceleration api
+
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @return A {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request) {
+        return putBucketTransferAcceleration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @return A {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request) {
+        return getBucketTransferAcceleration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+  
     // bucket lifecycle api
     /**
      * Configures the lifecycle rules for a bucket.
@@ -1478,4 +2379,5 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
 }

@@ -182,7 +182,6 @@ public final class ObjectBasic {
     public static DeleteMultipleObjectsResult deleteMultipleObjects(ClientImpl impl, DeleteMultipleObjectsRequest request, OperationOptions options) {
 
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.deleteObjects(), "request.deleteObjects is required");
 
         OperationInput input = SerdeObjectBasic.fromDeleteMultipleObjects(request);
         OperationOutput output = impl.execute(input, options);
@@ -192,7 +191,6 @@ public final class ObjectBasic {
     public static CompletableFuture<DeleteMultipleObjectsResult> deleteMultipleObjectsAsync(ClientImpl impl, DeleteMultipleObjectsRequest request, OperationOptions options) {
 
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.deleteObjects(), "request.deleteObjects is required");
 
         OperationInput input = SerdeObjectBasic.fromDeleteMultipleObjects(request);
         return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toDeleteMultipleObjects);
@@ -293,5 +291,26 @@ public final class ObjectBasic {
         if (!serverCRC.equals(clientCRC)) {
             throw new InconsistentException(clientCRC, serverCRC, headers);
         }
+    }
+
+    public static SealAppendObjectResult sealAppendObject(ClientImpl impl, SealAppendObjectRequest request, OperationOptions options) {
+
+        requireNonNull(request.bucket(), "request.bucket is required");
+        requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.position(), "request.position is required");
+
+        OperationInput input = SerdeObjectBasic.fromSealAppendObject(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeObjectBasic.toSealAppendObject(output);
+    }
+
+    public static CompletableFuture<SealAppendObjectResult> sealAppendObjectAsync(ClientImpl impl, SealAppendObjectRequest request, OperationOptions options) {
+
+        requireNonNull(request.bucket(), "request.bucket is required");
+        requireNonNull(request.key(), "request.key is required");
+        requireNonNull(request.position(), "request.position is required");
+
+        OperationInput input = SerdeObjectBasic.fromSealAppendObject(request);
+        return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toSealAppendObject);
     }
 }

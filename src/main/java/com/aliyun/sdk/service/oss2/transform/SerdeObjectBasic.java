@@ -82,12 +82,15 @@ public final class SerdeObjectBasic {
     }
 
     public static PutObjectResult toPutObject(OperationOutput output) {
-        Object innerBody = null;
+        String bodyStr = null;
+        if (output.body().isPresent()) {
+            bodyStr = output.body().get().toString();
+        }
         return PutObjectResult.newBuilder()
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(innerBody)
+                .innerBody(bodyStr)
                 .build();
     }
 
@@ -250,22 +253,50 @@ public final class SerdeObjectBasic {
         parameters.put("encoding-type", "url");
         builder.parameters(parameters);
 
+        // Check if both old and new parameters are set or neither is set
+        if ((request.deleteObjects() != null) && (request.delete() != null)) {
+            throw new IllegalArgumentException(
+                "Either old parameters (objects, quiet) or new parameter (delete) is set, but not both"
+            );
+        }
+
         // body
         StringBuilder xmlBody = new StringBuilder();
         xmlBody.append("<Delete>");
-        if (request.quiet() != null) {
-            xmlBody.append("<Quiet>").append(request.quiet()).append("</Quiet>");
-        }
-        if (request.deleteObjects() != null) {
-            for (DeleteObject o: request.deleteObjects()) {
-                xmlBody.append("<Object>");
-                xmlBody.append("<Key>").append(XmlUtils.escapeText(o.key())).append("</Key>");
-                if (o.versionId() != null) {
-                    xmlBody.append("<VersionId>").append(XmlUtils.escapeText(o.versionId())).append("</VersionId>");
+        
+        // Handle new parameter (delete)
+        if (request.delete() != null) {
+            if (request.delete().quiet() != null) {
+                xmlBody.append("<Quiet>").append(request.delete().quiet()).append("</Quiet>");
+            }
+            if (request.delete().objects() != null) {
+                for (ObjectIdentifier o: request.delete().objects()) {
+                    xmlBody.append("<Object>");
+                    xmlBody.append("<Key>").append(XmlUtils.escapeText(o.key())).append("</Key>");
+                    if (o.versionId() != null) {
+                        xmlBody.append("<VersionId>").append(XmlUtils.escapeText(o.versionId())).append("</VersionId>");
+                    }
+                    xmlBody.append("</Object>");
                 }
-                xmlBody.append("</Object>");
+            }
+        } 
+        // Handle old parameters (quiet, deleteObjects)
+        else {
+            if (request.quiet() != null) {
+                xmlBody.append("<Quiet>").append(request.quiet()).append("</Quiet>");
+            }
+            if (request.deleteObjects() != null) {
+                for (DeleteObject o: request.deleteObjects()) {
+                    xmlBody.append("<Object>");
+                    xmlBody.append("<Key>").append(XmlUtils.escapeText(o.key())).append("</Key>");
+                    if (o.versionId() != null) {
+                        xmlBody.append("<VersionId>").append(XmlUtils.escapeText(o.versionId())).append("</VersionId>");
+                    }
+                    xmlBody.append("</Object>");
+                }
             }
         }
+        
         xmlBody.append("</Delete>");
         String xmlStr = xmlBody.toString();
         builder.body(BinaryData.fromBytes(xmlStr.getBytes(StandardCharsets.UTF_8)));
@@ -437,4 +468,35 @@ public final class SerdeObjectBasic {
                 .build();
     }
 
+
+    public static OperationInput fromSealAppendObject(SealAppendObjectRequest request) {
+        OperationInput.Builder builder = OperationInput.newBuilder()
+                .opName("SealAppendObject")
+                .method("POST");
+
+        // parameters
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("seal", "");
+        if (request.position() != null) {
+            parameters.put("position", request.position());
+        }
+        builder.parameters(parameters);
+
+        builder.bucket(request.bucket());
+        builder.key(request.key());
+
+        OperationInput input = builder.build();
+        SerdeUtils.serializeInput(request, input);
+        return input;
+    }
+
+    public static SealAppendObjectResult toSealAppendObject(OperationOutput output) {
+        Object innerBody = null;
+        return SealAppendObjectResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(innerBody)
+                .build();
+    }
 }
