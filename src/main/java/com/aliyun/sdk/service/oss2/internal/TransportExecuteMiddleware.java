@@ -81,6 +81,10 @@ public class TransportExecuteMiddleware implements ExecuteMiddleware {
             ctx.put(RequestContext.Key.RESPONSE_CONSUMER_SUPPLIER, context.dataConsumerSupplier);
         }
 
+        if (context.requestOnceTimeout != null) {
+            ctx.put(RequestContext.Key.READWRITE_TIMEOUT, context.requestOnceTimeout);
+        }
+
         return ctx;
     }
 

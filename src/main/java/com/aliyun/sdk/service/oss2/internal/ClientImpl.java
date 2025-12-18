@@ -295,6 +295,9 @@ public class ClientImpl implements AutoCloseable {
         // default api options
         context.retryMaxAttempts = opOpts.retryMaxAttempts().orElse(options.retryer().maxAttempts());
 
+        // RequestOnceTimeout
+        context.requestOnceTimeout = opOpts.readWriteTimeout().orElse(null);
+
         // track request body
         if (input.opMetadata().containsKey(AttributeKey.UPLOAD_OBSERVER)) {
             context.requestBodyObserver = new ArrayList<>();

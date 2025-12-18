@@ -106,6 +106,14 @@ public final class SealAppendObjectRequest extends RequestModel {
         }
 
         /**
+         * The position from which the AppendObject operation starts.
+         */
+        public Builder position(long value) {
+            this.position = String.valueOf(value);
+            return this;
+        }
+
+        /**
          * To indicate that the requester is aware that the request and data download will incur costs.
          */
         public Builder requestPayer(String value) {

@@ -588,7 +588,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
 
     //-----------------------------------------------------------------------
-
+    
     // object tagging api
 
     /**
@@ -1406,7 +1406,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
 
     //-----------------------------------------------------------------------
-    
+
     // bucket public access block api
     /**
      * Configures the block public access feature for a bucket.
@@ -2260,6 +2260,243 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket transfer acceleration api
+
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @return A {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request) {
+        return putBucketTransferAcceleration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketTransferAccelerationResult putBucketTransferAcceleration(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @return A {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request) {
+        return getBucketTransferAcceleration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketTransferAccelerationResult getBucketTransferAcceleration(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+  
+    // bucket lifecycle api
+    /**
+     * Configures the lifecycle rules for a bucket.
+     *
+     * @param request A {@link PutBucketLifecycleRequest} for PutBucketLifecycle operation.
+     * @return A {@link PutBucketLifecycleResult} for PutBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request) {
+        return putBucketLifecycle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the lifecycle rules for a bucket.
+     *
+     * @param request A {@link PutBucketLifecycleRequest} for PutBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketLifecycleResult} for PutBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the lifecycle rules configured for a bucket.
+     *
+     * @param request A {@link GetBucketLifecycleRequest} for GetBucketLifecycle operation.
+     * @return A {@link GetBucketLifecycleResult} for GetBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketLifecycleResult getBucketLifecycle(GetBucketLifecycleRequest request) {
+        return getBucketLifecycle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the lifecycle rules configured for a bucket.
+     *
+     * @param request A {@link GetBucketLifecycleRequest} for GetBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketLifecycleResult} for GetBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketLifecycleResult getBucketLifecycle(GetBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Disables the lifecycle feature and deletes all lifecycle rules for a bucket.
+     *
+     * @param request A {@link DeleteBucketLifecycleRequest} for DeleteBucketLifecycle operation.
+     * @return A {@link DeleteBucketLifecycleResult} for DeleteBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketLifecycleResult deleteBucketLifecycle(DeleteBucketLifecycleRequest request) {
+        return deleteBucketLifecycle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Disables the lifecycle feature and deletes all lifecycle rules for a bucket.
+     *
+     * @param request A {@link DeleteBucketLifecycleRequest} for DeleteBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketLifecycleResult} for DeleteBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketLifecycleResult deleteBucketLifecycle(DeleteBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket cname api
+    /**
+     * You can call this operation to create a cname token.
+     *
+     * @param request A {@link CreateCnameTokenRequest} for CreateCnameToken operation.
+     * @return A {@link CreateCnameTokenResult} for CreateCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateCnameTokenResult createCnameToken(CreateCnameTokenRequest request) {
+        return createCnameToken(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to create a cname token.
+     *
+     * @param request A {@link CreateCnameTokenRequest} for CreateCnameToken operation.
+     * @param options The operation options.
+     * @return A {@link CreateCnameTokenResult} for CreateCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateCnameTokenResult createCnameToken(CreateCnameTokenRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the CNAME token mapped to a bucket.
+     *
+     * @param request A {@link GetCnameTokenRequest} for GetCnameToken operation.
+     * @return A {@link GetCnameTokenResult} for GetCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetCnameTokenResult getCnameToken(GetCnameTokenRequest request) {
+        return getCnameToken(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the CNAME token mapped to a bucket.
+     *
+     * @param request A {@link GetCnameTokenRequest} for GetCnameToken operation.
+     * @param options The operation options.
+     * @return A {@link GetCnameTokenResult} for GetCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetCnameTokenResult getCnameToken(GetCnameTokenRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to add a cname.
+     *
+     * @param request A {@link PutCnameRequest} for PutCname operation.
+     * @return A {@link PutCnameResult} for PutCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutCnameResult putCname(PutCnameRequest request) {
+        return putCname(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to add a cname.
+     *
+     * @param request A {@link PutCnameRequest} for PutCname operation.
+     * @param options The operation options.
+     * @return A {@link PutCnameResult} for PutCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutCnameResult putCname(PutCnameRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the CNAME records of a bucket.
+     *
+     * @param request A {@link ListCnameRequest} for ListCname operation.
+     * @return A {@link ListCnameResult} for ListCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListCnameResult listCname(ListCnameRequest request) {
+        return listCname(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the CNAME records of a bucket.
+     *
+     * @param request A {@link ListCnameRequest} for ListCname operation.
+     * @param options The operation options.
+     * @return A {@link ListCnameResult} for ListCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListCnameResult listCname(ListCnameRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes a CNAME record of a bucket.
+     *
+     * @param request A {@link DeleteCnameRequest} for DeleteCname operation.
+     * @return A {@link DeleteCnameResult} for DeleteCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteCnameResult deleteCname(DeleteCnameRequest request) {
+        return deleteCname(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes a CNAME record of a bucket.
+     *
+     * @param request A {@link DeleteCnameRequest} for DeleteCname operation.
+     * @param options The operation options.
+     * @return A {@link DeleteCnameResult} for DeleteCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteCnameResult deleteCname(DeleteCnameRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
     // bucket website api
     /**
      * Configures the website for a bucket.
@@ -2283,7 +2520,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
     default PutBucketWebsiteResult putBucketWebsite(PutBucketWebsiteRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+	
     /**
      * Queries the website configuration of a bucket.
      *
@@ -2306,7 +2543,7 @@ public interface OSSClient extends AutoCloseable, Presignable {
     default GetBucketWebsiteResult getBucketWebsite(GetBucketWebsiteRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+	
     /**
      * Deletes the website configuration of a bucket.
      *
@@ -2329,7 +2566,6 @@ public interface OSSClient extends AutoCloseable, Presignable {
     default DeleteBucketWebsiteResult deleteBucketWebsite(DeleteBucketWebsiteRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
     //-----------------------------------------------------------------------
-
+      
 }

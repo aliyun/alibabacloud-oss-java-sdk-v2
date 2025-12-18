@@ -369,7 +369,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<GetObjectAclResult> getObjectAclAsync(GetObjectAclRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+    
     //-----------------------------------------------------------------------
 
     // object multipart api
@@ -2126,6 +2126,242 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket transfer acceleration api
+    
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @return A Java Future containing the {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketTransferAccelerationResult> putBucketTransferAccelerationAsync(PutBucketTransferAccelerationRequest request) {
+        return putBucketTransferAccelerationAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables the transfer acceleration feature for a bucket.
+     *
+     * @param request A {@link PutBucketTransferAccelerationRequest} for PutBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketTransferAccelerationResult} for PutBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketTransferAccelerationResult> putBucketTransferAccelerationAsync(PutBucketTransferAccelerationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @return A Java Future containing the {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketTransferAccelerationResult> getBucketTransferAccelerationAsync(GetBucketTransferAccelerationRequest request) {
+        return getBucketTransferAccelerationAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the transfer acceleration configuration of a bucket.
+     *
+     * @param request A {@link GetBucketTransferAccelerationRequest} for GetBucketTransferAcceleration operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketTransferAccelerationResult} for GetBucketTransferAcceleration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketTransferAccelerationResult> getBucketTransferAccelerationAsync(GetBucketTransferAccelerationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket lifecycle api
+    /**
+     * Configures the lifecycle rules for a bucket.
+     *
+     * @param request A {@link PutBucketLifecycleRequest} for PutBucketLifecycle operation.
+     * @return A Java Future containing the {@link PutBucketLifecycleResult} of the PutBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketLifecycleResult> putBucketLifecycleAsync(PutBucketLifecycleRequest request) {
+        return putBucketLifecycleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the lifecycle rules for a bucket.
+     *
+     * @param request A {@link PutBucketLifecycleRequest} for PutBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketLifecycleResult} of the PutBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketLifecycleResult> putBucketLifecycleAsync(PutBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the lifecycle rules configured for a bucket.
+     *
+     * @param request A {@link GetBucketLifecycleRequest} for GetBucketLifecycle operation.
+     * @return A Java Future containing the {@link GetBucketLifecycleResult} of the GetBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketLifecycleResult> getBucketLifecycleAsync(GetBucketLifecycleRequest request) {
+        return getBucketLifecycleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the lifecycle rules configured for a bucket.
+     *
+     * @param request A {@link GetBucketLifecycleRequest} for GetBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketLifecycleResult} of the GetBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketLifecycleResult> getBucketLifecycleAsync(GetBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Disables the lifecycle feature and deletes all lifecycle rules for a bucket.
+     *
+     * @param request A {@link DeleteBucketLifecycleRequest} for DeleteBucketLifecycle operation.
+     * @return A Java Future containing the {@link DeleteBucketLifecycleResult} of the DeleteBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketLifecycleResult> deleteBucketLifecycleAsync(DeleteBucketLifecycleRequest request) {
+        return deleteBucketLifecycleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Disables the lifecycle feature and deletes all lifecycle rules for a bucket.
+     *
+     * @param request A {@link DeleteBucketLifecycleRequest} for DeleteBucketLifecycle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketLifecycleResult} of the DeleteBucketLifecycle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketLifecycleResult> deleteBucketLifecycleAsync(DeleteBucketLifecycleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+  
+    // bucket cname api
+    /**
+     * You can call this operation to create a cname token.
+     *
+     * @param request A {@link CreateCnameTokenRequest} for CreateCnameToken operation.
+     * @return A Java Future containing the {@link CreateCnameTokenResult} of the CreateCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateCnameTokenResult> createCnameTokenAsync(CreateCnameTokenRequest request) {
+        return createCnameTokenAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to create a cname token.
+     *
+     * @param request A {@link CreateCnameTokenRequest} for CreateCnameToken operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link CreateCnameTokenResult} of the CreateCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateCnameTokenResult> createCnameTokenAsync(CreateCnameTokenRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to get a cname token.
+     *
+     * @param request A {@link GetCnameTokenRequest} for GetCnameToken operation.
+     * @return A Java Future containing the {@link GetCnameTokenResult} of the GetCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetCnameTokenResult> getCnameTokenAsync(GetCnameTokenRequest request) {
+        return getCnameTokenAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to get a cname token.
+     *
+     * @param request A {@link GetCnameTokenRequest} for GetCnameToken operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetCnameTokenResult} of the GetCnameToken operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetCnameTokenResult> getCnameTokenAsync(GetCnameTokenRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to add a cname.
+     *
+     * @param request A {@link PutCnameRequest} for PutCname operation.
+     * @return A Java Future containing the {@link PutCnameResult} of the PutCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutCnameResult> putCnameAsync(PutCnameRequest request) {
+        return putCnameAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to add a cname.
+     *
+     * @param request A {@link PutCnameRequest} for PutCname operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutCnameResult} of the PutCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutCnameResult> putCnameAsync(PutCnameRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the CNAME records of a bucket.
+     *
+     * @param request A {@link ListCnameRequest} for ListCname operation.
+     * @return A Java Future containing the {@link ListCnameResult} for ListCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListCnameResult> listCnameAsync(ListCnameRequest request) {
+        return listCnameAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the CNAME records of a bucket.
+     *
+     * @param request A {@link ListCnameRequest} for ListCname operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListCnameResult} for ListCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListCnameResult> listCnameAsync(ListCnameRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes a CNAME record of a bucket.
+     *
+     * @param request A {@link DeleteCnameRequest} for DeleteCname operation.
+     * @return A Java Future containing the {@link DeleteCnameResult} for DeleteCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteCnameResult> deleteCnameAsync(DeleteCnameRequest request) {
+        return deleteCnameAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes a CNAME record of a bucket.
+     *
+     * @param request A {@link DeleteCnameRequest} for DeleteCname operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteCnameResult} for DeleteCname operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteCnameResult> deleteCnameAsync(DeleteCnameRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 
     // bucket website api
     /**
@@ -2171,7 +2407,7 @@ public interface OSSAsyncClient extends AutoCloseable {
      * @throws RuntimeException If an error occurs
      */
     default CompletableFuture<GetBucketWebsiteResult> getBucketWebsiteAsync(GetBucketWebsiteRequest request, OperationOptions options) {
-        throw new UnsupportedOperationException();
+	        throw new UnsupportedOperationException();
     }
 
     /**
@@ -2196,7 +2432,5 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<DeleteBucketWebsiteResult> deleteBucketWebsiteAsync(DeleteBucketWebsiteRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
-    //-----------------------------------------------------------------------
-
+    //-----------------------------------------------------------------------  
 }

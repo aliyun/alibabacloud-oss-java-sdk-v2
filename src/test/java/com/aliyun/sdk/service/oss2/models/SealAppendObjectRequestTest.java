@@ -50,6 +50,19 @@ public class SealAppendObjectRequestTest {
     }
 
     @Test
+    public void testLongPosition() {
+        SealAppendObjectRequest request = SealAppendObjectRequest.newBuilder()
+                .bucket("examplebucket")
+                .key("exampleobject")
+                .position(12345L)
+                .build();
+
+        assertThat(request.bucket()).isEqualTo("examplebucket");
+        assertThat(request.key()).isEqualTo("exampleobject");
+        assertThat(request.position()).isEqualTo("12345");
+    }
+
+    @Test
     public void testToBuilderPreserveState() {
         Map<String, String> headers = MapUtils.of(
                 "x-oss-request-id", "req-765432109876543210"
@@ -100,7 +113,9 @@ public class SealAppendObjectRequestTest {
 
         OperationInput input = SerdeObjectBasic.fromSealAppendObject(request);
 
+        assertThat(input.bucket()).isPresent();
         assertThat(input.bucket().get()).isEqualTo("examplebucket");
+        assertThat(input.key()).isPresent();
         assertThat(input.key().get()).isEqualTo("exampleobject");
         assertThat(input.parameters().get("seal")).isEqualTo("");
         assertThat(input.parameters().get("position")).isEqualTo("12345");
