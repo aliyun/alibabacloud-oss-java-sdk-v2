@@ -11,7 +11,7 @@ import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transport.ByteArrayBinaryData;
 import com.aliyun.sdk.service.oss2.utils.IOUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
