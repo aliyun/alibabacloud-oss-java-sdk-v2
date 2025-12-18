@@ -3,10 +3,24 @@ package com.aliyun.sdk.service.oss2;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import java.util.concurrent.ExecutionException;
 
 public class ClientBucketPolicyAsyncTest extends TestBase {
+
+    @Before
+    public void allowPublicAccess() {
+        OSSClient client = getDefaultClient();
+        client.putBucketPublicAccessBlock(
+                PutBucketPublicAccessBlockRequest.newBuilder()
+                        .bucket(bucketName)
+                        .bucketPublicAccessBlockConfiguration(BucketPublicAccessBlockConfiguration.newBuilder()
+                                .blockPublicAccess(false)
+                                .build())
+                        .build()
+        );
+    }
 
     @Test
     public void testBucketPolicyOperations() throws ExecutionException, InterruptedException {

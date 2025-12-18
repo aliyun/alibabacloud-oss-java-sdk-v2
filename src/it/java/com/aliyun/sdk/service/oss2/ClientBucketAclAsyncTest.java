@@ -25,6 +25,15 @@ public class ClientBucketAclAsyncTest extends TestBase {
         Assert.assertEquals(200, putBucketResult.statusCode());
         waitForCacheExpiration(1);
 
+        client.putBucketPublicAccessBlockAsync(
+                PutBucketPublicAccessBlockRequest.newBuilder()
+                        .bucket(testBucketName)
+                        .bucketPublicAccessBlockConfiguration(BucketPublicAccessBlockConfiguration.newBuilder()
+                                .blockPublicAccess(false)
+                                .build())
+                        .build()
+        ).get();
+
         try {
             // 2. Get bucket ACL (default)
             GetBucketAclResult getAclResult = client.getBucketAclAsync(

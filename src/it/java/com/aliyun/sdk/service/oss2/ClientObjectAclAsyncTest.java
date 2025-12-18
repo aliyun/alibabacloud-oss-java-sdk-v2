@@ -4,6 +4,7 @@ import com.aliyun.sdk.service.oss2.internal.TestUtils;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.ByteArrayBinaryData;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
@@ -15,6 +16,19 @@ public class ClientObjectAclAsyncTest extends TestBase {
         long ticks = new Date().getTime() / 1000;
         long val = new Random().nextInt(5000);
         return OJBJECT_NAME_PREFIX + ticks + "-" + val;
+    }
+
+    @Before
+    public void allowPublicAccess() {
+        OSSClient client = getDefaultClient();
+        client.putBucketPublicAccessBlock(
+                PutBucketPublicAccessBlockRequest.newBuilder()
+                        .bucket(bucketName)
+                        .bucketPublicAccessBlockConfiguration(BucketPublicAccessBlockConfiguration.newBuilder()
+                                .blockPublicAccess(false)
+                                .build())
+                        .build()
+        );
     }
 
     @Test
