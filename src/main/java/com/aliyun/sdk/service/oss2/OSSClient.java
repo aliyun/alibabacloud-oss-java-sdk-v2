@@ -2567,5 +2567,76 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
-      
+
+    // bucket_overwrite_config api
+    /**
+     * Call the PutBucketOverwriteConfig operation to configure overwrite protection for a bucket. This prevents specified objects from being overwritten.
+     *
+     * @param request A {@link PutBucketOverwriteConfigRequest} for PutBucketOverwriteConfig operation.
+     * @return A {@link PutBucketOverwriteConfigResult} for PutBucketOverwriteConfig operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default PutBucketOverwriteConfigResult putBucketOverwriteConfig(PutBucketOverwriteConfigRequest request) {
+        return putBucketOverwriteConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Call the PutBucketOverwriteConfig operation to configure overwrite protection for a bucket. This prevents specified objects from being overwritten.
+     *
+     * @param request A {@link PutBucketOverwriteConfigRequest} for PutBucketOverwriteConfig operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketOverwriteConfigResult} for PutBucketOverwriteConfig operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default PutBucketOverwriteConfigResult putBucketOverwriteConfig(PutBucketOverwriteConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Call the GetBucketOverwriteConfig operation to retrieve the overwrite configuration of a bucket.
+     *
+     * @param request A {@link GetBucketOverwriteConfigRequest} for GetBucketOverwriteConfig operation.
+     * @return A {@link GetBucketOverwriteConfigResult} for GetBucketOverwriteConfig operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default GetBucketOverwriteConfigResult getBucketOverwriteConfig(GetBucketOverwriteConfigRequest request) {
+        return getBucketOverwriteConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Call the GetBucketOverwriteConfig operation to retrieve the overwrite configuration of a bucket.
+     *
+     * @param request A {@link GetBucketOverwriteConfigRequest} for GetBucketOverwriteConfig operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketOverwriteConfigResult} for GetBucketOverwriteConfig operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default GetBucketOverwriteConfigResult getBucketOverwriteConfig(GetBucketOverwriteConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Delete overwrite configuration rule for the bucket.
+     *
+     * @param request A {@link DeleteBucketOverwriteConfigRequest} for DeleteBucketOverwriteConfig operation.
+     * @return A {@link DeleteBucketOverwriteConfigResult} for DeleteBucketOverwriteConfig operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default DeleteBucketOverwriteConfigResult deleteBucketOverwriteConfig(DeleteBucketOverwriteConfigRequest request) {
+        return deleteBucketOverwriteConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Delete overwrite configuration rule for the bucket.
+     *
+     * @param request A {@link DeleteBucketOverwriteConfigRequest} for DeleteBucketOverwriteConfig operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketOverwriteConfigResult} for DeleteBucketOverwriteConfig operation.
+     * @throws RuntimeException If a error occurs
+     */
+    default DeleteBucketOverwriteConfigResult deleteBucketOverwriteConfig(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
 }

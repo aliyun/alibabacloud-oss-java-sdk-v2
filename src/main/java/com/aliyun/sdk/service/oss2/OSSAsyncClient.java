@@ -2432,5 +2432,71 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<DeleteBucketWebsiteResult> deleteBucketWebsiteAsync(DeleteBucketWebsiteRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-    //-----------------------------------------------------------------------  
+    //-----------------------------------------------------------------------
+
+    // bucket_overwrite_config api
+    /**
+     * Call the PutBucketOverwriteConfig operation to configure overwrite protection for a bucket. This prevents specified objects from being overwritten.
+     *
+     * @param request A {@link PutBucketOverwriteConfigRequest} for PutBucketOverwriteConfig operation.
+     * @return A Java Future containing the {@link PutBucketOverwriteConfigResult} for PutBucketOverwriteConfig operation.
+     */
+    default CompletableFuture<PutBucketOverwriteConfigResult> putBucketOverwriteConfigAsync(PutBucketOverwriteConfigRequest request) {
+        return putBucketOverwriteConfigAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Call the PutBucketOverwriteConfig operation to configure overwrite protection for a bucket. This prevents specified objects from being overwritten.
+     *
+     * @param request A {@link PutBucketOverwriteConfigRequest} for PutBucketOverwriteConfig operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketOverwriteConfigResult} for PutBucketOverwriteConfig operation.
+     */
+    default CompletableFuture<PutBucketOverwriteConfigResult> putBucketOverwriteConfigAsync(PutBucketOverwriteConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Call the GetBucketOverwriteConfig operation to retrieve the overwrite configuration of a bucket.
+     *
+     * @param request A {@link GetBucketOverwriteConfigRequest} for GetBucketOverwriteConfig operation.
+     * @return A Java Future containing the {@link GetBucketOverwriteConfigResult} for GetBucketOverwriteConfig operation.
+     */
+    default CompletableFuture<GetBucketOverwriteConfigResult> getBucketOverwriteConfigAsync(GetBucketOverwriteConfigRequest request) {
+        return getBucketOverwriteConfigAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Call the GetBucketOverwriteConfig operation to retrieve the overwrite configuration of a bucket.
+     *
+     * @param request A {@link GetBucketOverwriteConfigRequest} for GetBucketOverwriteConfig operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketOverwriteConfigResult} for GetBucketOverwriteConfig operation.
+     */
+    default CompletableFuture<GetBucketOverwriteConfigResult> getBucketOverwriteConfigAsync(GetBucketOverwriteConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Delete overwrite configuration rule for the bucket.
+     *
+     * @param request A {@link DeleteBucketOverwriteConfigRequest} for DeleteBucketOverwriteConfig operation.
+     * @return A Java Future containing the {@link DeleteBucketOverwriteConfigResult} for DeleteBucketOverwriteConfig operation.
+     */
+    default CompletableFuture<DeleteBucketOverwriteConfigResult> deleteBucketOverwriteConfigAsync(DeleteBucketOverwriteConfigRequest request) {
+        return deleteBucketOverwriteConfigAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Delete overwrite configuration rule for the bucket.
+     *
+     * @param request A {@link DeleteBucketOverwriteConfigRequest} for DeleteBucketOverwriteConfig operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketOverwriteConfigResult} for DeleteBucketOverwriteConfig operation.
+     */
+    default CompletableFuture<DeleteBucketOverwriteConfigResult> deleteBucketOverwriteConfigAsync(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
 }

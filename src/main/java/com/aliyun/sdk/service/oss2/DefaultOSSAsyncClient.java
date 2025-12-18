@@ -495,5 +495,20 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     @Override
     public CompletableFuture<DeleteBucketWebsiteResult> deleteBucketWebsiteAsync(DeleteBucketWebsiteRequest request, OperationOptions options) {
         return BucketWebsite.deleteBucketWebsiteAsync(this.clientImpl, request, options);
-    }  
+    }
+
+    @Override
+    public CompletableFuture<PutBucketOverwriteConfigResult> putBucketOverwriteConfigAsync(PutBucketOverwriteConfigRequest request, OperationOptions options) {
+        return BucketOverwriteConfig.putBucketOverwriteConfigAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketOverwriteConfigResult> getBucketOverwriteConfigAsync(GetBucketOverwriteConfigRequest request, OperationOptions options) {
+        return BucketOverwriteConfig.getBucketOverwriteConfigAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketOverwriteConfigResult> deleteBucketOverwriteConfigAsync(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
+        return BucketOverwriteConfig.deleteBucketOverwriteConfigAsync(this.clientImpl, request, options);
+    }
 }
