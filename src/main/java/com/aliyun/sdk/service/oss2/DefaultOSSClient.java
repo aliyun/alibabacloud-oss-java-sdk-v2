@@ -531,4 +531,19 @@ public class DefaultOSSClient implements OSSClient {
     public DeleteBucketWebsiteResult deleteBucketWebsite(DeleteBucketWebsiteRequest request, OperationOptions options) {
         return BucketWebsite.deleteBucketWebsite(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketOverwriteConfigResult putBucketOverwriteConfig(PutBucketOverwriteConfigRequest request, OperationOptions options) {
+        return BucketOverwriteConfig.putBucketOverwriteConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketOverwriteConfigResult getBucketOverwriteConfig(GetBucketOverwriteConfigRequest request, OperationOptions options) {
+        return BucketOverwriteConfig.getBucketOverwriteConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketOverwriteConfigResult deleteBucketOverwriteConfig(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
+        return BucketOverwriteConfig.deleteBucketOverwriteConfig(this.clientImpl, request, options);
+    }
 }
