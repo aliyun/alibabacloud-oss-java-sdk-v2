@@ -2362,5 +2362,75 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
-  
+
+    // bucket website api
+    /**
+     * Configures the website for a bucket.
+     *
+     * @param request A {@link PutBucketWebsiteRequest} for PutBucketWebsite operation.
+     * @return A Java Future containing the {@link PutBucketWebsiteResult} of the PutBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketWebsiteResult> putBucketWebsiteAsync(PutBucketWebsiteRequest request) {
+        return putBucketWebsiteAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the website for a bucket.
+     *
+     * @param request A {@link PutBucketWebsiteRequest} for PutBucketWebsite operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketWebsiteResult} of the PutBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketWebsiteResult> putBucketWebsiteAsync(PutBucketWebsiteRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the website configuration of a bucket.
+     *
+     * @param request A {@link GetBucketWebsiteRequest} for GetBucketWebsite operation.
+     * @return A Java Future containing the {@link GetBucketWebsiteResult} of the GetBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketWebsiteResult> getBucketWebsiteAsync(GetBucketWebsiteRequest request) {
+        return getBucketWebsiteAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the website configuration of a bucket.
+     *
+     * @param request A {@link GetBucketWebsiteRequest} for GetBucketWebsite operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketWebsiteResult} of the GetBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketWebsiteResult> getBucketWebsiteAsync(GetBucketWebsiteRequest request, OperationOptions options) {
+	        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the website configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketWebsiteRequest} for DeleteBucketWebsite operation.
+     * @return A Java Future containing the {@link DeleteBucketWebsiteResult} of the DeleteBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketWebsiteResult> deleteBucketWebsiteAsync(DeleteBucketWebsiteRequest request) {
+        return deleteBucketWebsiteAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the website configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketWebsiteRequest} for DeleteBucketWebsite operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketWebsiteResult} of the DeleteBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketWebsiteResult> deleteBucketWebsiteAsync(DeleteBucketWebsiteRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------  
 }
