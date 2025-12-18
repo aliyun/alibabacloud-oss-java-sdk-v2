@@ -2497,4 +2497,75 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket website api
+    /**
+     * Configures the website for a bucket.
+     *
+     * @param request A {@link PutBucketWebsiteRequest} for PutBucketWebsite operation.
+     * @return A {@link PutBucketWebsiteResult} for PutBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketWebsiteResult putBucketWebsite(PutBucketWebsiteRequest request) {
+        return putBucketWebsite(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the website for a bucket.
+     *
+     * @param request A {@link PutBucketWebsiteRequest} for PutBucketWebsite operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketWebsiteResult} for PutBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketWebsiteResult putBucketWebsite(PutBucketWebsiteRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+	
+    /**
+     * Queries the website configuration of a bucket.
+     *
+     * @param request A {@link GetBucketWebsiteRequest} for GetBucketWebsite operation.
+     * @return A {@link GetBucketWebsiteResult} for GetBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketWebsiteResult getBucketWebsite(GetBucketWebsiteRequest request) {
+        return getBucketWebsite(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the website configuration of a bucket.
+     *
+     * @param request A {@link GetBucketWebsiteRequest} for GetBucketWebsite operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketWebsiteResult} for GetBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketWebsiteResult getBucketWebsite(GetBucketWebsiteRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+	
+    /**
+     * Deletes the website configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketWebsiteRequest} for DeleteBucketWebsite operation.
+     * @return A {@link DeleteBucketWebsiteResult} for DeleteBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketWebsiteResult deleteBucketWebsite(DeleteBucketWebsiteRequest request) {
+        return deleteBucketWebsite(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the website configuration of a bucket.
+     *
+     * @param request A {@link DeleteBucketWebsiteRequest} for DeleteBucketWebsite operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketWebsiteResult} for DeleteBucketWebsite operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketWebsiteResult deleteBucketWebsite(DeleteBucketWebsiteRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+      
 }
