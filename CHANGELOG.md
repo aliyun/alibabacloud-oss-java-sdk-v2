@@ -1,5 +1,15 @@
 # ChangeLog - Alibaba Cloud OSS SDK For Java V2
 
+## 版本号：0.3.0 日期：2025-12-25
+### 变更内容
+- Feature：Supports api-level ReadWriteTimeout
+- Feature：Add bucket transfer acceleration api
+- Feature：Add bucket lifecycle api
+- Feature：Add bucket cname api
+- Feature：Add bucket website api
+- Feature：Add bucket overwrite config api
+- Fix：Change the type of distance from int to float
+
 ## 版本号：0.2.0-beta 日期：2025-11-07
 ### 变更内容
 - Feature：Add process object api
