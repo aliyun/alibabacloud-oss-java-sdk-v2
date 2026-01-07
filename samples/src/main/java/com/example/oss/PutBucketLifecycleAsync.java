@@ -29,7 +29,7 @@ public class PutBucketLifecycleAsync implements Example {
                     .id("expiration-rule")
                     .status("Enabled")
                     .prefix("logs/")
-                    .expiration(Expiration.newBuilder().days(30).build())
+                    .expiration(LifecycleRuleExpiration.newBuilder().days(30).build())
                     .build();
 
             // Build lifecycle rule - storage class transition
@@ -38,11 +38,11 @@ public class PutBucketLifecycleAsync implements Example {
                     .status("Enabled")
                     .prefix("data/")
                     .transitions(Arrays.asList(
-                        Transition.newBuilder()
+                            LifecycleRuleTransition.newBuilder()
                             .days(30)
                             .storageClass("IA")
                             .build(),
-                        Transition.newBuilder()
+                            LifecycleRuleTransition.newBuilder()
                             .days(90)
                             .storageClass("Archive")
                             .build()
