@@ -241,7 +241,6 @@ public class PutBucketInventoryRequestTest {
                 "  <OptionalFields>\n" +
                 "    <Field>Size</Field>\n" +
                 "    <Field>LastModifiedDate</Field>\n" +
-                "    <Field>TransistionTime</Field>\n" +
                 "    <Field>ETag</Field>\n" +
                 "    <Field>StorageClass</Field>\n" +
                 "    <Field>IsMultipartUploaded</Field>\n" +
