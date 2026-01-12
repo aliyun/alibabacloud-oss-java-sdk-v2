@@ -63,7 +63,7 @@ public class GetBucketLifecycle implements Example {
                     // Display storage class transition rules
                     if (rule.transitions() != null && !rule.transitions().isEmpty()) {
                         System.out.println("  Transitions:");
-                        for (Transition transition : rule.transitions()) {
+                        for (LifecycleRuleTransition transition : rule.transitions()) {
                             if (transition.days() != null) {
                                 System.out.printf("    Days: %d, Storage Class: %s\n", transition.days(), transition.storageClass());
                             }
