@@ -1025,4 +1025,46 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<DeleteBucketOverwriteConfigResult> deleteBucketOverwriteConfigAsync(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
         return BucketOverwriteConfig.deleteBucketOverwriteConfigAsync(this.clientImpl, request, options);
     }
+
+    // sync operation
+    @Override
+    public PutBucketInventoryResult putBucketInventory(PutBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.putBucketInventory(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketInventoryResult getBucketInventory(GetBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.getBucketInventory(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListBucketInventoryResult listBucketInventory(ListBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.listBucketInventory(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketInventoryResult deleteBucketInventory(DeleteBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.deleteBucketInventory(this.clientImpl, request, options);
+    }
+
+    // async operation
+    @Override
+    public CompletableFuture<PutBucketInventoryResult> putBucketInventoryAsync(PutBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.putBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketInventoryResult> getBucketInventoryAsync(GetBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.getBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.listBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.deleteBucketInventoryAsync(this.clientImpl, request, options);
+    }
 }
