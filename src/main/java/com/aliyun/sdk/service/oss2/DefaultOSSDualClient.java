@@ -1025,4 +1025,44 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<DeleteBucketOverwriteConfigResult> deleteBucketOverwriteConfigAsync(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
         return BucketOverwriteConfig.deleteBucketOverwriteConfigAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.openMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return BucketMetaquery.getMetaQueryStatus(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.doMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.closeMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.openMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return BucketMetaquery.getMetaQueryStatusAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.doMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.closeMetaQueryAsync(this.clientImpl, request, options);
+    }
 }
