@@ -23,8 +23,7 @@ public final class MetaQueryFilters {
     }
 
     /**
-    * Filter condition expressions. Each expression represents filtering criteria, for example:
-    * "Size > 1024,FileModifiedTime > 2025-06-03T09:20:47.999Z" means to filter files with size greater than 1024 bytes and modification time after 2025-06-03T09:20:47.999Z.
+    * Filter condition expressions. Each expression represents filtering criteria
     * 
     * @return the list of filter condition expressions
     */
@@ -44,8 +43,7 @@ public final class MetaQueryFilters {
         private List<String> filter;
         
         /**
-        * Sets the filter condition expressions. Each expression represents filtering criteria, for example:
-        * "Size > 1024,FileModifiedTime > 2025-06-03T09:20:47.999Z" means to filter files with size greater than 1024 bytes and modification time after 2025-06-03T09:20:47.999Z.
+        * Sets the filter condition expressions. Each expression represents filtering criteria, for example
         * 
         * @param value the list of filter condition expressions
         * @return the builder instance
