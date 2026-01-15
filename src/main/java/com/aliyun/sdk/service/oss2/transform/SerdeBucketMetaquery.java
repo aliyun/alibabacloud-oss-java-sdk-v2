@@ -121,7 +121,6 @@ public final class SerdeBucketMetaquery {
             .build();
     }
 
-
     public static OperationInput fromOpenMetaQuery(OpenMetaQueryRequest request) {
         OperationInput.Builder builder = OperationInput.newBuilder()
             .opName("OpenMetaQuery")
