@@ -511,4 +511,24 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<DeleteBucketOverwriteConfigResult> deleteBucketOverwriteConfigAsync(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
         return BucketOverwriteConfig.deleteBucketOverwriteConfigAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.openMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return BucketMetaquery.getMetaQueryStatusAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.doMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.closeMetaQueryAsync(this.clientImpl, request, options);
+    }
 }
