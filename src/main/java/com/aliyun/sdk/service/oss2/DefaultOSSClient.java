@@ -546,4 +546,14 @@ public class DefaultOSSClient implements OSSClient {
     public DeleteBucketOverwriteConfigResult deleteBucketOverwriteConfig(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
         return BucketOverwriteConfig.deleteBucketOverwriteConfig(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketArchiveDirectReadResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return com.aliyun.sdk.service.oss2.operations.BucketArchiveDirectRead.putBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return com.aliyun.sdk.service.oss2.operations.BucketArchiveDirectRead.getBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
 }

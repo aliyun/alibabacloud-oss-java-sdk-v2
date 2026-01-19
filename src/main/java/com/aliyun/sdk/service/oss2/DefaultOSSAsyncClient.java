@@ -511,4 +511,14 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<DeleteBucketOverwriteConfigResult> deleteBucketOverwriteConfigAsync(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
         return BucketOverwriteConfig.deleteBucketOverwriteConfigAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return com.aliyun.sdk.service.oss2.operations.BucketArchiveDirectRead.putBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return com.aliyun.sdk.service.oss2.operations.BucketArchiveDirectRead.getBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+    }
 }
