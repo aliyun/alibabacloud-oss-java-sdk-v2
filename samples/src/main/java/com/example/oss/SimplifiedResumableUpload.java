@@ -4,8 +4,11 @@ import com.aliyun.sdk.service.oss2.OSSClient;
 import com.aliyun.sdk.service.oss2.OSSClientBuilder;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.io.BoundedInputStream;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.paginator.ListPartsIterable;
+import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -44,15 +47,15 @@ public class SimplifiedResumableUpload implements Example {
 
         try (OSSClient client = clientBuilder.build()) {
             // Call resumable upload function
-            String resultUploadId = uploadFile(client, bucket, key, filePath, uploadId, enableCheckPoint, partSize, taskNum);
-            System.out.println("File upload completed, final UploadId: " + resultUploadId);
+            SimplifiedResumableUploadResult result = uploadFile(client, bucket, key, filePath, uploadId, enableCheckPoint, partSize, taskNum);
+            System.out.println("File upload completed, final UploadId: " + result.getUploadId());
         }
     }
 
     /**
      * Resumable upload functionality implementation
      */
-    public static String uploadFile(OSSClient client, String bucketName, String objectKey, String localFilePath, String uploadId, boolean enableCheckPoint, long partSize, int taskNum) throws Exception {
+    public static SimplifiedResumableUploadResult uploadFile(OSSClient client, String bucketName, String objectKey, String localFilePath, String uploadId, boolean enableCheckPoint, long partSize, int taskNum) throws Exception {
         File file = new File(localFilePath);
         if (!file.exists()) {
             throw new IllegalArgumentException("File does not exist: " + localFilePath);
@@ -63,179 +66,197 @@ public class SimplifiedResumableUpload implements Example {
             partSize = 1024 * 1024L; // 1MB
         }
 
+        long fileLength = file.length();
+        int partCount = (int) (fileLength / partSize);
+        if (fileLength % partSize != 0) {
+            partCount++;
+        }
+
+        // Ensure part count doesn't exceed 10000
+        if (partCount > 10000) {
+            throw new IllegalArgumentException("Number of parts exceeds maximum allowed (10000). Consider increasing part size.");
+        }
+
         // If taskNum is not specified, default to 1
         if (taskNum <= 0) {
             taskNum = 1;
         }
 
-        // Make uploadId effectively final to avoid lambda variable issue
+        // Make uploadId effectively final
         final String finalUploadId = uploadId;
 
-        try {
-            // Step 1: Initialize upload or get existing upload status
-            String actualUploadId = finalUploadId;
-            if (actualUploadId == null) {
-                // If uploadId is null, initialize upload event and get uploadId
-                InitiateMultipartUploadResult initiateResult = client.initiateMultipartUpload(
-                        InitiateMultipartUploadRequest.newBuilder()
-                                .bucket(bucketName)
-                                .key(objectKey)
-                                .build());
+        // Step 1: Initialize upload or get existing upload status
+        String actualUploadId = finalUploadId;
 
-                actualUploadId = initiateResult.initiateMultipartUpload().uploadId();
-                System.out.printf("Initialized upload, got UploadId: %s\n", actualUploadId);
-            } else {
-                // If uploadId is not null, get uploaded parts via listParts interface
-                System.out.printf("Using existing UploadId: %s, getting uploaded parts\n", actualUploadId);
-                ListPartsResult listPartsResult = client.listParts(
+        // Get uploaded parts information
+        ConcurrentHashMap<Long, Part> allPartsMap = new ConcurrentHashMap<>();
+
+        // Check if the actual UploadId is valid
+        List<Part> uploadedParts = new ArrayList<>();
+        List<Long> uploadedPartNumbers = new ArrayList<>();
+        if (enableCheckPoint && actualUploadId != null) {
+            try {
+                ListPartsIterable paginator = client.listPartsPaginator(
                         ListPartsRequest.newBuilder()
                                 .bucket(bucketName)
                                 .key(objectKey)
                                 .uploadId(actualUploadId)
                                 .build());
+
+                // Iterate through all pages to collect all parts
+                List<Part> allPartsList = new ArrayList<>();
+                for (ListPartsResult result : paginator) {
+                    allPartsList.addAll(result.parts());
+                }
+
+                System.out.printf("Found %d uploaded parts\n", allPartsList.size());
                 
-                System.out.printf("Uploaded %d parts\n", listPartsResult.parts().size());
-            }
+                // Add all uploaded parts to the map
+                for (Part part : allPartsList) {
+                    allPartsMap.put(part.partNumber(), part);
+                }
 
-            // Step 2: Filter out uploaded parts, upload unuploaded parts
-            long fileLength = file.length();
-            int partCount = (int) (fileLength / partSize);
-            if (fileLength % partSize != 0) {
-                partCount++;
-            }
-
-            // Get uploaded parts information
-            ConcurrentHashMap<Integer, Part> allPartsMap = new ConcurrentHashMap<>();
-            
-            // Get uploaded parts list
-            ListPartsResult listPartsResult = client.listParts(
-                    ListPartsRequest.newBuilder()
-                            .bucket(bucketName)
-                            .key(objectKey)
-                            .uploadId(actualUploadId)
-                            .build());
-            
-            List<Part> uploadedParts = listPartsResult.parts();
-            List<Long> uploadedPartNumbers = uploadedParts.stream()
+                uploadedParts = allPartsList;
+                
+                // Generate uploadedPartNumbers from uploadedParts
+                uploadedPartNumbers = uploadedParts.stream()
                     .map(Part::partNumber)
                     .collect(Collectors.toList());
 
-            // Create thread pool for concurrent uploads
-            ExecutorService executorService = Executors.newFixedThreadPool(taskNum);
-            List<CompletableFuture<Void>> futures = new ArrayList<>();
+            } catch (Exception e) {
+                actualUploadId = null;
+            }
+        } else {
+            // If checkpoint is not enabled or actualUploadId is null, initialize empty lists
+            uploadedParts = new ArrayList<>();
+            uploadedPartNumbers = new ArrayList<>();
+        }
 
-            // Create upload task for each unuploaded part
-            for (int i = 0; i < partCount; i++) {
-                long partNumber = i + 1; // Part number starts from 1
-                long startPos = i * partSize;
-                long curPartSize = (i + 1 == partCount) ? (fileLength - startPos) : partSize;
+        if (actualUploadId == null) {
+            InitiateMultipartUploadResult initiateResult = client.initiateMultipartUpload(
+                    InitiateMultipartUploadRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectKey)
+                            .build());
 
-                // Check if this part is already uploaded
-                if (uploadedPartNumbers.contains(partNumber)) {
-                    System.out.printf("Part %d already exists, skipping upload\n", partNumber);
-                    // Add uploaded part information
-                    Part existingPart = uploadedParts.stream()
-                            .filter(p -> p.partNumber().equals(partNumber))
-                            .findFirst()
-                            .orElse(null);
-                    if (existingPart != null) {
-                        allPartsMap.put((int)partNumber, Part.newBuilder()
-                                .partNumber(existingPart.partNumber())
-                                .eTag(existingPart.eTag())
-                                .build());
-                    }
-                    continue;
-                }
-
-                // Create upload task
-                final long finalPartNumber = partNumber;
-                final String finalActualUploadId = actualUploadId;
-                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                    try (FileInputStream fis = new FileInputStream(file)) {
-                        fis.skip(startPos);
-                        BoundedInputStream boundedInputStream = new BoundedInputStream(fis, curPartSize);
-
-                        // Upload part
-                        UploadPartResult uploadPartResult = client.uploadPart(UploadPartRequest.newBuilder()
-                                .bucket(bucketName)
-                                .key(objectKey)
-                                .uploadId(finalActualUploadId)
-                                .partNumber(finalPartNumber)
-                                .body(com.aliyun.sdk.service.oss2.transport.BinaryData.fromStream(boundedInputStream))
-                                .build());
-
-                        System.out.printf("Upload part %d completed, ETag: %s, status code: %d\n", 
-                                finalPartNumber, uploadPartResult.eTag(), uploadPartResult.statusCode());
+            actualUploadId = initiateResult.initiateMultipartUpload().uploadId();
+            System.out.printf("Initialized upload, got UploadId: %s\n", actualUploadId);
+        }
 
 
+        // Create thread pool for concurrent uploads
+        ExecutorService executorService = Executors.newFixedThreadPool(taskNum);
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
 
-                        // Add to allParts map
-                        allPartsMap.put((int)finalPartNumber, Part.newBuilder()
-                                .partNumber(finalPartNumber)
-                                .eTag(uploadPartResult.eTag())
-                                .build());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }, executorService);
+        // Step 2: upload part
+        // Create upload task for each unuploaded part
+        for (int i = 0; i < partCount; i++) {
+            long partNumber = i + 1; // Part number starts from 1
+            long startPos = i * partSize;
+            long curPartSize = (i + 1 == partCount) ? (fileLength - startPos) : partSize;
 
-                futures.add(future);
+            // Check if this part is already uploaded
+            if (uploadedPartNumbers.contains(partNumber)) {
+                System.out.printf("Part %d already exists, skipping upload\n", partNumber);
+                continue;
             }
 
-            // Wait for all parts to finish uploading
-            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-            
-            // Shutdown thread pool
-            executorService.shutdown();
+            // Create upload task
+            final long finalPartNumber = partNumber;
+            final String finalActualUploadId = actualUploadId;
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    fis.skip(startPos);
+                    BoundedInputStream boundedInputStream = new BoundedInputStream(fis, curPartSize);
 
-            // Convert map to list and sort by part number
-            List<Part> allParts = new ArrayList<>(allPartsMap.values());
-            Collections.sort(allParts, (p1, p2) -> p1.partNumber().compareTo(p2.partNumber()));
+                    // Upload part
+                    UploadPartResult uploadPartResult = client.uploadPart(UploadPartRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectKey)
+                            .uploadId(finalActualUploadId)
+                            .partNumber(finalPartNumber)
+                            .body(BinaryData.fromStream(boundedInputStream,  curPartSize))
+                            .build());
 
-            // Step 3: Complete multipart upload
-            CompleteMultipartUpload completeMultipartUpload = CompleteMultipartUpload.newBuilder()
-                    .parts(allParts)
-                    .build();
+                    System.out.printf("Upload part %d completed, ETag: %s, status code: %d\n",
+                            finalPartNumber, uploadPartResult.eTag(), uploadPartResult.statusCode());
 
-            CompleteMultipartUploadResult completeResult = client.completeMultipartUpload(
+
+
+                    // Add to allParts map
+                    allPartsMap.put((long) finalPartNumber, Part.newBuilder()
+                            .partNumber(finalPartNumber)
+                            .eTag(uploadPartResult.eTag())
+                            .build());
+                } catch (Exception e) {
+                    System.err.println("Exception occurred during upload of part " + finalPartNumber + ", UploadId: " + finalActualUploadId + ", Error: " + e.getMessage());
+                    throw new RuntimeException(e);
+                }
+            }, executorService);
+
+            futures.add(future);
+        }
+
+
+
+        // Wait for all parts to finish uploading
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        // Shutdown thread pool
+        executorService.shutdown();
+
+        // Convert map to list and sort by part number
+        List<Part> allParts = new ArrayList<>(allPartsMap.values());
+        Collections.sort(allParts, (p1, p2) -> p1.partNumber().compareTo(p2.partNumber()));
+
+        // Step 3: Complete multipart upload
+        CompleteMultipartUpload completeMultipartUpload = CompleteMultipartUpload.newBuilder()
+                .parts(allParts)
+                .build();
+
+        CompleteMultipartUploadResult completeResult = null;
+        try {
+            completeResult = client.completeMultipartUpload(
                     CompleteMultipartUploadRequest.newBuilder()
                             .bucket(bucketName)
                             .key(objectKey)
                             .uploadId(actualUploadId)
                             .completeMultipartUpload(completeMultipartUpload)
                             .build());
-
-            System.out.printf("File uploaded successfully: %s, status code: %d, request ID: %s\n", 
-                    objectKey, completeResult.statusCode(), completeResult.requestId());
-            return actualUploadId;
-
         } catch (Exception e) {
-            System.err.println("Exception occurred during upload: " + e.getMessage());
+            //If the exception is caused by ServiceException, detailed information can be obtained in this way.
+            ServiceException se = ServiceException.asCause(e);
+            if (se != null) {
+                // Try to get object metadata to check if upload was successful
+                HeadObjectResult headResult = client.headObject(
+                        HeadObjectRequest.newBuilder()
+                                .bucket(bucketName)
+                                .key(objectKey)
+                                .build());
 
-            if (enableCheckPoint) {
-                // If enableCheckPoint is turned on, the exception includes uploadId for next use
-                System.out.println("Checkpoint resume enabled, UploadId: " + finalUploadId + " available for next use");
-                throw e; // Throw exception, but uploadId is saved for subsequent use
-            } else {
-                // If enableCheckPoint is not turned on, call abortMultipartUpload to clean up fragments
-                if (finalUploadId != null) {
-                    System.out.println("Checkpoint resume disabled, cleaning up fragments, UploadId: " + finalUploadId);
-                    try {
-                        client.abortMultipartUpload(
-                                AbortMultipartUploadRequest.newBuilder()
-                                        .bucket(bucketName)
-                                        .key(objectKey)
-                                        .uploadId(finalUploadId)
-                                        .build());
+                // Compare file size with object size
+                if (headResult.contentLength() == file.length()) {
+                    System.out.printf("Upload appears to be successful despite NoSuchUpload error. Object exists with matching size.\n");
 
-                        System.out.println("Fragment cleanup successful");
-                    } catch (Exception abortEx) {
-                        System.err.println("Fragment cleanup failed: " + abortEx.getMessage());
-                    }
+                } else {
+                    System.out.printf("Upload failed: object exists but size doesn't match. Expected: %d, Actual: %d, UploadId: %s\n",
+                            file.length(), headResult.contentLength(), actualUploadId);
+                    throw e;
                 }
+
+            } else {
+                // If it's not a NoSuchUpload error, rethrow the original exception
+                System.err.println("Exception occurred during complete multipart upload, UploadId: " + actualUploadId + ", Error: " + e.getMessage());
                 throw e;
             }
         }
+
+        System.out.printf("File uploaded successfully: %s, status code: %d, request ID: %s\n",
+                objectKey, completeResult.statusCode(), completeResult.requestId());
+
+        // Return SimplifiedResumableUploadResult with uploadId and complete multipart upload result
+        return new SimplifiedResumableUploadResult(actualUploadId, completeResult);
+
     }
 
     @Override
@@ -262,8 +283,8 @@ public class SimplifiedResumableUpload implements Example {
         String filePath = cmd.getOptionValue("filePath");
         String uploadId = cmd.getOptionValue("uploadId");
         String enableCheckPointStr = cmd.getOptionValue("enableCheckPoint", "false");
-        String partSizeStr = cmd.getOptionValue("partSize", "1048576"); // 默认1MB
-        String taskNumStr = cmd.getOptionValue("taskNum", "1"); // 默认1个线程
+        String partSizeStr = cmd.getOptionValue("partSize", "1048576");
+        String taskNumStr = cmd.getOptionValue("taskNum", "1");
         
         boolean enableCheckPoint = Boolean.parseBoolean(enableCheckPointStr);
         long partSize = Long.parseLong(partSizeStr);
@@ -274,5 +295,24 @@ public class SimplifiedResumableUpload implements Example {
         } catch (Exception e) {
             System.out.printf("Error occurred during resumable upload:\n%s", e);
         }
+    }
+}
+
+
+class SimplifiedResumableUploadResult {
+    private final String uploadId;
+    private final CompleteMultipartUploadResult completeMultipartUploadResult;
+
+    public SimplifiedResumableUploadResult(String uploadId, CompleteMultipartUploadResult completeMultipartUploadResult) {
+        this.uploadId = uploadId;
+        this.completeMultipartUploadResult = completeMultipartUploadResult;
+    }
+
+    public String getUploadId() {
+        return uploadId;
+    }
+
+    public CompleteMultipartUploadResult getCompleteMultipartUploadResult() {
+        return completeMultipartUploadResult;
     }
 }
