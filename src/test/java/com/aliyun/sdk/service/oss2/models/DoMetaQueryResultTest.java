@@ -325,6 +325,16 @@ public class DoMetaQueryResultTest {
                 "                  <Value>val</Value>\n" +
                 "                </UserMeta>\n" +
                 "              </OSSUserMeta>\n" +
+                "              <Insights>\n" +
+                "                <Video>\n" +
+                "                  <Caption>hand holding shampoo</Caption>\n" +
+                "                  <Description>The video shows two different scenes: one with a stationary white plate, black bottle, and transparent glass cup, and another of a hand holding a shampoo bottle labeled \"YEZOLU\" moving slowly upward in the bathroom</Description>\n" +
+                "                </Video>\n" +
+                "                <Image>\n" +
+                "                  <Caption>person standing</Caption>\n" +
+                "                  <Description>Picture shows a person wearing a dark-colored suit jacket with a white shirt underneath. The background is a gradient from light blue to gray</Description>\n" +
+                "                </Image>\n" +
+                "              </Insights>\n" +
                 "            </File>\n" +
                 "            <File>\n" +
                 "                  <AlbumArtist>Jenny</AlbumArtist>\n" +
@@ -493,11 +503,27 @@ public class DoMetaQueryResultTest {
         assertThat(firstFile.ossUserMeta().userMeta().get(0).key()).isEqualTo("key");
         assertThat(firstFile.ossUserMeta().userMeta().get(0).value()).isEqualTo("val");
 
+        // Validate insights information
+        assertThat(firstFile.insights()).isNotNull();
+        assertThat(firstFile.insights().video()).isNotNull();
+        assertThat(firstFile.insights().image()).isNotNull();
+
+        // Validate video insights
+        assertThat(firstFile.insights().video().caption()).isEqualTo("hand holding shampoo");
+        assertThat(firstFile.insights().video().description()).isEqualTo("The video shows two different scenes: one with a stationary white plate, black bottle, and transparent glass cup, and another of a hand holding a shampoo bottle labeled \"YEZOLU\" moving slowly upward in the bathroom");
+
+        // Validate image insights
+        assertThat(firstFile.insights().image().caption()).isEqualTo("person standing");
+        assertThat(firstFile.insights().image().description()).isEqualTo("Picture shows a person wearing a dark-colored suit jacket with a white shirt underneath. The background is a gradient from light blue to gray");
+
         // Validate fields of the second file
         MetaQueryFile secondFile = result.metaQuery().files().file().get(1);
         assertThat(secondFile.albumArtist()).isEqualTo("Jenny");
         assertThat(secondFile.composer()).isEqualTo("Jane");
         assertThat(secondFile.performer()).isEqualTo("Jane");
         assertThat(secondFile.album()).isEqualTo("FirstAlbum");
+
+        // Validate that the second file doesn't have insights (null check)
+        assertThat(secondFile.insights()).isNull();
     }
 }
