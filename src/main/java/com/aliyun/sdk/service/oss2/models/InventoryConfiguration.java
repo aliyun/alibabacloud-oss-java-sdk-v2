@@ -96,8 +96,8 @@ public final class InventoryConfiguration {
     }
 
     /**
-     *
-     */
+    * The container for incremental inventory configuration.
+    */
     public IncrementalInventory incrementalInventory() {
         return this.incrementalInventory;
     }
@@ -185,8 +185,8 @@ public final class InventoryConfiguration {
         }
 
         /**
-         *
-         */
+        * The container for incremental inventory configuration.
+        */
         public Builder incrementalInventory(IncrementalInventory value) {
             requireNonNull(value);
             this.incrementalInventory = value;
