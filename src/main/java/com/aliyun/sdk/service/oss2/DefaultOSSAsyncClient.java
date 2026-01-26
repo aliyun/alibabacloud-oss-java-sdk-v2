@@ -514,11 +514,36 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
 
     @Override
     public CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
-        return com.aliyun.sdk.service.oss2.operations.BucketArchiveDirectRead.putBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+        return BucketArchiveDirectRead.putBucketArchiveDirectReadAsync(this.clientImpl, request, options);
     }
 
     @Override
     public CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
-        return com.aliyun.sdk.service.oss2.operations.BucketArchiveDirectRead.getBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+        return BucketArchiveDirectRead.getBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public CompletableFuture<InitiateBucketWormResult> initiateBucketWormAsync(InitiateBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.initiateBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<AbortBucketWormResult> abortBucketWormAsync(AbortBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.abortBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CompleteBucketWormResult> completeBucketWormAsync(CompleteBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.completeBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ExtendBucketWormResult> extendBucketWormAsync(ExtendBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.extendBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.getBucketWormAsync(this.clientImpl, request, options);
     }
 }

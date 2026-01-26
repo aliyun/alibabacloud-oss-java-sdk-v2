@@ -2687,5 +2687,121 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
 
+    //-----------------------------------------------------------------------      
+    // bucket worm api
+    /**
+     * Initiate a bucket worm configuration.
+     *
+     * @param request A {@link InitiateBucketWormRequest} for InitiateBucketWorm operation.
+     * @return A {@link InitiateBucketWormResult} for InitiateBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest request) {
+        return initiateBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Initiate a bucket worm configuration.
+     *
+     * @param request A {@link InitiateBucketWormRequest} for InitiateBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link InitiateBucketWormResult} for InitiateBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Abort a bucket worm configuration.
+     *
+     * @param request A {@link AbortBucketWormRequest} for AbortBucketWorm operation.
+     * @return A {@link AbortBucketWormResult} for AbortBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AbortBucketWormResult abortBucketWorm(AbortBucketWormRequest request) {
+        return abortBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Abort a bucket worm configuration.
+     *
+     * @param request A {@link AbortBucketWormRequest} for AbortBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link AbortBucketWormResult} for AbortBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AbortBucketWormResult abortBucketWorm(AbortBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Complete a bucket worm configuration.
+     *
+     * @param request A {@link CompleteBucketWormRequest} for CompleteBucketWorm operation.
+     * @return A {@link CompleteBucketWormResult} for CompleteBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompleteBucketWormResult completeBucketWorm(CompleteBucketWormRequest request) {
+        return completeBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Complete a bucket worm configuration.
+     *
+     * @param request A {@link CompleteBucketWormRequest} for CompleteBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link CompleteBucketWormResult} for CompleteBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompleteBucketWormResult completeBucketWorm(CompleteBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Extend a bucket worm configuration.
+     *
+     * @param request A {@link ExtendBucketWormRequest} for ExtendBucketWorm operation.
+     * @return A {@link ExtendBucketWormResult} for ExtendBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ExtendBucketWormResult extendBucketWorm(ExtendBucketWormRequest request) {
+        return extendBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Extend a bucket worm configuration.
+     *
+     * @param request A {@link ExtendBucketWormRequest} for ExtendBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link ExtendBucketWormResult} for ExtendBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ExtendBucketWormResult extendBucketWorm(ExtendBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Get a bucket worm configuration.
+     *
+     * @param request A {@link GetBucketWormRequest} for GetBucketWorm operation.
+     * @return A {@link GetBucketWormResult} for GetBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketWormResult getBucketWorm(GetBucketWormRequest request) {
+        return getBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Get a bucket worm configuration.
+     *
+     * @param request A {@link GetBucketWormRequest} for GetBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketWormResult} for GetBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketWormResult getBucketWorm(GetBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 }
