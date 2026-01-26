@@ -2500,6 +2500,53 @@ public interface OSSAsyncClient extends AutoCloseable {
 
     //-----------------------------------------------------------------------
 
+    // ArchiveDirectRead api
+    /**
+     * Enables or disables archive direct read for a bucket.
+     *
+     * @param request A {@link PutBucketArchiveDirectReadRequest} for PutBucketArchiveDirectRead operation.
+     * @return A Java Future containing the {@link PutBucketArchiveDirectReadResult} for PutBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request) {
+        return putBucketArchiveDirectReadAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables archive direct read for a bucket.
+     *
+     * @param request A {@link PutBucketArchiveDirectReadRequest} for PutBucketArchiveDirectRead operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketArchiveDirectReadResult} for PutBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the archive direct read configuration of a bucket asynchronously.
+     *
+     * @param request A {@link GetBucketArchiveDirectReadRequest} for GetBucketArchiveDirectRead operation.
+     * @return A Java Future containing the {@link GetBucketArchiveDirectReadResult} for GetBucketArchiveDirectRead operation.
+     */
+    default CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request) {
+        return getBucketArchiveDirectReadAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the archive direct read configuration of a bucket asynchronously.
+     *
+     * @param request A {@link GetBucketArchiveDirectReadRequest} for GetBucketArchiveDirectRead operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketArchiveDirectReadResult} for GetBucketArchiveDirectRead operation.
+     */
+    default CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
+
     // bucket worm api
     /**
      * Initiate a bucket worm configuration.
@@ -2523,7 +2570,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<InitiateBucketWormResult> initiateBucketWormAsync(InitiateBucketWormRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+      
     /**
      * Abort a bucket worm configuration.
      *

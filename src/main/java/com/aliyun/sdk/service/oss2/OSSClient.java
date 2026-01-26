@@ -2640,6 +2640,54 @@ public interface OSSClient extends AutoCloseable, Presignable {
 
     //-----------------------------------------------------------------------
 
+    // ArchiveDirectRead api
+    /**
+     * Queries the archive direct read configuration of a bucket.
+     *
+     * @param request A {@link GetBucketArchiveDirectReadRequest} for GetBucketArchiveDirectRead operation.
+     * @return A {@link GetBucketArchiveDirectReadResult} for GetBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest request) {
+        return getBucketArchiveDirectRead(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the archive direct read configuration of a bucket.
+     *
+     * @param request A {@link GetBucketArchiveDirectReadRequest} for GetBucketArchiveDirectRead operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketArchiveDirectReadResult} for GetBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Enables or disables archive direct read for a bucket.
+     *
+     * @param request A {@link PutBucketArchiveDirectReadRequest} for PutBucketArchiveDirectRead operation.
+     * @return A {@link PutBucketArchiveDirectReadResult} for PutBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketArchiveDirectReadResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request) {
+        return putBucketArchiveDirectRead(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables archive direct read for a bucket.
+     *
+     * @param request A {@link PutBucketArchiveDirectReadRequest} for PutBucketArchiveDirectRead operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketArchiveDirectReadResult} for PutBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketArchiveDirectReadResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------      
     // bucket worm api
     /**
      * Initiate a bucket worm configuration.
