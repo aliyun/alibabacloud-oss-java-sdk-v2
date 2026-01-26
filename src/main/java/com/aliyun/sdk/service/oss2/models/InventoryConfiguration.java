@@ -192,7 +192,6 @@ public final class InventoryConfiguration {
             this.incrementalInventory = value;
             return this;
         }
-        
 
         private Builder() {
             super();
