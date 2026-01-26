@@ -83,6 +83,42 @@ public class PutBucketInventory implements Example {
                     .optionalFields(optionalFields)
                     .build();
 
+            // Increment inventory
+            /*
+            IncrementInventorySchedule incrementSchedule = IncrementInventorySchedule.newBuilder()
+                    .frequency(600L) // 10 minutes in seconds
+                    .build();
+
+            List<String> incrementFields = Arrays.asList(
+                    IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER.toString(),
+                    IncrementalInventoryOptionalFieldType.RECORD_TYPE.toString(),
+                    IncrementalInventoryOptionalFieldType.RECORD_TIMESTAMP.toString(),
+                    IncrementalInventoryOptionalFieldType.REQUESTER.toString(),
+                    IncrementalInventoryOptionalFieldType.REQUEST_ID.toString(),
+                    IncrementalInventoryOptionalFieldType.SOURCE_IP.toString(),
+                    IncrementalInventoryOptionalFieldType.SIZE.toString(),
+                    IncrementalInventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                    IncrementalInventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                    IncrementalInventoryOptionalFieldType.E_TAG.toString(),
+                    IncrementalInventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                    IncrementalInventoryOptionalFieldType.OBJECT_TYPE.toString(),
+                    IncrementalInventoryOptionalFieldType.OBJECT_ACL.toString(),
+                    IncrementalInventoryOptionalFieldType.CRC64.toString(),
+                    IncrementalInventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
+            );
+            OptionalFields incrementalOptionalFields = OptionalFields.newBuilder()
+                    .fields(incrementFields)
+                    .build();
+
+            inventoryConfiguration = inventoryConfiguration.toBuilder()
+                    .incrementalInventory(IncrementalInventory.newBuilder()
+                            .isEnabled(true)
+                            .schedule(incrementSchedule)
+                            .optionalFields(incrementalOptionalFields)
+                            .build())
+                    .build();
+            */
+
             // Create PutBucketInventory request
             PutBucketInventoryRequest request = PutBucketInventoryRequest.newBuilder()
                     .bucket(bucket)
