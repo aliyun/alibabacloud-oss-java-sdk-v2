@@ -52,13 +52,13 @@ public class PutBucketInventoryAsync implements Example {
                     .build();
 
             // Create optional fields
-            List<InventoryOptionalFieldType> fields = Arrays.asList(
-                    InventoryOptionalFieldType.SIZE,
-                    InventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                    InventoryOptionalFieldType.E_TAG,
-                    InventoryOptionalFieldType.STORAGE_CLASS,
-                    InventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                    InventoryOptionalFieldType.ENCRYPTION_STATUS
+            List<String> fields = Arrays.asList(
+                    InventoryOptionalFieldType.SIZE.toString(),
+                    InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                    InventoryOptionalFieldType.E_TAG.toString(),
+                    InventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                    InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                    InventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
             );
             OptionalFields optionalFields = OptionalFields.newBuilder()
                     .fields(fields)

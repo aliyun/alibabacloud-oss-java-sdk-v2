@@ -11,6 +11,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PutBucketInventory implements Example {
 
@@ -58,14 +59,14 @@ public class PutBucketInventory implements Example {
                     .prefix("Pics/")
                     .build();
 
-            // Create optional fields
-            List<InventoryOptionalFieldType> fields = Arrays.asList(
-                    InventoryOptionalFieldType.SIZE,
-                    InventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                    InventoryOptionalFieldType.E_TAG,
-                    InventoryOptionalFieldType.STORAGE_CLASS,
-                    InventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                    InventoryOptionalFieldType.ENCRYPTION_STATUS
+
+            List<String> fields = Arrays.asList(
+                    InventoryOptionalFieldType.SIZE.toString(),
+                    InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                    InventoryOptionalFieldType.E_TAG.toString(),
+                    InventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                    InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                    InventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
             );
             OptionalFields optionalFields = OptionalFields.newBuilder()
                     .fields(fields)

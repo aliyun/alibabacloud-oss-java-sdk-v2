@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PutBucketInventoryRequestTest {
@@ -73,7 +75,39 @@ public class PutBucketInventoryRequestTest {
                 InventoryOptionalFieldType.ENCRYPTION_STATUS
         );
         OptionalFields optionalFields = OptionalFields.newBuilder()
-                .fields(fields)
+                .fields(fields.stream().map(InventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .build();
+
+        // Create incremental inventory configuration
+        IncrementInventorySchedule incrementSchedule = IncrementInventorySchedule.newBuilder()
+                .frequency(600L) // 10 minutes in seconds
+                .build();
+
+        List<IncrementalInventoryOptionalFieldType> incrementFields = Arrays.asList(
+                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER,
+                IncrementalInventoryOptionalFieldType.RECORD_TYPE,
+                IncrementalInventoryOptionalFieldType.RECORD_TIMESTAMP,
+                IncrementalInventoryOptionalFieldType.REQUESTER,
+                IncrementalInventoryOptionalFieldType.REQUEST_ID,
+                IncrementalInventoryOptionalFieldType.SOURCE_IP,
+                IncrementalInventoryOptionalFieldType.SIZE,
+                IncrementalInventoryOptionalFieldType.STORAGE_CLASS,
+                IncrementalInventoryOptionalFieldType.LAST_MODIFIED_DATE,
+                IncrementalInventoryOptionalFieldType.E_TAG,
+                IncrementalInventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
+                IncrementalInventoryOptionalFieldType.OBJECT_TYPE,
+                IncrementalInventoryOptionalFieldType.OBJECT_ACL,
+                IncrementalInventoryOptionalFieldType.CRC64,
+                IncrementalInventoryOptionalFieldType.ENCRYPTION_STATUS
+        );
+        OptionalFields incrementalOptionalFields = OptionalFields.newBuilder()
+                .fields(incrementFields.stream().map(IncrementalInventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .build();
+
+        IncrementalInventory incrementalInventory = IncrementalInventory.newBuilder()
+                .isEnabled(true)
+                .schedule(incrementSchedule)
+                .optionalFields(incrementalOptionalFields)
                 .build();
 
         InventoryConfiguration inventoryConfiguration = InventoryConfiguration.newBuilder()
@@ -84,6 +118,7 @@ public class PutBucketInventoryRequestTest {
                 .filter(filter)
                 .includedObjectVersions("All")
                 .optionalFields(optionalFields)
+                .incrementalInventory(incrementalInventory)
                 .build();
 
         PutBucketInventoryRequest request = PutBucketInventoryRequest.newBuilder()
@@ -144,11 +179,31 @@ public class PutBucketInventoryRequestTest {
                 .oSSBucketDestination(destination)
                 .build();
 
+        // Create incremental inventory configuration for the test
+        IncrementInventorySchedule incrementSchedule = IncrementInventorySchedule.newBuilder()
+                .frequency(600L)
+                .build();
+
+        List<IncrementalInventoryOptionalFieldType> incrementFields = Arrays.asList(
+                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER,
+                IncrementalInventoryOptionalFieldType.RECORD_TYPE
+        );
+        OptionalFields incrementalOptionalFields = OptionalFields.newBuilder()
+                .fields(incrementFields.stream().map(IncrementalInventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .build();
+
+        IncrementalInventory incrementalInventory = IncrementalInventory.newBuilder()
+                .isEnabled(true)
+                .schedule(incrementSchedule)
+                .optionalFields(incrementalOptionalFields)
+                .build();
+
         InventoryConfiguration inventoryConfiguration = InventoryConfiguration.newBuilder()
                 .id("test-report")
                 .isEnabled(false)
                 .includedObjectVersions("Current")
                 .destination(inventoryDestination)
+                .incrementalInventory(incrementalInventory)
                 .build();
 
         PutBucketInventoryRequest original = PutBucketInventoryRequest.newBuilder()
@@ -187,11 +242,30 @@ public class PutBucketInventoryRequestTest {
                 .oSSBucketDestination(destination)
                 .build();
 
+        // Create incremental inventory configuration for the test
+        IncrementInventorySchedule incrementSchedule = IncrementInventorySchedule.newBuilder()
+                .frequency(600L)
+                .build();
+
+        List<IncrementalInventoryOptionalFieldType> incrementFields = Arrays.asList(
+                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER
+        );
+        OptionalFields incrementalOptionalFields = OptionalFields.newBuilder()
+                .fields(incrementFields.stream().map(IncrementalInventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .build();
+
+        IncrementalInventory incrementalInventory = IncrementalInventory.newBuilder()
+                .isEnabled(true)
+                .schedule(incrementSchedule)
+                .optionalFields(incrementalOptionalFields)
+                .build();
+
         InventoryConfiguration inventoryConfiguration = InventoryConfiguration.newBuilder()
                 .id("report-test")
                 .isEnabled(true)
                 .includedObjectVersions("All")
                 .destination(inventoryDestination)
+                .incrementalInventory(incrementalInventory)
                 .build();
 
         PutBucketInventoryRequest request = PutBucketInventoryRequest.newBuilder()
@@ -204,6 +278,8 @@ public class PutBucketInventoryRequestTest {
         assertThat(request.inventoryId()).isEqualTo("report-test");
         assertThat(request.inventoryConfiguration().id()).isEqualTo("report-test");
         assertThat(request.inventoryConfiguration().isEnabled()).isEqualTo(true);
+        assertThat(request.inventoryConfiguration().incrementalInventory()).isNotNull();
+        assertThat(request.inventoryConfiguration().incrementalInventory().isEnabled()).isEqualTo(true);
     }
 
     @Test
@@ -247,6 +323,29 @@ public class PutBucketInventoryRequestTest {
                 "    <Field>IsMultipartUploaded</Field>\n" +
                 "    <Field>EncryptionStatus</Field>\n" +
                 "  </OptionalFields>\n" +
+                "  <IncrementalInventory>\n" +
+                "    <IsEnabled>true</IsEnabled>\n" +
+                "    <Schedule>\n" +
+                "      <Frequency>600</Frequency>\n" +
+                "    </Schedule>\n" +
+                "    <OptionalFields>\n" +
+                "      <Field>SequenceNumber</Field>\n" +
+                "      <Field>RecordType</Field>\n" +
+                "      <Field>RecordTimestamp</Field>\n" +
+                "      <Field>Requester</Field>\n" +
+                "      <Field>RequestId</Field>\n" +
+                "      <Field>SourceIp</Field>\n" +
+                "      <Field>Size</Field>\n" +
+                "      <Field>StorageClass</Field>\n" +
+                "      <Field>LastModifiedDate</Field>\n" +
+                "      <Field>ETag</Field>\n" +
+                "      <Field>IsMultipartUploaded</Field>\n" +
+                "      <Field>ObjectType</Field>\n" +
+                "      <Field>ObjectAcl</Field>\n" +
+                "      <Field>Crc64</Field>\n" +
+                "      <Field>EncryptionStatus</Field>\n" +
+                "    </OptionalFields>\n" +
+                "  </IncrementalInventory>\n" +
                 "</InventoryConfiguration>";
         ObjectMapper xmlMapper = new XmlMapper();
         xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -296,7 +395,39 @@ public class PutBucketInventoryRequestTest {
                 InventoryOptionalFieldType.ENCRYPTION_STATUS
         );
         OptionalFields optionalFields = OptionalFields.newBuilder()
-                .fields(fields)
+                .fields(fields.stream().map(InventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .build();
+
+        // Create incremental inventory configuration
+        IncrementInventorySchedule incrementSchedule = IncrementInventorySchedule.newBuilder()
+                .frequency(600L)
+                .build();
+
+        List<IncrementalInventoryOptionalFieldType> incrementFields = Arrays.asList(
+                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER,
+                IncrementalInventoryOptionalFieldType.RECORD_TYPE,
+                IncrementalInventoryOptionalFieldType.RECORD_TIMESTAMP,
+                IncrementalInventoryOptionalFieldType.REQUESTER,
+                IncrementalInventoryOptionalFieldType.REQUEST_ID,
+                IncrementalInventoryOptionalFieldType.SOURCE_IP,
+                IncrementalInventoryOptionalFieldType.SIZE,
+                IncrementalInventoryOptionalFieldType.STORAGE_CLASS,
+                IncrementalInventoryOptionalFieldType.LAST_MODIFIED_DATE,
+                IncrementalInventoryOptionalFieldType.E_TAG,
+                IncrementalInventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
+                IncrementalInventoryOptionalFieldType.OBJECT_TYPE,
+                IncrementalInventoryOptionalFieldType.OBJECT_ACL,
+                IncrementalInventoryOptionalFieldType.CRC64,
+                IncrementalInventoryOptionalFieldType.ENCRYPTION_STATUS
+        );
+        OptionalFields incrementalOptionalFields = OptionalFields.newBuilder()
+                .fields(incrementFields.stream().map(IncrementalInventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .build();
+
+        IncrementalInventory incrementalInventory = IncrementalInventory.newBuilder()
+                .isEnabled(true)
+                .schedule(incrementSchedule)
+                .optionalFields(incrementalOptionalFields)
                 .build();
 
         InventoryConfiguration inventoryConfiguration = InventoryConfiguration.newBuilder()
@@ -307,6 +438,7 @@ public class PutBucketInventoryRequestTest {
                 .filter(filter)
                 .includedObjectVersions("All")
                 .optionalFields(optionalFields)
+                .incrementalInventory(incrementalInventory)
                 .build();
 
         PutBucketInventoryRequest request = PutBucketInventoryRequest.newBuilder()
@@ -330,30 +462,12 @@ public class PutBucketInventoryRequestTest {
         assertThat(xmlContent).contains("<Schedule>");
         assertThat(xmlContent).contains("<Frequency>Daily</Frequency>");
         assertThat(xmlContent).contains("<IncludedObjectVersions>All</IncludedObjectVersions>");
+        assertThat(xmlContent).contains("<IncrementalInventory>");
+        assertThat(xmlContent).contains("<IsEnabled>true</IsEnabled>");
+        assertThat(xmlContent).contains("<Frequency>600</Frequency>");
         assertThat(xmlContent).contains("</InventoryConfiguration>");
 
         // Compare with expected XML (ignoring differences in formatting)
-        assertThat(xmlContent).contains("<Id>report1</Id>");
-        assertThat(xmlContent).contains("<IsEnabled>true</IsEnabled>");
-        assertThat(xmlContent).contains("<Prefix>Pics/</Prefix>");
-        assertThat(xmlContent).contains("<AccountId>100000000000000</AccountId>");
-        assertThat(xmlContent).contains("<RoleArn>acs:ram::100000000000000:role/AliyunOSSRole</RoleArn>");
-        assertThat(xmlContent).contains("<Bucket>acs:oss:::destbucket</Bucket>");
-        assertThat(xmlContent).contains("<Format>CSV</Format>");
-        assertThat(xmlContent).contains("<KeyId>keyId</KeyId>");
-        assertThat(xmlContent).contains("<LastModifyBeginTimeStamp>1637883649</LastModifyBeginTimeStamp>");
-        assertThat(xmlContent).contains("<LastModifyEndTimeStamp>1638347592</LastModifyEndTimeStamp>");
-        assertThat(xmlContent).contains("<LowerSizeBound>1024</LowerSizeBound>");
-        assertThat(xmlContent).contains("<UpperSizeBound>1048576</UpperSizeBound>");
-        assertThat(xmlContent).contains("<StorageClass>Standard,IA</StorageClass>");
-        assertThat(xmlContent).contains("<Field>Size</Field>");
-        assertThat(xmlContent).contains("<Field>LastModifiedDate</Field>");
-        assertThat(xmlContent).contains("<Field>ETag</Field>");
-        assertThat(xmlContent).contains("<Field>StorageClass</Field>");
-        assertThat(xmlContent).contains("<Field>IsMultipartUploaded</Field>");
-        assertThat(xmlContent).contains("<Field>EncryptionStatus</Field>");
-
-        // Check that the generated XML matches expected structure
         assertThat(xmlContent).isEqualTo(expectedXml);
     }
 }

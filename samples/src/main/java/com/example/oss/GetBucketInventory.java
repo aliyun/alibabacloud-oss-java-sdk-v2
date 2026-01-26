@@ -73,7 +73,7 @@ public class GetBucketInventory implements Example {
                 
                 if (config.optionalFields() != null && config.optionalFields().fields() != null) {
                     System.out.printf("Optional Fields Count: %d%n", config.optionalFields().fields().size());
-                    for (InventoryOptionalFieldType field : config.optionalFields().fields()) {
+                    for (String field : config.optionalFields().fields()) {
                         System.out.printf("  Field: %s%n", field);
                     }
                 }

@@ -4,16 +4,17 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.util.List;
+import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 /**
- * The container that stores the configuration fields in inventory lists.
+ * Configuration container for incremental inventory file attributes
  */
  @JacksonXmlRootElement(localName = "OptionalFields")
 public final class OptionalFields {  
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "Field")
-    private List<InventoryOptionalFieldType> fields;
+    private List<String> fields;
 
     public OptionalFields() {}
 
@@ -22,9 +23,9 @@ public final class OptionalFields {
     }
 
     /**
-    * The configuration fields that are included in inventory lists. Available configuration fields:*   Size: the size of the object.*   LastModifiedDate: the time when the object was last modified.*   ETag: the ETag of the object. It is used to identify the content of the object.*   StorageClass: the storage class of the object.*   IsMultipartUploaded: specifies whether the object is uploaded by using multipart upload.*   EncryptionStatus: the encryption status of the object.
+    * List of incremental inventory export fields
     */
-    public List<InventoryOptionalFieldType> fields() {
+    public List<String> fields() {
         return this.fields;
     }
 
@@ -37,12 +38,12 @@ public final class OptionalFields {
     }
 
     public static class Builder { 
-        private List<InventoryOptionalFieldType> fields;
+        private List<String> fields;
         
         /**
-        * The configuration fields that are included in inventory lists. Available configuration fields:*   Size: the size of the object.*   LastModifiedDate: the time when the object was last modified.*   ETag: the ETag of the object. It is used to identify the content of the object.*   StorageClass: the storage class of the object.*   IsMultipartUploaded: specifies whether the object is uploaded by using multipart upload.*   EncryptionStatus: the encryption status of the object.
+        * List of incremental inventory export fields
         */
-        public Builder fields(List<InventoryOptionalFieldType> value) {
+        public Builder fields(List<String> value) {
             requireNonNull(value);
             this.fields = value;
             return this;

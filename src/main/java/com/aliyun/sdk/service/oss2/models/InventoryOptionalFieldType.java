@@ -39,6 +39,31 @@ public enum InventoryOptionalFieldType {
     @JsonProperty("EncryptionStatus")
     ENCRYPTION_STATUS("EncryptionStatus"),
     /**
+     * Transition time
+     */
+    @JsonProperty("TransitionTime")
+    TRANSITION_TIME("TransitionTime"),
+    /**
+     * Object ACL
+     */
+    @JsonProperty("ObjectAcl")
+    OBJECT_ACL("ObjectAcl"),
+    /**
+     * Tagging count
+     */
+    @JsonProperty("TaggingCount")
+    TAGGING_COUNT("TaggingCount"),
+    /**
+     * Object type
+     */
+    @JsonProperty("ObjectType")
+    OBJECT_TYPE("ObjectType"),
+    /**
+     * CRC64 checksum
+     */
+    @JsonProperty("Crc64")
+    CRC64("Crc64"),
+    /**
      * Unknown type
      */
     @JsonProperty("UNKNOWN")

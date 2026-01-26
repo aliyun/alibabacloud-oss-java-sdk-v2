@@ -30,6 +30,9 @@ public final class InventoryConfiguration {
     @JacksonXmlProperty(localName = "Destination")
     private InventoryDestination destination;
 
+    @JacksonXmlProperty(localName = "IncrementalInventory")
+    private IncrementalInventory incrementalInventory;
+
     public InventoryConfiguration() {}
 
     private InventoryConfiguration(Builder builder) { 
@@ -39,7 +42,8 @@ public final class InventoryConfiguration {
         this.optionalFields = builder.optionalFields; 
         this.id = builder.id; 
         this.isEnabled = builder.isEnabled; 
-        this.destination = builder.destination; 
+        this.destination = builder.destination;
+        this.incrementalInventory = builder.incrementalInventory;
     }
 
     /**
@@ -91,6 +95,14 @@ public final class InventoryConfiguration {
         return this.destination;
     }
 
+    /**
+     *
+     */
+    public IncrementalInventory incrementalInventory() {
+        return this.incrementalInventory;
+    }
+
+
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -107,6 +119,7 @@ public final class InventoryConfiguration {
         private String id;
         private Boolean isEnabled;
         private InventoryDestination destination;
+        private IncrementalInventory incrementalInventory;
         
         /**
         * The container that stores information about the frequency at which inventory lists are exported.
@@ -170,6 +183,15 @@ public final class InventoryConfiguration {
             this.destination = value;
             return this;
         }
+
+        /**
+         *
+         */
+        public Builder incrementalInventory(IncrementalInventory value) {
+            requireNonNull(value);
+            this.incrementalInventory = value;
+            return this;
+        }
         
 
         private Builder() {
@@ -183,7 +205,8 @@ public final class InventoryConfiguration {
             this.optionalFields = from.optionalFields; 
             this.id = from.id; 
             this.isEnabled = from.isEnabled; 
-            this.destination = from.destination; 
+            this.destination = from.destination;
+            this.incrementalInventory = from.incrementalInventory;
         }
 
         public InventoryConfiguration build() {

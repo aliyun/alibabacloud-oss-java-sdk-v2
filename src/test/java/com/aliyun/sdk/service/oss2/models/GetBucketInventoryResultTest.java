@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GetBucketInventoryResultTest {
@@ -49,13 +50,13 @@ public class GetBucketInventoryResultTest {
                 .oSSBucketDestination(bucketDestination)
                 .build();
 
-        List<InventoryOptionalFieldType> optionalFields = Arrays.asList(
-                InventoryOptionalFieldType.SIZE,
-                InventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                InventoryOptionalFieldType.E_TAG,
-                InventoryOptionalFieldType.STORAGE_CLASS,
-                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                InventoryOptionalFieldType.ENCRYPTION_STATUS
+        List<String> optionalFields = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                InventoryOptionalFieldType.E_TAG.toString(),
+                InventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                InventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
         );
 
         OptionalFields optionalFieldsContainer = OptionalFields.newBuilder()
@@ -96,12 +97,12 @@ public class GetBucketInventoryResultTest {
         assertThat(result.inventoryConfiguration().filter().prefix()).isEqualTo("myprefix/");
         assertThat(result.inventoryConfiguration().includedObjectVersions()).isEqualTo("All");
         assertThat(result.inventoryConfiguration().optionalFields().fields()).hasSize(6);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(2)).isEqualTo(InventoryOptionalFieldType.E_TAG);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(3)).isEqualTo(InventoryOptionalFieldType.STORAGE_CLASS);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(4)).isEqualTo(InventoryOptionalFieldType.IS_MULTIPART_UPLOADED);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(5)).isEqualTo(InventoryOptionalFieldType.ENCRYPTION_STATUS);
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(2)).isEqualTo(InventoryOptionalFieldType.E_TAG.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(3)).isEqualTo(InventoryOptionalFieldType.STORAGE_CLASS.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(4)).isEqualTo(InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(5)).isEqualTo(InventoryOptionalFieldType.ENCRYPTION_STATUS.toString());
     }
 
     @Test
@@ -138,7 +139,7 @@ public class GetBucketInventoryResultTest {
         );
 
         OptionalFields optionalFieldsContainer = OptionalFields.newBuilder()
-                .fields(optionalFields)
+                .fields(optionalFields.stream().map(InventoryOptionalFieldType::toString).collect(Collectors.toList()))
                 .build();
 
         InventoryConfiguration inventoryConfiguration = InventoryConfiguration.newBuilder()
@@ -177,8 +178,8 @@ public class GetBucketInventoryResultTest {
         assertThat(copy.inventoryConfiguration().filter().prefix()).isEqualTo("testprefix/");
         assertThat(copy.inventoryConfiguration().includedObjectVersions()).isEqualTo("Current");
         assertThat(copy.inventoryConfiguration().optionalFields().fields()).hasSize(2);
-        assertThat(copy.inventoryConfiguration().optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE);
-        assertThat(copy.inventoryConfiguration().optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE);
+        assertThat(copy.inventoryConfiguration().optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE.toString());
+        assertThat(copy.inventoryConfiguration().optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString());
     }
 
     @Test
@@ -241,11 +242,11 @@ public class GetBucketInventoryResultTest {
         assertThat(result.inventoryConfiguration().filter().prefix()).isEqualTo("myprefix/");
         assertThat(result.inventoryConfiguration().includedObjectVersions()).isEqualTo("All");
         assertThat(result.inventoryConfiguration().optionalFields().fields()).hasSize(6);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(2)).isEqualTo(InventoryOptionalFieldType.E_TAG);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(3)).isEqualTo(InventoryOptionalFieldType.STORAGE_CLASS);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(4)).isEqualTo(InventoryOptionalFieldType.IS_MULTIPART_UPLOADED);
-        assertThat(result.inventoryConfiguration().optionalFields().fields().get(5)).isEqualTo(InventoryOptionalFieldType.ENCRYPTION_STATUS);
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(2)).isEqualTo(InventoryOptionalFieldType.E_TAG.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(3)).isEqualTo(InventoryOptionalFieldType.STORAGE_CLASS.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(4)).isEqualTo(InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString());
+        assertThat(result.inventoryConfiguration().optionalFields().fields().get(5)).isEqualTo(InventoryOptionalFieldType.ENCRYPTION_STATUS.toString());
     }
 }

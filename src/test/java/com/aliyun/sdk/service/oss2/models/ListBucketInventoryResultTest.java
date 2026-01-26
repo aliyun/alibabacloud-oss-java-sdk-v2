@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListBucketInventoryResultTest {
@@ -53,13 +54,13 @@ public class ListBucketInventoryResultTest {
                 .oSSBucketDestination(bucketDestination1)
                 .build();
 
-        List<InventoryOptionalFieldType> optionalFields1 = Arrays.asList(
-                InventoryOptionalFieldType.SIZE,
-                InventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                InventoryOptionalFieldType.E_TAG,
-                InventoryOptionalFieldType.STORAGE_CLASS,
-                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                InventoryOptionalFieldType.ENCRYPTION_STATUS
+        List<String> optionalFields1 = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                InventoryOptionalFieldType.E_TAG.toString(),
+                InventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                InventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
         );
 
         OptionalFields optionalFieldsContainer1 = OptionalFields.newBuilder()
@@ -106,13 +107,13 @@ public class ListBucketInventoryResultTest {
                 .oSSBucketDestination(bucketDestination2)
                 .build();
 
-        List<InventoryOptionalFieldType> optionalFields2 = Arrays.asList(
-                InventoryOptionalFieldType.SIZE,
-                InventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                InventoryOptionalFieldType.E_TAG,
-                InventoryOptionalFieldType.STORAGE_CLASS,
-                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                InventoryOptionalFieldType.ENCRYPTION_STATUS
+        List<String> optionalFields2 = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                InventoryOptionalFieldType.E_TAG.toString(),
+                InventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                InventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
         );
 
         OptionalFields optionalFieldsContainer2 = OptionalFields.newBuilder()
@@ -159,13 +160,13 @@ public class ListBucketInventoryResultTest {
                 .oSSBucketDestination(bucketDestination3)
                 .build();
 
-        List<InventoryOptionalFieldType> optionalFields3 = Arrays.asList(
-                InventoryOptionalFieldType.SIZE,
-                InventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                InventoryOptionalFieldType.E_TAG,
-                InventoryOptionalFieldType.STORAGE_CLASS,
-                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                InventoryOptionalFieldType.ENCRYPTION_STATUS
+        List<String> optionalFields3 = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                InventoryOptionalFieldType.E_TAG.toString(),
+                InventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                InventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
         );
 
         OptionalFields optionalFieldsContainer3 = OptionalFields.newBuilder()
@@ -223,7 +224,7 @@ public class ListBucketInventoryResultTest {
         assertThat(config1.schedule().frequency()).isEqualTo("Daily");
         assertThat(config1.filter().prefix()).isEqualTo("prefix/One");
         assertThat(config1.includedObjectVersions()).isEqualTo("All");
-        assertThat(config1.optionalFields().fields()).hasSize(7);
+        assertThat(config1.optionalFields().fields()).hasSize(6);
 
         // Check the second configuration
         InventoryConfiguration config2 = result.listInventoryConfigurationsResult().inventoryConfigurations().get(1);
@@ -237,7 +238,7 @@ public class ListBucketInventoryResultTest {
         assertThat(config2.schedule().frequency()).isEqualTo("Daily");
         assertThat(config2.filter().prefix()).isEqualTo("prefix/Two");
         assertThat(config2.includedObjectVersions()).isEqualTo("All");
-        assertThat(config2.optionalFields().fields()).hasSize(7);
+        assertThat(config2.optionalFields().fields()).hasSize(6);
 
         // Check the third configuration
         InventoryConfiguration config3 = result.listInventoryConfigurationsResult().inventoryConfigurations().get(2);
@@ -251,7 +252,7 @@ public class ListBucketInventoryResultTest {
         assertThat(config3.schedule().frequency()).isEqualTo("Daily");
         assertThat(config3.filter().prefix()).isEqualTo("prefix/Three");
         assertThat(config3.includedObjectVersions()).isEqualTo("All");
-        assertThat(config3.optionalFields().fields()).hasSize(7);
+        assertThat(config3.optionalFields().fields()).hasSize(6);
     }
 
     @Test
@@ -286,9 +287,9 @@ public class ListBucketInventoryResultTest {
                 .oSSBucketDestination(bucketDestination)
                 .build();
 
-        List<InventoryOptionalFieldType> optionalFields = Arrays.asList(
-                InventoryOptionalFieldType.SIZE,
-                InventoryOptionalFieldType.LAST_MODIFIED_DATE
+        List<String> optionalFields = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString()
         );
 
         OptionalFields optionalFieldsContainer = OptionalFields.newBuilder()
@@ -344,8 +345,8 @@ public class ListBucketInventoryResultTest {
         assertThat(config.filter().prefix()).isEqualTo("testprefix/");
         assertThat(config.includedObjectVersions()).isEqualTo("Current");
         assertThat(config.optionalFields().fields()).hasSize(2);
-        assertThat(config.optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE);
-        assertThat(config.optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE);
+        assertThat(config.optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE.toString());
+        assertThat(config.optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString());
     }
 
     @Test
@@ -386,7 +387,6 @@ public class ListBucketInventoryResultTest {
                 "        <OptionalFields>\n" +
                 "           <Field>Size</Field>\n" +
                 "           <Field>LastModifiedDate</Field>\n" +
-                "           <Field>TransistionTime</Field>\n" +
                 "           <Field>ETag</Field>\n" +
                 "           <Field>StorageClass</Field>\n" +
                 "           <Field>IsMultipartUploaded</Field>\n" +
@@ -418,7 +418,6 @@ public class ListBucketInventoryResultTest {
                 "        <OptionalFields>\n" +
                 "           <Field>Size</Field>\n" +
                 "           <Field>LastModifiedDate</Field>\n" +
-                "           <Field>TransistionTime</Field>\n" +
                 "           <Field>ETag</Field>\n" +
                 "           <Field>StorageClass</Field>\n" +
                 "           <Field>IsMultipartUploaded</Field>\n" +
@@ -479,13 +478,13 @@ public class ListBucketInventoryResultTest {
         assertThat(config1.schedule().frequency()).isEqualTo("Daily");
         assertThat(config1.filter().prefix()).isEqualTo("prefix/One");
         assertThat(config1.includedObjectVersions()).isEqualTo("All");
-        assertThat(config1.optionalFields().fields()).hasSize(7);
-        assertThat(config1.optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE);
-        assertThat(config1.optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE);
-        assertThat(config1.optionalFields().fields().get(3)).isEqualTo(InventoryOptionalFieldType.E_TAG);
-        assertThat(config1.optionalFields().fields().get(4)).isEqualTo(InventoryOptionalFieldType.STORAGE_CLASS);
-        assertThat(config1.optionalFields().fields().get(5)).isEqualTo(InventoryOptionalFieldType.IS_MULTIPART_UPLOADED);
-        assertThat(config1.optionalFields().fields().get(6)).isEqualTo(InventoryOptionalFieldType.ENCRYPTION_STATUS);
+        assertThat(config1.optionalFields().fields()).hasSize(6);
+        assertThat(config1.optionalFields().fields().get(0)).isEqualTo(InventoryOptionalFieldType.SIZE.toString());
+        assertThat(config1.optionalFields().fields().get(1)).isEqualTo(InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString());
+        assertThat(config1.optionalFields().fields().get(2)).isEqualTo(InventoryOptionalFieldType.E_TAG.toString());
+        assertThat(config1.optionalFields().fields().get(3)).isEqualTo(InventoryOptionalFieldType.STORAGE_CLASS.toString());
+        assertThat(config1.optionalFields().fields().get(4)).isEqualTo(InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString());
+        assertThat(config1.optionalFields().fields().get(5)).isEqualTo(InventoryOptionalFieldType.ENCRYPTION_STATUS.toString());
 
         // Check the second configuration
         InventoryConfiguration config2 = result.listInventoryConfigurationsResult().inventoryConfigurations().get(1);
@@ -500,7 +499,7 @@ public class ListBucketInventoryResultTest {
         assertThat(config2.schedule().frequency()).isEqualTo("Daily");
         assertThat(config2.filter().prefix()).isEqualTo("prefix/Two");
         assertThat(config2.includedObjectVersions()).isEqualTo("All");
-        assertThat(config2.optionalFields().fields()).hasSize(7);
+        assertThat(config2.optionalFields().fields()).hasSize(6);
 
         // Check the third configuration
         InventoryConfiguration config3 = result.listInventoryConfigurationsResult().inventoryConfigurations().get(2);
@@ -516,6 +515,6 @@ public class ListBucketInventoryResultTest {
         assertThat(config3.schedule().frequency()).isEqualTo("Daily");
         assertThat(config3.filter().prefix()).isEqualTo("prefix/Three");
         assertThat(config3.includedObjectVersions()).isEqualTo("All");
-        assertThat(config3.optionalFields().fields()).hasSize(7);
+        assertThat(config3.optionalFields().fields()).hasSize(6);
     }
 }
