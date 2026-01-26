@@ -133,13 +133,13 @@ public class GetBucketInventoryResultTest {
                 .oSSBucketDestination(bucketDestination)
                 .build();
 
-        List<InventoryOptionalFieldType> optionalFields = Arrays.asList(
-                InventoryOptionalFieldType.SIZE,
-                InventoryOptionalFieldType.LAST_MODIFIED_DATE
+        List<String> optionalFields = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString()
         );
 
         OptionalFields optionalFieldsContainer = OptionalFields.newBuilder()
-                .fields(optionalFields.stream().map(InventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .fields(optionalFields)
                 .build();
 
         InventoryConfiguration inventoryConfiguration = InventoryConfiguration.newBuilder()

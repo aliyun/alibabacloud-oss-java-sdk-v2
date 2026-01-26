@@ -66,16 +66,16 @@ public class PutBucketInventoryRequestTest {
                 .storageClass("Standard,IA")
                 .build();
 
-        List<InventoryOptionalFieldType> fields = Arrays.asList(
-                InventoryOptionalFieldType.SIZE,
-                InventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                InventoryOptionalFieldType.E_TAG,
-                InventoryOptionalFieldType.STORAGE_CLASS,
-                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                InventoryOptionalFieldType.ENCRYPTION_STATUS
+        List<String> fields = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                InventoryOptionalFieldType.E_TAG.toString(),
+                InventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                InventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
         );
         OptionalFields optionalFields = OptionalFields.newBuilder()
-                .fields(fields.stream().map(InventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .fields(fields)
                 .build();
 
         // Create incremental inventory configuration
@@ -83,25 +83,25 @@ public class PutBucketInventoryRequestTest {
                 .frequency(600L) // 10 minutes in seconds
                 .build();
 
-        List<IncrementalInventoryOptionalFieldType> incrementFields = Arrays.asList(
-                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER,
-                IncrementalInventoryOptionalFieldType.RECORD_TYPE,
-                IncrementalInventoryOptionalFieldType.RECORD_TIMESTAMP,
-                IncrementalInventoryOptionalFieldType.REQUESTER,
-                IncrementalInventoryOptionalFieldType.REQUEST_ID,
-                IncrementalInventoryOptionalFieldType.SOURCE_IP,
-                IncrementalInventoryOptionalFieldType.SIZE,
-                IncrementalInventoryOptionalFieldType.STORAGE_CLASS,
-                IncrementalInventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                IncrementalInventoryOptionalFieldType.E_TAG,
-                IncrementalInventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                IncrementalInventoryOptionalFieldType.OBJECT_TYPE,
-                IncrementalInventoryOptionalFieldType.OBJECT_ACL,
-                IncrementalInventoryOptionalFieldType.CRC64,
-                IncrementalInventoryOptionalFieldType.ENCRYPTION_STATUS
+        List<String> incrementFields = Arrays.asList(
+                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER.toString(),
+                IncrementalInventoryOptionalFieldType.RECORD_TYPE.toString(),
+                IncrementalInventoryOptionalFieldType.RECORD_TIMESTAMP.toString(),
+                IncrementalInventoryOptionalFieldType.REQUESTER.toString(),
+                IncrementalInventoryOptionalFieldType.REQUEST_ID.toString(),
+                IncrementalInventoryOptionalFieldType.SOURCE_IP.toString(),
+                IncrementalInventoryOptionalFieldType.SIZE.toString(),
+                IncrementalInventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                IncrementalInventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                IncrementalInventoryOptionalFieldType.E_TAG.toString(),
+                IncrementalInventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                IncrementalInventoryOptionalFieldType.OBJECT_TYPE.toString(),
+                IncrementalInventoryOptionalFieldType.OBJECT_ACL.toString(),
+                IncrementalInventoryOptionalFieldType.CRC64.toString(),
+                IncrementalInventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
         );
         OptionalFields incrementalOptionalFields = OptionalFields.newBuilder()
-                .fields(incrementFields.stream().map(IncrementalInventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .fields(incrementFields)
                 .build();
 
         IncrementalInventory incrementalInventory = IncrementalInventory.newBuilder()
@@ -184,12 +184,12 @@ public class PutBucketInventoryRequestTest {
                 .frequency(600L)
                 .build();
 
-        List<IncrementalInventoryOptionalFieldType> incrementFields = Arrays.asList(
-                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER,
-                IncrementalInventoryOptionalFieldType.RECORD_TYPE
+        List<String> incrementFields = Arrays.asList(
+                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER.toString(),
+                IncrementalInventoryOptionalFieldType.RECORD_TYPE.toString()
         );
         OptionalFields incrementalOptionalFields = OptionalFields.newBuilder()
-                .fields(incrementFields.stream().map(IncrementalInventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .fields(incrementFields)
                 .build();
 
         IncrementalInventory incrementalInventory = IncrementalInventory.newBuilder()
@@ -247,11 +247,11 @@ public class PutBucketInventoryRequestTest {
                 .frequency(600L)
                 .build();
 
-        List<IncrementalInventoryOptionalFieldType> incrementFields = Arrays.asList(
-                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER
+        List<String> incrementFields = Arrays.asList(
+                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER.toString()
         );
         OptionalFields incrementalOptionalFields = OptionalFields.newBuilder()
-                .fields(incrementFields.stream().map(IncrementalInventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .fields(incrementFields)
                 .build();
 
         IncrementalInventory incrementalInventory = IncrementalInventory.newBuilder()
@@ -317,11 +317,15 @@ public class PutBucketInventoryRequestTest {
                 "  <OptionalFields>\n" +
                 "    <Field>Size</Field>\n" +
                 "    <Field>LastModifiedDate</Field>\n" +
-                "    <Field>TransistionTime</Field>\n" +
+                "    <Field>TransitionTime</Field>\n" +
                 "    <Field>ETag</Field>\n" +
                 "    <Field>StorageClass</Field>\n" +
                 "    <Field>IsMultipartUploaded</Field>\n" +
                 "    <Field>EncryptionStatus</Field>\n" +
+                "    <Field>ObjectAcl</Field>\n" +
+                "    <Field>TaggingCount</Field>\n" +
+                "    <Field>ObjectType</Field>\n" +
+                "    <Field>Crc64</Field>\n" +
                 "  </OptionalFields>\n" +
                 "  <IncrementalInventory>\n" +
                 "    <IsEnabled>true</IsEnabled>\n" +
@@ -386,16 +390,21 @@ public class PutBucketInventoryRequestTest {
                 .storageClass("Standard,IA")
                 .build();
 
-        List<InventoryOptionalFieldType> fields = Arrays.asList(
-                InventoryOptionalFieldType.SIZE,
-                InventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                InventoryOptionalFieldType.E_TAG,
-                InventoryOptionalFieldType.STORAGE_CLASS,
-                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                InventoryOptionalFieldType.ENCRYPTION_STATUS
+        List<String> fields = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                InventoryOptionalFieldType.TRANSITION_TIME.toString(),
+                InventoryOptionalFieldType.E_TAG.toString(),
+                InventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                InventoryOptionalFieldType.ENCRYPTION_STATUS.toString(),
+                InventoryOptionalFieldType.OBJECT_ACL.toString(),
+                InventoryOptionalFieldType.TAGGING_COUNT.toString(),
+                InventoryOptionalFieldType.OBJECT_TYPE.toString(),
+                InventoryOptionalFieldType.CRC64.toString()
         );
         OptionalFields optionalFields = OptionalFields.newBuilder()
-                .fields(fields.stream().map(InventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .fields(fields)
                 .build();
 
         // Create incremental inventory configuration
@@ -403,25 +412,25 @@ public class PutBucketInventoryRequestTest {
                 .frequency(600L)
                 .build();
 
-        List<IncrementalInventoryOptionalFieldType> incrementFields = Arrays.asList(
-                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER,
-                IncrementalInventoryOptionalFieldType.RECORD_TYPE,
-                IncrementalInventoryOptionalFieldType.RECORD_TIMESTAMP,
-                IncrementalInventoryOptionalFieldType.REQUESTER,
-                IncrementalInventoryOptionalFieldType.REQUEST_ID,
-                IncrementalInventoryOptionalFieldType.SOURCE_IP,
-                IncrementalInventoryOptionalFieldType.SIZE,
-                IncrementalInventoryOptionalFieldType.STORAGE_CLASS,
-                IncrementalInventoryOptionalFieldType.LAST_MODIFIED_DATE,
-                IncrementalInventoryOptionalFieldType.E_TAG,
-                IncrementalInventoryOptionalFieldType.IS_MULTIPART_UPLOADED,
-                IncrementalInventoryOptionalFieldType.OBJECT_TYPE,
-                IncrementalInventoryOptionalFieldType.OBJECT_ACL,
-                IncrementalInventoryOptionalFieldType.CRC64,
-                IncrementalInventoryOptionalFieldType.ENCRYPTION_STATUS
+        List<String> incrementFields = Arrays.asList(
+                IncrementalInventoryOptionalFieldType.SEQUENCE_NUMBER.toString(),
+                IncrementalInventoryOptionalFieldType.RECORD_TYPE.toString(),
+                IncrementalInventoryOptionalFieldType.RECORD_TIMESTAMP.toString(),
+                IncrementalInventoryOptionalFieldType.REQUESTER.toString(),
+                IncrementalInventoryOptionalFieldType.REQUEST_ID.toString(),
+                IncrementalInventoryOptionalFieldType.SOURCE_IP.toString(),
+                IncrementalInventoryOptionalFieldType.SIZE.toString(),
+                IncrementalInventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                IncrementalInventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                IncrementalInventoryOptionalFieldType.E_TAG.toString(),
+                IncrementalInventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                IncrementalInventoryOptionalFieldType.OBJECT_TYPE.toString(),
+                IncrementalInventoryOptionalFieldType.OBJECT_ACL.toString(),
+                IncrementalInventoryOptionalFieldType.CRC64.toString(),
+                IncrementalInventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
         );
         OptionalFields incrementalOptionalFields = OptionalFields.newBuilder()
-                .fields(incrementFields.stream().map(IncrementalInventoryOptionalFieldType::toString).collect(Collectors.toList()))
+                .fields(incrementFields)
                 .build();
 
         IncrementalInventory incrementalInventory = IncrementalInventory.newBuilder()
