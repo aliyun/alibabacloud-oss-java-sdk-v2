@@ -37,9 +37,6 @@ public enum OrderType {
         return UNKNOWN;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return this.value;
