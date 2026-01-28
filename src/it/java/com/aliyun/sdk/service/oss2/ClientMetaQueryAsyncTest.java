@@ -50,7 +50,7 @@ public class ClientMetaQueryAsyncTest extends TestBase {
                                 .maxResults(5)
                                 .query("{\"Field\": \"Size\",\"Value\": \"0\",\"Operation\": \"gt\"}")
                                 .sort("Size")
-                                .order(MetaQuery.SortOrder.asc)
+                                .order(OrderType.ASC.toString())
                                 .build())
                         .build());
 

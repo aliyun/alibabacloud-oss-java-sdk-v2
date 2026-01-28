@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.util.List;
 import static java.util.Objects.requireNonNull;
+import com.aliyun.sdk.service.oss2.models.MetaQueryMediaTypes;
 
 /**
  * The container that stores the meta query parameters for querying inventory data.
@@ -25,14 +26,13 @@ public final class MetaQuery {
     private String sort;
 
     @JacksonXmlProperty(localName = "Order")
-    private SortOrder order;
+    private String order;
 
     @JacksonXmlProperty(localName = "Aggregations")
     private MetaQueryAggregations aggregations;
 
-    @JacksonXmlElementWrapper(localName = "MediaTypes")
-    @JacksonXmlProperty(localName = "MediaType")
-    private List<String> mediaTypes;
+    @JacksonXmlProperty(localName = "MediaTypes")
+    private MetaQueryMediaTypes mediaTypes;
 
     @JacksonXmlProperty(localName = "SimpleQuery")
     private String simpleQuery;
@@ -81,7 +81,7 @@ public final class MetaQuery {
     /**
      * The order of sorting (asc or desc).
      */
-    public SortOrder order() {
+    public String order() {
         return order;
     }
 
@@ -93,9 +93,9 @@ public final class MetaQuery {
     }
 
     /**
-     * The list of media types to filter by.
+     * The multimedia metadata search criteria.
      */
-    public List<String> mediaTypes() {
+    public MetaQueryMediaTypes mediaTypes() {
         return mediaTypes;
     }
 
@@ -115,28 +115,14 @@ public final class MetaQuery {
     }
 
 
-    /**
-     * Supported operations in query and aggregation.
-     */
-    public enum Operation {
-        eq, ne, gt, ge, lt, le, like, in, sum, avg, max, min
-    }
-
-    /**
-     * Sorting order: asc or desc.
-     */
-    public enum SortOrder {
-        asc, desc
-    }
-
     public static class Builder {
         private String nextToken;
         private Integer maxResults;
         private String query;
         private String sort;
-        private SortOrder order;
+        private String order;
         private MetaQueryAggregations aggregations;
-        private List<String> mediaTypes;
+        private MetaQueryMediaTypes mediaTypes;
         private String simpleQuery;
 
         public Builder nextToken(String value) {
@@ -163,7 +149,7 @@ public final class MetaQuery {
             return this;
         }
 
-        public Builder order(SortOrder value) {
+        public Builder order(String value) {
             requireNonNull(value);
             this.order = value;
             return this;
@@ -175,7 +161,7 @@ public final class MetaQuery {
             return this;
         }
 
-        public Builder mediaTypes(List<String> value) {
+        public Builder mediaTypes(MetaQueryMediaTypes value) {
             requireNonNull(value);
             this.mediaTypes = value;
             return this;

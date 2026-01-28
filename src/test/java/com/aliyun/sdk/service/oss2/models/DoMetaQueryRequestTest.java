@@ -43,7 +43,7 @@ public class DoMetaQueryRequestTest {
                 .maxResults(5)
                 .query(queryCondition)
                 .sort("Size")
-                .order(MetaQuery.SortOrder.asc)
+                .order("asc")
                 .aggregations(aggregationsContainer)
                 .build();
 
@@ -87,10 +87,14 @@ public class DoMetaQueryRequestTest {
         // Create a MetaQuery for semantic mode
         String simpleQuery = "{\"Operation\":\"gt\", \"Field\": \"Size\", \"Value\": \"30\"}";
         
+        MetaQueryMediaTypes mediaTypes = MetaQueryMediaTypes.newBuilder()
+                .mediaTypes(java.util.Arrays.asList("image"))
+                .build();
+        
         MetaQuery metaQuery = MetaQuery.newBuilder()
                 .maxResults(99)
                 .query("俯瞰白雪覆盖的森林")
-                .mediaTypes(java.util.Arrays.asList("image"))
+                .mediaTypes(mediaTypes)
                 .simpleQuery(simpleQuery)
                 .build();
 
@@ -188,7 +192,7 @@ public class DoMetaQueryRequestTest {
                 .maxResults(5)
                 .query(queryCondition)
                 .sort("Size")
-                .order(MetaQuery.SortOrder.asc)
+                .order(OrderType.ASC.toString())
                 .aggregations(aggregationsContainer)
                 .build();
 
@@ -239,10 +243,14 @@ public class DoMetaQueryRequestTest {
 
         String simpleQuery = "{\"Operation\":\"gt\", \"Field\": \"Size\", \"Value\": \"30\"}";
         
+        MetaQueryMediaTypes mediaTypes = MetaQueryMediaTypes.newBuilder()
+                .mediaTypes(java.util.Arrays.asList("image"))
+                .build();
+        
         MetaQuery metaQuery = MetaQuery.newBuilder()
                 .maxResults(99)
                 .query("俯瞰白雪覆盖的森林")
-                .mediaTypes(java.util.Arrays.asList("image"))
+                .mediaTypes(mediaTypes)
                 .simpleQuery(simpleQuery)
                 .build();
 
