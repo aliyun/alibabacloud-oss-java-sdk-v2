@@ -2500,6 +2500,170 @@ public interface OSSAsyncClient extends AutoCloseable {
 
     //-----------------------------------------------------------------------
 
+    // AccessPoint api
+    /**
+     * Creates an access point.
+     *
+     * @param request A {@link CreateAccessPointRequest} for CreateAccessPoint operation.
+     * @return A Java Future containing the {@link CreateAccessPointResult} of the CreateAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateAccessPointResult> createAccessPointAsync(CreateAccessPointRequest request) {
+        return createAccessPointAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates an access point.
+     *
+     * @param request A {@link CreateAccessPointRequest} for CreateAccessPoint operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link CreateAccessPointResult} of the CreateAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateAccessPointResult> createAccessPointAsync(CreateAccessPointRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets information about the access point asynchronously.
+     *
+     * @param request A {@link GetAccessPointRequest} for GetAccessPoint operation.
+     * @return A Java Future containing the {@link GetAccessPointResult} of the GetAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointResult> getAccessPointAsync(GetAccessPointRequest request) {
+        return getAccessPointAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets information about the access point asynchronously.
+     *
+     * @param request A {@link GetAccessPointRequest} for GetAccessPoint operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetAccessPointResult} of the GetAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointResult> getAccessPointAsync(GetAccessPointRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+
+    /**
+     * Lists the access points asynchronously.
+     *
+     * @param request A {@link ListAccessPointsRequest} for ListAccessPoints operation.
+     * @return A Java Future containing the {@link ListAccessPointsResult} of the ListAccessPoints operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListAccessPointsResult> listAccessPointsAsync(ListAccessPointsRequest request) {
+        return listAccessPointsAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists the access points asynchronously.
+     *
+     * @param request A {@link ListAccessPointsRequest} for ListAccessPoints operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListAccessPointsResult} of the ListAccessPoints operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListAccessPointsResult> listAccessPointsAsync(ListAccessPointsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the access point asynchronously.
+     *
+     * @param request A {@link DeleteAccessPointRequest} for DeleteAccessPoint operation.
+     * @return A Java Future containing the {@link DeleteAccessPointResult} of the DeleteAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAccessPointResult> deleteAccessPointAsync(DeleteAccessPointRequest request) {
+        return deleteAccessPointAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the access point asynchronously.
+     *
+     * @param request A {@link DeleteAccessPointRequest} for DeleteAccessPoint operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteAccessPointResult} of the DeleteAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAccessPointResult> deleteAccessPointAsync(DeleteAccessPointRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Sets the access point policy asynchronously.
+     *
+     * @param request A {@link PutAccessPointPolicyRequest} for PutAccessPointPolicy operation.
+     * @return A Java Future containing the {@link PutAccessPointPolicyResult} of the PutAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutAccessPointPolicyResult> putAccessPointPolicyAsync(PutAccessPointPolicyRequest request) {
+        return putAccessPointPolicyAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Sets the access point policy asynchronously.
+     *
+     * @param request A {@link PutAccessPointPolicyRequest} for PutAccessPointPolicy operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutAccessPointPolicyResult} of the PutAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutAccessPointPolicyResult> putAccessPointPolicyAsync(PutAccessPointPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the access point policy asynchronously.
+     *
+     * @param request A {@link GetAccessPointPolicyRequest} for GetAccessPointPolicy operation.
+     * @return A Java Future containing the {@link GetAccessPointPolicyResult} of the GetAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointPolicyResult> getAccessPointPolicyAsync(GetAccessPointPolicyRequest request) {
+        return getAccessPointPolicyAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the access point policy asynchronously.
+     *
+     * @param request A {@link GetAccessPointPolicyRequest} for GetAccessPointPolicy operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetAccessPointPolicyResult} of the GetAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointPolicyResult> getAccessPointPolicyAsync(GetAccessPointPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }  
+  
+      /**
+     * Deletes the access point policy asynchronously.
+     *
+     * @param request A {@link DeleteAccessPointPolicyRequest} for DeleteAccessPointPolicy operation.
+     * @return A Java Future containing the {@link DeleteAccessPointPolicyResult} of the DeleteAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAccessPointPolicyResult> deleteAccessPointPolicyAsync(DeleteAccessPointPolicyRequest request) {
+        return deleteAccessPointPolicyAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the access point policy asynchronously.
+     *
+     * @param request A {@link DeleteAccessPointPolicyRequest} for DeleteAccessPointPolicy operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteAccessPointPolicyResult} of the DeleteAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAccessPointPolicyResult> deleteAccessPointPolicyAsync(DeleteAccessPointPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+  
     // bucket inventory api
     /**
      * Creates or updates the inventory configuration for a bucket.
@@ -2524,30 +2688,6 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
   
-    // metaquery api
-    /**
-     * You can call this operation to open the meta query.
-     *
-     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
-     * @return A Java Future containing the {@link OpenMetaQueryResult} of the OpenMetaQuery operation.
-     * @throws RuntimeException If an error occurs
-     */
-    default CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request) {
-        return openMetaQueryAsync(request, OperationOptions.defaults());
-    }
-
-    /**
-     * You can call this operation to open the meta query.
-     *
-     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
-     * @param options The operation options.
-     * @return A Java Future containing the {@link OpenMetaQueryResult} of the OpenMetaQuery operation.
-     * @throws RuntimeException If an error occurs
-     */
-    default CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Queries the specified inventory configuration for a bucket.
      *
@@ -2572,6 +2712,77 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
 
     /**
+     *  Lists the inventory configurations for a bucket.
+     *
+     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
+     * @return A Java Future containing the {@link ListBucketInventoryResult} of the ListBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request) {
+        return listBucketInventoryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists the inventory configurations for a bucket.
+     *
+     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListBucketInventoryResult} of the ListBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * Deletes the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
+     * @return A Java Future containing the {@link DeleteBucketInventoryResult} of the DeleteBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request) {
+        return deleteBucketInventoryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketInventoryResult} of the DeleteBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+  
+    // metaquery api
+    /**
+     * You can call this operation to open the meta query.
+     *
+     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
+     * @return A Java Future containing the {@link OpenMetaQueryResult} of the OpenMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request) {
+        return openMetaQueryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to open the meta query.
+     *
+     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link OpenMetaQueryResult} of the OpenMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**  
      * You can call this operation to get the meta query status.
      *
      * @param request A {@link GetMetaQueryStatusRequest} for GetMetaQueryStatus operation.
@@ -2758,29 +2969,6 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
 
     /**
-     * Lists the inventory configurations for a bucket.
-     *
-     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
-     * @return A Java Future containing the {@link ListBucketInventoryResult} of the ListBucketInventory operation.
-     * @throws RuntimeException If an error occurs
-     */
-    default CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request) {
-        return listBucketInventoryAsync(request, OperationOptions.defaults());
-    }
-
-    /**
-     * Lists the inventory configurations for a bucket.
-     *
-     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
-     * @param options The operation options.
-     * @return A Java Future containing the {@link ListBucketInventoryResult} of the ListBucketInventory operation.
-     * @throws RuntimeException If an error occurs
-     */
-    default CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request, OperationOptions options) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * Extend a bucket worm configuration.
      *
      * @param request A {@link ExtendBucketWormRequest} for ExtendBucketWorm operation.
@@ -2803,29 +2991,6 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Deletes the specified inventory configuration for a bucket.
-     *
-     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
-     * @return A Java Future containing the {@link DeleteBucketInventoryResult} of the DeleteBucketInventory operation.
-     * @throws RuntimeException If an error occurs
-     */
-    default CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request) {
-        return deleteBucketInventoryAsync(request, OperationOptions.defaults());
-    }
-
-    /**
-     * Deletes the specified inventory configuration for a bucket.
-     *
-     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
-     * @param options The operation options.
-     * @return A Java Future containing the {@link DeleteBucketInventoryResult} of the DeleteBucketInventory operation.
-     * @throws RuntimeException If an error occurs
-     */
-    default CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request, OperationOptions options) {
-        throw new UnsupportedOperationException();
-    }
-  
      /**
      * Get a bucket worm configuration.
      *
