@@ -1,5 +1,13 @@
 # ChangeLog - Alibaba Cloud OSS SDK For Java V2
 
+## 版本号：0.3.1 日期：2026-01-30
+### 变更内容
+- Feature：Add access point api
+- Feature：Add bucket inventory api
+- Feature：Add bucket meta query api
+- Feature：Add bucket archive direct read api
+- Feature：Add bucket worm api
+
 ## 版本号：0.3.0 日期：2025-12-25
 ### 变更内容
 - Feature：Supports api-level ReadWriteTimeout
