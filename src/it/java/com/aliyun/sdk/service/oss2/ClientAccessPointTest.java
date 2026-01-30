@@ -11,8 +11,8 @@ public class ClientAccessPointTest extends TestBase {
     public void testAccessPoint() {
         String accessPointName1 = "ap-test-oss-" + System.currentTimeMillis() % 1000000;
         String accessPointName2 = "ap-test-oss-" + (System.currentTimeMillis() + 1) % 1000000;
-        String userId = OSS_TEST_RAM_UID;
-        String region = OSS_TEST_REGION;
+        String userId = accountId();
+        String region = region();
         String policy = String.format("{\"Version\":\"1\",\"Statement\":[{\"Action\":[\"oss:PutObject\",\"oss:GetObject\"],\"Effect\":\"Deny\",\"Principal\":[\"%s\"],\"Resource\":[\"acs:oss:%s:%s:accesspoint/%s\",\"acs:oss:%s:%s:accesspoint/%s/object/*\"]}]}",
                 userId, region, userId, accessPointName1, region, userId, accessPointName1);
 
