@@ -566,4 +566,59 @@ public class DefaultOSSClient implements OSSClient {
     public DeleteBucketInventoryResult deleteBucketInventory(DeleteBucketInventoryRequest request, OperationOptions options) {
         return BucketInventory.deleteBucketInventory(this.clientImpl, request, options);
     }
+  
+    @Override
+    public OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.openMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return BucketMetaquery.getMetaQueryStatus(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.doMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.closeMetaQuery(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public PutBucketArchiveDirectReadResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.putBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.getBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.initiateBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public AbortBucketWormResult abortBucketWorm(AbortBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.abortBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompleteBucketWormResult completeBucketWorm(CompleteBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.completeBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ExtendBucketWormResult extendBucketWorm(ExtendBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.extendBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketWormResult getBucketWorm(GetBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.getBucketWorm(this.clientImpl, request, options);
+    }
 }
