@@ -23,7 +23,7 @@ public final class GetAccessPointResultXml {
     private String networkOrigin;
  
     @JacksonXmlProperty(localName = "Endpoints")
-    private Endpoints endpoints;
+    private AccessPointEndpoints endpoints;
  
     @JacksonXmlProperty(localName = "CreationDate")
     private String creationDate;
@@ -90,12 +90,12 @@ public final class GetAccessPointResultXml {
     /**
     * The container that stores the network origin information about the access point.
     */
-    public Endpoints endpoints() {
+    public AccessPointEndpoints endpoints() {
         return this.endpoints;
     }
 
     /**
-    * 接入点创建时间。
+    * The creation date of the access point.
     */
     public String creationDate() {
         return this.creationDate;
@@ -130,7 +130,7 @@ public final class GetAccessPointResultXml {
     }
 
     /**
-    * 保存接入点阻止公共访问的配置
+    * Configuration to block public access for the access point.
     */
     public PublicAccessBlockConfiguration publicAccessBlockConfiguration() {
         return this.publicAccessBlockConfiguration;
@@ -149,7 +149,7 @@ public final class GetAccessPointResultXml {
         private String bucket;
         private String accountId;
         private String networkOrigin;
-        private Endpoints endpoints;
+        private AccessPointEndpoints endpoints;
         private String creationDate;
         private AccessPointVpcConfiguration vpcConfiguration;
         private String accessPointArn;
@@ -196,14 +196,14 @@ public final class GetAccessPointResultXml {
         /**
         * The container that stores the network origin information about the access point.
         */
-        public Builder endpoints(Endpoints value) {
+        public Builder endpoints(AccessPointEndpoints value) {
             requireNonNull(value);
             this.endpoints = value;
             return this;
         }
         
         /**
-        * 接入点创建时间。
+        * The creation date of the access point.
         */
         public Builder creationDate(String value) {
             requireNonNull(value);
@@ -248,7 +248,7 @@ public final class GetAccessPointResultXml {
         }
         
         /**
-        * 保存接入点阻止公共访问的配置
+        * Configuration to block public access for the access point.
         */
         public Builder publicAccessBlockConfiguration(PublicAccessBlockConfiguration value) {
             requireNonNull(value);

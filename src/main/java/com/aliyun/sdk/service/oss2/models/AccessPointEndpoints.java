@@ -8,16 +8,16 @@ import static java.util.Objects.requireNonNull;
  * The container that stores the endpoints of the Object FC Access Point.
  */
  @JacksonXmlRootElement(localName = "Endpoints")
-public final class Endpoints {  
+public final class AccessPointEndpoints {
     @JacksonXmlProperty(localName = "PublicEndpoint")
     private String publicEndpoint;
  
     @JacksonXmlProperty(localName = "InternalEndpoint")
     private String internalEndpoint;
 
-    public Endpoints() {}
+    public AccessPointEndpoints() {}
 
-    private Endpoints(Builder builder) { 
+    private AccessPointEndpoints(Builder builder) {
         this.publicEndpoint = builder.publicEndpoint; 
         this.internalEndpoint = builder.internalEndpoint; 
     }
@@ -71,13 +71,13 @@ public final class Endpoints {
             super();
         }
 
-        private Builder(Endpoints from) { 
+        private Builder(AccessPointEndpoints from) {
             this.publicEndpoint = from.publicEndpoint; 
             this.internalEndpoint = from.internalEndpoint; 
         }
 
-        public Endpoints build() {
-            return new Endpoints(this);
+        public AccessPointEndpoints build() {
+            return new AccessPointEndpoints(this);
         }
     }
 }
