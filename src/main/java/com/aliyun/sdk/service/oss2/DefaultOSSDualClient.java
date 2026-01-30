@@ -1026,6 +1026,76 @@ public class DefaultOSSDualClient implements OSSDualClient {
         return BucketOverwriteConfig.deleteBucketOverwriteConfigAsync(this.clientImpl, request, options);
     }
 
+    @Override
+    public CreateAccessPointResult createAccessPoint(CreateAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.createAccessPoint(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CreateAccessPointResult> createAccessPointAsync(CreateAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.createAccessPointAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointResult getAccessPoint(GetAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.getAccessPoint(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetAccessPointResult> getAccessPointAsync(GetAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.getAccessPointAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListAccessPointsResult listAccessPoints(ListAccessPointsRequest request, OperationOptions options) {
+        return BucketAccessPoint.listAccessPoints(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListAccessPointsResult> listAccessPointsAsync(ListAccessPointsRequest request, OperationOptions options) {
+        return BucketAccessPoint.listAccessPointsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteAccessPointResult deleteAccessPoint(DeleteAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.deleteAccessPoint(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteAccessPointResult> deleteAccessPointAsync(DeleteAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.deleteAccessPointAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutAccessPointPolicyResult putAccessPointPolicy(PutAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.putAccessPointPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutAccessPointPolicyResult> putAccessPointPolicyAsync(PutAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.putAccessPointPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointPolicyResult getAccessPointPolicy(GetAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.getAccessPointPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetAccessPointPolicyResult> getAccessPointPolicyAsync(GetAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.getAccessPointPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteAccessPointPolicyResult deleteAccessPointPolicy(DeleteAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.deleteAccessPointPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteAccessPointPolicyResult> deleteAccessPointPolicyAsync(DeleteAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.deleteAccessPointPolicyAsync(this.clientImpl, request, options);
+    }
+  
     // sync operation
     @Override
     public PutBucketInventoryResult putBucketInventory(PutBucketInventoryRequest request, OperationOptions options) {
