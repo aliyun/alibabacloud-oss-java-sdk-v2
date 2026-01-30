@@ -1065,4 +1065,74 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request, OperationOptions options) {
         return BucketMetaquery.closeMetaQueryAsync(this.clientImpl, request, options);
     }
+  
+    @Override
+    public PutBucketArchiveDirectReadResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.putBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.getBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.putBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.getBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.initiateBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<InitiateBucketWormResult> initiateBucketWormAsync(InitiateBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.initiateBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public AbortBucketWormResult abortBucketWorm(AbortBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.abortBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<AbortBucketWormResult> abortBucketWormAsync(AbortBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.abortBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompleteBucketWormResult completeBucketWorm(CompleteBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.completeBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CompleteBucketWormResult> completeBucketWormAsync(CompleteBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.completeBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ExtendBucketWormResult extendBucketWorm(ExtendBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.extendBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ExtendBucketWormResult> extendBucketWormAsync(ExtendBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.extendBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketWormResult getBucketWorm(GetBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.getBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.getBucketWormAsync(this.clientImpl, request, options);
+    }
 }

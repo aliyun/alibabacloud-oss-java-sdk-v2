@@ -566,4 +566,39 @@ public class DefaultOSSClient implements OSSClient {
     public CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request, OperationOptions options) {
         return BucketMetaquery.closeMetaQuery(this.clientImpl, request, options);
     }
+  
+    @Override
+    public PutBucketArchiveDirectReadResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.putBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.getBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.initiateBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public AbortBucketWormResult abortBucketWorm(AbortBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.abortBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompleteBucketWormResult completeBucketWorm(CompleteBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.completeBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ExtendBucketWormResult extendBucketWorm(ExtendBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.extendBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketWormResult getBucketWorm(GetBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.getBucketWorm(this.clientImpl, request, options);
+    }
 }

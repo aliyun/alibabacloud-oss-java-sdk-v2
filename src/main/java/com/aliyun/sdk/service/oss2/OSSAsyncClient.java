@@ -2546,7 +2546,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+  
     /**
      * Performs a metadata query operation asynchronously.
      *
@@ -2569,7 +2569,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+    
     /**
      * You can call this operation to close the meta query asynchronously.
      *
@@ -2592,6 +2592,168 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+  
+    // ArchiveDirectRead api
+    /**
+     * Enables or disables archive direct read for a bucket.
+     *
+     * @param request A {@link PutBucketArchiveDirectReadRequest} for PutBucketArchiveDirectRead operation.
+     * @return A Java Future containing the {@link PutBucketArchiveDirectReadResult} for PutBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request) {
+        return putBucketArchiveDirectReadAsync(request, OperationOptions.defaults());
+    }
 
+    /**
+     * Enables or disables archive direct read for a bucket.
+     *
+     * @param request A {@link PutBucketArchiveDirectReadRequest} for PutBucketArchiveDirectRead operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketArchiveDirectReadResult} for PutBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+      
+    /**
+     * Queries the archive direct read configuration of a bucket asynchronously.
+     *
+     * @param request A {@link GetBucketArchiveDirectReadRequest} for GetBucketArchiveDirectRead operation.
+     * @return A Java Future containing the {@link GetBucketArchiveDirectReadResult} for GetBucketArchiveDirectRead operation.
+     */
+    default CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request) {
+        return getBucketArchiveDirectReadAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the archive direct read configuration of a bucket asynchronously.
+     *
+     * @param request A {@link GetBucketArchiveDirectReadRequest} for GetBucketArchiveDirectRead operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketArchiveDirectReadResult} for GetBucketArchiveDirectRead operation.
+     */
+    default CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    //-----------------------------------------------------------------------
+
+    // bucket worm api
+    /**
+     * Initiate a bucket worm configuration.
+     *
+     * @param request A {@link InitiateBucketWormRequest} for InitiateBucketWorm operation.
+     * @return A Java Future containing the {@link InitiateBucketWormResult} of the InitiateBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<InitiateBucketWormResult> initiateBucketWormAsync(InitiateBucketWormRequest request) {
+        return initiateBucketWormAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Initiate a bucket worm configuration.
+     *
+     * @param request A {@link InitiateBucketWormRequest} for InitiateBucketWorm operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link InitiateBucketWormResult} of the InitiateBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<InitiateBucketWormResult> initiateBucketWormAsync(InitiateBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+      
+    /**
+     * Abort a bucket worm configuration.
+     *
+     * @param request A {@link AbortBucketWormRequest} for AbortBucketWorm operation.
+     * @return A Java Future containing the {@link AbortBucketWormResult} of the AbortBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<AbortBucketWormResult> abortBucketWormAsync(AbortBucketWormRequest request) {
+        return abortBucketWormAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Abort a bucket worm configuration.
+     *
+     * @param request A {@link AbortBucketWormRequest} for AbortBucketWorm operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link AbortBucketWormResult} of the AbortBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<AbortBucketWormResult> abortBucketWormAsync(AbortBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Complete a bucket worm configuration.
+     *
+     * @param request A {@link CompleteBucketWormRequest} for CompleteBucketWorm operation.
+     * @return A Java Future containing the {@link CompleteBucketWormResult} of the CompleteBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CompleteBucketWormResult> completeBucketWormAsync(CompleteBucketWormRequest request) {
+        return completeBucketWormAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Complete a bucket worm configuration.
+     *
+     * @param request A {@link CompleteBucketWormRequest} for CompleteBucketWorm operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link CompleteBucketWormResult} of the CompleteBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CompleteBucketWormResult> completeBucketWormAsync(CompleteBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Extend a bucket worm configuration.
+     *
+     * @param request A {@link ExtendBucketWormRequest} for ExtendBucketWorm operation.
+     * @return A Java Future containing the {@link ExtendBucketWormResult} of the ExtendBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ExtendBucketWormResult> extendBucketWormAsync(ExtendBucketWormRequest request) {
+        return extendBucketWormAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Extend a bucket worm configuration.
+     *
+     * @param request A {@link ExtendBucketWormRequest} for ExtendBucketWorm operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ExtendBucketWormResult} of the ExtendBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ExtendBucketWormResult> extendBucketWormAsync(ExtendBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Get a bucket worm configuration.
+     *
+     * @param request A {@link GetBucketWormRequest} for GetBucketWorm operation.
+     * @return A Java Future containing the {@link GetBucketWormResult} of the GetBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request) {
+        return getBucketWormAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Get a bucket worm configuration.
+     *
+     * @param request A {@link GetBucketWormRequest} for GetBucketWorm operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketWormResult} of the GetBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 }
