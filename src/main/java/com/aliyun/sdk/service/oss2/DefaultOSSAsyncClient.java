@@ -4,7 +4,6 @@ import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.operations.*;
 import com.aliyun.sdk.service.oss2.operations.BucketPolicy;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -512,6 +511,26 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
         return BucketOverwriteConfig.deleteBucketOverwriteConfigAsync(this.clientImpl, request, options);
     }
 
+    @Override
+    public CompletableFuture<PutBucketInventoryResult> putBucketInventoryAsync(PutBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.putBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketInventoryResult> getBucketInventoryAsync(GetBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.getBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.listBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.deleteBucketInventoryAsync(this.clientImpl, request, options);
+    }
+  
     @Override
     public CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
         return BucketMetaquery.openMetaQueryAsync(this.clientImpl, request, options);
