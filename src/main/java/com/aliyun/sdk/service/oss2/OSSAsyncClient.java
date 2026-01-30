@@ -2500,6 +2500,30 @@ public interface OSSAsyncClient extends AutoCloseable {
 
     //-----------------------------------------------------------------------
 
+    // bucket inventory api
+    /**
+     * Creates or updates the inventory configuration for a bucket.
+     *
+     * @param request A {@link PutBucketInventoryRequest} for PutBucketInventory operation.
+     * @return A Java Future containing the {@link PutBucketInventoryResult} of the PutBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketInventoryResult> putBucketInventoryAsync(PutBucketInventoryRequest request) {
+        return putBucketInventoryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates or updates the inventory configuration for a bucket.
+     *
+     * @param request A {@link PutBucketInventoryRequest} for PutBucketInventory operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketInventoryResult} of the PutBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketInventoryResult> putBucketInventoryAsync(PutBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
     // metaquery api
     /**
      * You can call this operation to open the meta query.
@@ -2521,6 +2545,29 @@ public interface OSSAsyncClient extends AutoCloseable {
      * @throws RuntimeException If an error occurs
      */
     default CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link GetBucketInventoryRequest} for GetBucketInventory operation.
+     * @return A Java Future containing the {@link GetBucketInventoryResult} of the GetBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketInventoryResult> getBucketInventoryAsync(GetBucketInventoryRequest request) {
+        return getBucketInventoryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link GetBucketInventoryRequest} for GetBucketInventory operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketInventoryResult} of the GetBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketInventoryResult> getBucketInventoryAsync(GetBucketInventoryRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
 
@@ -2711,6 +2758,29 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
 
     /**
+     * Lists the inventory configurations for a bucket.
+     *
+     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
+     * @return A Java Future containing the {@link ListBucketInventoryResult} of the ListBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request) {
+        return listBucketInventoryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists the inventory configurations for a bucket.
+     *
+     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListBucketInventoryResult} of the ListBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Extend a bucket worm configuration.
      *
      * @param request A {@link ExtendBucketWormRequest} for ExtendBucketWorm operation.
@@ -2734,6 +2804,29 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
 
     /**
+     * Deletes the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
+     * @return A Java Future containing the {@link DeleteBucketInventoryResult} of the DeleteBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request) {
+        return deleteBucketInventoryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketInventoryResult} of the DeleteBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+     /**
      * Get a bucket worm configuration.
      *
      * @param request A {@link GetBucketWormRequest} for GetBucketWorm operation.

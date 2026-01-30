@@ -2896,4 +2896,98 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // bucket inventory api
+    /**
+     * Creates or updates the inventory configuration for a bucket.
+     *
+     * @param request A {@link PutBucketInventoryRequest} for PutBucketInventory operation.
+     * @return A {@link PutBucketInventoryResult} for PutBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketInventoryResult putBucketInventory(PutBucketInventoryRequest request) {
+        return putBucketInventory(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates or updates the inventory configuration for a bucket.
+     *
+     * @param request A {@link PutBucketInventoryRequest} for PutBucketInventory operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketInventoryResult} for PutBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketInventoryResult putBucketInventory(PutBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link GetBucketInventoryRequest} for GetBucketInventory operation.
+     * @return A {@link GetBucketInventoryResult} for GetBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketInventoryResult getBucketInventory(GetBucketInventoryRequest request) {
+        return getBucketInventory(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link GetBucketInventoryRequest} for GetBucketInventory operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketInventoryResult} for GetBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketInventoryResult getBucketInventory(GetBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists the inventory configurations for a bucket.
+     *
+     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
+     * @return A {@link ListBucketInventoryResult} for ListBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListBucketInventoryResult listBucketInventory(ListBucketInventoryRequest request) {
+        return listBucketInventory(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists the inventory configurations for a bucket.
+     *
+     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
+     * @param options The operation options.
+     * @return A {@link ListBucketInventoryResult} for ListBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListBucketInventoryResult listBucketInventory(ListBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
+     * @return A {@link DeleteBucketInventoryResult} for DeleteBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketInventoryResult deleteBucketInventory(DeleteBucketInventoryRequest request) {
+        return deleteBucketInventory(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketInventoryResult} for DeleteBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketInventoryResult deleteBucketInventory(DeleteBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }

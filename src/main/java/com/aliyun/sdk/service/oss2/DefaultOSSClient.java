@@ -548,6 +548,26 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public PutBucketInventoryResult putBucketInventory(PutBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.putBucketInventory(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketInventoryResult getBucketInventory(GetBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.getBucketInventory(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListBucketInventoryResult listBucketInventory(ListBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.listBucketInventory(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketInventoryResult deleteBucketInventory(DeleteBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.deleteBucketInventory(this.clientImpl, request, options);
+    }
+  
+    @Override
     public OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request, OperationOptions options) {
         return BucketMetaquery.openMetaQuery(this.clientImpl, request, options);
     }
