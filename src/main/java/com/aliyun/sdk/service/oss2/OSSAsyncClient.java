@@ -2500,6 +2500,99 @@ public interface OSSAsyncClient extends AutoCloseable {
 
     //-----------------------------------------------------------------------
 
+    // metaquery api
+    /**
+     * You can call this operation to open the meta query.
+     *
+     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
+     * @return A Java Future containing the {@link OpenMetaQueryResult} of the OpenMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request) {
+        return openMetaQueryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to open the meta query.
+     *
+     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link OpenMetaQueryResult} of the OpenMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to get the meta query status.
+     *
+     * @param request A {@link GetMetaQueryStatusRequest} for GetMetaQueryStatus operation.
+     * @return A Java Future containing the {@link GetMetaQueryStatusResult} of the GetMetaQueryStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request) {
+        return getMetaQueryStatusAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to get the meta query status.
+     *
+     * @param request A {@link GetMetaQueryStatusRequest} for GetMetaQueryStatus operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetMetaQueryStatusResult} of the GetMetaQueryStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Performs a metadata query operation asynchronously.
+     *
+     * @param request A {@link DoMetaQueryRequest} for DoMetaQuery operation.
+     * @return A Java Future containing the {@link DoMetaQueryResult} of the DoMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request) {
+        return doMetaQueryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Performs a metadata query operation asynchronously.
+     *
+     * @param request A {@link DoMetaQueryRequest} for DoMetaQuery operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DoMetaQueryResult} of the DoMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * You can call this operation to close the meta query asynchronously.
+     *
+     * @param request A {@link CloseMetaQueryRequest} for CloseMetaQuery operation.
+     * @return A Java Future containing the {@link CloseMetaQueryResult} of the CloseMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request) {
+        return closeMetaQueryAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to close the meta query asynchronously.
+     *
+     * @param request A {@link CloseMetaQueryRequest} for CloseMetaQuery operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link CloseMetaQueryResult} of the CloseMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
     // ArchiveDirectRead api
     /**
      * Enables or disables archive direct read for a bucket.
@@ -2523,7 +2616,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+      
     /**
      * Queries the archive direct read configuration of a bucket asynchronously.
      *
@@ -2544,7 +2637,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+  
     //-----------------------------------------------------------------------
 
     // bucket worm api
@@ -2593,7 +2686,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<AbortBucketWormResult> abortBucketWormAsync(AbortBucketWormRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+  
     /**
      * Complete a bucket worm configuration.
      *
