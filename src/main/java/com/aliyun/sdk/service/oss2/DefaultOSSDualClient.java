@@ -1095,4 +1095,156 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<DeleteAccessPointPolicyResult> deleteAccessPointPolicyAsync(DeleteAccessPointPolicyRequest request, OperationOptions options) {
         return BucketAccessPoint.deleteAccessPointPolicyAsync(this.clientImpl, request, options);
     }
+  
+    // sync operation
+    @Override
+    public PutBucketInventoryResult putBucketInventory(PutBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.putBucketInventory(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketInventoryResult getBucketInventory(GetBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.getBucketInventory(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListBucketInventoryResult listBucketInventory(ListBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.listBucketInventory(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketInventoryResult deleteBucketInventory(DeleteBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.deleteBucketInventory(this.clientImpl, request, options);
+    }
+
+    // async operation
+    @Override
+    public CompletableFuture<PutBucketInventoryResult> putBucketInventoryAsync(PutBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.putBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketInventoryResult> getBucketInventoryAsync(GetBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.getBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.listBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.deleteBucketInventoryAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.openMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return BucketMetaquery.getMetaQueryStatus(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.doMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.closeMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.openMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return BucketMetaquery.getMetaQueryStatusAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.doMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.closeMetaQueryAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public PutBucketArchiveDirectReadResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.putBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.getBucketArchiveDirectRead(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.putBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.getBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.initiateBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<InitiateBucketWormResult> initiateBucketWormAsync(InitiateBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.initiateBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public AbortBucketWormResult abortBucketWorm(AbortBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.abortBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<AbortBucketWormResult> abortBucketWormAsync(AbortBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.abortBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompleteBucketWormResult completeBucketWorm(CompleteBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.completeBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CompleteBucketWormResult> completeBucketWormAsync(CompleteBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.completeBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ExtendBucketWormResult extendBucketWorm(ExtendBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.extendBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ExtendBucketWormResult> extendBucketWormAsync(ExtendBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.extendBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketWormResult getBucketWorm(GetBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.getBucketWorm(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.getBucketWormAsync(this.clientImpl, request, options);
+    }
 }

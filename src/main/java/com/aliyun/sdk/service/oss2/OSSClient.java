@@ -2637,7 +2637,358 @@ public interface OSSClient extends AutoCloseable, Presignable {
     default DeleteBucketOverwriteConfigResult deleteBucketOverwriteConfig(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+    //-----------------------------------------------------------------------
 
+    // metaquery api
+    /**
+     * You can call this operation to open the meta query.
+     *
+     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
+     * @return A {@link OpenMetaQueryResult} for OpenMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request) {
+        return openMetaQuery(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to open the meta query.
+     *
+     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
+     * @param options The operation options.
+     * @return A {@link OpenMetaQueryResult} for OpenMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to get the meta query status.
+     *
+     * @param request A {@link GetMetaQueryStatusRequest} for GetMetaQueryStatus operation.
+     * @return A {@link GetMetaQueryStatusResult} for GetMetaQueryStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request) {
+        return getMetaQueryStatus(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to get the meta query status.
+     *
+     * @param request A {@link GetMetaQueryStatusRequest} for GetMetaQueryStatus operation.
+     * @param options The operation options.
+     * @return A {@link GetMetaQueryStatusResult} for GetMetaQueryStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Performs a metadata query operation.
+     *
+     * @param request A {@link DoMetaQueryRequest} for DoMetaQuery operation.
+     * @return A {@link DoMetaQueryResult} for DoMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request) {
+        return doMetaQuery(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Performs a metadata query operation.
+     *
+     * @param request A {@link DoMetaQueryRequest} for DoMetaQuery operation.
+     * @param options The operation options.
+     * @return A {@link DoMetaQueryResult} for DoMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * You can call this operation to close the meta query.
+     *
+     * @param request A {@link CloseMetaQueryRequest} for CloseMetaQuery operation.
+     * @return A {@link CloseMetaQueryResult} for CloseMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request) {
+        return closeMetaQuery(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to close the meta query.
+     *
+     * @param request A {@link CloseMetaQueryRequest} for CloseMetaQuery operation.
+     * @param options The operation options.
+     * @return A {@link CloseMetaQueryResult} for CloseMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    // ArchiveDirectRead api
+    /**
+     * Queries the archive direct read configuration of a bucket.
+     *
+     * @param request A {@link GetBucketArchiveDirectReadRequest} for GetBucketArchiveDirectRead operation.
+     * @return A {@link GetBucketArchiveDirectReadResult} for GetBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest request) {
+        return getBucketArchiveDirectRead(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the archive direct read configuration of a bucket.
+     *
+     * @param request A {@link GetBucketArchiveDirectReadRequest} for GetBucketArchiveDirectRead operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketArchiveDirectReadResult} for GetBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketArchiveDirectReadResult getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+      
+     /**
+     * Enables or disables archive direct read for a bucket.
+     *
+     * @param request A {@link PutBucketArchiveDirectReadRequest} for PutBucketArchiveDirectRead operation.
+     * @return A {@link PutBucketArchiveDirectReadResult} for PutBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketArchiveDirectReadResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request) {
+        return putBucketArchiveDirectRead(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables or disables archive direct read for a bucket.
+     *
+     * @param request A {@link PutBucketArchiveDirectReadRequest} for PutBucketArchiveDirectRead operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketArchiveDirectReadResult} for PutBucketArchiveDirectRead operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketArchiveDirectReadResult putBucketArchiveDirectRead(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    //-----------------------------------------------------------------------      
+    // bucket worm api
+    /**
+     * Initiate a bucket worm configuration.
+     *
+     * @param request A {@link InitiateBucketWormRequest} for InitiateBucketWorm operation.
+     * @return A {@link InitiateBucketWormResult} for InitiateBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest request) {
+        return initiateBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Initiate a bucket worm configuration.
+     *
+     * @param request A {@link InitiateBucketWormRequest} for InitiateBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link InitiateBucketWormResult} for InitiateBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default InitiateBucketWormResult initiateBucketWorm(InitiateBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Abort a bucket worm configuration.
+     *
+     * @param request A {@link AbortBucketWormRequest} for AbortBucketWorm operation.
+     * @return A {@link AbortBucketWormResult} for AbortBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AbortBucketWormResult abortBucketWorm(AbortBucketWormRequest request) {
+        return abortBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Abort a bucket worm configuration.
+     *
+     * @param request A {@link AbortBucketWormRequest} for AbortBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link AbortBucketWormResult} for AbortBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default AbortBucketWormResult abortBucketWorm(AbortBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Complete a bucket worm configuration.
+     *
+     * @param request A {@link CompleteBucketWormRequest} for CompleteBucketWorm operation.
+     * @return A {@link CompleteBucketWormResult} for CompleteBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompleteBucketWormResult completeBucketWorm(CompleteBucketWormRequest request) {
+        return completeBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Complete a bucket worm configuration.
+     *
+     * @param request A {@link CompleteBucketWormRequest} for CompleteBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link CompleteBucketWormResult} for CompleteBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompleteBucketWormResult completeBucketWorm(CompleteBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Extend a bucket worm configuration.
+     *
+     * @param request A {@link ExtendBucketWormRequest} for ExtendBucketWorm operation.
+     * @return A {@link ExtendBucketWormResult} for ExtendBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ExtendBucketWormResult extendBucketWorm(ExtendBucketWormRequest request) {
+        return extendBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Extend a bucket worm configuration.
+     *
+     * @param request A {@link ExtendBucketWormRequest} for ExtendBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link ExtendBucketWormResult} for ExtendBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ExtendBucketWormResult extendBucketWorm(ExtendBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Get a bucket worm configuration.
+     *
+     * @param request A {@link GetBucketWormRequest} for GetBucketWorm operation.
+     * @return A {@link GetBucketWormResult} for GetBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketWormResult getBucketWorm(GetBucketWormRequest request) {
+        return getBucketWorm(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Get a bucket worm configuration.
+     *
+     * @param request A {@link GetBucketWormRequest} for GetBucketWorm operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketWormResult} for GetBucketWorm operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketWormResult getBucketWorm(GetBucketWormRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // bucket inventory api
+    /**
+     * Creates or updates the inventory configuration for a bucket.
+     *
+     * @param request A {@link PutBucketInventoryRequest} for PutBucketInventory operation.
+     * @return A {@link PutBucketInventoryResult} for PutBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketInventoryResult putBucketInventory(PutBucketInventoryRequest request) {
+        return putBucketInventory(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates or updates the inventory configuration for a bucket.
+     *
+     * @param request A {@link PutBucketInventoryRequest} for PutBucketInventory operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketInventoryResult} for PutBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketInventoryResult putBucketInventory(PutBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link GetBucketInventoryRequest} for GetBucketInventory operation.
+     * @return A {@link GetBucketInventoryResult} for GetBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketInventoryResult getBucketInventory(GetBucketInventoryRequest request) {
+        return getBucketInventory(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link GetBucketInventoryRequest} for GetBucketInventory operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketInventoryResult} for GetBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketInventoryResult getBucketInventory(GetBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists the inventory configurations for a bucket.
+     *
+     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
+     * @return A {@link ListBucketInventoryResult} for ListBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListBucketInventoryResult listBucketInventory(ListBucketInventoryRequest request) {
+        return listBucketInventory(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists the inventory configurations for a bucket.
+     *
+     * @param request A {@link ListBucketInventoryRequest} for ListBucketInventory operation.
+     * @param options The operation options.
+     * @return A {@link ListBucketInventoryResult} for ListBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListBucketInventoryResult listBucketInventory(ListBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
+     * @return A {@link DeleteBucketInventoryResult} for DeleteBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketInventoryResult deleteBucketInventory(DeleteBucketInventoryRequest request) {
+        return deleteBucketInventory(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the specified inventory configuration for a bucket.
+     *
+     * @param request A {@link DeleteBucketInventoryRequest} for DeleteBucketInventory operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketInventoryResult} for DeleteBucketInventory operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketInventoryResult deleteBucketInventory(DeleteBucketInventoryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 
     // AccessPoint api

@@ -4,7 +4,6 @@ import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.operations.*;
 import com.aliyun.sdk.service.oss2.operations.BucketPolicy;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -547,4 +546,78 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
         return BucketAccessPoint.deleteAccessPointPolicyAsync(this.clientImpl, request, options);
     }
 
+    @Override
+    public CompletableFuture<PutBucketInventoryResult> putBucketInventoryAsync(PutBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.putBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketInventoryResult> getBucketInventoryAsync(GetBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.getBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListBucketInventoryResult> listBucketInventoryAsync(ListBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.listBucketInventoryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketInventoryResult> deleteBucketInventoryAsync(DeleteBucketInventoryRequest request, OperationOptions options) {
+        return BucketInventory.deleteBucketInventoryAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.openMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return BucketMetaquery.getMetaQueryStatusAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.doMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.closeMetaQueryAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public CompletableFuture<PutBucketArchiveDirectReadResult> putBucketArchiveDirectReadAsync(PutBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.putBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketArchiveDirectReadResult> getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest request, OperationOptions options) {
+        return BucketArchiveDirectRead.getBucketArchiveDirectReadAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public CompletableFuture<InitiateBucketWormResult> initiateBucketWormAsync(InitiateBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.initiateBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<AbortBucketWormResult> abortBucketWormAsync(AbortBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.abortBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CompleteBucketWormResult> completeBucketWormAsync(CompleteBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.completeBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ExtendBucketWormResult> extendBucketWormAsync(ExtendBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.extendBucketWormAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
+        return BucketWorm.getBucketWormAsync(this.clientImpl, request, options);
+    }
 }
