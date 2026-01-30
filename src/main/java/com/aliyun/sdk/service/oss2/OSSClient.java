@@ -2639,4 +2639,99 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
 
     //-----------------------------------------------------------------------
+
+    // metaquery api
+    /**
+     * You can call this operation to open the meta query.
+     *
+     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
+     * @return A {@link OpenMetaQueryResult} for OpenMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request) {
+        return openMetaQuery(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to open the meta query.
+     *
+     * @param request A {@link OpenMetaQueryRequest} for OpenMetaQuery operation.
+     * @param options The operation options.
+     * @return A {@link OpenMetaQueryResult} for OpenMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to get the meta query status.
+     *
+     * @param request A {@link GetMetaQueryStatusRequest} for GetMetaQueryStatus operation.
+     * @return A {@link GetMetaQueryStatusResult} for GetMetaQueryStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request) {
+        return getMetaQueryStatus(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to get the meta query status.
+     *
+     * @param request A {@link GetMetaQueryStatusRequest} for GetMetaQueryStatus operation.
+     * @param options The operation options.
+     * @return A {@link GetMetaQueryStatusResult} for GetMetaQueryStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Performs a metadata query operation.
+     *
+     * @param request A {@link DoMetaQueryRequest} for DoMetaQuery operation.
+     * @return A {@link DoMetaQueryResult} for DoMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request) {
+        return doMetaQuery(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Performs a metadata query operation.
+     *
+     * @param request A {@link DoMetaQueryRequest} for DoMetaQuery operation.
+     * @param options The operation options.
+     * @return A {@link DoMetaQueryResult} for DoMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to close the meta query.
+     *
+     * @param request A {@link CloseMetaQueryRequest} for CloseMetaQuery operation.
+     * @return A {@link CloseMetaQueryResult} for CloseMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request) {
+        return closeMetaQuery(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to close the meta query.
+     *
+     * @param request A {@link CloseMetaQueryRequest} for CloseMetaQuery operation.
+     * @param options The operation options.
+     * @return A {@link CloseMetaQueryResult} for CloseMetaQuery operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
 }

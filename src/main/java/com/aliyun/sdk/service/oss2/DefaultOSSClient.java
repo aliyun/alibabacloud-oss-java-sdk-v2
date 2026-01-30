@@ -546,4 +546,24 @@ public class DefaultOSSClient implements OSSClient {
     public DeleteBucketOverwriteConfigResult deleteBucketOverwriteConfig(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
         return BucketOverwriteConfig.deleteBucketOverwriteConfig(this.clientImpl, request, options);
     }
+
+    @Override
+    public OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.openMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return BucketMetaquery.getMetaQueryStatus(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.doMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request, OperationOptions options) {
+        return BucketMetaquery.closeMetaQuery(this.clientImpl, request, options);
+    }
 }
