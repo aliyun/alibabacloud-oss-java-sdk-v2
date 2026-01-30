@@ -2639,4 +2639,167 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
 
     //-----------------------------------------------------------------------
+
+    // AccessPoint api
+    /**
+     * Creates an access point.
+     *
+     * @param request A {@link CreateAccessPointRequest} for CreateAccessPoint operation.
+     * @return A {@link CreateAccessPointResult} for CreateAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateAccessPointResult createAccessPoint(CreateAccessPointRequest request) {
+        return createAccessPoint(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates an access point.
+     *
+     * @param request A {@link CreateAccessPointRequest} for CreateAccessPoint operation.
+     * @param options The operation options.
+     * @return A {@link CreateAccessPointResult} for CreateAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateAccessPointResult createAccessPoint(CreateAccessPointRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets information about the access point.
+     *
+     * @param request A {@link GetAccessPointRequest} for GetAccessPoint operation.
+     * @return A {@link GetAccessPointResult} for GetAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointResult getAccessPoint(GetAccessPointRequest request) {
+        return getAccessPoint(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets information about the access point.
+     *
+     * @param request A {@link GetAccessPointRequest} for GetAccessPoint operation.
+     * @param options The operation options.
+     * @return A {@link GetAccessPointResult} for GetAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointResult getAccessPoint(GetAccessPointRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists the access points.
+     *
+     * @param request A {@link ListAccessPointsRequest} for ListAccessPoints operation.
+     * @return A {@link ListAccessPointsResult} for ListAccessPoints operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListAccessPointsResult listAccessPoints(ListAccessPointsRequest request) {
+        return listAccessPoints(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists the access points.
+     *
+     * @param request A {@link ListAccessPointsRequest} for ListAccessPoints operation.
+     * @param options The operation options.
+     * @return A {@link ListAccessPointsResult} for ListAccessPoints operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListAccessPointsResult listAccessPoints(ListAccessPointsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the access point.
+     *
+     * @param request A {@link DeleteAccessPointRequest} for DeleteAccessPoint operation.
+     * @return A {@link DeleteAccessPointResult} for DeleteAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAccessPointResult deleteAccessPoint(DeleteAccessPointRequest request) {
+        return deleteAccessPoint(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the access point.
+     *
+     * @param request A {@link DeleteAccessPointRequest} for DeleteAccessPoint operation.
+     * @param options The operation options.
+     * @return A {@link DeleteAccessPointResult} for DeleteAccessPoint operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAccessPointResult deleteAccessPoint(DeleteAccessPointRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Sets the access point policy.
+     *
+     * @param request A {@link PutAccessPointPolicyRequest} for PutAccessPointPolicy operation.
+     * @return A {@link PutAccessPointPolicyResult} for PutAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutAccessPointPolicyResult putAccessPointPolicy(PutAccessPointPolicyRequest request) {
+        return putAccessPointPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Sets the access point policy.
+     *
+     * @param request A {@link PutAccessPointPolicyRequest} for PutAccessPointPolicy operation.
+     * @param options The operation options.
+     * @return A {@link PutAccessPointPolicyResult} for PutAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutAccessPointPolicyResult putAccessPointPolicy(PutAccessPointPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the access point policy.
+     *
+     * @param request A {@link GetAccessPointPolicyRequest} for GetAccessPointPolicy operation.
+     * @return A {@link GetAccessPointPolicyResult} for GetAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointPolicyResult getAccessPointPolicy(GetAccessPointPolicyRequest request) {
+        return getAccessPointPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the access point policy.
+     *
+     * @param request A {@link GetAccessPointPolicyRequest} for GetAccessPointPolicy operation.
+     * @param options The operation options.
+     * @return A {@link GetAccessPointPolicyResult} for GetAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointPolicyResult getAccessPointPolicy(GetAccessPointPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the access point policy.
+     *
+     * @param request A {@link DeleteAccessPointPolicyRequest} for DeleteAccessPointPolicy operation.
+     * @return A {@link DeleteAccessPointPolicyResult} for DeleteAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAccessPointPolicyResult deleteAccessPointPolicy(DeleteAccessPointPolicyRequest request) {
+        return deleteAccessPointPolicy(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the access point policy.
+     *
+     * @param request A {@link DeleteAccessPointPolicyRequest} for DeleteAccessPointPolicy operation.
+     * @param options The operation options.
+     * @return A {@link DeleteAccessPointPolicyResult} for DeleteAccessPointPolicy operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAccessPointPolicyResult deleteAccessPointPolicy(DeleteAccessPointPolicyRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }

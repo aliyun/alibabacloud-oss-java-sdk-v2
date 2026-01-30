@@ -546,4 +546,39 @@ public class DefaultOSSClient implements OSSClient {
     public DeleteBucketOverwriteConfigResult deleteBucketOverwriteConfig(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
         return BucketOverwriteConfig.deleteBucketOverwriteConfig(this.clientImpl, request, options);
     }
+
+    @Override
+    public CreateAccessPointResult createAccessPoint(CreateAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.createAccessPoint(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointResult getAccessPoint(GetAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.getAccessPoint(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListAccessPointsResult listAccessPoints(ListAccessPointsRequest request, OperationOptions options) {
+        return BucketAccessPoint.listAccessPoints(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteAccessPointResult deleteAccessPoint(DeleteAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.deleteAccessPoint(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutAccessPointPolicyResult putAccessPointPolicy(PutAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.putAccessPointPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointPolicyResult getAccessPointPolicy(GetAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.getAccessPointPolicy(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteAccessPointPolicyResult deleteAccessPointPolicy(DeleteAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.deleteAccessPointPolicy(this.clientImpl, request, options);
+    }
 }

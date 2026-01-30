@@ -511,4 +511,40 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<DeleteBucketOverwriteConfigResult> deleteBucketOverwriteConfigAsync(DeleteBucketOverwriteConfigRequest request, OperationOptions options) {
         return BucketOverwriteConfig.deleteBucketOverwriteConfigAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<CreateAccessPointResult> createAccessPointAsync(CreateAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.createAccessPointAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetAccessPointResult> getAccessPointAsync(GetAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.getAccessPointAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListAccessPointsResult> listAccessPointsAsync(ListAccessPointsRequest request, OperationOptions options) {
+        return BucketAccessPoint.listAccessPointsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteAccessPointResult> deleteAccessPointAsync(DeleteAccessPointRequest request, OperationOptions options) {
+        return BucketAccessPoint.deleteAccessPointAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutAccessPointPolicyResult> putAccessPointPolicyAsync(PutAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.putAccessPointPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetAccessPointPolicyResult> getAccessPointPolicyAsync(GetAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.getAccessPointPolicyAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteAccessPointPolicyResult> deleteAccessPointPolicyAsync(DeleteAccessPointPolicyRequest request, OperationOptions options) {
+        return BucketAccessPoint.deleteAccessPointPolicyAsync(this.clientImpl, request, options);
+    }
+
 }
