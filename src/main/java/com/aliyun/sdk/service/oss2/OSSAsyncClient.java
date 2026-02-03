@@ -3014,4 +3014,54 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // bucket request payment api
+    /**
+     * Sets the request payment configuration for a bucket.
+     *
+     * @param request A {@link PutBucketRequestPaymentRequest} for PutBucketRequestPayment operation.
+     * @return A Java Future containing the {@link PutBucketRequestPaymentResult} of the PutBucketRequestPayment operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketRequestPaymentResult> putBucketRequestPaymentAsync(PutBucketRequestPaymentRequest request) {
+        return putBucketRequestPaymentAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Sets the request payment configuration for a bucket.
+     *
+     * @param request A {@link PutBucketRequestPaymentRequest} for PutBucketRequestPayment operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketRequestPaymentResult} of the PutBucketRequestPayment operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketRequestPaymentResult> putBucketRequestPaymentAsync(PutBucketRequestPaymentRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the request payment configuration for a bucket.
+     *
+     * @param request A {@link GetBucketRequestPaymentRequest} for GetBucketRequestPayment operation.
+     * @return A Java Future containing the {@link GetBucketRequestPaymentResult} of the GetBucketRequestPayment operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketRequestPaymentResult> getBucketRequestPaymentAsync(GetBucketRequestPaymentRequest request) {
+        return getBucketRequestPaymentAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the request payment configuration for a bucket.
+     *
+     * @param request A {@link GetBucketRequestPaymentRequest} for GetBucketRequestPayment operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketRequestPaymentResult} of the GetBucketRequestPayment operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketRequestPaymentResult> getBucketRequestPaymentAsync(GetBucketRequestPaymentRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }
+
+
