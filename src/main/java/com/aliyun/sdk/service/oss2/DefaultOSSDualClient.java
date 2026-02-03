@@ -1247,4 +1247,24 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
         return BucketWorm.getBucketWormAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketRequestPaymentResult putBucketRequestPayment(PutBucketRequestPaymentRequest request, OperationOptions options) {
+        return BucketRequestPayment.putBucketRequestPayment(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketRequestPaymentResult> putBucketRequestPaymentAsync(PutBucketRequestPaymentRequest request, OperationOptions options) {
+        return BucketRequestPayment.putBucketRequestPaymentAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketRequestPaymentResult getBucketRequestPayment(GetBucketRequestPaymentRequest request, OperationOptions options) {
+        return BucketRequestPayment.getBucketRequestPayment(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketRequestPaymentResult> getBucketRequestPaymentAsync(GetBucketRequestPaymentRequest request, OperationOptions options) {
+        return BucketRequestPayment.getBucketRequestPaymentAsync(this.clientImpl, request, options);
+    }
 }

@@ -3153,4 +3153,52 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // bucket request payment api
+    /**
+     * Sets the request payment configuration for a bucket.
+     *
+     * @param request A {@link PutBucketRequestPaymentRequest} for PutBucketRequestPayment operation.
+     * @return A {@link PutBucketRequestPaymentResult} for PutBucketRequestPayment operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketRequestPaymentResult putBucketRequestPayment(PutBucketRequestPaymentRequest request) {
+        return putBucketRequestPayment(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Sets the request payment configuration for a bucket.
+     *
+     * @param request A {@link PutBucketRequestPaymentRequest} for PutBucketRequestPayment operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketRequestPaymentResult} for PutBucketRequestPayment operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketRequestPaymentResult putBucketRequestPayment(PutBucketRequestPaymentRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the request payment configuration for a bucket.
+     *
+     * @param request A {@link GetBucketRequestPaymentRequest} for GetBucketRequestPayment operation.
+     * @return A {@link GetBucketRequestPaymentResult} for GetBucketRequestPayment operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketRequestPaymentResult getBucketRequestPayment(GetBucketRequestPaymentRequest request) {
+        return getBucketRequestPayment(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the request payment configuration for a bucket.
+     *
+     * @param request A {@link GetBucketRequestPaymentRequest} for GetBucketRequestPayment operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketRequestPaymentResult} for GetBucketRequestPayment operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketRequestPaymentResult getBucketRequestPayment(GetBucketRequestPaymentRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }
