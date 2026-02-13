@@ -3014,4 +3014,239 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // object fc accesspoint api
+
+    /**
+     * Creates an access point for object process.
+     *
+     * @param request A {@link CreateAccessPointForObjectProcessRequest} for CreateAccessPointForObjectProcess operation.
+     * @return A Java Future containing the {@link CreateAccessPointForObjectProcessResult} of the CreateAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateAccessPointForObjectProcessResult> createAccessPointForObjectProcessAsync(CreateAccessPointForObjectProcessRequest request) {
+        return createAccessPointForObjectProcessAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates an access point for object process.
+     *
+     * @param request A {@link CreateAccessPointForObjectProcessRequest} for CreateAccessPointForObjectProcess operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link CreateAccessPointForObjectProcessResult} of the CreateAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateAccessPointForObjectProcessResult> createAccessPointForObjectProcessAsync(CreateAccessPointForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets an access point for object process.
+     *
+     * @param request A {@link GetAccessPointForObjectProcessRequest} for GetAccessPointForObjectProcess operation.
+     * @return A Java Future containing the {@link GetAccessPointForObjectProcessResult} of the GetAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointForObjectProcessResult> getAccessPointForObjectProcessAsync(GetAccessPointForObjectProcessRequest request) {
+        return getAccessPointForObjectProcessAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets an access point for object process.
+     *
+     * @param request A {@link GetAccessPointForObjectProcessRequest} for GetAccessPointForObjectProcess operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetAccessPointForObjectProcessResult} of the GetAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointForObjectProcessResult> getAccessPointForObjectProcessAsync(GetAccessPointForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists access points for object process.
+     *
+     * @param request A {@link ListAccessPointsForObjectProcessRequest} for ListAccessPointsForObjectProcess operation.
+     * @return A Java Future containing the {@link ListAccessPointsForObjectProcessResult} of the ListAccessPointsForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListAccessPointsForObjectProcessResult> listAccessPointsForObjectProcessAsync(ListAccessPointsForObjectProcessRequest request) {
+        return listAccessPointsForObjectProcessAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists access points for object process.
+     *
+     * @param request A {@link ListAccessPointsForObjectProcessRequest} for ListAccessPointsForObjectProcess operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListAccessPointsForObjectProcessResult} of the ListAccessPointsForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListAccessPointsForObjectProcessResult> listAccessPointsForObjectProcessAsync(ListAccessPointsForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes an access point for object process.
+     *
+     * @param request A {@link DeleteAccessPointForObjectProcessRequest} for DeleteAccessPointForObjectProcess operation.
+     * @return A Java Future containing the {@link DeleteAccessPointForObjectProcessResult} of the DeleteAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAccessPointForObjectProcessResult> deleteAccessPointForObjectProcessAsync(DeleteAccessPointForObjectProcessRequest request) {
+        return deleteAccessPointForObjectProcessAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes an access point for object process.
+     *
+     * @param request A {@link DeleteAccessPointForObjectProcessRequest} for DeleteAccessPointForObjectProcess operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteAccessPointForObjectProcessResult} of the DeleteAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAccessPointForObjectProcessResult> deleteAccessPointForObjectProcessAsync(DeleteAccessPointForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the access point configuration for object process.
+     *
+     * @param request A {@link GetAccessPointConfigForObjectProcessRequest} for GetAccessPointConfigForObjectProcess operation.
+     * @return A Java Future containing the {@link GetAccessPointConfigForObjectProcessResult} of the GetAccessPointConfigForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointConfigForObjectProcessResult> getAccessPointConfigForObjectProcessAsync(GetAccessPointConfigForObjectProcessRequest request) {
+        return getAccessPointConfigForObjectProcessAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the access point configuration for object process.
+     *
+     * @param request A {@link GetAccessPointConfigForObjectProcessRequest} for GetAccessPointConfigForObjectProcess operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetAccessPointConfigForObjectProcessResult} of the GetAccessPointConfigForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointConfigForObjectProcessResult> getAccessPointConfigForObjectProcessAsync(GetAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Puts the access point configuration for object process.
+     *
+     * @param request A {@link PutAccessPointConfigForObjectProcessRequest} for PutAccessPointConfigForObjectProcess operation.
+     * @return A Java Future containing the {@link PutAccessPointConfigForObjectProcessResult} of the PutAccessPointConfigForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutAccessPointConfigForObjectProcessResult> putAccessPointConfigForObjectProcessAsync(PutAccessPointConfigForObjectProcessRequest request) {
+        return putAccessPointConfigForObjectProcessAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Puts the access point configuration for object process.
+     *
+     * @param request A {@link PutAccessPointConfigForObjectProcessRequest} for PutAccessPointConfigForObjectProcess operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutAccessPointConfigForObjectProcessResult} of the PutAccessPointConfigForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutAccessPointConfigForObjectProcessResult> putAccessPointConfigForObjectProcessAsync(PutAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Puts the access point policy for object process.
+     *
+     * @param request A {@link PutAccessPointPolicyForObjectProcessRequest} for PutAccessPointPolicyForObjectProcess operation.
+     * @return A Java Future containing the {@link PutAccessPointPolicyForObjectProcessResult} of the PutAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutAccessPointPolicyForObjectProcessResult> putAccessPointPolicyForObjectProcessAsync(PutAccessPointPolicyForObjectProcessRequest request) {
+        return putAccessPointPolicyForObjectProcessAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Puts the access point policy for object process.
+     *
+     * @param request A {@link PutAccessPointPolicyForObjectProcessRequest} for PutAccessPointPolicyForObjectProcess operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutAccessPointPolicyForObjectProcessResult} of the PutAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutAccessPointPolicyForObjectProcessResult> putAccessPointPolicyForObjectProcessAsync(PutAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the access point policy for object process.
+     *
+     * @param request A {@link GetAccessPointPolicyForObjectProcessRequest} for GetAccessPointPolicyForObjectProcess operation.
+     * @return A Java Future containing the {@link GetAccessPointPolicyForObjectProcessResult} of the GetAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointPolicyForObjectProcessResult> getAccessPointPolicyForObjectProcessAsync(GetAccessPointPolicyForObjectProcessRequest request) {
+        return getAccessPointPolicyForObjectProcessAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the access point policy for object process.
+     *
+     * @param request A {@link GetAccessPointPolicyForObjectProcessRequest} for GetAccessPointPolicyForObjectProcess operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetAccessPointPolicyForObjectProcessResult} of the GetAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAccessPointPolicyForObjectProcessResult> getAccessPointPolicyForObjectProcessAsync(GetAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the access point policy for object process.
+     *
+     * @param request A {@link DeleteAccessPointPolicyForObjectProcessRequest} for DeleteAccessPointPolicyForObjectProcess operation.
+     * @return A Java Future containing the {@link DeleteAccessPointPolicyForObjectProcessResult} of the DeleteAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAccessPointPolicyForObjectProcessResult> deleteAccessPointPolicyForObjectProcessAsync(DeleteAccessPointPolicyForObjectProcessRequest request) {
+        return deleteAccessPointPolicyForObjectProcessAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the access point policy for object process.
+     *
+     * @param request A {@link DeleteAccessPointPolicyForObjectProcessRequest} for DeleteAccessPointPolicyForObjectProcess operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteAccessPointPolicyForObjectProcessResult} of the DeleteAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAccessPointPolicyForObjectProcessResult> deleteAccessPointPolicyForObjectProcessAsync(DeleteAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to write get object response.
+     *
+     * @param request A {@link WriteGetObjectResponseRequest} for WriteGetObjectResponse operation.
+     * @return A Java Future containing the {@link WriteGetObjectResponseResult} of the WriteGetObjectResponse operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<WriteGetObjectResponseResult> writeGetObjectResponseAsync(WriteGetObjectResponseRequest request) {
+        return writeGetObjectResponseAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to write get object response.
+     *
+     * @param request A {@link WriteGetObjectResponseRequest} for WriteGetObjectResponse operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link WriteGetObjectResponseResult} of the WriteGetObjectResponse operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<WriteGetObjectResponseResult> writeGetObjectResponseAsync(WriteGetObjectResponseRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+
 }

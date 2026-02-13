@@ -3153,4 +3153,242 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // object fc accesspoint api
+
+    /**
+     * Creates an access point for object process.
+     *
+     * @param request A {@link CreateAccessPointForObjectProcessRequest} for CreateAccessPointForObjectProcess operation.
+     * @return A {@link CreateAccessPointForObjectProcessResult} for CreateAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateAccessPointForObjectProcessResult createAccessPointForObjectProcess(CreateAccessPointForObjectProcessRequest request) {
+        return createAccessPointForObjectProcess(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates an access point for object process.
+     *
+     * @param request A {@link CreateAccessPointForObjectProcessRequest} for CreateAccessPointForObjectProcess operation.
+     * @param options The operation options.
+     * @return A {@link CreateAccessPointForObjectProcessResult} for CreateAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateAccessPointForObjectProcessResult createAccessPointForObjectProcess(CreateAccessPointForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets an access point for object process.
+     *
+     * @param request A {@link GetAccessPointForObjectProcessRequest} for GetAccessPointForObjectProcess operation.
+     * @return A {@link GetAccessPointForObjectProcessResult} for GetAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointForObjectProcessResult getAccessPointForObjectProcess(GetAccessPointForObjectProcessRequest request) {
+        return getAccessPointForObjectProcess(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets an access point for object process.
+     *
+     * @param request A {@link GetAccessPointForObjectProcessRequest} for GetAccessPointForObjectProcess operation.
+     * @param options The operation options.
+     * @return A {@link GetAccessPointForObjectProcessResult} for GetAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointForObjectProcessResult getAccessPointForObjectProcess(GetAccessPointForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists access points for object process.
+     *
+     * @param request A {@link ListAccessPointsForObjectProcessRequest} for ListAccessPointsForObjectProcess operation.
+     * @return A {@link ListAccessPointsForObjectProcessResult} for ListAccessPointsForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListAccessPointsForObjectProcessResult listAccessPointsForObjectProcess(ListAccessPointsForObjectProcessRequest request) {
+        return listAccessPointsForObjectProcess(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists access points for object process.
+     *
+     * @param request A {@link ListAccessPointsForObjectProcessRequest} for ListAccessPointsForObjectProcess operation.
+     * @param options The operation options.
+     * @return A {@link ListAccessPointsForObjectProcessResult} for ListAccessPointsForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListAccessPointsForObjectProcessResult listAccessPointsForObjectProcess(ListAccessPointsForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes an access point for object process.
+     *
+     * @param request A {@link DeleteAccessPointForObjectProcessRequest} for DeleteAccessPointForObjectProcess operation.
+     * @return A {@link DeleteAccessPointForObjectProcessResult} for DeleteAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAccessPointForObjectProcessResult deleteAccessPointForObjectProcess(DeleteAccessPointForObjectProcessRequest request) {
+        return deleteAccessPointForObjectProcess(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes an access point for object process.
+     *
+     * @param request A {@link DeleteAccessPointForObjectProcessRequest} for DeleteAccessPointForObjectProcess operation.
+     * @param options The operation options.
+     * @return A {@link DeleteAccessPointForObjectProcessResult} for DeleteAccessPointForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAccessPointForObjectProcessResult deleteAccessPointForObjectProcess(DeleteAccessPointForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the access point configuration for object process.
+     *
+     * @param request A {@link GetAccessPointConfigForObjectProcessRequest} for GetAccessPointConfigForObjectProcess operation.
+     * @return A {@link GetAccessPointConfigForObjectProcessResult} for GetAccessPointConfigForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointConfigForObjectProcessResult getAccessPointConfigForObjectProcess(GetAccessPointConfigForObjectProcessRequest request) {
+        return getAccessPointConfigForObjectProcess(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the access point configuration for object process.
+     *
+     * @param request A {@link GetAccessPointConfigForObjectProcessRequest} for GetAccessPointConfigForObjectProcess operation.
+     * @param options The operation options.
+     * @return A {@link GetAccessPointConfigForObjectProcessResult} for GetAccessPointConfigForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointConfigForObjectProcessResult getAccessPointConfigForObjectProcess(GetAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Puts the access point configuration for object process.
+     *
+     * @param request A {@link PutAccessPointConfigForObjectProcessRequest} for PutAccessPointConfigForObjectProcess operation.
+     * @return A {@link PutAccessPointConfigForObjectProcessResult} for PutAccessPointConfigForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutAccessPointConfigForObjectProcessResult putAccessPointConfigForObjectProcess(PutAccessPointConfigForObjectProcessRequest request) {
+        return putAccessPointConfigForObjectProcess(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Puts the access point configuration for object process.
+     *
+     * @param request A {@link PutAccessPointConfigForObjectProcessRequest} for PutAccessPointConfigForObjectProcess operation.
+     * @param options The operation options.
+     * @return A {@link PutAccessPointConfigForObjectProcessResult} for PutAccessPointConfigForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutAccessPointConfigForObjectProcessResult putAccessPointConfigForObjectProcess(PutAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Puts the access point policy for object process.
+     *
+     * @param request A {@link PutAccessPointPolicyForObjectProcessRequest} for PutAccessPointPolicyForObjectProcess operation.
+     * @return A {@link PutAccessPointPolicyForObjectProcessResult} for PutAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutAccessPointPolicyForObjectProcessResult putAccessPointPolicyForObjectProcess(PutAccessPointPolicyForObjectProcessRequest request) {
+        return putAccessPointPolicyForObjectProcess(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Puts the access point policy for object process.
+     *
+     * @param request A {@link PutAccessPointPolicyForObjectProcessRequest} for PutAccessPointPolicyForObjectProcess operation.
+     * @param options The operation options.
+     * @return A {@link PutAccessPointPolicyForObjectProcessResult} for PutAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutAccessPointPolicyForObjectProcessResult putAccessPointPolicyForObjectProcess(PutAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the access point policy for object process.
+     *
+     * @param request A {@link GetAccessPointPolicyForObjectProcessRequest} for GetAccessPointPolicyForObjectProcess operation.
+     * @return A {@link GetAccessPointPolicyForObjectProcessResult} for GetAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointPolicyForObjectProcessResult getAccessPointPolicyForObjectProcess(GetAccessPointPolicyForObjectProcessRequest request) {
+        return getAccessPointPolicyForObjectProcess(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the access point policy for object process.
+     *
+     * @param request A {@link GetAccessPointPolicyForObjectProcessRequest} for GetAccessPointPolicyForObjectProcess operation.
+     * @param options The operation options.
+     * @return A {@link GetAccessPointPolicyForObjectProcessResult} for GetAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAccessPointPolicyForObjectProcessResult getAccessPointPolicyForObjectProcess(GetAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the access point policy for object process.
+     *
+     * @param request A {@link DeleteAccessPointPolicyForObjectProcessRequest} for DeleteAccessPointPolicyForObjectProcess operation.
+     * @return A {@link DeleteAccessPointPolicyForObjectProcessResult} for DeleteAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAccessPointPolicyForObjectProcessResult deleteAccessPointPolicyForObjectProcess(DeleteAccessPointPolicyForObjectProcessRequest request) {
+        return deleteAccessPointPolicyForObjectProcess(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the access point policy for object process.
+     *
+     * @param request A {@link DeleteAccessPointPolicyForObjectProcessRequest} for DeleteAccessPointPolicyForObjectProcess operation.
+     * @param options The operation options.
+     * @return A {@link DeleteAccessPointPolicyForObjectProcessResult} for DeleteAccessPointPolicyForObjectProcess operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAccessPointPolicyForObjectProcessResult deleteAccessPointPolicyForObjectProcess(DeleteAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // write get object response api
+
+    /**
+     * You can call this operation to write get object response.
+     *
+     * @param request A {@link WriteGetObjectResponseRequest} for WriteGetObjectResponse operation.
+     * @return A {@link WriteGetObjectResponseResult} for WriteGetObjectResponse operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default WriteGetObjectResponseResult writeGetObjectResponse(WriteGetObjectResponseRequest request) {
+        return writeGetObjectResponse(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to write get object response.
+     *
+     * @param request A {@link WriteGetObjectResponseRequest} for WriteGetObjectResponse operation.
+     * @param options The operation options.
+     * @return A {@link WriteGetObjectResponseResult} for WriteGetObjectResponse operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default WriteGetObjectResponseResult writeGetObjectResponse(WriteGetObjectResponseRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+
 }
