@@ -15,14 +15,13 @@ import java.util.concurrent.CompletableFuture;
 public class WriteGetObjectResponseAsync implements Example {
 
     private static void execute(
-            String endpoint,
             String region,
             String route,
             String token) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
 
-        try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
+        try (OSSAsyncClient client = getDefaultAsyncClient(route, region, provider)) {
             // Prepare test data
             final int instreamLength = 128 * 1024;
             InputStream instream = genFixedLengthInputStream(instreamLength);
@@ -64,10 +63,10 @@ public class WriteGetObjectResponseAsync implements Example {
         }
     }
 
-    private static OSSAsyncClient getDefaultAsyncClient(String endpoint, String region, CredentialsProvider provider) {
+    private static OSSAsyncClient getDefaultAsyncClient(String route, String region, CredentialsProvider provider) {
         return OSSAsyncClient.newBuilder()
                 .region(region)
-                .endpoint(endpoint)
+                .endpoint(route)
                 .credentialsProvider(provider)
                 .build();
     }
@@ -82,7 +81,6 @@ public class WriteGetObjectResponseAsync implements Example {
     @Override
     public Options getOptions() {
         Options opts = new Options();
-        opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS.").hasArg().get());
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("route").desc("The request route.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("token").desc("The request token.").hasArg().required().get());
@@ -91,10 +89,9 @@ public class WriteGetObjectResponseAsync implements Example {
 
     @Override
     public void runCmd(CommandLine cmd) throws ParseException {
-        String endpoint = cmd.getParsedOptionValue("endpoint");
         String region = cmd.getParsedOptionValue("region");
         String route = cmd.getParsedOptionValue("route");
         String token = cmd.getParsedOptionValue("token");
-        execute(endpoint, region, route, token);
+        execute(region, route, token);
     }
 }

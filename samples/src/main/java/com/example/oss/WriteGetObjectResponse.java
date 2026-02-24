@@ -16,7 +16,6 @@ import org.apache.commons.cli.ParseException;
 public class WriteGetObjectResponse implements Example {
     
     private static void execute(
-            String endpoint,
             String region,
             String route,
             String token) {
@@ -26,8 +25,8 @@ public class WriteGetObjectResponse implements Example {
                 .credentialsProvider(provider)
                 .region(region);
 
-        if (endpoint != null) {
-            clientBuilder.endpoint(endpoint);
+        if (route != null) {
+            clientBuilder.endpoint(route);
         }
 
         try (OSSClient client = clientBuilder.build()) {
@@ -79,7 +78,6 @@ public class WriteGetObjectResponse implements Example {
     @Override
     public Options getOptions() {
         Options opts = new Options();
-        opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS.").hasArg().get());
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("route").desc("The request route.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("token").desc("The request token.").hasArg().required().get());
@@ -88,10 +86,9 @@ public class WriteGetObjectResponse implements Example {
 
     @Override
     public void runCmd(CommandLine cmd) throws ParseException {
-        String endpoint = cmd.getParsedOptionValue("endpoint");
         String region = cmd.getParsedOptionValue("region");
         String route = cmd.getParsedOptionValue("route");
         String token = cmd.getParsedOptionValue("token");
-        execute(endpoint, region, route, token);
+        execute(region, route, token);
     }
 }
