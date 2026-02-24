@@ -1247,4 +1247,104 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
         return BucketWorm.getBucketWormAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CreateAccessPointForObjectProcessResult createAccessPointForObjectProcess(CreateAccessPointForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.createAccessPointForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointForObjectProcessResult getAccessPointForObjectProcess(GetAccessPointForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.getAccessPointForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListAccessPointsForObjectProcessResult listAccessPointsForObjectProcess(ListAccessPointsForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.listAccessPointsForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteAccessPointForObjectProcessResult deleteAccessPointForObjectProcess(DeleteAccessPointForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.deleteAccessPointForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointConfigForObjectProcessResult getAccessPointConfigForObjectProcess(GetAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.getAccessPointConfigForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutAccessPointConfigForObjectProcessResult putAccessPointConfigForObjectProcess(PutAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.putAccessPointConfigForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutAccessPointPolicyForObjectProcessResult putAccessPointPolicyForObjectProcess(PutAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.putAccessPointPolicyForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointPolicyForObjectProcessResult getAccessPointPolicyForObjectProcess(GetAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.getAccessPointPolicyForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteAccessPointPolicyForObjectProcessResult deleteAccessPointPolicyForObjectProcess(DeleteAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.deleteAccessPointPolicyForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CreateAccessPointForObjectProcessResult> createAccessPointForObjectProcessAsync(CreateAccessPointForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.createAccessPointForObjectProcessAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetAccessPointForObjectProcessResult> getAccessPointForObjectProcessAsync(GetAccessPointForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.getAccessPointForObjectProcessAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListAccessPointsForObjectProcessResult> listAccessPointsForObjectProcessAsync(ListAccessPointsForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.listAccessPointsForObjectProcessAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteAccessPointForObjectProcessResult> deleteAccessPointForObjectProcessAsync(DeleteAccessPointForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.deleteAccessPointForObjectProcessAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetAccessPointConfigForObjectProcessResult> getAccessPointConfigForObjectProcessAsync(GetAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.getAccessPointConfigForObjectProcessAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutAccessPointConfigForObjectProcessResult> putAccessPointConfigForObjectProcessAsync(PutAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.putAccessPointConfigForObjectProcessAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutAccessPointPolicyForObjectProcessResult> putAccessPointPolicyForObjectProcessAsync(PutAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.putAccessPointPolicyForObjectProcessAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetAccessPointPolicyForObjectProcessResult> getAccessPointPolicyForObjectProcessAsync(GetAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.getAccessPointPolicyForObjectProcessAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteAccessPointPolicyForObjectProcessResult> deleteAccessPointPolicyForObjectProcessAsync(DeleteAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.deleteAccessPointPolicyForObjectProcessAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public WriteGetObjectResponseResult writeGetObjectResponse(WriteGetObjectResponseRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.writeGetObjectResponse(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public CompletableFuture<WriteGetObjectResponseResult> writeGetObjectResponseAsync(WriteGetObjectResponseRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.writeGetObjectResponseAsync(this.clientImpl, request, options);
+    }
 }

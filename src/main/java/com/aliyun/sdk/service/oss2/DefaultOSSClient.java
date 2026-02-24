@@ -656,4 +656,54 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketWormResult getBucketWorm(GetBucketWormRequest request, OperationOptions options) {
         return BucketWorm.getBucketWorm(this.clientImpl, request, options);
     }
+
+    @Override
+    public CreateAccessPointForObjectProcessResult createAccessPointForObjectProcess(CreateAccessPointForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.createAccessPointForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointForObjectProcessResult getAccessPointForObjectProcess(GetAccessPointForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.getAccessPointForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListAccessPointsForObjectProcessResult listAccessPointsForObjectProcess(ListAccessPointsForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.listAccessPointsForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteAccessPointForObjectProcessResult deleteAccessPointForObjectProcess(DeleteAccessPointForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.deleteAccessPointForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointConfigForObjectProcessResult getAccessPointConfigForObjectProcess(GetAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.getAccessPointConfigForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutAccessPointConfigForObjectProcessResult putAccessPointConfigForObjectProcess(PutAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.putAccessPointConfigForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutAccessPointPolicyForObjectProcessResult putAccessPointPolicyForObjectProcess(PutAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.putAccessPointPolicyForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetAccessPointPolicyForObjectProcessResult getAccessPointPolicyForObjectProcess(GetAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.getAccessPointPolicyForObjectProcess(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteAccessPointPolicyForObjectProcessResult deleteAccessPointPolicyForObjectProcess(DeleteAccessPointPolicyForObjectProcessRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.deleteAccessPointPolicyForObjectProcess(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public WriteGetObjectResponseResult writeGetObjectResponse(WriteGetObjectResponseRequest request, OperationOptions options) {
+        return BucketObjectFcAccessPoint.writeGetObjectResponse(this.clientImpl, request, options);
+    }
 }
