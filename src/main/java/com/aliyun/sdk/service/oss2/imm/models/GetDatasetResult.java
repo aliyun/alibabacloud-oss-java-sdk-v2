@@ -3,12 +3,12 @@ package com.aliyun.sdk.service.oss2.imm.models;
 import com.aliyun.sdk.service.oss2.models.ResultModel;
 
 /**
- * The result for the CreateDataset operation.
+ * The result for the GetDataset operation.
  */
-public final class CreateDatasetResult extends ResultModel {
+public final class GetDatasetResult extends ResultModel {
     private final Dataset dataset;
 
-    CreateDatasetResult(Builder builder) {
+    GetDatasetResult(Builder builder) {
         super(builder);
         this.dataset = builder.dataset;
     }
@@ -32,7 +32,7 @@ public final class CreateDatasetResult extends ResultModel {
             super();
         }
 
-        private Builder(CreateDatasetResult result) {
+        private Builder(GetDatasetResult result) {
             super(result);
             this.dataset = result.dataset;
         }
@@ -42,8 +42,8 @@ public final class CreateDatasetResult extends ResultModel {
             return this;
         }
 
-        public CreateDatasetResult build() {
-            return new CreateDatasetResult(this);
+        public GetDatasetResult build() {
+            return new GetDatasetResult(this);
         }
     }
 }

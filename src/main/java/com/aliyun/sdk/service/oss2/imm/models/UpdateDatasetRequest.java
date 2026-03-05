@@ -7,9 +7,9 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * The request for the CreateDataset operation.
+ * The request for the UpdateDataset operation.
  */
-public final class CreateDatasetRequest extends RequestModel {
+public final class UpdateDatasetRequest extends RequestModel {
     private final String bucket;
     private final String datasetName;
     private final String description;
@@ -22,7 +22,7 @@ public final class CreateDatasetRequest extends RequestModel {
     private final List<WorkflowParameter> workflowParameters;
     private final DatasetConfig datasetConfig;
 
-    private CreateDatasetRequest(Builder builder) {
+    private UpdateDatasetRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
         this.datasetName = builder.datasetName;
@@ -106,7 +106,7 @@ public final class CreateDatasetRequest extends RequestModel {
             super();
         }
 
-        private Builder(CreateDatasetRequest request) {
+        private Builder(UpdateDatasetRequest request) {
             super(request);
             this.bucket = request.bucket;
             this.datasetName = request.datasetName;
@@ -178,8 +178,8 @@ public final class CreateDatasetRequest extends RequestModel {
             return this;
         }
 
-        public CreateDatasetRequest build() {
-            return new CreateDatasetRequest(this);
+        public UpdateDatasetRequest build() {
+            return new UpdateDatasetRequest(this);
         }
     }
 }
