@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -11,17 +12,13 @@ import static java.util.Objects.requireNonNull;
  * The request for the SimpleQuery operation.
  */
 public final class SimpleQueryRequest extends RequestModel {
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+
     private final String bucket;
-    private final SimpleQuery query;
-    private final List<Aggregation> aggregations;
-    private final List<String> withFields;
 
     private SimpleQueryRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.query = builder.query;
-        this.aggregations = builder.aggregations;
-        this.withFields = builder.withFields;
     }
 
     public static Builder newBuilder() {
@@ -44,8 +41,8 @@ public final class SimpleQueryRequest extends RequestModel {
         return ConvertUtils.toIntegerOrNull(parameters.get("maxResults"));
     }
 
-    public SimpleQuery query() {
-        return query;
+    public String query() {
+        return parameters.get("query");
     }
 
     public String sort() {
@@ -56,12 +53,12 @@ public final class SimpleQueryRequest extends RequestModel {
         return parameters.get("order");
     }
 
-    public List<Aggregation> aggregations() {
-        return aggregations;
+    public String aggregations() {
+        return parameters.get("aggregations");
     }
 
-    public List<String> withFields() {
-        return withFields;
+    public String withFields() {
+        return parameters.get("withFields");
     }
 
     public Boolean withoutTotalHits() {
@@ -72,11 +69,16 @@ public final class SimpleQueryRequest extends RequestModel {
         return new Builder(this);
     }
 
+    private static String toJson(Object value) {
+        try {
+            return JSON_MAPPER.writeValueAsString(value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private SimpleQuery query;
-        private List<Aggregation> aggregations;
-        private List<String> withFields;
 
         private Builder() {
             super();
@@ -85,9 +87,6 @@ public final class SimpleQueryRequest extends RequestModel {
         private Builder(SimpleQueryRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.query = request.query;
-            this.aggregations = request.aggregations;
-            this.withFields = request.withFields;
         }
 
         public Builder bucket(String value) {
@@ -113,7 +112,7 @@ public final class SimpleQueryRequest extends RequestModel {
         }
 
         public Builder query(SimpleQuery value) {
-            this.query = value;
+            this.parameters.put("query", toJson(value));
             return this;
         }
 
@@ -128,12 +127,12 @@ public final class SimpleQueryRequest extends RequestModel {
         }
 
         public Builder aggregations(List<Aggregation> value) {
-            this.aggregations = value;
+            this.parameters.put("aggregations", toJson(value));
             return this;
         }
 
         public Builder withFields(List<String> value) {
-            this.withFields = value;
+            this.parameters.put("withFields", toJson(value));
             return this;
         }
 
