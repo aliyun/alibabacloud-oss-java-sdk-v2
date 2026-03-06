@@ -1,85 +1,81 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Image {
+@JacksonXmlRootElement(localName = "Image")
+public final class Image {
 
-    @JsonProperty("ImageWidth")
+    @JacksonXmlProperty(localName = "ImageWidth")
     private Long imageWidth;
 
-    @JsonProperty("ImageHeight")
+    @JacksonXmlProperty(localName = "ImageHeight")
     private Long imageHeight;
 
-    @JsonProperty("EXIF")
+    @JacksonXmlProperty(localName = "EXIF")
     private String exif;
 
-    @JsonProperty("ImageScore")
+    @JacksonXmlProperty(localName = "ImageScore")
     private ImageScore imageScore;
 
-    @JsonProperty("CroppingSuggestions")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "CroppingSuggestion")
     private List<CroppingSuggestion> croppingSuggestions;
 
-    @JsonProperty("OCRContents")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "OCRContents")
     private List<OCRContents> ocrContents;
 
-    public Image() {
+    public Image() {}
+
+    private Image(Builder builder) {
+        this.imageWidth = builder.imageWidth;
+        this.imageHeight = builder.imageHeight;
+        this.exif = builder.exif;
+        this.imageScore = builder.imageScore;
+        this.croppingSuggestions = builder.croppingSuggestions;
+        this.ocrContents = builder.ocrContents;
     }
 
-    public Long getImageWidth() {
-        return imageWidth;
-    }
+    public Long imageWidth() { return this.imageWidth; }
+    public Long imageHeight() { return this.imageHeight; }
+    public String exif() { return this.exif; }
+    public ImageScore imageScore() { return this.imageScore; }
+    public List<CroppingSuggestion> croppingSuggestions() { return this.croppingSuggestions; }
+    public List<OCRContents> ocrContents() { return this.ocrContents; }
 
-    public Image setImageWidth(Long imageWidth) {
-        this.imageWidth = imageWidth;
-        return this;
-    }
+    public static Builder newBuilder() { return new Builder(); }
+    public Builder toBuilder() { return new Builder(this); }
 
-    public Long getImageHeight() {
-        return imageHeight;
-    }
+    public static class Builder {
+        private Long imageWidth;
+        private Long imageHeight;
+        private String exif;
+        private ImageScore imageScore;
+        private List<CroppingSuggestion> croppingSuggestions;
+        private List<OCRContents> ocrContents;
 
-    public Image setImageHeight(Long imageHeight) {
-        this.imageHeight = imageHeight;
-        return this;
-    }
+        public Builder imageWidth(Long value) { this.imageWidth = value; return this; }
+        public Builder imageHeight(Long value) { this.imageHeight = value; return this; }
+        public Builder exif(String value) { this.exif = value; return this; }
+        public Builder imageScore(ImageScore value) { this.imageScore = value; return this; }
+        public Builder croppingSuggestions(List<CroppingSuggestion> value) { this.croppingSuggestions = value; return this; }
+        public Builder ocrContents(List<OCRContents> value) { this.ocrContents = value; return this; }
 
-    public String getExif() {
-        return exif;
-    }
+        private Builder() { super(); }
 
-    public Image setExif(String exif) {
-        this.exif = exif;
-        return this;
-    }
+        private Builder(Image from) {
+            this.imageWidth = from.imageWidth;
+            this.imageHeight = from.imageHeight;
+            this.exif = from.exif;
+            this.imageScore = from.imageScore;
+            this.croppingSuggestions = from.croppingSuggestions;
+            this.ocrContents = from.ocrContents;
+        }
 
-    public ImageScore getImageScore() {
-        return imageScore;
-    }
-
-    public Image setImageScore(ImageScore imageScore) {
-        this.imageScore = imageScore;
-        return this;
-    }
-
-    public List<CroppingSuggestion> getCroppingSuggestions() {
-        return croppingSuggestions;
-    }
-
-    public Image setCroppingSuggestions(List<CroppingSuggestion> croppingSuggestions) {
-        this.croppingSuggestions = croppingSuggestions;
-        return this;
-    }
-
-    public List<OCRContents> getOcrContents() {
-        return ocrContents;
-    }
-
-    public Image setOcrContents(List<OCRContents> ocrContents) {
-        this.ocrContents = ocrContents;
-        return this;
+        public Image build() { return new Image(this); }
     }
 }

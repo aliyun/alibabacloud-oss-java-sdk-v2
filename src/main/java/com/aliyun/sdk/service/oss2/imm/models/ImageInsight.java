@@ -1,35 +1,44 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ImageInsight {
+@JacksonXmlRootElement(localName = "ImageInsight")
+public final class ImageInsight {
 
-    @JsonProperty("Caption")
+    @JacksonXmlProperty(localName = "Caption")
     private String caption;
 
-    @JsonProperty("Description")
+    @JacksonXmlProperty(localName = "Description")
     private String description;
 
-    public ImageInsight() {
+    public ImageInsight() {}
+
+    private ImageInsight(Builder builder) {
+        this.caption = builder.caption;
+        this.description = builder.description;
     }
 
-    public String getCaption() {
-        return caption;
-    }
+    public String caption() { return this.caption; }
+    public String description() { return this.description; }
 
-    public ImageInsight setCaption(String caption) {
-        this.caption = caption;
-        return this;
-    }
+    public static Builder newBuilder() { return new Builder(); }
+    public Builder toBuilder() { return new Builder(this); }
 
-    public String getDescription() {
-        return description;
-    }
+    public static class Builder {
+        private String caption;
+        private String description;
 
-    public ImageInsight setDescription(String description) {
-        this.description = description;
-        return this;
+        public Builder caption(String value) { this.caption = value; return this; }
+        public Builder description(String value) { this.description = value; return this; }
+
+        private Builder() { super(); }
+
+        private Builder(ImageInsight from) {
+            this.caption = from.caption;
+            this.description = from.description;
+        }
+
+        public ImageInsight build() { return new ImageInsight(this); }
     }
 }

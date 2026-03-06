@@ -1,6 +1,7 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
+import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
 
 import java.util.List;
 
@@ -11,28 +12,16 @@ import static java.util.Objects.requireNonNull;
  */
 public final class SimpleQueryRequest extends RequestModel {
     private final String bucket;
-    private final String datasetName;
-    private final String nextToken;
-    private final Integer maxResults;
     private final SimpleQuery query;
-    private final String sort;
-    private final String order;
     private final List<Aggregation> aggregations;
     private final List<String> withFields;
-    private final Boolean withoutTotalHits;
 
     private SimpleQueryRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.datasetName = builder.datasetName;
-        this.nextToken = builder.nextToken;
-        this.maxResults = builder.maxResults;
         this.query = builder.query;
-        this.sort = builder.sort;
-        this.order = builder.order;
         this.aggregations = builder.aggregations;
         this.withFields = builder.withFields;
-        this.withoutTotalHits = builder.withoutTotalHits;
     }
 
     public static Builder newBuilder() {
@@ -44,15 +33,15 @@ public final class SimpleQueryRequest extends RequestModel {
     }
 
     public String datasetName() {
-        return datasetName;
+        return parameters.get("datasetName");
     }
 
     public String nextToken() {
-        return nextToken;
+        return parameters.get("nextToken");
     }
 
     public Integer maxResults() {
-        return maxResults;
+        return ConvertUtils.toIntegerOrNull(parameters.get("maxResults"));
     }
 
     public SimpleQuery query() {
@@ -60,11 +49,11 @@ public final class SimpleQueryRequest extends RequestModel {
     }
 
     public String sort() {
-        return sort;
+        return parameters.get("sort");
     }
 
     public String order() {
-        return order;
+        return parameters.get("order");
     }
 
     public List<Aggregation> aggregations() {
@@ -76,7 +65,7 @@ public final class SimpleQueryRequest extends RequestModel {
     }
 
     public Boolean withoutTotalHits() {
-        return withoutTotalHits;
+        return ConvertUtils.toBoolOrNull(parameters.get("withoutTotalHits"));
     }
 
     public Builder toBuilder() {
@@ -85,15 +74,9 @@ public final class SimpleQueryRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private String datasetName;
-        private String nextToken;
-        private Integer maxResults;
         private SimpleQuery query;
-        private String sort;
-        private String order;
         private List<Aggregation> aggregations;
         private List<String> withFields;
-        private Boolean withoutTotalHits;
 
         private Builder() {
             super();
@@ -102,15 +85,9 @@ public final class SimpleQueryRequest extends RequestModel {
         private Builder(SimpleQueryRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.datasetName = request.datasetName;
-            this.nextToken = request.nextToken;
-            this.maxResults = request.maxResults;
             this.query = request.query;
-            this.sort = request.sort;
-            this.order = request.order;
             this.aggregations = request.aggregations;
             this.withFields = request.withFields;
-            this.withoutTotalHits = request.withoutTotalHits;
         }
 
         public Builder bucket(String value) {
@@ -121,17 +98,17 @@ public final class SimpleQueryRequest extends RequestModel {
 
         public Builder datasetName(String value) {
             requireNonNull(value);
-            this.datasetName = value;
+            this.parameters.put("datasetName", value);
             return this;
         }
 
         public Builder nextToken(String value) {
-            this.nextToken = value;
+            this.parameters.put("nextToken", value);
             return this;
         }
 
         public Builder maxResults(Integer value) {
-            this.maxResults = value;
+            this.parameters.put("maxResults", value.toString());
             return this;
         }
 
@@ -141,12 +118,12 @@ public final class SimpleQueryRequest extends RequestModel {
         }
 
         public Builder sort(String value) {
-            this.sort = value;
+            this.parameters.put("sort", value);
             return this;
         }
 
         public Builder order(String value) {
-            this.order = value;
+            this.parameters.put("order", value);
             return this;
         }
 
@@ -161,7 +138,7 @@ public final class SimpleQueryRequest extends RequestModel {
         }
 
         public Builder withoutTotalHits(Boolean value) {
-            this.withoutTotalHits = value;
+            this.parameters.put("withoutTotalHits", value.toString());
             return this;
         }
 

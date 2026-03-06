@@ -1,47 +1,81 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class HeadPose {
+@JacksonXmlRootElement(localName = "HeadPose")
+public final class HeadPose {
 
-    @JsonProperty("Pitch")
+    @JacksonXmlProperty(localName = "Pitch")
     private Float pitch;
 
-    @JsonProperty("Roll")
+    @JacksonXmlProperty(localName = "Roll")
     private Float roll;
 
-    @JsonProperty("Yaw")
+    @JacksonXmlProperty(localName = "Yaw")
     private Float yaw;
 
     public HeadPose() {
     }
 
-    public Float getPitch() {
-        return pitch;
+    private HeadPose(Builder builder) {
+        this.pitch = builder.pitch;
+        this.roll = builder.roll;
+        this.yaw = builder.yaw;
     }
 
-    public HeadPose setPitch(Float pitch) {
-        this.pitch = pitch;
-        return this;
+    public Float pitch() {
+        return this.pitch;
     }
 
-    public Float getRoll() {
-        return roll;
+    public Float roll() {
+        return this.roll;
     }
 
-    public HeadPose setRoll(Float roll) {
-        this.roll = roll;
-        return this;
+    public Float yaw() {
+        return this.yaw;
     }
 
-    public Float getYaw() {
-        return yaw;
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public HeadPose setYaw(Float yaw) {
-        this.yaw = yaw;
-        return this;
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    public static class Builder {
+        private Float pitch;
+        private Float roll;
+        private Float yaw;
+
+        public Builder pitch(Float value) {
+            this.pitch = value;
+            return this;
+        }
+
+        public Builder roll(Float value) {
+            this.roll = value;
+            return this;
+        }
+
+        public Builder yaw(Float value) {
+            this.yaw = value;
+            return this;
+        }
+
+        private Builder() {
+            super();
+        }
+
+        private Builder(HeadPose from) {
+            this.pitch = from.pitch;
+            this.roll = from.roll;
+            this.yaw = from.yaw;
+        }
+
+        public HeadPose build() {
+            return new HeadPose(this);
+        }
     }
 }

@@ -1,193 +1,264 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Dataset {
+@JacksonXmlRootElement(localName = "Dataset")
+public final class Dataset {
 
-    @JsonProperty("BindCount")
+    @JacksonXmlProperty(localName = "BindCount")
     private Long bindCount;
 
-    @JsonProperty("CreateTime")
+    @JacksonXmlProperty(localName = "CreateTime")
     private String createTime;
 
-    @JsonProperty("DatasetMaxBindCount")
+    @JacksonXmlProperty(localName = "DatasetMaxBindCount")
     private Long datasetMaxBindCount;
 
-    @JsonProperty("DatasetMaxEntityCount")
+    @JacksonXmlProperty(localName = "DatasetMaxEntityCount")
     private Long datasetMaxEntityCount;
 
-    @JsonProperty("DatasetMaxFileCount")
+    @JacksonXmlProperty(localName = "DatasetMaxFileCount")
     private Long datasetMaxFileCount;
 
-    @JsonProperty("DatasetMaxRelationCount")
+    @JacksonXmlProperty(localName = "DatasetMaxRelationCount")
     private Long datasetMaxRelationCount;
 
-    @JsonProperty("DatasetMaxTotalFileSize")
+    @JacksonXmlProperty(localName = "DatasetMaxTotalFileSize")
     private Long datasetMaxTotalFileSize;
 
-    @JsonProperty("DatasetName")
+    @JacksonXmlProperty(localName = "DatasetName")
     private String datasetName;
 
-    @JsonProperty("Description")
+    @JacksonXmlProperty(localName = "Description")
     private String description;
 
-    @JsonProperty("FileCount")
+    @JacksonXmlProperty(localName = "FileCount")
     private Long fileCount;
 
-    @JsonProperty("TemplateId")
+    @JacksonXmlProperty(localName = "TemplateId")
     private String templateId;
 
-    @JsonProperty("TotalFileSize")
+    @JacksonXmlProperty(localName = "TotalFileSize")
     private Long totalFileSize;
 
-    @JsonProperty("UpdateTime")
+    @JacksonXmlProperty(localName = "UpdateTime")
     private String updateTime;
 
-    @JsonProperty("WorkflowParameters")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "WorkflowParameter")
     private List<WorkflowParameter> workflowParameters;
 
-    @JsonProperty("DatasetConfig")
+    @JacksonXmlProperty(localName = "DatasetConfig")
     private DatasetConfig datasetConfig;
 
     public Dataset() {
     }
 
-    public Long getBindCount() {
-        return bindCount;
+    private Dataset(Builder builder) {
+        this.bindCount = builder.bindCount;
+        this.createTime = builder.createTime;
+        this.datasetMaxBindCount = builder.datasetMaxBindCount;
+        this.datasetMaxEntityCount = builder.datasetMaxEntityCount;
+        this.datasetMaxFileCount = builder.datasetMaxFileCount;
+        this.datasetMaxRelationCount = builder.datasetMaxRelationCount;
+        this.datasetMaxTotalFileSize = builder.datasetMaxTotalFileSize;
+        this.datasetName = builder.datasetName;
+        this.description = builder.description;
+        this.fileCount = builder.fileCount;
+        this.templateId = builder.templateId;
+        this.totalFileSize = builder.totalFileSize;
+        this.updateTime = builder.updateTime;
+        this.workflowParameters = builder.workflowParameters;
+        this.datasetConfig = builder.datasetConfig;
     }
 
-    public Dataset setBindCount(Long bindCount) {
-        this.bindCount = bindCount;
-        return this;
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public String getCreateTime() {
-        return createTime;
+    public Builder toBuilder() {
+        return new Builder(this);
     }
 
-    public Dataset setCreateTime(String createTime) {
-        this.createTime = createTime;
-        return this;
+    public Long bindCount() {
+        return this.bindCount;
     }
 
-    public Long getDatasetMaxBindCount() {
-        return datasetMaxBindCount;
+    public String createTime() {
+        return this.createTime;
     }
 
-    public Dataset setDatasetMaxBindCount(Long datasetMaxBindCount) {
-        this.datasetMaxBindCount = datasetMaxBindCount;
-        return this;
+    public Long datasetMaxBindCount() {
+        return this.datasetMaxBindCount;
     }
 
-    public Long getDatasetMaxEntityCount() {
-        return datasetMaxEntityCount;
+    public Long datasetMaxEntityCount() {
+        return this.datasetMaxEntityCount;
     }
 
-    public Dataset setDatasetMaxEntityCount(Long datasetMaxEntityCount) {
-        this.datasetMaxEntityCount = datasetMaxEntityCount;
-        return this;
+    public Long datasetMaxFileCount() {
+        return this.datasetMaxFileCount;
     }
 
-    public Long getDatasetMaxFileCount() {
-        return datasetMaxFileCount;
+    public Long datasetMaxRelationCount() {
+        return this.datasetMaxRelationCount;
     }
 
-    public Dataset setDatasetMaxFileCount(Long datasetMaxFileCount) {
-        this.datasetMaxFileCount = datasetMaxFileCount;
-        return this;
+    public Long datasetMaxTotalFileSize() {
+        return this.datasetMaxTotalFileSize;
     }
 
-    public Long getDatasetMaxRelationCount() {
-        return datasetMaxRelationCount;
+    public String datasetName() {
+        return this.datasetName;
     }
 
-    public Dataset setDatasetMaxRelationCount(Long datasetMaxRelationCount) {
-        this.datasetMaxRelationCount = datasetMaxRelationCount;
-        return this;
+    public String description() {
+        return this.description;
     }
 
-    public Long getDatasetMaxTotalFileSize() {
-        return datasetMaxTotalFileSize;
+    public Long fileCount() {
+        return this.fileCount;
     }
 
-    public Dataset setDatasetMaxTotalFileSize(Long datasetMaxTotalFileSize) {
-        this.datasetMaxTotalFileSize = datasetMaxTotalFileSize;
-        return this;
+    public String templateId() {
+        return this.templateId;
     }
 
-    public String getDatasetName() {
-        return datasetName;
+    public Long totalFileSize() {
+        return this.totalFileSize;
     }
 
-    public Dataset setDatasetName(String datasetName) {
-        this.datasetName = datasetName;
-        return this;
+    public String updateTime() {
+        return this.updateTime;
     }
 
-    public String getDescription() {
-        return description;
+    public List<WorkflowParameter> workflowParameters() {
+        return this.workflowParameters;
     }
 
-    public Dataset setDescription(String description) {
-        this.description = description;
-        return this;
+    public DatasetConfig datasetConfig() {
+        return this.datasetConfig;
     }
 
-    public Long getFileCount() {
-        return fileCount;
-    }
+    public static class Builder {
+        private Long bindCount;
+        private String createTime;
+        private Long datasetMaxBindCount;
+        private Long datasetMaxEntityCount;
+        private Long datasetMaxFileCount;
+        private Long datasetMaxRelationCount;
+        private Long datasetMaxTotalFileSize;
+        private String datasetName;
+        private String description;
+        private Long fileCount;
+        private String templateId;
+        private Long totalFileSize;
+        private String updateTime;
+        private List<WorkflowParameter> workflowParameters;
+        private DatasetConfig datasetConfig;
 
-    public Dataset setFileCount(Long fileCount) {
-        this.fileCount = fileCount;
-        return this;
-    }
+        private Builder() {
+        }
 
-    public String getTemplateId() {
-        return templateId;
-    }
+        private Builder(Dataset dataset) {
+            this.bindCount = dataset.bindCount;
+            this.createTime = dataset.createTime;
+            this.datasetMaxBindCount = dataset.datasetMaxBindCount;
+            this.datasetMaxEntityCount = dataset.datasetMaxEntityCount;
+            this.datasetMaxFileCount = dataset.datasetMaxFileCount;
+            this.datasetMaxRelationCount = dataset.datasetMaxRelationCount;
+            this.datasetMaxTotalFileSize = dataset.datasetMaxTotalFileSize;
+            this.datasetName = dataset.datasetName;
+            this.description = dataset.description;
+            this.fileCount = dataset.fileCount;
+            this.templateId = dataset.templateId;
+            this.totalFileSize = dataset.totalFileSize;
+            this.updateTime = dataset.updateTime;
+            this.workflowParameters = dataset.workflowParameters;
+            this.datasetConfig = dataset.datasetConfig;
+        }
 
-    public Dataset setTemplateId(String templateId) {
-        this.templateId = templateId;
-        return this;
-    }
+        public Builder bindCount(Long bindCount) {
+            this.bindCount = bindCount;
+            return this;
+        }
 
-    public Long getTotalFileSize() {
-        return totalFileSize;
-    }
+        public Builder createTime(String createTime) {
+            this.createTime = createTime;
+            return this;
+        }
 
-    public Dataset setTotalFileSize(Long totalFileSize) {
-        this.totalFileSize = totalFileSize;
-        return this;
-    }
+        public Builder datasetMaxBindCount(Long datasetMaxBindCount) {
+            this.datasetMaxBindCount = datasetMaxBindCount;
+            return this;
+        }
 
-    public String getUpdateTime() {
-        return updateTime;
-    }
+        public Builder datasetMaxEntityCount(Long datasetMaxEntityCount) {
+            this.datasetMaxEntityCount = datasetMaxEntityCount;
+            return this;
+        }
 
-    public Dataset setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-        return this;
-    }
+        public Builder datasetMaxFileCount(Long datasetMaxFileCount) {
+            this.datasetMaxFileCount = datasetMaxFileCount;
+            return this;
+        }
 
-    public List<WorkflowParameter> getWorkflowParameters() {
-        return workflowParameters;
-    }
+        public Builder datasetMaxRelationCount(Long datasetMaxRelationCount) {
+            this.datasetMaxRelationCount = datasetMaxRelationCount;
+            return this;
+        }
 
-    public Dataset setWorkflowParameters(List<WorkflowParameter> workflowParameters) {
-        this.workflowParameters = workflowParameters;
-        return this;
-    }
+        public Builder datasetMaxTotalFileSize(Long datasetMaxTotalFileSize) {
+            this.datasetMaxTotalFileSize = datasetMaxTotalFileSize;
+            return this;
+        }
 
-    public DatasetConfig getDatasetConfig() {
-        return datasetConfig;
-    }
+        public Builder datasetName(String datasetName) {
+            this.datasetName = datasetName;
+            return this;
+        }
 
-    public Dataset setDatasetConfig(DatasetConfig datasetConfig) {
-        this.datasetConfig = datasetConfig;
-        return this;
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder fileCount(Long fileCount) {
+            this.fileCount = fileCount;
+            return this;
+        }
+
+        public Builder templateId(String templateId) {
+            this.templateId = templateId;
+            return this;
+        }
+
+        public Builder totalFileSize(Long totalFileSize) {
+            this.totalFileSize = totalFileSize;
+            return this;
+        }
+
+        public Builder updateTime(String updateTime) {
+            this.updateTime = updateTime;
+            return this;
+        }
+
+        public Builder workflowParameters(List<WorkflowParameter> workflowParameters) {
+            this.workflowParameters = workflowParameters;
+            return this;
+        }
+
+        public Builder datasetConfig(DatasetConfig datasetConfig) {
+            this.datasetConfig = datasetConfig;
+            return this;
+        }
+
+        public Dataset build() {
+            return new Dataset(this);
+        }
     }
 }

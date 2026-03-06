@@ -1,6 +1,7 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
+import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
 
 import java.util.List;
 
@@ -11,24 +12,14 @@ import static java.util.Objects.requireNonNull;
  */
 public final class SemanticQueryRequest extends RequestModel {
     private final String bucket;
-    private final String datasetName;
-    private final String nextToken;
-    private final Integer maxResults;
-    private final String query;
     private final List<String> withFields;
     private final List<String> mediaTypes;
-    private final String sourceUri;
 
     private SemanticQueryRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.datasetName = builder.datasetName;
-        this.nextToken = builder.nextToken;
-        this.maxResults = builder.maxResults;
-        this.query = builder.query;
         this.withFields = builder.withFields;
         this.mediaTypes = builder.mediaTypes;
-        this.sourceUri = builder.sourceUri;
     }
 
     public static Builder newBuilder() {
@@ -40,19 +31,19 @@ public final class SemanticQueryRequest extends RequestModel {
     }
 
     public String datasetName() {
-        return datasetName;
+        return parameters.get("datasetName");
     }
 
     public String nextToken() {
-        return nextToken;
+        return parameters.get("nextToken");
     }
 
     public Integer maxResults() {
-        return maxResults;
+        return ConvertUtils.toIntegerOrNull(parameters.get("maxResults"));
     }
 
     public String query() {
-        return query;
+        return parameters.get("query");
     }
 
     public List<String> withFields() {
@@ -64,7 +55,7 @@ public final class SemanticQueryRequest extends RequestModel {
     }
 
     public String sourceUri() {
-        return sourceUri;
+        return parameters.get("sourceURI");
     }
 
     public Builder toBuilder() {
@@ -73,13 +64,8 @@ public final class SemanticQueryRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private String datasetName;
-        private String nextToken;
-        private Integer maxResults;
-        private String query;
         private List<String> withFields;
         private List<String> mediaTypes;
-        private String sourceUri;
 
         private Builder() {
             super();
@@ -88,13 +74,8 @@ public final class SemanticQueryRequest extends RequestModel {
         private Builder(SemanticQueryRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.datasetName = request.datasetName;
-            this.nextToken = request.nextToken;
-            this.maxResults = request.maxResults;
-            this.query = request.query;
             this.withFields = request.withFields;
             this.mediaTypes = request.mediaTypes;
-            this.sourceUri = request.sourceUri;
         }
 
         public Builder bucket(String value) {
@@ -105,22 +86,22 @@ public final class SemanticQueryRequest extends RequestModel {
 
         public Builder datasetName(String value) {
             requireNonNull(value);
-            this.datasetName = value;
+            this.parameters.put("datasetName", value);
             return this;
         }
 
         public Builder nextToken(String value) {
-            this.nextToken = value;
+            this.parameters.put("nextToken", value);
             return this;
         }
 
         public Builder maxResults(Integer value) {
-            this.maxResults = value;
+            this.parameters.put("maxResults", value.toString());
             return this;
         }
 
         public Builder query(String value) {
-            this.query = value;
+            this.parameters.put("query", value);
             return this;
         }
 
@@ -135,7 +116,7 @@ public final class SemanticQueryRequest extends RequestModel {
         }
 
         public Builder sourceUri(String value) {
-            this.sourceUri = value;
+            this.parameters.put("sourceURI", value);
             return this;
         }
 

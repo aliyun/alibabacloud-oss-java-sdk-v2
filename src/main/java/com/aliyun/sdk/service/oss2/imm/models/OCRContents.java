@@ -1,59 +1,96 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class OCRContents {
+@JacksonXmlRootElement(localName = "OCRContents")
+public final class OCRContents {
 
-    @JsonProperty("Language")
+    @JacksonXmlProperty(localName = "Language")
     private String language;
 
-    @JsonProperty("Contents")
+    @JacksonXmlProperty(localName = "Contents")
     private String contents;
 
-    @JsonProperty("Confidence")
+    @JacksonXmlProperty(localName = "Confidence")
     private Float confidence;
 
-    @JsonProperty("Boundary")
+    @JacksonXmlProperty(localName = "Boundary")
     private Boundary boundary;
 
     public OCRContents() {
     }
 
-    public String getLanguage() {
-        return language;
+    private OCRContents(Builder builder) {
+        this.language = builder.language;
+        this.contents = builder.contents;
+        this.confidence = builder.confidence;
+        this.boundary = builder.boundary;
     }
 
-    public OCRContents setLanguage(String language) {
-        this.language = language;
-        return this;
+    public String language() {
+        return this.language;
     }
 
-    public String getContents() {
-        return contents;
+    public String contents() {
+        return this.contents;
     }
 
-    public OCRContents setContents(String contents) {
-        this.contents = contents;
-        return this;
+    public Float confidence() {
+        return this.confidence;
     }
 
-    public Float getConfidence() {
-        return confidence;
+    public Boundary boundary() {
+        return this.boundary;
     }
 
-    public OCRContents setConfidence(Float confidence) {
-        this.confidence = confidence;
-        return this;
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public Boundary getBoundary() {
-        return boundary;
+    public Builder toBuilder() {
+        return new Builder(this);
     }
 
-    public OCRContents setBoundary(Boundary boundary) {
-        this.boundary = boundary;
-        return this;
+    public static class Builder {
+        private String language;
+        private String contents;
+        private Float confidence;
+        private Boundary boundary;
+
+        public Builder language(String value) {
+            this.language = value;
+            return this;
+        }
+
+        public Builder contents(String value) {
+            this.contents = value;
+            return this;
+        }
+
+        public Builder confidence(Float value) {
+            this.confidence = value;
+            return this;
+        }
+
+        public Builder boundary(Boundary value) {
+            this.boundary = value;
+            return this;
+        }
+
+        private Builder() {
+            super();
+        }
+
+        private Builder(OCRContents from) {
+            this.language = from.language;
+            this.contents = from.contents;
+            this.confidence = from.confidence;
+            this.boundary = from.boundary;
+        }
+
+        public OCRContents build() {
+            return new OCRContents(this);
+        }
     }
 }

@@ -21,16 +21,16 @@ public final class DeleteDatasetResult extends ResultModel {
 
     public static class Builder extends ResultModel.Builder<Builder> {
 
+        public DeleteDatasetResult build() {
+            return new DeleteDatasetResult(this);
+        }
+
         private Builder() {
             super();
         }
 
         private Builder(DeleteDatasetResult result) {
             super(result);
-        }
-
-        public DeleteDatasetResult build() {
-            return new DeleteDatasetResult(this);
         }
     }
 }

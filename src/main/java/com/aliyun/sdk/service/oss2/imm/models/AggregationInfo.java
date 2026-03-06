@@ -1,61 +1,64 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class AggregationInfo {
+@JacksonXmlRootElement(localName = "AggregationInfo")
+public final class AggregationInfo {
 
-    @JsonProperty("Field")
+    @JacksonXmlProperty(localName = "Field")
     private String field;
 
-    @JsonProperty("Operation")
+    @JacksonXmlProperty(localName = "Operation")
     private String operation;
 
-    @JsonProperty("Value")
+    @JacksonXmlProperty(localName = "Value")
     private Double value;
 
-    @JsonProperty("Groups")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "AggregationGroup")
     private List<AggregationGroup> groups;
 
-    public AggregationInfo() {
+    public AggregationInfo() {}
+
+    private AggregationInfo(Builder builder) {
+        this.field = builder.field;
+        this.operation = builder.operation;
+        this.value = builder.value;
+        this.groups = builder.groups;
     }
 
-    public String getField() {
-        return field;
-    }
+    public String field() { return this.field; }
+    public String operation() { return this.operation; }
+    public Double value() { return this.value; }
+    public List<AggregationGroup> groups() { return this.groups; }
 
-    public AggregationInfo setField(String field) {
-        this.field = field;
-        return this;
-    }
+    public static Builder newBuilder() { return new Builder(); }
+    public Builder toBuilder() { return new Builder(this); }
 
-    public String getOperation() {
-        return operation;
-    }
+    public static class Builder {
+        private String field;
+        private String operation;
+        private Double value;
+        private List<AggregationGroup> groups;
 
-    public AggregationInfo setOperation(String operation) {
-        this.operation = operation;
-        return this;
-    }
+        public Builder field(String value) { this.field = value; return this; }
+        public Builder operation(String value) { this.operation = value; return this; }
+        public Builder value(Double value) { this.value = value; return this; }
+        public Builder groups(List<AggregationGroup> value) { this.groups = value; return this; }
 
-    public Double getValue() {
-        return value;
-    }
+        private Builder() { super(); }
 
-    public AggregationInfo setValue(Double value) {
-        this.value = value;
-        return this;
-    }
+        private Builder(AggregationInfo from) {
+            this.field = from.field;
+            this.operation = from.operation;
+            this.value = from.value;
+            this.groups = from.groups;
+        }
 
-    public List<AggregationGroup> getGroups() {
-        return groups;
-    }
-
-    public AggregationInfo setGroups(List<AggregationGroup> groups) {
-        this.groups = groups;
-        return this;
+        public AggregationInfo build() { return new AggregationInfo(this); }
     }
 }

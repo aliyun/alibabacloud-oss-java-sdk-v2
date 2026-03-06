@@ -6,19 +6,18 @@ import com.aliyun.sdk.service.oss2.models.ResultModel;
  * The result for the UpdateDataset operation.
  */
 public final class UpdateDatasetResult extends ResultModel {
-    private final Dataset dataset;
+
+    public Dataset dataset() {
+        UpdateDatasetResponseBody body = (UpdateDatasetResponseBody) innerBody;
+        return body != null ? body.dataset() : null;
+    }
 
     UpdateDatasetResult(Builder builder) {
         super(builder);
-        this.dataset = builder.dataset;
     }
 
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    public Dataset dataset() {
-        return dataset;
     }
 
     public Builder toBuilder() {
@@ -26,7 +25,10 @@ public final class UpdateDatasetResult extends ResultModel {
     }
 
     public static class Builder extends ResultModel.Builder<Builder> {
-        private Dataset dataset;
+
+        public UpdateDatasetResult build() {
+            return new UpdateDatasetResult(this);
+        }
 
         private Builder() {
             super();
@@ -34,16 +36,6 @@ public final class UpdateDatasetResult extends ResultModel {
 
         private Builder(UpdateDatasetResult result) {
             super(result);
-            this.dataset = result.dataset;
-        }
-
-        public Builder dataset(Dataset value) {
-            this.dataset = value;
-            return this;
-        }
-
-        public UpdateDatasetResult build() {
-            return new UpdateDatasetResult(this);
         }
     }
 }

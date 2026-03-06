@@ -1,23 +1,51 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ImageScore {
+@JacksonXmlRootElement(localName = "ImageScore")
+public final class ImageScore {
 
-    @JsonProperty("OverallQualityScore")
+    @JacksonXmlProperty(localName = "OverallQualityScore")
     private Float overallQualityScore;
 
     public ImageScore() {
     }
 
-    public Float getOverallQualityScore() {
-        return overallQualityScore;
+    private ImageScore(Builder builder) {
+        this.overallQualityScore = builder.overallQualityScore;
     }
 
-    public ImageScore setOverallQualityScore(Float overallQualityScore) {
-        this.overallQualityScore = overallQualityScore;
-        return this;
+    public Float overallQualityScore() {
+        return this.overallQualityScore;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    public static class Builder {
+        private Float overallQualityScore;
+
+        public Builder overallQualityScore(Float value) {
+            this.overallQualityScore = value;
+            return this;
+        }
+
+        private Builder() {
+            super();
+        }
+
+        private Builder(ImageScore from) {
+            this.overallQualityScore = from.overallQualityScore;
+        }
+
+        public ImageScore build() {
+            return new ImageScore(this);
+        }
     }
 }

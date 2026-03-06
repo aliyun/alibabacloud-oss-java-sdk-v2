@@ -1,73 +1,115 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Boundary {
+@JacksonXmlRootElement(localName = "Boundary")
+public final class Boundary {
 
-    @JsonProperty("Width")
+    @JacksonXmlProperty(localName = "Width")
     private Long width;
 
-    @JsonProperty("Height")
+    @JacksonXmlProperty(localName = "Height")
     private Long height;
 
-    @JsonProperty("Left")
+    @JacksonXmlProperty(localName = "Left")
     private Long left;
 
-    @JsonProperty("Top")
+    @JacksonXmlProperty(localName = "Top")
     private Long top;
 
-    @JsonProperty("Polygon")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "Polygon")
     private List<PointInt64> polygon;
 
     public Boundary() {
     }
 
-    public Long getWidth() {
-        return width;
+    private Boundary(Builder builder) {
+        this.width = builder.width;
+        this.height = builder.height;
+        this.left = builder.left;
+        this.top = builder.top;
+        this.polygon = builder.polygon;
     }
 
-    public Boundary setWidth(Long width) {
-        this.width = width;
-        return this;
+    public Long width() {
+        return this.width;
     }
 
-    public Long getHeight() {
-        return height;
+    public Long height() {
+        return this.height;
     }
 
-    public Boundary setHeight(Long height) {
-        this.height = height;
-        return this;
+    public Long left() {
+        return this.left;
     }
 
-    public Long getLeft() {
-        return left;
+    public Long top() {
+        return this.top;
     }
 
-    public Boundary setLeft(Long left) {
-        this.left = left;
-        return this;
+    public List<PointInt64> polygon() {
+        return this.polygon;
     }
 
-    public Long getTop() {
-        return top;
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public Boundary setTop(Long top) {
-        this.top = top;
-        return this;
+    public Builder toBuilder() {
+        return new Builder(this);
     }
 
-    public List<PointInt64> getPolygon() {
-        return polygon;
-    }
+    public static class Builder {
+        private Long width;
+        private Long height;
+        private Long left;
+        private Long top;
+        private List<PointInt64> polygon;
 
-    public Boundary setPolygon(List<PointInt64> polygon) {
-        this.polygon = polygon;
-        return this;
+        public Builder width(Long value) {
+            this.width = value;
+            return this;
+        }
+
+        public Builder height(Long value) {
+            this.height = value;
+            return this;
+        }
+
+        public Builder left(Long value) {
+            this.left = value;
+            return this;
+        }
+
+        public Builder top(Long value) {
+            this.top = value;
+            return this;
+        }
+
+        public Builder polygon(List<PointInt64> value) {
+            this.polygon = value;
+            return this;
+        }
+
+        private Builder() {
+            super();
+        }
+
+        private Builder(Boundary from) {
+            this.width = from.width;
+            this.height = from.height;
+            this.left = from.left;
+            this.top = from.top;
+            this.polygon = from.polygon;
+        }
+
+        public Boundary build() {
+            return new Boundary(this);
+        }
     }
 }

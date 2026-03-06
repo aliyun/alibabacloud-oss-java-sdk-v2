@@ -1,6 +1,7 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
+import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
 
 import static java.util.Objects.requireNonNull;
 
@@ -9,14 +10,10 @@ import static java.util.Objects.requireNonNull;
  */
 public final class GetDatasetRequest extends RequestModel {
     private final String bucket;
-    private final String datasetName;
-    private final Boolean withStatistics;
 
     private GetDatasetRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.datasetName = builder.datasetName;
-        this.withStatistics = builder.withStatistics;
     }
 
     public static Builder newBuilder() {
@@ -28,11 +25,11 @@ public final class GetDatasetRequest extends RequestModel {
     }
 
     public String datasetName() {
-        return datasetName;
+        return parameters.get("datasetName");
     }
 
     public Boolean withStatistics() {
-        return withStatistics;
+        return ConvertUtils.toBoolOrNull(parameters.get("withStatistics"));
     }
 
     public Builder toBuilder() {
@@ -41,8 +38,6 @@ public final class GetDatasetRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private String datasetName;
-        private Boolean withStatistics;
 
         private Builder() {
             super();
@@ -51,8 +46,6 @@ public final class GetDatasetRequest extends RequestModel {
         private Builder(GetDatasetRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.datasetName = request.datasetName;
-            this.withStatistics = request.withStatistics;
         }
 
         public Builder bucket(String value) {
@@ -63,12 +56,12 @@ public final class GetDatasetRequest extends RequestModel {
 
         public Builder datasetName(String value) {
             requireNonNull(value);
-            this.datasetName = value;
+            this.parameters.put("datasetName", value);
             return this;
         }
 
         public Builder withStatistics(Boolean value) {
-            this.withStatistics = value;
+            this.parameters.put("withStatistics", value.toString());
             return this;
         }
 
