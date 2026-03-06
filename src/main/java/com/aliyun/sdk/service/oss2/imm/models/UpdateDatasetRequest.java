@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -11,15 +12,13 @@ import static java.util.Objects.requireNonNull;
  * The request for the UpdateDataset operation.
  */
 public final class UpdateDatasetRequest extends RequestModel {
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+
     private final String bucket;
-    private final List<WorkflowParameter> workflowParameters;
-    private final DatasetConfig datasetConfig;
 
     private UpdateDatasetRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.workflowParameters = builder.workflowParameters;
-        this.datasetConfig = builder.datasetConfig;
     }
 
     public static Builder newBuilder() {
@@ -62,22 +61,28 @@ public final class UpdateDatasetRequest extends RequestModel {
         return ConvertUtils.toLongOrNull(parameters.get("datasetMaxTotalFileSize"));
     }
 
-    public List<WorkflowParameter> workflowParameters() {
-        return workflowParameters;
+    public String workflowParameters() {
+        return parameters.get("workflowParameters");
     }
 
-    public DatasetConfig datasetConfig() {
-        return datasetConfig;
+    public String datasetConfig() {
+        return parameters.get("datasetConfig");
     }
 
     public Builder toBuilder() {
         return new Builder(this);
     }
 
+    private static String toJson(Object value) {
+        try {
+            return JSON_MAPPER.writeValueAsString(value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private List<WorkflowParameter> workflowParameters;
-        private DatasetConfig datasetConfig;
 
         private Builder() {
             super();
@@ -86,8 +91,6 @@ public final class UpdateDatasetRequest extends RequestModel {
         private Builder(UpdateDatasetRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.workflowParameters = request.workflowParameters;
-            this.datasetConfig = request.datasetConfig;
         }
 
         public Builder bucket(String value) {
@@ -138,12 +141,12 @@ public final class UpdateDatasetRequest extends RequestModel {
         }
 
         public Builder workflowParameters(List<WorkflowParameter> value) {
-            this.workflowParameters = value;
+            this.parameters.put("workflowParameters", toJson(value));
             return this;
         }
 
         public Builder datasetConfig(DatasetConfig value) {
-            this.datasetConfig = value;
+            this.parameters.put("datasetConfig", toJson(value));
             return this;
         }
 

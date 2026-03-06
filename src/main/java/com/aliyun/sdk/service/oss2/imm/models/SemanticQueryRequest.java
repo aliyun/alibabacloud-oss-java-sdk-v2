@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -11,15 +12,13 @@ import static java.util.Objects.requireNonNull;
  * The request for the SemanticQuery operation.
  */
 public final class SemanticQueryRequest extends RequestModel {
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+
     private final String bucket;
-    private final List<String> withFields;
-    private final List<String> mediaTypes;
 
     private SemanticQueryRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.withFields = builder.withFields;
-        this.mediaTypes = builder.mediaTypes;
     }
 
     public static Builder newBuilder() {
@@ -46,12 +45,12 @@ public final class SemanticQueryRequest extends RequestModel {
         return parameters.get("query");
     }
 
-    public List<String> withFields() {
-        return withFields;
+    public String withFields() {
+        return parameters.get("withFields");
     }
 
-    public List<String> mediaTypes() {
-        return mediaTypes;
+    public String mediaTypes() {
+        return parameters.get("mediaTypes");
     }
 
     public String sourceUri() {
@@ -62,10 +61,16 @@ public final class SemanticQueryRequest extends RequestModel {
         return new Builder(this);
     }
 
+    private static String toJson(Object value) {
+        try {
+            return JSON_MAPPER.writeValueAsString(value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private List<String> withFields;
-        private List<String> mediaTypes;
 
         private Builder() {
             super();
@@ -74,8 +79,6 @@ public final class SemanticQueryRequest extends RequestModel {
         private Builder(SemanticQueryRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.withFields = request.withFields;
-            this.mediaTypes = request.mediaTypes;
         }
 
         public Builder bucket(String value) {
@@ -106,12 +109,12 @@ public final class SemanticQueryRequest extends RequestModel {
         }
 
         public Builder withFields(List<String> value) {
-            this.withFields = value;
+            this.parameters.put("withFields", toJson(value));
             return this;
         }
 
         public Builder mediaTypes(List<String> value) {
-            this.mediaTypes = value;
+            this.parameters.put("mediaTypes", toJson(value));
             return this;
         }
 
