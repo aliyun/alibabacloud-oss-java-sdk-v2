@@ -1,215 +1,164 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class AudioStream {
+@JacksonXmlRootElement(localName = "AudioStream")
+public final class AudioStream {
 
-    @JsonProperty("Index")
+    @JacksonXmlProperty(localName = "Index")
     private Long index;
 
-    @JsonProperty("Language")
+    @JacksonXmlProperty(localName = "Language")
     private String language;
 
-    @JsonProperty("CodecName")
+    @JacksonXmlProperty(localName = "CodecName")
     private String codecName;
 
-    @JsonProperty("CodecLongName")
+    @JacksonXmlProperty(localName = "CodecLongName")
     private String codecLongName;
 
-    @JsonProperty("CodecTimeBase")
+    @JacksonXmlProperty(localName = "CodecTimeBase")
     private String codecTimeBase;
 
-    @JsonProperty("CodecTagString")
+    @JacksonXmlProperty(localName = "CodecTagString")
     private String codecTagString;
 
-    @JsonProperty("CodecTag")
+    @JacksonXmlProperty(localName = "CodecTag")
     private String codecTag;
 
-    @JsonProperty("TimeBase")
+    @JacksonXmlProperty(localName = "TimeBase")
     private String timeBase;
 
-    @JsonProperty("StartTime")
+    @JacksonXmlProperty(localName = "StartTime")
     private Double startTime;
 
-    @JsonProperty("Duration")
+    @JacksonXmlProperty(localName = "Duration")
     private Double duration;
 
-    @JsonProperty("Bitrate")
+    @JacksonXmlProperty(localName = "Bitrate")
     private Long bitrate;
 
-    @JsonProperty("FrameCount")
+    @JacksonXmlProperty(localName = "FrameCount")
     private Long frameCount;
 
-    @JsonProperty("Lyric")
+    @JacksonXmlProperty(localName = "Lyric")
     private String lyric;
 
-    @JsonProperty("SampleFormat")
+    @JacksonXmlProperty(localName = "SampleFormat")
     private String sampleFormat;
 
-    @JsonProperty("SampleRate")
+    @JacksonXmlProperty(localName = "SampleRate")
     private Long sampleRate;
 
-    @JsonProperty("Channels")
+    @JacksonXmlProperty(localName = "Channels")
     private Long channels;
 
-    @JsonProperty("ChannelLayout")
+    @JacksonXmlProperty(localName = "ChannelLayout")
     private String channelLayout;
 
-    public AudioStream() {
+    public AudioStream() {}
+
+    private AudioStream(Builder builder) {
+        this.index = builder.index;
+        this.language = builder.language;
+        this.codecName = builder.codecName;
+        this.codecLongName = builder.codecLongName;
+        this.codecTimeBase = builder.codecTimeBase;
+        this.codecTagString = builder.codecTagString;
+        this.codecTag = builder.codecTag;
+        this.timeBase = builder.timeBase;
+        this.startTime = builder.startTime;
+        this.duration = builder.duration;
+        this.bitrate = builder.bitrate;
+        this.frameCount = builder.frameCount;
+        this.lyric = builder.lyric;
+        this.sampleFormat = builder.sampleFormat;
+        this.sampleRate = builder.sampleRate;
+        this.channels = builder.channels;
+        this.channelLayout = builder.channelLayout;
     }
 
-    public Long getIndex() {
-        return index;
-    }
+    public Long index() { return this.index; }
+    public String language() { return this.language; }
+    public String codecName() { return this.codecName; }
+    public String codecLongName() { return this.codecLongName; }
+    public String codecTimeBase() { return this.codecTimeBase; }
+    public String codecTagString() { return this.codecTagString; }
+    public String codecTag() { return this.codecTag; }
+    public String timeBase() { return this.timeBase; }
+    public Double startTime() { return this.startTime; }
+    public Double duration() { return this.duration; }
+    public Long bitrate() { return this.bitrate; }
+    public Long frameCount() { return this.frameCount; }
+    public String lyric() { return this.lyric; }
+    public String sampleFormat() { return this.sampleFormat; }
+    public Long sampleRate() { return this.sampleRate; }
+    public Long channels() { return this.channels; }
+    public String channelLayout() { return this.channelLayout; }
 
-    public AudioStream setIndex(Long index) {
-        this.index = index;
-        return this;
-    }
+    public static Builder newBuilder() { return new Builder(); }
+    public Builder toBuilder() { return new Builder(this); }
 
-    public String getLanguage() {
-        return language;
-    }
+    public static class Builder {
+        private Long index;
+        private String language;
+        private String codecName;
+        private String codecLongName;
+        private String codecTimeBase;
+        private String codecTagString;
+        private String codecTag;
+        private String timeBase;
+        private Double startTime;
+        private Double duration;
+        private Long bitrate;
+        private Long frameCount;
+        private String lyric;
+        private String sampleFormat;
+        private Long sampleRate;
+        private Long channels;
+        private String channelLayout;
 
-    public AudioStream setLanguage(String language) {
-        this.language = language;
-        return this;
-    }
+        public Builder index(Long value) { this.index = value; return this; }
+        public Builder language(String value) { this.language = value; return this; }
+        public Builder codecName(String value) { this.codecName = value; return this; }
+        public Builder codecLongName(String value) { this.codecLongName = value; return this; }
+        public Builder codecTimeBase(String value) { this.codecTimeBase = value; return this; }
+        public Builder codecTagString(String value) { this.codecTagString = value; return this; }
+        public Builder codecTag(String value) { this.codecTag = value; return this; }
+        public Builder timeBase(String value) { this.timeBase = value; return this; }
+        public Builder startTime(Double value) { this.startTime = value; return this; }
+        public Builder duration(Double value) { this.duration = value; return this; }
+        public Builder bitrate(Long value) { this.bitrate = value; return this; }
+        public Builder frameCount(Long value) { this.frameCount = value; return this; }
+        public Builder lyric(String value) { this.lyric = value; return this; }
+        public Builder sampleFormat(String value) { this.sampleFormat = value; return this; }
+        public Builder sampleRate(Long value) { this.sampleRate = value; return this; }
+        public Builder channels(Long value) { this.channels = value; return this; }
+        public Builder channelLayout(String value) { this.channelLayout = value; return this; }
 
-    public String getCodecName() {
-        return codecName;
-    }
+        private Builder() { super(); }
 
-    public AudioStream setCodecName(String codecName) {
-        this.codecName = codecName;
-        return this;
-    }
+        private Builder(AudioStream from) {
+            this.index = from.index;
+            this.language = from.language;
+            this.codecName = from.codecName;
+            this.codecLongName = from.codecLongName;
+            this.codecTimeBase = from.codecTimeBase;
+            this.codecTagString = from.codecTagString;
+            this.codecTag = from.codecTag;
+            this.timeBase = from.timeBase;
+            this.startTime = from.startTime;
+            this.duration = from.duration;
+            this.bitrate = from.bitrate;
+            this.frameCount = from.frameCount;
+            this.lyric = from.lyric;
+            this.sampleFormat = from.sampleFormat;
+            this.sampleRate = from.sampleRate;
+            this.channels = from.channels;
+            this.channelLayout = from.channelLayout;
+        }
 
-    public String getCodecLongName() {
-        return codecLongName;
-    }
-
-    public AudioStream setCodecLongName(String codecLongName) {
-        this.codecLongName = codecLongName;
-        return this;
-    }
-
-    public String getCodecTimeBase() {
-        return codecTimeBase;
-    }
-
-    public AudioStream setCodecTimeBase(String codecTimeBase) {
-        this.codecTimeBase = codecTimeBase;
-        return this;
-    }
-
-    public String getCodecTagString() {
-        return codecTagString;
-    }
-
-    public AudioStream setCodecTagString(String codecTagString) {
-        this.codecTagString = codecTagString;
-        return this;
-    }
-
-    public String getCodecTag() {
-        return codecTag;
-    }
-
-    public AudioStream setCodecTag(String codecTag) {
-        this.codecTag = codecTag;
-        return this;
-    }
-
-    public String getTimeBase() {
-        return timeBase;
-    }
-
-    public AudioStream setTimeBase(String timeBase) {
-        this.timeBase = timeBase;
-        return this;
-    }
-
-    public Double getStartTime() {
-        return startTime;
-    }
-
-    public AudioStream setStartTime(Double startTime) {
-        this.startTime = startTime;
-        return this;
-    }
-
-    public Double getDuration() {
-        return duration;
-    }
-
-    public AudioStream setDuration(Double duration) {
-        this.duration = duration;
-        return this;
-    }
-
-    public Long getBitrate() {
-        return bitrate;
-    }
-
-    public AudioStream setBitrate(Long bitrate) {
-        this.bitrate = bitrate;
-        return this;
-    }
-
-    public Long getFrameCount() {
-        return frameCount;
-    }
-
-    public AudioStream setFrameCount(Long frameCount) {
-        this.frameCount = frameCount;
-        return this;
-    }
-
-    public String getLyric() {
-        return lyric;
-    }
-
-    public AudioStream setLyric(String lyric) {
-        this.lyric = lyric;
-        return this;
-    }
-
-    public String getSampleFormat() {
-        return sampleFormat;
-    }
-
-    public AudioStream setSampleFormat(String sampleFormat) {
-        this.sampleFormat = sampleFormat;
-        return this;
-    }
-
-    public Long getSampleRate() {
-        return sampleRate;
-    }
-
-    public AudioStream setSampleRate(Long sampleRate) {
-        this.sampleRate = sampleRate;
-        return this;
-    }
-
-    public Long getChannels() {
-        return channels;
-    }
-
-    public AudioStream setChannels(Long channels) {
-        this.channels = channels;
-        return this;
-    }
-
-    public String getChannelLayout() {
-        return channelLayout;
-    }
-
-    public AudioStream setChannelLayout(String channelLayout) {
-        this.channelLayout = channelLayout;
-        return this;
+        public AudioStream build() { return new AudioStream(this); }
     }
 }

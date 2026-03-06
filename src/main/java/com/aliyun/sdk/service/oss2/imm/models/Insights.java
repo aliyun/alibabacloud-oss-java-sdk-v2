@@ -1,35 +1,44 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Insights {
+@JacksonXmlRootElement(localName = "Insights")
+public final class Insights {
 
-    @JsonProperty("Video")
+    @JacksonXmlProperty(localName = "Video")
     private VideoInsight video;
 
-    @JsonProperty("Image")
+    @JacksonXmlProperty(localName = "Image")
     private ImageInsight image;
 
-    public Insights() {
+    public Insights() {}
+
+    private Insights(Builder builder) {
+        this.video = builder.video;
+        this.image = builder.image;
     }
 
-    public VideoInsight getVideo() {
-        return video;
-    }
+    public VideoInsight video() { return this.video; }
+    public ImageInsight image() { return this.image; }
 
-    public Insights setVideo(VideoInsight video) {
-        this.video = video;
-        return this;
-    }
+    public static Builder newBuilder() { return new Builder(); }
+    public Builder toBuilder() { return new Builder(this); }
 
-    public ImageInsight getImage() {
-        return image;
-    }
+    public static class Builder {
+        private VideoInsight video;
+        private ImageInsight image;
 
-    public Insights setImage(ImageInsight image) {
-        this.image = image;
-        return this;
+        public Builder video(VideoInsight value) { this.video = value; return this; }
+        public Builder image(ImageInsight value) { this.image = value; return this; }
+
+        private Builder() { super(); }
+
+        private Builder(Insights from) {
+            this.video = from.video;
+            this.image = from.image;
+        }
+
+        public Insights build() { return new Insights(this); }
     }
 }

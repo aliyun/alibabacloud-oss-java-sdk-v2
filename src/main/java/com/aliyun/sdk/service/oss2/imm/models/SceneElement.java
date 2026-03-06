@@ -1,61 +1,102 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class SceneElement {
+@JacksonXmlRootElement(localName = "SceneElement")
+public final class SceneElement {
 
-    @JsonProperty("TimeRange")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "TimeRange")
     private List<Long> timeRange;
 
-    @JsonProperty("FrameTimes")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "FrameTime")
     private List<Long> frameTimes;
 
-    @JsonProperty("VideoStreamIndex")
+    @JacksonXmlProperty(localName = "VideoStreamIndex")
     private Long videoStreamIndex;
 
-    @JsonProperty("Labels")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "Label")
     private List<Label> labels;
 
     public SceneElement() {
     }
 
-    public List<Long> getTimeRange() {
-        return timeRange;
+    private SceneElement(Builder builder) {
+        this.timeRange = builder.timeRange;
+        this.frameTimes = builder.frameTimes;
+        this.videoStreamIndex = builder.videoStreamIndex;
+        this.labels = builder.labels;
     }
 
-    public SceneElement setTimeRange(List<Long> timeRange) {
-        this.timeRange = timeRange;
-        return this;
+    public List<Long> timeRange() {
+        return this.timeRange;
     }
 
-    public List<Long> getFrameTimes() {
-        return frameTimes;
+    public List<Long> frameTimes() {
+        return this.frameTimes;
     }
 
-    public SceneElement setFrameTimes(List<Long> frameTimes) {
-        this.frameTimes = frameTimes;
-        return this;
+    public Long videoStreamIndex() {
+        return this.videoStreamIndex;
     }
 
-    public Long getVideoStreamIndex() {
-        return videoStreamIndex;
+    public List<Label> labels() {
+        return this.labels;
     }
 
-    public SceneElement setVideoStreamIndex(Long videoStreamIndex) {
-        this.videoStreamIndex = videoStreamIndex;
-        return this;
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public List<Label> getLabels() {
-        return labels;
+    public Builder toBuilder() {
+        return new Builder(this);
     }
 
-    public SceneElement setLabels(List<Label> labels) {
-        this.labels = labels;
-        return this;
+    public static class Builder {
+        private List<Long> timeRange;
+        private List<Long> frameTimes;
+        private Long videoStreamIndex;
+        private List<Label> labels;
+
+        public Builder timeRange(List<Long> value) {
+            this.timeRange = value;
+            return this;
+        }
+
+        public Builder frameTimes(List<Long> value) {
+            this.frameTimes = value;
+            return this;
+        }
+
+        public Builder videoStreamIndex(Long value) {
+            this.videoStreamIndex = value;
+            return this;
+        }
+
+        public Builder labels(List<Label> value) {
+            this.labels = value;
+            return this;
+        }
+
+        private Builder() {
+            super();
+        }
+
+        private Builder(SceneElement from) {
+            this.timeRange = from.timeRange;
+            this.frameTimes = from.frameTimes;
+            this.videoStreamIndex = from.videoStreamIndex;
+            this.labels = from.labels;
+        }
+
+        public SceneElement build() {
+            return new SceneElement(this);
+        }
     }
 }

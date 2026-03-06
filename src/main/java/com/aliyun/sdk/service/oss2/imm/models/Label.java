@@ -1,109 +1,96 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Label {
+@JacksonXmlRootElement(localName = "Label")
+public final class Label {
 
-    @JsonProperty("Language")
+    @JacksonXmlProperty(localName = "Language")
     private String language;
 
-    @JsonProperty("LabelName")
+    @JacksonXmlProperty(localName = "LabelName")
     private String labelName;
 
-    @JsonProperty("LabelLevel")
+    @JacksonXmlProperty(localName = "LabelLevel")
     private Long labelLevel;
 
-    @JsonProperty("LabelConfidence")
+    @JacksonXmlProperty(localName = "LabelConfidence")
     private Float labelConfidence;
 
-    @JsonProperty("ParentLabelName")
+    @JacksonXmlProperty(localName = "ParentLabelName")
     private String parentLabelName;
 
-    @JsonProperty("CentricScore")
+    @JacksonXmlProperty(localName = "CentricScore")
     private Float centricScore;
 
-    @JsonProperty("LabelAlias")
+    @JacksonXmlProperty(localName = "LabelAlias")
     private String labelAlias;
 
-    @JsonProperty("Clips")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "Clip")
     private List<Clip> clips;
 
-    public Label() {
+    public Label() {}
+
+    private Label(Builder builder) {
+        this.language = builder.language;
+        this.labelName = builder.labelName;
+        this.labelLevel = builder.labelLevel;
+        this.labelConfidence = builder.labelConfidence;
+        this.parentLabelName = builder.parentLabelName;
+        this.centricScore = builder.centricScore;
+        this.labelAlias = builder.labelAlias;
+        this.clips = builder.clips;
     }
 
-    public String getLanguage() {
-        return language;
-    }
+    public String language() { return this.language; }
+    public String labelName() { return this.labelName; }
+    public Long labelLevel() { return this.labelLevel; }
+    public Float labelConfidence() { return this.labelConfidence; }
+    public String parentLabelName() { return this.parentLabelName; }
+    public Float centricScore() { return this.centricScore; }
+    public String labelAlias() { return this.labelAlias; }
+    public List<Clip> clips() { return this.clips; }
 
-    public Label setLanguage(String language) {
-        this.language = language;
-        return this;
-    }
+    public static Builder newBuilder() { return new Builder(); }
+    public Builder toBuilder() { return new Builder(this); }
 
-    public String getLabelName() {
-        return labelName;
-    }
+    public static class Builder {
+        private String language;
+        private String labelName;
+        private Long labelLevel;
+        private Float labelConfidence;
+        private String parentLabelName;
+        private Float centricScore;
+        private String labelAlias;
+        private List<Clip> clips;
 
-    public Label setLabelName(String labelName) {
-        this.labelName = labelName;
-        return this;
-    }
+        public Builder language(String value) { this.language = value; return this; }
+        public Builder labelName(String value) { this.labelName = value; return this; }
+        public Builder labelLevel(Long value) { this.labelLevel = value; return this; }
+        public Builder labelConfidence(Float value) { this.labelConfidence = value; return this; }
+        public Builder parentLabelName(String value) { this.parentLabelName = value; return this; }
+        public Builder centricScore(Float value) { this.centricScore = value; return this; }
+        public Builder labelAlias(String value) { this.labelAlias = value; return this; }
+        public Builder clips(List<Clip> value) { this.clips = value; return this; }
 
-    public Long getLabelLevel() {
-        return labelLevel;
-    }
+        private Builder() { super(); }
 
-    public Label setLabelLevel(Long labelLevel) {
-        this.labelLevel = labelLevel;
-        return this;
-    }
+        private Builder(Label from) {
+            this.language = from.language;
+            this.labelName = from.labelName;
+            this.labelLevel = from.labelLevel;
+            this.labelConfidence = from.labelConfidence;
+            this.parentLabelName = from.parentLabelName;
+            this.centricScore = from.centricScore;
+            this.labelAlias = from.labelAlias;
+            this.clips = from.clips;
+        }
 
-    public Float getLabelConfidence() {
-        return labelConfidence;
-    }
-
-    public Label setLabelConfidence(Float labelConfidence) {
-        this.labelConfidence = labelConfidence;
-        return this;
-    }
-
-    public String getParentLabelName() {
-        return parentLabelName;
-    }
-
-    public Label setParentLabelName(String parentLabelName) {
-        this.parentLabelName = parentLabelName;
-        return this;
-    }
-
-    public Float getCentricScore() {
-        return centricScore;
-    }
-
-    public Label setCentricScore(Float centricScore) {
-        this.centricScore = centricScore;
-        return this;
-    }
-
-    public String getLabelAlias() {
-        return labelAlias;
-    }
-
-    public Label setLabelAlias(String labelAlias) {
-        this.labelAlias = labelAlias;
-        return this;
-    }
-
-    public List<Clip> getClips() {
-        return clips;
-    }
-
-    public Label setClips(List<Clip> clips) {
-        this.clips = clips;
-        return this;
+        public Label build() { return new Label(this); }
     }
 }

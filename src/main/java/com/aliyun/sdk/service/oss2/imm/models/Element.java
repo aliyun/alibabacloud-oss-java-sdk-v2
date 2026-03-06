@@ -1,73 +1,73 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Element {
+@JacksonXmlRootElement(localName = "Element")
+public final class Element {
 
-    @JsonProperty("ElementContents")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "ElementContent")
     private List<ElementContent> elementContents;
 
-    @JsonProperty("ObjectId")
+    @JacksonXmlProperty(localName = "ObjectId")
     private String objectId;
 
-    @JsonProperty("ElementType")
+    @JacksonXmlProperty(localName = "ElementType")
     private String elementType;
 
-    @JsonProperty("SemanticSimilarity")
+    @JacksonXmlProperty(localName = "SemanticSimilarity")
     private Float semanticSimilarity;
 
-    @JsonProperty("ElementRelations")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "ElementRelation")
     private List<ElementRelation> elementRelations;
 
-    public Element() {
+    public Element() {}
+
+    private Element(Builder builder) {
+        this.elementContents = builder.elementContents;
+        this.objectId = builder.objectId;
+        this.elementType = builder.elementType;
+        this.semanticSimilarity = builder.semanticSimilarity;
+        this.elementRelations = builder.elementRelations;
     }
 
-    public List<ElementContent> getElementContents() {
-        return elementContents;
-    }
+    public List<ElementContent> elementContents() { return this.elementContents; }
+    public String objectId() { return this.objectId; }
+    public String elementType() { return this.elementType; }
+    public Float semanticSimilarity() { return this.semanticSimilarity; }
+    public List<ElementRelation> elementRelations() { return this.elementRelations; }
 
-    public Element setElementContents(List<ElementContent> elementContents) {
-        this.elementContents = elementContents;
-        return this;
-    }
+    public static Builder newBuilder() { return new Builder(); }
+    public Builder toBuilder() { return new Builder(this); }
 
-    public String getObjectId() {
-        return objectId;
-    }
+    public static class Builder {
+        private List<ElementContent> elementContents;
+        private String objectId;
+        private String elementType;
+        private Float semanticSimilarity;
+        private List<ElementRelation> elementRelations;
 
-    public Element setObjectId(String objectId) {
-        this.objectId = objectId;
-        return this;
-    }
+        public Builder elementContents(List<ElementContent> value) { this.elementContents = value; return this; }
+        public Builder objectId(String value) { this.objectId = value; return this; }
+        public Builder elementType(String value) { this.elementType = value; return this; }
+        public Builder semanticSimilarity(Float value) { this.semanticSimilarity = value; return this; }
+        public Builder elementRelations(List<ElementRelation> value) { this.elementRelations = value; return this; }
 
-    public String getElementType() {
-        return elementType;
-    }
+        private Builder() { super(); }
 
-    public Element setElementType(String elementType) {
-        this.elementType = elementType;
-        return this;
-    }
+        private Builder(Element from) {
+            this.elementContents = from.elementContents;
+            this.objectId = from.objectId;
+            this.elementType = from.elementType;
+            this.semanticSimilarity = from.semanticSimilarity;
+            this.elementRelations = from.elementRelations;
+        }
 
-    public Float getSemanticSimilarity() {
-        return semanticSimilarity;
-    }
-
-    public Element setSemanticSimilarity(Float semanticSimilarity) {
-        this.semanticSimilarity = semanticSimilarity;
-        return this;
-    }
-
-    public List<ElementRelation> getElementRelations() {
-        return elementRelations;
-    }
-
-    public Element setElementRelations(List<ElementRelation> elementRelations) {
-        this.elementRelations = elementRelations;
-        return this;
+        public Element build() { return new Element(this); }
     }
 }

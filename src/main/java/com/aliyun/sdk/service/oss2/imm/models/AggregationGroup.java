@@ -1,35 +1,44 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class AggregationGroup {
+@JacksonXmlRootElement(localName = "AggregationGroup")
+public final class AggregationGroup {
 
-    @JsonProperty("Value")
+    @JacksonXmlProperty(localName = "Value")
     private String value;
 
-    @JsonProperty("Count")
+    @JacksonXmlProperty(localName = "Count")
     private Long count;
 
-    public AggregationGroup() {
+    public AggregationGroup() {}
+
+    private AggregationGroup(Builder builder) {
+        this.value = builder.value;
+        this.count = builder.count;
     }
 
-    public String getValue() {
-        return value;
-    }
+    public String value() { return this.value; }
+    public Long count() { return this.count; }
 
-    public AggregationGroup setValue(String value) {
-        this.value = value;
-        return this;
-    }
+    public static Builder newBuilder() { return new Builder(); }
+    public Builder toBuilder() { return new Builder(this); }
 
-    public Long getCount() {
-        return count;
-    }
+    public static class Builder {
+        private String value;
+        private Long count;
 
-    public AggregationGroup setCount(Long count) {
-        this.count = count;
-        return this;
+        public Builder value(String value) { this.value = value; return this; }
+        public Builder count(Long value) { this.count = value; return this; }
+
+        private Builder() { super(); }
+
+        private Builder(AggregationGroup from) {
+            this.value = from.value;
+            this.count = from.count;
+        }
+
+        public AggregationGroup build() { return new AggregationGroup(this); }
     }
 }

@@ -1,6 +1,7 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
+import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
 
 import java.util.List;
 
@@ -11,28 +12,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class CreateDatasetRequest extends RequestModel {
     private final String bucket;
-    private final String datasetName;
-    private final String description;
-    private final String templateId;
-    private final Long datasetMaxBindCount;
-    private final Long datasetMaxFileCount;
-    private final Long datasetMaxEntityCount;
-    private final Long datasetMaxRelationCount;
-    private final Long datasetMaxTotalFileSize;
     private final List<WorkflowParameter> workflowParameters;
     private final DatasetConfig datasetConfig;
 
     private CreateDatasetRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.datasetName = builder.datasetName;
-        this.description = builder.description;
-        this.templateId = builder.templateId;
-        this.datasetMaxBindCount = builder.datasetMaxBindCount;
-        this.datasetMaxFileCount = builder.datasetMaxFileCount;
-        this.datasetMaxEntityCount = builder.datasetMaxEntityCount;
-        this.datasetMaxRelationCount = builder.datasetMaxRelationCount;
-        this.datasetMaxTotalFileSize = builder.datasetMaxTotalFileSize;
         this.workflowParameters = builder.workflowParameters;
         this.datasetConfig = builder.datasetConfig;
     }
@@ -46,35 +31,35 @@ public final class CreateDatasetRequest extends RequestModel {
     }
 
     public String datasetName() {
-        return datasetName;
+        return parameters.get("datasetName");
     }
 
     public String description() {
-        return description;
+        return parameters.get("description");
     }
 
     public String templateId() {
-        return templateId;
+        return parameters.get("templateId");
     }
 
     public Long datasetMaxBindCount() {
-        return datasetMaxBindCount;
+        return ConvertUtils.toLongOrNull(parameters.get("datasetMaxBindCount"));
     }
 
     public Long datasetMaxFileCount() {
-        return datasetMaxFileCount;
+        return ConvertUtils.toLongOrNull(parameters.get("datasetMaxFileCount"));
     }
 
     public Long datasetMaxEntityCount() {
-        return datasetMaxEntityCount;
+        return ConvertUtils.toLongOrNull(parameters.get("datasetMaxEntityCount"));
     }
 
     public Long datasetMaxRelationCount() {
-        return datasetMaxRelationCount;
+        return ConvertUtils.toLongOrNull(parameters.get("datasetMaxRelationCount"));
     }
 
     public Long datasetMaxTotalFileSize() {
-        return datasetMaxTotalFileSize;
+        return ConvertUtils.toLongOrNull(parameters.get("datasetMaxTotalFileSize"));
     }
 
     public List<WorkflowParameter> workflowParameters() {
@@ -91,14 +76,6 @@ public final class CreateDatasetRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private String datasetName;
-        private String description;
-        private String templateId;
-        private Long datasetMaxBindCount;
-        private Long datasetMaxFileCount;
-        private Long datasetMaxEntityCount;
-        private Long datasetMaxRelationCount;
-        private Long datasetMaxTotalFileSize;
         private List<WorkflowParameter> workflowParameters;
         private DatasetConfig datasetConfig;
 
@@ -109,14 +86,6 @@ public final class CreateDatasetRequest extends RequestModel {
         private Builder(CreateDatasetRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.datasetName = request.datasetName;
-            this.description = request.description;
-            this.templateId = request.templateId;
-            this.datasetMaxBindCount = request.datasetMaxBindCount;
-            this.datasetMaxFileCount = request.datasetMaxFileCount;
-            this.datasetMaxEntityCount = request.datasetMaxEntityCount;
-            this.datasetMaxRelationCount = request.datasetMaxRelationCount;
-            this.datasetMaxTotalFileSize = request.datasetMaxTotalFileSize;
             this.workflowParameters = request.workflowParameters;
             this.datasetConfig = request.datasetConfig;
         }
@@ -129,42 +98,42 @@ public final class CreateDatasetRequest extends RequestModel {
 
         public Builder datasetName(String value) {
             requireNonNull(value);
-            this.datasetName = value;
+            this.parameters.put("datasetName", value);
             return this;
         }
 
         public Builder description(String value) {
-            this.description = value;
+            this.parameters.put("description", value);
             return this;
         }
 
         public Builder templateId(String value) {
-            this.templateId = value;
+            this.parameters.put("templateId", value);
             return this;
         }
 
         public Builder datasetMaxBindCount(Long value) {
-            this.datasetMaxBindCount = value;
+            this.parameters.put("datasetMaxBindCount", value.toString());
             return this;
         }
 
         public Builder datasetMaxFileCount(Long value) {
-            this.datasetMaxFileCount = value;
+            this.parameters.put("datasetMaxFileCount", value.toString());
             return this;
         }
 
         public Builder datasetMaxEntityCount(Long value) {
-            this.datasetMaxEntityCount = value;
+            this.parameters.put("datasetMaxEntityCount", value.toString());
             return this;
         }
 
         public Builder datasetMaxRelationCount(Long value) {
-            this.datasetMaxRelationCount = value;
+            this.parameters.put("datasetMaxRelationCount", value.toString());
             return this;
         }
 
         public Builder datasetMaxTotalFileSize(Long value) {
-            this.datasetMaxTotalFileSize = value;
+            this.parameters.put("datasetMaxTotalFileSize", value.toString());
             return this;
         }
 

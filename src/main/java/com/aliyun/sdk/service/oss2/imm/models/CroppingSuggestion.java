@@ -1,47 +1,81 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CroppingSuggestion {
+@JacksonXmlRootElement(localName = "CroppingSuggestion")
+public final class CroppingSuggestion {
 
-    @JsonProperty("AspectRatio")
+    @JacksonXmlProperty(localName = "AspectRatio")
     private String aspectRatio;
 
-    @JsonProperty("Confidence")
+    @JacksonXmlProperty(localName = "Confidence")
     private Float confidence;
 
-    @JsonProperty("Boundary")
+    @JacksonXmlProperty(localName = "Boundary")
     private Boundary boundary;
 
     public CroppingSuggestion() {
     }
 
-    public String getAspectRatio() {
-        return aspectRatio;
+    private CroppingSuggestion(Builder builder) {
+        this.aspectRatio = builder.aspectRatio;
+        this.confidence = builder.confidence;
+        this.boundary = builder.boundary;
     }
 
-    public CroppingSuggestion setAspectRatio(String aspectRatio) {
-        this.aspectRatio = aspectRatio;
-        return this;
+    public String aspectRatio() {
+        return this.aspectRatio;
     }
 
-    public Float getConfidence() {
-        return confidence;
+    public Float confidence() {
+        return this.confidence;
     }
 
-    public CroppingSuggestion setConfidence(Float confidence) {
-        this.confidence = confidence;
-        return this;
+    public Boundary boundary() {
+        return this.boundary;
     }
 
-    public Boundary getBoundary() {
-        return boundary;
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public CroppingSuggestion setBoundary(Boundary boundary) {
-        this.boundary = boundary;
-        return this;
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    public static class Builder {
+        private String aspectRatio;
+        private Float confidence;
+        private Boundary boundary;
+
+        public Builder aspectRatio(String value) {
+            this.aspectRatio = value;
+            return this;
+        }
+
+        public Builder confidence(Float value) {
+            this.confidence = value;
+            return this;
+        }
+
+        public Builder boundary(Boundary value) {
+            this.boundary = value;
+            return this;
+        }
+
+        private Builder() {
+            super();
+        }
+
+        private Builder(CroppingSuggestion from) {
+            this.aspectRatio = from.aspectRatio;
+            this.confidence = from.confidence;
+            this.boundary = from.boundary;
+        }
+
+        public CroppingSuggestion build() {
+            return new CroppingSuggestion(this);
+        }
     }
 }

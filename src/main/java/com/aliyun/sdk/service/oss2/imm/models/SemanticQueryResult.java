@@ -8,19 +8,18 @@ import java.util.List;
  * The result for the SemanticQuery operation.
  */
 public final class SemanticQueryResult extends ResultModel {
-    private final List<File> files;
+
+    public List<File> files() {
+        SemanticQueryResponseBody body = (SemanticQueryResponseBody) innerBody;
+        return body != null ? body.files() : null;
+    }
 
     SemanticQueryResult(Builder builder) {
         super(builder);
-        this.files = builder.files;
     }
 
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    public List<File> files() {
-        return files;
     }
 
     public Builder toBuilder() {
@@ -28,7 +27,10 @@ public final class SemanticQueryResult extends ResultModel {
     }
 
     public static class Builder extends ResultModel.Builder<Builder> {
-        private List<File> files;
+
+        public SemanticQueryResult build() {
+            return new SemanticQueryResult(this);
+        }
 
         private Builder() {
             super();
@@ -36,16 +38,6 @@ public final class SemanticQueryResult extends ResultModel {
 
         private Builder(SemanticQueryResult result) {
             super(result);
-            this.files = result.files;
-        }
-
-        public Builder files(List<File> value) {
-            this.files = value;
-            return this;
-        }
-
-        public SemanticQueryResult build() {
-            return new SemanticQueryResult(this);
         }
     }
 }

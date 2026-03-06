@@ -1,61 +1,100 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ElementContent {
+@JacksonXmlRootElement(localName = "ElementContent")
+public final class ElementContent {
 
-    @JsonProperty("Type")
+    @JacksonXmlProperty(localName = "Type")
     private String type;
 
-    @JsonProperty("Content")
+    @JacksonXmlProperty(localName = "Content")
     private String content;
 
-    @JsonProperty("URL")
+    @JacksonXmlProperty(localName = "URL")
     private String url;
 
-    @JsonProperty("TimeRange")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "TimeRange")
     private List<Long> timeRange;
 
     public ElementContent() {
     }
 
-    public String getType() {
-        return type;
+    private ElementContent(Builder builder) {
+        this.type = builder.type;
+        this.content = builder.content;
+        this.url = builder.url;
+        this.timeRange = builder.timeRange;
     }
 
-    public ElementContent setType(String type) {
-        this.type = type;
-        return this;
+    public String type() {
+        return this.type;
     }
 
-    public String getContent() {
-        return content;
+    public String content() {
+        return this.content;
     }
 
-    public ElementContent setContent(String content) {
-        this.content = content;
-        return this;
+    public String url() {
+        return this.url;
     }
 
-    public String getUrl() {
-        return url;
+    public List<Long> timeRange() {
+        return this.timeRange;
     }
 
-    public ElementContent setUrl(String url) {
-        this.url = url;
-        return this;
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public List<Long> getTimeRange() {
-        return timeRange;
+    public Builder toBuilder() {
+        return new Builder(this);
     }
 
-    public ElementContent setTimeRange(List<Long> timeRange) {
-        this.timeRange = timeRange;
-        return this;
+    public static class Builder {
+        private String type;
+        private String content;
+        private String url;
+        private List<Long> timeRange;
+
+        public Builder type(String value) {
+            this.type = value;
+            return this;
+        }
+
+        public Builder content(String value) {
+            this.content = value;
+            return this;
+        }
+
+        public Builder url(String value) {
+            this.url = value;
+            return this;
+        }
+
+        public Builder timeRange(List<Long> value) {
+            this.timeRange = value;
+            return this;
+        }
+
+        private Builder() {
+            super();
+        }
+
+        private Builder(ElementContent from) {
+            this.type = from.type;
+            this.content = from.content;
+            this.url = from.url;
+            this.timeRange = from.timeRange;
+        }
+
+        public ElementContent build() {
+            return new ElementContent(this);
+        }
     }
 }

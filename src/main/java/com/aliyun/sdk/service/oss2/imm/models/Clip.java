@@ -1,25 +1,55 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Clip {
+@JacksonXmlRootElement(localName = "Clip")
+public final class Clip {
 
-    @JsonProperty("TimeRange")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "TimeRange")
     private List<Long> timeRange;
 
     public Clip() {
     }
 
-    public List<Long> getTimeRange() {
-        return timeRange;
+    private Clip(Builder builder) {
+        this.timeRange = builder.timeRange;
     }
 
-    public Clip setTimeRange(List<Long> timeRange) {
-        this.timeRange = timeRange;
-        return this;
+    public List<Long> timeRange() {
+        return this.timeRange;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
+    public static class Builder {
+        private List<Long> timeRange;
+
+        public Builder timeRange(List<Long> value) {
+            this.timeRange = value;
+            return this;
+        }
+
+        private Builder() {
+            super();
+        }
+
+        private Builder(Clip from) {
+            this.timeRange = from.timeRange;
+        }
+
+        public Clip build() {
+            return new Clip(this);
+        }
     }
 }

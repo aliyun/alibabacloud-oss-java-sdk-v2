@@ -8,37 +8,33 @@ import java.util.List;
  * The result for the SimpleQuery operation.
  */
 public final class SimpleQueryResult extends ResultModel {
-    private final String nextToken;
-    private final List<File> files;
-    private final List<AggregationInfo> aggregations;
-    private final Long totalHits;
+
+    public String nextToken() {
+        SimpleQueryResponseBody body = (SimpleQueryResponseBody) innerBody;
+        return body != null ? body.nextToken() : null;
+    }
+
+    public List<File> files() {
+        SimpleQueryResponseBody body = (SimpleQueryResponseBody) innerBody;
+        return body != null ? body.files() : null;
+    }
+
+    public List<AggregationInfo> aggregations() {
+        SimpleQueryResponseBody body = (SimpleQueryResponseBody) innerBody;
+        return body != null ? body.aggregations() : null;
+    }
+
+    public Long totalHits() {
+        SimpleQueryResponseBody body = (SimpleQueryResponseBody) innerBody;
+        return body != null ? body.totalHits() : null;
+    }
 
     SimpleQueryResult(Builder builder) {
         super(builder);
-        this.nextToken = builder.nextToken;
-        this.files = builder.files;
-        this.aggregations = builder.aggregations;
-        this.totalHits = builder.totalHits;
     }
 
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    public String nextToken() {
-        return nextToken;
-    }
-
-    public List<File> files() {
-        return files;
-    }
-
-    public List<AggregationInfo> aggregations() {
-        return aggregations;
-    }
-
-    public Long totalHits() {
-        return totalHits;
     }
 
     public Builder toBuilder() {
@@ -46,10 +42,10 @@ public final class SimpleQueryResult extends ResultModel {
     }
 
     public static class Builder extends ResultModel.Builder<Builder> {
-        private String nextToken;
-        private List<File> files;
-        private List<AggregationInfo> aggregations;
-        private Long totalHits;
+
+        public SimpleQueryResult build() {
+            return new SimpleQueryResult(this);
+        }
 
         private Builder() {
             super();
@@ -57,34 +53,6 @@ public final class SimpleQueryResult extends ResultModel {
 
         private Builder(SimpleQueryResult result) {
             super(result);
-            this.nextToken = result.nextToken;
-            this.files = result.files;
-            this.aggregations = result.aggregations;
-            this.totalHits = result.totalHits;
-        }
-
-        public Builder nextToken(String value) {
-            this.nextToken = value;
-            return this;
-        }
-
-        public Builder files(List<File> value) {
-            this.files = value;
-            return this;
-        }
-
-        public Builder aggregations(List<AggregationInfo> value) {
-            this.aggregations = value;
-            return this;
-        }
-
-        public Builder totalHits(Long value) {
-            this.totalHits = value;
-            return this;
-        }
-
-        public SimpleQueryResult build() {
-            return new SimpleQueryResult(this);
         }
     }
 }

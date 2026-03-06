@@ -9,12 +9,10 @@ import static java.util.Objects.requireNonNull;
  */
 public final class DeleteDatasetRequest extends RequestModel {
     private final String bucket;
-    private final String datasetName;
 
     private DeleteDatasetRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.datasetName = builder.datasetName;
     }
 
     public static Builder newBuilder() {
@@ -26,7 +24,7 @@ public final class DeleteDatasetRequest extends RequestModel {
     }
 
     public String datasetName() {
-        return datasetName;
+        return parameters.get("datasetName");
     }
 
     public Builder toBuilder() {
@@ -35,7 +33,6 @@ public final class DeleteDatasetRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private String datasetName;
 
         private Builder() {
             super();
@@ -44,7 +41,6 @@ public final class DeleteDatasetRequest extends RequestModel {
         private Builder(DeleteDatasetRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.datasetName = request.datasetName;
         }
 
         public Builder bucket(String value) {
@@ -55,7 +51,7 @@ public final class DeleteDatasetRequest extends RequestModel {
 
         public Builder datasetName(String value) {
             requireNonNull(value);
-            this.datasetName = value;
+            this.parameters.put("datasetName", value);
             return this;
         }
 

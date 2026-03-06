@@ -1,35 +1,44 @@
 package com.aliyun.sdk.service.oss2.imm.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class VideoInsight {
+@JacksonXmlRootElement(localName = "VideoInsight")
+public final class VideoInsight {
 
-    @JsonProperty("Caption")
+    @JacksonXmlProperty(localName = "Caption")
     private String caption;
 
-    @JsonProperty("Description")
+    @JacksonXmlProperty(localName = "Description")
     private String description;
 
-    public VideoInsight() {
+    public VideoInsight() {}
+
+    private VideoInsight(Builder builder) {
+        this.caption = builder.caption;
+        this.description = builder.description;
     }
 
-    public String getCaption() {
-        return caption;
-    }
+    public String caption() { return this.caption; }
+    public String description() { return this.description; }
 
-    public VideoInsight setCaption(String caption) {
-        this.caption = caption;
-        return this;
-    }
+    public static Builder newBuilder() { return new Builder(); }
+    public Builder toBuilder() { return new Builder(this); }
 
-    public String getDescription() {
-        return description;
-    }
+    public static class Builder {
+        private String caption;
+        private String description;
 
-    public VideoInsight setDescription(String description) {
-        this.description = description;
-        return this;
+        public Builder caption(String value) { this.caption = value; return this; }
+        public Builder description(String value) { this.description = value; return this; }
+
+        private Builder() { super(); }
+
+        private Builder(VideoInsight from) {
+            this.caption = from.caption;
+            this.description = from.description;
+        }
+
+        public VideoInsight build() { return new VideoInsight(this); }
     }
 }
