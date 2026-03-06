@@ -2,7 +2,6 @@ package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -12,8 +11,6 @@ import static java.util.Objects.requireNonNull;
  * The request for the CreateDataset operation.
  */
 public final class CreateDatasetRequest extends RequestModel {
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-
     private final String bucket;
 
     private CreateDatasetRequest(Builder builder) {
@@ -71,14 +68,6 @@ public final class CreateDatasetRequest extends RequestModel {
 
     public Builder toBuilder() {
         return new Builder(this);
-    }
-
-    private static String toJson(Object value) {
-        try {
-            return JSON_MAPPER.writeValueAsString(value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static class Builder extends RequestModel.Builder<Builder> {
@@ -141,12 +130,12 @@ public final class CreateDatasetRequest extends RequestModel {
         }
 
         public Builder workflowParameters(List<WorkflowParameter> value) {
-            this.parameters.put("workflowParameters", toJson(value));
+            this.parameters.put("workflowParameters", ImmParamHelper.toWorkflowParameters(value));
             return this;
         }
 
         public Builder datasetConfig(DatasetConfig value) {
-            this.parameters.put("datasetConfig", toJson(value));
+            this.parameters.put("datasetConfig", ImmParamHelper.toDatasetConfig(value));
             return this;
         }
 

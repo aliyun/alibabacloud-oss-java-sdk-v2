@@ -2,7 +2,6 @@ package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -12,8 +11,6 @@ import static java.util.Objects.requireNonNull;
  * The request for the SemanticQuery operation.
  */
 public final class SemanticQueryRequest extends RequestModel {
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-
     private final String bucket;
 
     private SemanticQueryRequest(Builder builder) {
@@ -61,14 +58,6 @@ public final class SemanticQueryRequest extends RequestModel {
         return new Builder(this);
     }
 
-    private static String toJson(Object value) {
-        try {
-            return JSON_MAPPER.writeValueAsString(value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
 
@@ -109,12 +98,12 @@ public final class SemanticQueryRequest extends RequestModel {
         }
 
         public Builder withFields(List<String> value) {
-            this.parameters.put("withFields", toJson(value));
+            this.parameters.put("withFields", ImmParamHelper.toStringList(value));
             return this;
         }
 
         public Builder mediaTypes(List<String> value) {
-            this.parameters.put("mediaTypes", toJson(value));
+            this.parameters.put("mediaTypes", ImmParamHelper.toStringList(value));
             return this;
         }
 

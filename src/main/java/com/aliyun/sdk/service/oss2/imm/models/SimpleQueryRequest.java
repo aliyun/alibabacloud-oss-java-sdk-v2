@@ -2,7 +2,6 @@ package com.aliyun.sdk.service.oss2.imm.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -12,8 +11,6 @@ import static java.util.Objects.requireNonNull;
  * The request for the SimpleQuery operation.
  */
 public final class SimpleQueryRequest extends RequestModel {
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-
     private final String bucket;
 
     private SimpleQueryRequest(Builder builder) {
@@ -69,14 +66,6 @@ public final class SimpleQueryRequest extends RequestModel {
         return new Builder(this);
     }
 
-    private static String toJson(Object value) {
-        try {
-            return JSON_MAPPER.writeValueAsString(value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
 
@@ -112,7 +101,7 @@ public final class SimpleQueryRequest extends RequestModel {
         }
 
         public Builder query(SimpleQuery value) {
-            this.parameters.put("query", toJson(value));
+            this.parameters.put("query", ImmParamHelper.toSimpleQuery(value));
             return this;
         }
 
@@ -127,12 +116,12 @@ public final class SimpleQueryRequest extends RequestModel {
         }
 
         public Builder aggregations(List<Aggregation> value) {
-            this.parameters.put("aggregations", toJson(value));
+            this.parameters.put("aggregations", ImmParamHelper.toAggregations(value));
             return this;
         }
 
         public Builder withFields(List<String> value) {
-            this.parameters.put("withFields", toJson(value));
+            this.parameters.put("withFields", ImmParamHelper.toStringList(value));
             return this;
         }
 
