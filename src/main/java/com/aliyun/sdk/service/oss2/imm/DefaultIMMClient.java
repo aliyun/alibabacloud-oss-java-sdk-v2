@@ -1,8 +1,7 @@
 package com.aliyun.sdk.service.oss2.imm;
 
 import com.aliyun.sdk.service.oss2.*;
-import com.aliyun.sdk.service.oss2.imm.models.CreateDatasetRequest;
-import com.aliyun.sdk.service.oss2.imm.models.CreateDatasetResult;
+import com.aliyun.sdk.service.oss2.imm.models.*;
 import com.aliyun.sdk.service.oss2.imm.operations.DatasetBasic;
 import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 
@@ -12,7 +11,7 @@ import java.util.Collection;
 import java.util.function.Function;
 
 /**
- * Internal implementation of {@link OSSClient}.
+ * Internal implementation of {@link IMMClient}.
  */
 public class DefaultIMMClient implements IMMClient {
     final ClientImpl clientImpl;
@@ -38,6 +37,31 @@ public class DefaultIMMClient implements IMMClient {
     @Override
     public CreateDatasetResult createDataset(CreateDatasetRequest request, OperationOptions options) {
         return DatasetBasic.createDataset(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetDatasetResult getDataset(GetDatasetRequest request, OperationOptions options) {
+        return DatasetBasic.getDataset(this.clientImpl, request, options);
+    }
+
+    @Override
+    public UpdateDatasetResult updateDataset(UpdateDatasetRequest request, OperationOptions options) {
+        return DatasetBasic.updateDataset(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteDatasetResult deleteDataset(DeleteDatasetRequest request, OperationOptions options) {
+        return DatasetBasic.deleteDataset(this.clientImpl, request, options);
+    }
+
+    @Override
+    public SimpleQueryResult simpleQuery(SimpleQueryRequest request, OperationOptions options) {
+        return DatasetBasic.simpleQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public SemanticQueryResult semanticQuery(SemanticQueryRequest request, OperationOptions options) {
+        return DatasetBasic.semanticQuery(this.clientImpl, request, options);
     }
 
     @Override
