@@ -706,4 +706,14 @@ public class DefaultOSSClient implements OSSClient {
     public WriteGetObjectResponseResult writeGetObjectResponse(WriteGetObjectResponseRequest request, OperationOptions options) {
         return BucketObjectFcAccessPoint.writeGetObjectResponse(this.clientImpl, request, options);
     }
+  
+    @Override
+    public PutBucketRequestPaymentResult putBucketRequestPayment(PutBucketRequestPaymentRequest request, OperationOptions options) {
+        return BucketRequestPayment.putBucketRequestPayment(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketRequestPaymentResult getBucketRequestPayment(GetBucketRequestPaymentRequest request, OperationOptions options) {
+        return BucketRequestPayment.getBucketRequestPayment(this.clientImpl, request, options);
+    }
 }
