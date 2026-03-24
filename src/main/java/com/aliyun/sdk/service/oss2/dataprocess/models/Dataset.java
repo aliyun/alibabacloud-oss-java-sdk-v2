@@ -48,9 +48,8 @@ public final class Dataset {
     @JacksonXmlProperty(localName = "UpdateTime")
     private String updateTime;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "WorkflowParameter")
-    private List<WorkflowParameter> workflowParameters;
+    @JacksonXmlProperty(localName = "WorkflowParameters")
+    private WorkflowParameters workflowParameters;
 
     @JacksonXmlProperty(localName = "DatasetConfig")
     private DatasetConfig datasetConfig;
@@ -136,7 +135,7 @@ public final class Dataset {
         return this.updateTime;
     }
 
-    public List<WorkflowParameter> workflowParameters() {
+    public WorkflowParameters workflowParameters() {
         return this.workflowParameters;
     }
 
@@ -158,7 +157,7 @@ public final class Dataset {
         private String templateId;
         private Long totalFileSize;
         private String updateTime;
-        private List<WorkflowParameter> workflowParameters;
+        private WorkflowParameters workflowParameters;
         private DatasetConfig datasetConfig;
 
         private Builder() {
@@ -247,7 +246,7 @@ public final class Dataset {
             return this;
         }
 
-        public Builder workflowParameters(List<WorkflowParameter> workflowParameters) {
+        public Builder workflowParameters(WorkflowParameters workflowParameters) {
             this.workflowParameters = workflowParameters;
             return this;
         }

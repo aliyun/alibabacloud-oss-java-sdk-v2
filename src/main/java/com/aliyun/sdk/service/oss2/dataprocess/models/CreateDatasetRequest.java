@@ -134,6 +134,11 @@ public final class CreateDatasetRequest extends RequestModel {
             return this;
         }
 
+        public Builder workflowParameters(String value) {
+            this.parameters.put("workflowParameters", value);
+            return this;
+        }
+
         public Builder datasetConfig(DatasetConfig value) {
             this.parameters.put("datasetConfig", DataProcessParamHelper.toDatasetConfig(value));
             return this;

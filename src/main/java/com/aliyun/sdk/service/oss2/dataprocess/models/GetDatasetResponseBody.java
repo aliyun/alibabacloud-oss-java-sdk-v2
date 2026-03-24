@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 /**
  * XML response body for the GetDataset operation.
  */
-@JacksonXmlRootElement(localName = "GetDatasetResult")
+@JacksonXmlRootElement(localName = "GetDatasetResponse")
 public final class GetDatasetResponseBody {
     @JacksonXmlProperty(localName = "Dataset")
     private Dataset dataset;

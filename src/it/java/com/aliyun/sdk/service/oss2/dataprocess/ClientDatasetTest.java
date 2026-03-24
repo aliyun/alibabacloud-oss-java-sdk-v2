@@ -5,6 +5,8 @@ import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -22,9 +24,8 @@ public class ClientDatasetTest extends TestBaseDataProcess {
                 CreateDatasetRequest.newBuilder()
                         .bucket(testBucketName)
                         .datasetName(dsName)
+                        .workflowParameters(Collections.singletonList(WorkflowParameter.newBuilder().name("ImageInsightEnable").value("True").build()))
                         .description("integration test dataset")
-                        .datasetMaxFileCount(100L)
-                        .datasetMaxBindCount(10L)
                         .build());
 
         Assert.assertNotNull(createResult);
@@ -45,6 +46,10 @@ public class ClientDatasetTest extends TestBaseDataProcess {
             Assert.assertNotNull(getResult.dataset());
             assertThat(getResult.dataset().datasetName()).isEqualTo(dsName);
             assertThat(getResult.dataset().description()).isEqualTo("integration test dataset");
+            assertThat(getResult.dataset().workflowParameters().workflowParameters().size()).isEqualTo(1);
+            assertThat(getResult.dataset().workflowParameters().workflowParameters().get(0).name()).isEqualTo("ImageInsightEnable");
+            assertThat(getResult.dataset().workflowParameters().workflowParameters().get(0).value()).isEqualTo("True");
+
 
             // 3. Get dataset with statistics
             GetDatasetResult getWithStatsResult = client.getDataset(
@@ -63,7 +68,7 @@ public class ClientDatasetTest extends TestBaseDataProcess {
                     UpdateDatasetRequest.newBuilder()
                             .bucket(testBucketName)
                             .datasetName(dsName)
-                            .description("updated description")
+                            .description("updated description 1")
                             .datasetMaxFileCount(200L)
                             .build());
 
@@ -80,7 +85,7 @@ public class ClientDatasetTest extends TestBaseDataProcess {
 
             Assert.assertNotNull(getAfterUpdate);
             Assert.assertEquals(200, getAfterUpdate.statusCode());
-            assertThat(getAfterUpdate.dataset().description()).isEqualTo("updated description");
+            assertThat(getAfterUpdate.dataset().description()).isEqualTo("updated description 1");
 
             // 6. Delete dataset
             DeleteDatasetResult deleteResult = client.deleteDataset(
