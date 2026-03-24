@@ -20,8 +20,6 @@ import java.util.Optional;
 import java.util.Random;
 
 public class TestBase {
-
-
     protected static final String BUCKET_NAME_PREFIX = "java-sdk-test-bucket-";
     protected static final String OJBJECT_NAME_PREFIX = "java-sdk-test-object-";
     protected static final long DELETE_OBJECTS_ONETIME_LIMIT = 1000;
@@ -33,6 +31,8 @@ public class TestBase {
     public static String OSS_TEST_ACCESS_KEY_SECRET = null;
     public static String OSS_TEST_RAM_ROLE_ARN = null;
     public static String OSS_TEST_RAM_UID = null;
+    public static String OSS_TEST_FUNCTION_ARN = null;
+
     // payer
     public static String OSS_TEST_PAYER_ACCESS_KEY_ID = null;
     public static String OSS_TEST_PAYER_ACCESS_KEY_SECRET = null;
@@ -79,6 +79,10 @@ public class TestBase {
 
     public static String accountId() {
         return Optional.ofNullable(OSS_TEST_RAM_UID).orElse(System.getenv().get("OSS_TEST_RAM_UID"));
+    }
+
+    public static String functionArn() {
+        return Optional.ofNullable(OSS_TEST_FUNCTION_ARN).orElse(System.getenv().get("OSS_TEST_FUNCTION_ARN"));
     }
 
     @BeforeClass
