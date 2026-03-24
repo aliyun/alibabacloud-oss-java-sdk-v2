@@ -48,8 +48,9 @@ public final class Dataset {
     @JacksonXmlProperty(localName = "UpdateTime")
     private String updateTime;
 
-    @JacksonXmlProperty(localName = "WorkflowParameters")
-    private WorkflowParameters workflowParameters;
+    @JacksonXmlElementWrapper(localName = "WorkflowParameters")
+    @JacksonXmlProperty(localName = "WorkflowParameter")
+    private List<WorkflowParameter> workflowParameters;
 
     @JacksonXmlProperty(localName = "DatasetConfig")
     private DatasetConfig datasetConfig;

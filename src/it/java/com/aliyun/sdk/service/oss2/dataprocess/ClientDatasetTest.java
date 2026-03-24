@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -171,8 +173,11 @@ public class ClientDatasetTest extends TestBaseDataProcess {
         Assert.assertEquals(200, createResult.statusCode());
 
         try {
-            // Update with DatasetConfig
+            // Update with DatasetConfig (Language = "en")
             DatasetConfig config = DatasetConfig.newBuilder()
+                    .insights(InsightsConfig.newBuilder()
+                            .language("en")
+                            .build())
                     .build();
 
             UpdateDatasetResult updateResult = client.updateDataset(
@@ -180,13 +185,181 @@ public class ClientDatasetTest extends TestBaseDataProcess {
                             .bucket(testBucketName)
                             .datasetName(dsName)
                             .datasetConfig(config)
-                            .datasetMaxEntityCount(500L)
-                            .datasetMaxRelationCount(200L)
-                            .datasetMaxTotalFileSize(1073741824L)
                             .build());
 
             Assert.assertNotNull(updateResult);
             Assert.assertEquals(200, updateResult.statusCode());
+
+            // Verify DatasetConfig is returned correctly
+            GetDatasetResult getResult = client.getDataset(
+                    GetDatasetRequest.newBuilder()
+                            .bucket(testBucketName)
+                            .datasetName(dsName)
+                            .build());
+
+            Assert.assertNotNull(getResult);
+            Assert.assertEquals(200, getResult.statusCode());
+            Assert.assertNotNull(getResult.dataset().datasetConfig());
+            Assert.assertNotNull(getResult.dataset().datasetConfig().insights());
+            assertThat(getResult.dataset().datasetConfig().insights().language()).isEqualTo("en");
+        } finally {
+            try {
+                client.deleteDataset(DeleteDatasetRequest.newBuilder()
+                        .bucket(testBucketName)
+                        .datasetName(dsName)
+                        .build());
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @Test
+    public void testCreateDatasetWithDatasetConfig() {
+        OSSDataProcessClient client = getDataProcessClient();
+        String dsName = genDatasetName();
+
+        DatasetConfig config = DatasetConfig.newBuilder()
+                .insights(InsightsConfig.newBuilder()
+                        .language("ch")
+                        .build())
+                .build();
+
+        CreateDatasetResult createResult = client.createDataset(
+                CreateDatasetRequest.newBuilder()
+                        .bucket(testBucketName)
+                        .datasetName(dsName)
+                        .datasetConfig(config)
+                        .build());
+
+        Assert.assertNotNull(createResult);
+        Assert.assertEquals(200, createResult.statusCode());
+
+        try {
+            // Verify DatasetConfig is returned in get
+            GetDatasetResult getResult = client.getDataset(
+                    GetDatasetRequest.newBuilder()
+                            .bucket(testBucketName)
+                            .datasetName(dsName)
+                            .build());
+
+            Assert.assertNotNull(getResult);
+            Assert.assertEquals(200, getResult.statusCode());
+            Assert.assertNotNull(getResult.dataset().datasetConfig());
+            Assert.assertNotNull(getResult.dataset().datasetConfig().insights());
+            assertThat(getResult.dataset().datasetConfig().insights().language()).isEqualTo("ch");
+        } finally {
+            try {
+                client.deleteDataset(DeleteDatasetRequest.newBuilder()
+                        .bucket(testBucketName)
+                        .datasetName(dsName)
+                        .build());
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @Test
+    public void testCreateDatasetWithWorkflowParameters() {
+        OSSDataProcessClient client = getDataProcessClient();
+        String dsName = genDatasetName();
+
+        List<WorkflowParameter> workflowParams = Arrays.asList(
+                WorkflowParameter.newBuilder()
+                        .name("VideoInsightEnable")
+                        .value("true")
+                        .build()
+        );
+
+        CreateDatasetResult createResult = client.createDataset(
+                CreateDatasetRequest.newBuilder()
+                        .bucket(testBucketName)
+                        .datasetName(dsName)
+                        .description("test with workflow parameters")
+                        .workflowParameters(workflowParams)
+                        .build());
+
+        Assert.assertNotNull(createResult);
+        Assert.assertEquals(200, createResult.statusCode());
+        Assert.assertNotNull(createResult.dataset());
+        assertThat(createResult.dataset().datasetName()).isEqualTo(dsName);
+
+        try {
+            // Verify workflow parameters are returned in get
+            GetDatasetResult getResult = client.getDataset(
+                    GetDatasetRequest.newBuilder()
+                            .bucket(testBucketName)
+                            .datasetName(dsName)
+                            .build());
+
+            Assert.assertNotNull(getResult);
+            Assert.assertEquals(200, getResult.statusCode());
+            Assert.assertNotNull(getResult.dataset());
+
+            List<WorkflowParameter> returnedParams = getResult.dataset().workflowParameters();
+            Assert.assertNotNull("WorkflowParameters should be returned", returnedParams);
+            Assert.assertEquals(1, returnedParams.size());
+            assertThat(returnedParams.get(0).name()).isEqualTo("VideoInsightEnable");
+            assertThat(returnedParams.get(0).value()).isEqualTo("true");
+        } finally {
+            try {
+                client.deleteDataset(DeleteDatasetRequest.newBuilder()
+                        .bucket(testBucketName)
+                        .datasetName(dsName)
+                        .build());
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @Test
+    public void testUpdateDatasetWithWorkflowParameters() {
+        OSSDataProcessClient client = getDataProcessClient();
+        String dsName = genDatasetName();
+
+        // Create dataset without workflow parameters
+        CreateDatasetResult createResult = client.createDataset(
+                CreateDatasetRequest.newBuilder()
+                        .bucket(testBucketName)
+                        .datasetName(dsName)
+                        .build());
+
+        Assert.assertNotNull(createResult);
+        Assert.assertEquals(200, createResult.statusCode());
+
+        try {
+            // Update with workflow parameters
+            List<WorkflowParameter> workflowParams = Arrays.asList(
+                    WorkflowParameter.newBuilder()
+                            .name("VideoInsightEnable")
+                            .value("true")
+                            .build()
+            );
+
+            UpdateDatasetResult updateResult = client.updateDataset(
+                    UpdateDatasetRequest.newBuilder()
+                            .bucket(testBucketName)
+                            .datasetName(dsName)
+                            .workflowParameters(workflowParams)
+                            .build());
+
+            Assert.assertNotNull(updateResult);
+            Assert.assertEquals(200, updateResult.statusCode());
+
+            // Verify update by getting the dataset
+            GetDatasetResult getResult = client.getDataset(
+                    GetDatasetRequest.newBuilder()
+                            .bucket(testBucketName)
+                            .datasetName(dsName)
+                            .build());
+
+            Assert.assertNotNull(getResult);
+            Assert.assertEquals(200, getResult.statusCode());
+
+            List<WorkflowParameter> returnedParams = getResult.dataset().workflowParameters();
+            Assert.assertNotNull("WorkflowParameters should be returned after update", returnedParams);
+            Assert.assertEquals(1, returnedParams.size());
+            assertThat(returnedParams.get(0).name()).isEqualTo("VideoInsightEnable");
+            assertThat(returnedParams.get(0).value()).isEqualTo("true");
         } finally {
             try {
                 client.deleteDataset(DeleteDatasetRequest.newBuilder()
