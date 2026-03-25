@@ -98,6 +98,11 @@ public final class CreateDatasetRequest extends RequestModel {
             return this;
         }
 
+        public Builder datasetConfig(String value) {
+            this.parameters.put("datasetConfig", value);
+            return this;
+        }
+
         public CreateDatasetRequest build() {
             return new CreateDatasetRequest(this);
         }

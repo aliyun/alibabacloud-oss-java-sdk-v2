@@ -120,8 +120,18 @@ public final class SimpleQueryRequest extends RequestModel {
             return this;
         }
 
+        public Builder aggregations(String value) {
+            this.parameters.put("aggregations", value);
+            return this;
+        }
+
         public Builder withFields(List<String> value) {
             this.parameters.put("withFields", DataProcessParamHelper.toStringList(value));
+            return this;
+        }
+
+        public Builder withFields(String value) {
+            this.parameters.put("withFields", value);
             return this;
         }
 
