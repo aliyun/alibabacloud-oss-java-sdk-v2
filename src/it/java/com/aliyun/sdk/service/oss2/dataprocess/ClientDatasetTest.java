@@ -294,9 +294,10 @@ public class ClientDatasetTest extends TestBaseDataProcess {
             Assert.assertNotNull(getResult);
             Assert.assertEquals(200, getResult.statusCode());
             Assert.assertNotNull(getResult.dataset());
+            Assert.assertNotNull("WorkflowParameters should be returned", getResult.dataset().workflowParameters());
 
-            List<WorkflowParameter> returnedParams = getResult.dataset().workflowParameters();
-            Assert.assertNotNull("WorkflowParameters should be returned", returnedParams);
+            List<WorkflowParameter> returnedParams = getResult.dataset().workflowParameters().workflowParameters();
+            Assert.assertNotNull("WorkflowParameter list should be returned", returnedParams);
             Assert.assertEquals(1, returnedParams.size());
             assertThat(returnedParams.get(0).name()).isEqualTo("VideoInsightEnable");
             assertThat(returnedParams.get(0).value()).isEqualTo("true");
@@ -354,9 +355,10 @@ public class ClientDatasetTest extends TestBaseDataProcess {
 
             Assert.assertNotNull(getResult);
             Assert.assertEquals(200, getResult.statusCode());
+            Assert.assertNotNull("WorkflowParameters should be returned after update", getResult.dataset().workflowParameters());
 
-            List<WorkflowParameter> returnedParams = getResult.dataset().workflowParameters();
-            Assert.assertNotNull("WorkflowParameters should be returned after update", returnedParams);
+            List<WorkflowParameter> returnedParams = getResult.dataset().workflowParameters().workflowParameters();
+            Assert.assertNotNull("WorkflowParameter list should be returned after update", returnedParams);
             Assert.assertEquals(1, returnedParams.size());
             assertThat(returnedParams.get(0).name()).isEqualTo("VideoInsightEnable");
             assertThat(returnedParams.get(0).value()).isEqualTo("true");
