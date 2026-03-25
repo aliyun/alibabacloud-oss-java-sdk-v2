@@ -17,6 +17,7 @@ public class TestBaseDataProcess extends TestBase {
     public static String OSS_TEST_DATAPROCESS_ENDPOINT = null;
 
     private static OSSDataProcessClient dataProcessClient;
+    private static OSSDataProcessAsyncClient dataProcessAsyncClient;
     protected static String testBucketName;
     protected static String testDatasetName;
 
@@ -41,6 +42,7 @@ public class TestBaseDataProcess extends TestBase {
                     "Please set it to a bucket that has DataProcess/IMM service enabled.");
         }
         dataProcessClient = createDataProcessClient();
+        dataProcessAsyncClient = createDataProcessAsyncClient();
         testDatasetName = genDatasetName();
     }
 
@@ -74,5 +76,18 @@ public class TestBaseDataProcess extends TestBase {
 
     protected static OSSDataProcessClient getDataProcessClient() {
         return dataProcessClient;
+    }
+
+    protected static OSSDataProcessAsyncClient createDataProcessAsyncClient() {
+        CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
+        return OSSDataProcessAsyncClient.newBuilder()
+                .region(region())
+                .endpoint(dataProcessEndpoint())
+                .credentialsProvider(provider)
+                .build();
+    }
+
+    protected static OSSDataProcessAsyncClient getDataProcessAsyncClient() {
+        return dataProcessAsyncClient;
     }
 }
