@@ -30,7 +30,7 @@ public final class Label {
     @JacksonXmlProperty(localName = "LabelAlias")
     private String labelAlias;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "Clips")
     @JacksonXmlProperty(localName = "Clip")
     private List<Clip> clips;
 

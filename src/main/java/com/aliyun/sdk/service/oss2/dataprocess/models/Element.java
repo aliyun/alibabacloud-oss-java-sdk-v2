@@ -9,7 +9,7 @@ import java.util.List;
 @JacksonXmlRootElement(localName = "Element")
 public final class Element {
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "ElementContents")
     @JacksonXmlProperty(localName = "ElementContent")
     private List<ElementContent> elementContents;
 
@@ -22,7 +22,7 @@ public final class Element {
     @JacksonXmlProperty(localName = "SemanticSimilarity")
     private Float semanticSimilarity;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "ElementRelations")
     @JacksonXmlProperty(localName = "ElementRelation")
     private List<ElementRelation> elementRelations;
 
