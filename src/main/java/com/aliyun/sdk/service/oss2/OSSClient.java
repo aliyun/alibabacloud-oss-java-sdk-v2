@@ -3153,4 +3153,147 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // Object Worm API
+
+    /**
+     * Sets the retention policy for an object.
+     *
+     * @param request A {@link PutObjectRetentionRequest} for PutObjectRetention operation.
+     * @return A {@link PutObjectRetentionResult} for PutObjectRetention operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutObjectRetentionResult putObjectRetention(PutObjectRetentionRequest request) {
+        return putObjectRetention(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Sets the retention policy for an object.
+     *
+     * @param request A {@link PutObjectRetentionRequest} for PutObjectRetention operation.
+     * @param options The operation options.
+     * @return A {@link PutObjectRetentionResult} for PutObjectRetention operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutObjectRetentionResult putObjectRetention(PutObjectRetentionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the retention policy for an object.
+     *
+     * @param request A {@link GetObjectRetentionRequest} for GetObjectRetention operation.
+     * @return A {@link GetObjectRetentionResult} for GetObjectRetention operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetObjectRetentionResult getObjectRetention(GetObjectRetentionRequest request) {
+        return getObjectRetention(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the retention policy for an object.
+     *
+     * @param request A {@link GetObjectRetentionRequest} for GetObjectRetention operation.
+     * @param options The operation options.
+     * @return A {@link GetObjectRetentionResult} for GetObjectRetention operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetObjectRetentionResult getObjectRetention(GetObjectRetentionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Sets the legal hold status for an object.
+     *
+     * @param request A {@link PutObjectLegalHoldRequest} for PutObjectLegalHold operation.
+     * @return A {@link PutObjectLegalHoldResult} for PutObjectLegalHold operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutObjectLegalHoldResult putObjectLegalHold(PutObjectLegalHoldRequest request) {
+        return putObjectLegalHold(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Sets the legal hold status for an object.
+     *
+     * @param request A {@link PutObjectLegalHoldRequest} for PutObjectLegalHold operation.
+     * @param options The operation options.
+     * @return A {@link PutObjectLegalHoldResult} for PutObjectLegalHold operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutObjectLegalHoldResult putObjectLegalHold(PutObjectLegalHoldRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the legal hold status for an object.
+     *
+     * @param request A {@link GetObjectLegalHoldRequest} for GetObjectLegalHold operation.
+     * @return A {@link GetObjectLegalHoldResult} for GetObjectLegalHold operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetObjectLegalHoldResult getObjectLegalHold(GetObjectLegalHoldRequest request) {
+        return getObjectLegalHold(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the legal hold status for an object.
+     *
+     * @param request A {@link GetObjectLegalHoldRequest} for GetObjectLegalHold operation.
+     * @param options The operation options.
+     * @return A {@link GetObjectLegalHoldResult} for GetObjectLegalHold operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetObjectLegalHoldResult getObjectLegalHold(GetObjectLegalHoldRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    // Bucket Object Worm Configuration API
+
+    /**
+     * Enables object retention on the bucket and configures a retention policy.
+     *
+     * @param request A {@link PutBucketObjectWormConfigurationRequest} for PutBucketObjectWormConfiguration operation.
+     * @return A {@link PutBucketObjectWormConfigurationResult} for PutBucketObjectWormConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketObjectWormConfigurationResult putBucketObjectWormConfiguration(PutBucketObjectWormConfigurationRequest request) {
+        return putBucketObjectWormConfiguration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables object retention on the bucket and configures a retention policy.
+     *
+     * @param request A {@link PutBucketObjectWormConfigurationRequest} for PutBucketObjectWormConfiguration operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketObjectWormConfigurationResult} for PutBucketObjectWormConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketObjectWormConfigurationResult putBucketObjectWormConfiguration(PutBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the object-level retention policy configuration of a bucket.
+     *
+     * @param request A {@link GetBucketObjectWormConfigurationRequest} for GetBucketObjectWormConfiguration operation.
+     * @return A {@link GetBucketObjectWormConfigurationResult} for GetBucketObjectWormConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketObjectWormConfigurationResult getBucketObjectWormConfiguration(GetBucketObjectWormConfigurationRequest request) {
+        return getBucketObjectWormConfiguration(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the object-level retention policy configuration of a bucket.
+     *
+     * @param request A {@link GetBucketObjectWormConfigurationRequest} for GetBucketObjectWormConfiguration operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketObjectWormConfigurationResult} for GetBucketObjectWormConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketObjectWormConfigurationResult getBucketObjectWormConfiguration(GetBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }

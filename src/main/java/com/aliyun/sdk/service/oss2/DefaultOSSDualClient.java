@@ -1247,4 +1247,65 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
         return BucketWorm.getBucketWormAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutObjectRetentionResult putObjectRetention(PutObjectRetentionRequest request, OperationOptions options) {
+        return ObjectWorm.putObjectRetention(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutObjectRetentionResult> putObjectRetentionAsync(PutObjectRetentionRequest request, OperationOptions options) {
+        return ObjectWorm.putObjectRetentionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetObjectRetentionResult getObjectRetention(GetObjectRetentionRequest request, OperationOptions options) {
+        return ObjectWorm.getObjectRetention(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetObjectRetentionResult> getObjectRetentionAsync(GetObjectRetentionRequest request, OperationOptions options) {
+        return ObjectWorm.getObjectRetentionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutObjectLegalHoldResult putObjectLegalHold(PutObjectLegalHoldRequest request, OperationOptions options) {
+        return ObjectWorm.putObjectLegalHold(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutObjectLegalHoldResult> putObjectLegalHoldAsync(PutObjectLegalHoldRequest request, OperationOptions options) {
+        return ObjectWorm.putObjectLegalHoldAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetObjectLegalHoldResult getObjectLegalHold(GetObjectLegalHoldRequest request, OperationOptions options) {
+        return ObjectWorm.getObjectLegalHold(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetObjectLegalHoldResult> getObjectLegalHoldAsync(GetObjectLegalHoldRequest request, OperationOptions options) {
+        return ObjectWorm.getObjectLegalHoldAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutBucketObjectWormConfigurationResult putBucketObjectWormConfiguration(PutBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        return BucketObjectWormConfiguration.putBucketObjectWormConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketObjectWormConfigurationResult> putBucketObjectWormConfigurationAsync(PutBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        return BucketObjectWormConfiguration.putBucketObjectWormConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketObjectWormConfigurationResult getBucketObjectWormConfiguration(GetBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        return BucketObjectWormConfiguration.getBucketObjectWormConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketObjectWormConfigurationResult> getBucketObjectWormConfigurationAsync(GetBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        return BucketObjectWormConfiguration.getBucketObjectWormConfigurationAsync(this.clientImpl, request, options);
+    }
+
 }

@@ -620,4 +620,35 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
         return BucketWorm.getBucketWormAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<PutObjectRetentionResult> putObjectRetentionAsync(PutObjectRetentionRequest request, OperationOptions options) {
+        return ObjectWorm.putObjectRetentionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetObjectRetentionResult> getObjectRetentionAsync(GetObjectRetentionRequest request, OperationOptions options) {
+        return ObjectWorm.getObjectRetentionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutObjectLegalHoldResult> putObjectLegalHoldAsync(PutObjectLegalHoldRequest request, OperationOptions options) {
+        return ObjectWorm.putObjectLegalHoldAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetObjectLegalHoldResult> getObjectLegalHoldAsync(GetObjectLegalHoldRequest request, OperationOptions options) {
+        return ObjectWorm.getObjectLegalHoldAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketObjectWormConfigurationResult> putBucketObjectWormConfigurationAsync(PutBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        return BucketObjectWormConfiguration.putBucketObjectWormConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketObjectWormConfigurationResult> getBucketObjectWormConfigurationAsync(GetBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        return BucketObjectWormConfiguration.getBucketObjectWormConfigurationAsync(this.clientImpl, request, options);
+    }
+
 }
