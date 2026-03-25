@@ -1,14 +1,17 @@
 package com.aliyun.sdk.service.oss2.dataprocess.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 @JacksonXmlRootElement(localName = "Aggregation")
 public final class Aggregation {
 
+    @JsonProperty("Field")
     @JacksonXmlProperty(localName = "Field")
     private String field;
 
+    @JsonProperty("Operation")
     @JacksonXmlProperty(localName = "Operation")
     private String operation;
 

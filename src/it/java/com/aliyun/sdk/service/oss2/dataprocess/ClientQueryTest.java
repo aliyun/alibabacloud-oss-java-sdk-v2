@@ -6,266 +6,204 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Integration tests for SimpleQuery and SemanticQuery operations via OSSDataProcessClient.
  */
 public class ClientQueryTest extends TestBaseDataProcess {
 
+    private static final String QUERY_DATASET = "test-dataset";
+
     @Test
     public void testSimpleQueryBasic() {
         OSSDataProcessClient client = getDataProcessClient();
-        String dsName = genDatasetName();
 
-        // Create a dataset for querying
-        CreateDatasetResult createResult = client.createDataset(
-                CreateDatasetRequest.newBuilder()
+        SimpleQuery query = SimpleQuery.newBuilder()
+                .field("Filename")
+                .value("test-media")
+                .operation("prefix")
+                .build();
+
+        SimpleQueryResult result = client.simpleQuery(
+                SimpleQueryRequest.newBuilder()
                         .bucket(testBucketName)
-                        .datasetName(dsName)
+                        .datasetName(QUERY_DATASET)
+                        .query(query)
+                        .maxResults(10)
                         .build());
 
-        Assert.assertNotNull(createResult);
-        Assert.assertEquals(200, createResult.statusCode());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(200, result.statusCode());
 
-        try {
-            // Execute a simple query on the dataset (empty dataset, should return empty results)
-            SimpleQuery query = SimpleQuery.newBuilder()
-                    .field("Filename")
-                    .value("*")
-                    .operation("match")
-                    .build();
+        // Verify files are returned
+        Assert.assertNotNull("files should not be null", result.files());
+        Assert.assertFalse("files should not be empty", result.files().isEmpty());
 
-            SimpleQueryResult queryResult = client.simpleQuery(
-                    SimpleQueryRequest.newBuilder()
-                            .bucket(testBucketName)
-                            .datasetName(dsName)
-                            .query(query)
-                            .maxResults(10)
-                            .build());
-
-            Assert.assertNotNull(queryResult);
-            Assert.assertEquals(200, queryResult.statusCode());
-            // Empty dataset should return empty or null file list
-        } finally {
-            try {
-                client.deleteDataset(DeleteDatasetRequest.newBuilder()
-                        .bucket(testBucketName)
-                        .datasetName(dsName)
-                        .build());
-            } catch (Exception ignored) {
-            }
-        }
+        File f = result.files().get(0);
+        Assert.assertNotNull("URI should not be null", f.uri());
+        Assert.assertNotNull("Filename should not be null", f.filename());
+        Assert.assertNotNull("MediaType should not be null", f.mediaType());
+        Assert.assertNotNull("ContentType should not be null", f.contentType());
+        Assert.assertNotNull("Size should not be null", f.size());
+        Assert.assertTrue("Size should be > 0", f.size() > 0);
     }
 
     @Test
     public void testSimpleQueryWithAggregations() {
         OSSDataProcessClient client = getDataProcessClient();
-        String dsName = genDatasetName();
 
-        // Create a dataset for querying
-        CreateDatasetResult createResult = client.createDataset(
-                CreateDatasetRequest.newBuilder()
+        SimpleQuery query = SimpleQuery.newBuilder()
+                .field("Filename")
+                .value("test-media")
+                .operation("prefix")
+                .build();
+
+        Aggregation aggregation = Aggregation.newBuilder()
+                .field("Size")
+                .operation("sum")
+                .build();
+
+        SimpleQueryResult result = client.simpleQuery(
+                SimpleQueryRequest.newBuilder()
                         .bucket(testBucketName)
-                        .datasetName(dsName)
+                        .datasetName(QUERY_DATASET)
+                        .query(query)
+                        .aggregations(Collections.singletonList(aggregation))
+                        .maxResults(10)
                         .build());
 
-        Assert.assertNotNull(createResult);
-        Assert.assertEquals(200, createResult.statusCode());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(200, result.statusCode());
 
-        try {
-            SimpleQuery query = SimpleQuery.newBuilder()
-                    .field("Filename")
-                    .value("*")
-                    .operation("match")
-                    .build();
+        // Verify aggregations
+        Assert.assertNotNull("aggregations should not be null", result.aggregations());
+        Assert.assertFalse("aggregations should not be empty", result.aggregations().isEmpty());
 
-            Aggregation aggregation = Aggregation.newBuilder()
-                    .field("Size")
-                    .operation("sum")
-                    .build();
-
-            SimpleQueryResult queryResult = client.simpleQuery(
-                    SimpleQueryRequest.newBuilder()
-                            .bucket(testBucketName)
-                            .datasetName(dsName)
-                            .query(query)
-                            .aggregations(Collections.singletonList(aggregation))
-                            .maxResults(10)
-                            .build());
-
-            Assert.assertNotNull(queryResult);
-            Assert.assertEquals(200, queryResult.statusCode());
-        } finally {
-            try {
-                client.deleteDataset(DeleteDatasetRequest.newBuilder()
-                        .bucket(testBucketName)
-                        .datasetName(dsName)
-                        .build());
-            } catch (Exception ignored) {
-            }
-        }
+        AggregationInfo agg = result.aggregations().get(0);
+        Assert.assertEquals("Size", agg.field());
+        Assert.assertEquals("sum", agg.operation());
+        Assert.assertNotNull("aggregation value should not be null", agg.value());
     }
 
     @Test
     public void testSimpleQueryWithSortAndOrder() {
         OSSDataProcessClient client = getDataProcessClient();
-        String dsName = genDatasetName();
 
-        CreateDatasetResult createResult = client.createDataset(
-                CreateDatasetRequest.newBuilder()
+        SimpleQuery query = SimpleQuery.newBuilder()
+                .field("Filename")
+                .value("test-media")
+                .operation("prefix")
+                .build();
+
+        SimpleQueryResult result = client.simpleQuery(
+                SimpleQueryRequest.newBuilder()
                         .bucket(testBucketName)
-                        .datasetName(dsName)
+                        .datasetName(QUERY_DATASET)
+                        .query(query)
+                        .sort("Filename")
+                        .order("asc")
+                        .maxResults(10)
+                        .withoutTotalHits(false)
                         .build());
 
-        Assert.assertNotNull(createResult);
-        Assert.assertEquals(200, createResult.statusCode());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(200, result.statusCode());
 
-        try {
-            SimpleQuery query = SimpleQuery.newBuilder()
-                    .field("Filename")
-                    .value("*")
-                    .operation("match")
-                    .build();
+        Assert.assertNotNull("files should not be null", result.files());
+        Assert.assertFalse("files should not be empty", result.files().isEmpty());
 
-            SimpleQueryResult queryResult = client.simpleQuery(
-                    SimpleQueryRequest.newBuilder()
-                            .bucket(testBucketName)
-                            .datasetName(dsName)
-                            .query(query)
-                            .sort("Filename")
-                            .order("asc")
-                            .maxResults(5)
-                            .withoutTotalHits(false)
-                            .build());
-
-            Assert.assertNotNull(queryResult);
-            Assert.assertEquals(200, queryResult.statusCode());
-        } finally {
-            try {
-                client.deleteDataset(DeleteDatasetRequest.newBuilder()
-                        .bucket(testBucketName)
-                        .datasetName(dsName)
-                        .build());
-            } catch (Exception ignored) {
-            }
+        // Verify sorted by Filename ascending
+        java.util.List<File> files = result.files();
+        for (int i = 1; i < files.size(); i++) {
+            String prev = files.get(i - 1).filename();
+            String curr = files.get(i).filename();
+            Assert.assertTrue("files should be sorted by Filename asc: " + prev + " <= " + curr,
+                    prev.compareTo(curr) <= 0);
         }
     }
 
     @Test
     public void testSimpleQueryWithFields() {
         OSSDataProcessClient client = getDataProcessClient();
-        String dsName = genDatasetName();
 
-        CreateDatasetResult createResult = client.createDataset(
-                CreateDatasetRequest.newBuilder()
+        SimpleQuery query = SimpleQuery.newBuilder()
+                .field("Filename")
+                .value("test-media")
+                .operation("prefix")
+                .build();
+
+        SimpleQueryResult result = client.simpleQuery(
+                SimpleQueryRequest.newBuilder()
                         .bucket(testBucketName)
-                        .datasetName(dsName)
+                        .datasetName(QUERY_DATASET)
+                        .query(query)
+                        .withFields(Arrays.asList("Filename", "Size", "ContentType"))
+                        .maxResults(10)
                         .build());
 
-        Assert.assertNotNull(createResult);
-        Assert.assertEquals(200, createResult.statusCode());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(200, result.statusCode());
 
-        try {
-            SimpleQuery query = SimpleQuery.newBuilder()
-                    .field("Filename")
-                    .value("*")
-                    .operation("match")
-                    .build();
+        Assert.assertNotNull("files should not be null", result.files());
+        Assert.assertFalse("files should not be empty", result.files().isEmpty());
 
-            SimpleQueryResult queryResult = client.simpleQuery(
-                    SimpleQueryRequest.newBuilder()
-                            .bucket(testBucketName)
-                            .datasetName(dsName)
-                            .query(query)
-                            .withFields(Arrays.asList("Filename", "Size", "ContentType"))
-                            .maxResults(10)
-                            .build());
-
-            Assert.assertNotNull(queryResult);
-            Assert.assertEquals(200, queryResult.statusCode());
-        } finally {
-            try {
-                client.deleteDataset(DeleteDatasetRequest.newBuilder()
-                        .bucket(testBucketName)
-                        .datasetName(dsName)
-                        .build());
-            } catch (Exception ignored) {
-            }
-        }
+        // Verify requested fields are populated
+        File f = result.files().get(0);
+        Assert.assertNotNull("Filename should not be null", f.filename());
+        Assert.assertNotNull("Size should not be null", f.size());
+        Assert.assertNotNull("ContentType should not be null", f.contentType());
     }
 
     @Test
     public void testSemanticQueryBasic() {
         OSSDataProcessClient client = getDataProcessClient();
-        String dsName = genDatasetName();
 
-        // Create a dataset for querying
-        CreateDatasetResult createResult = client.createDataset(
-                CreateDatasetRequest.newBuilder()
+        SemanticQueryResult result = client.semanticQuery(
+                SemanticQueryRequest.newBuilder()
                         .bucket(testBucketName)
-                        .datasetName(dsName)
+                        .datasetName(QUERY_DATASET)
+                        .query("雪景")
+                        .maxResults(10)
                         .build());
 
-        Assert.assertNotNull(createResult);
-        Assert.assertEquals(200, createResult.statusCode());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(200, result.statusCode());
 
-        try {
-            SemanticQueryResult queryResult = client.semanticQuery(
-                    SemanticQueryRequest.newBuilder()
-                            .bucket(testBucketName)
-                            .datasetName(dsName)
-                            .query("find all images")
-                            .maxResults(10)
-                            .build());
+        Assert.assertNotNull("files should not be null", result.files());
+        Assert.assertFalse("files should not be empty", result.files().isEmpty());
 
-            Assert.assertNotNull(queryResult);
-            Assert.assertEquals(200, queryResult.statusCode());
-        } finally {
-            try {
-                client.deleteDataset(DeleteDatasetRequest.newBuilder()
-                        .bucket(testBucketName)
-                        .datasetName(dsName)
-                        .build());
-            } catch (Exception ignored) {
-            }
-        }
+        File f = result.files().get(0);
+        Assert.assertNotNull("URI should not be null", f.uri());
+        Assert.assertNotNull("Filename should not be null", f.filename());
+        Assert.assertNotNull("MediaType should not be null", f.mediaType());
+        Assert.assertNotNull("Size should not be null", f.size());
     }
 
     @Test
     public void testSemanticQueryWithMediaTypes() {
         OSSDataProcessClient client = getDataProcessClient();
-        String dsName = genDatasetName();
 
-        CreateDatasetResult createResult = client.createDataset(
-                CreateDatasetRequest.newBuilder()
+        SemanticQueryResult result = client.semanticQuery(
+                SemanticQueryRequest.newBuilder()
                         .bucket(testBucketName)
-                        .datasetName(dsName)
+                        .datasetName(QUERY_DATASET)
+                        .query("雪景")
+                        .mediaTypes(Arrays.asList("image"))
+                        .withFields(Arrays.asList("Filename", "Size", "MediaType"))
+                        .maxResults(10)
                         .build());
 
-        Assert.assertNotNull(createResult);
-        Assert.assertEquals(200, createResult.statusCode());
+        Assert.assertNotNull(result);
+        Assert.assertEquals(200, result.statusCode());
 
-        try {
-            SemanticQueryResult queryResult = client.semanticQuery(
-                    SemanticQueryRequest.newBuilder()
-                            .bucket(testBucketName)
-                            .datasetName(dsName)
-                            .query("find all photos")
-                            .mediaTypes(Arrays.asList("image"))
-                            .withFields(Arrays.asList("Filename", "Size"))
-                            .maxResults(10)
-                            .build());
+        Assert.assertNotNull("files should not be null", result.files());
+        Assert.assertFalse("files should not be empty", result.files().isEmpty());
 
-            Assert.assertNotNull(queryResult);
-            Assert.assertEquals(200, queryResult.statusCode());
-        } finally {
-            try {
-                client.deleteDataset(DeleteDatasetRequest.newBuilder()
-                        .bucket(testBucketName)
-                        .datasetName(dsName)
-                        .build());
-            } catch (Exception ignored) {
-            }
+        // Verify all returned files are images
+        for (File f : result.files()) {
+            Assert.assertEquals("MediaType should be image", "image", f.mediaType());
         }
     }
+
 }

@@ -18,7 +18,7 @@ public final class AggregationInfo {
     @JacksonXmlProperty(localName = "Value")
     private Double value;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "Groups")
     @JacksonXmlProperty(localName = "AggregationGroup")
     private List<AggregationGroup> groups;
 

@@ -11,7 +11,7 @@ import java.util.List;
  */
 @JacksonXmlRootElement(localName = "SemanticQueryResult")
 public final class SemanticQueryResponseBody {
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "Files")
     @JacksonXmlProperty(localName = "File")
     private List<File> files;
 
