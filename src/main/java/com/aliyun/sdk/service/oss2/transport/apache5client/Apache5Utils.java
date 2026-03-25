@@ -27,4 +27,14 @@ public class Apache5Utils {
         }
         return false;
     }
+
+    public static boolean hasTlsSocketStrategy() {
+        try {
+            Class.forName("org.apache.hc.client5.http.ssl.TlsSocketStrategy");
+            return true;
+        } catch (ClassNotFoundException e) {
+            // TODO
+        }
+        return false;
+    }
 }

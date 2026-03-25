@@ -72,7 +72,9 @@ public class Apache5AsyncHttpClientBuilder {
 
     private static Timeout millistoTimeout(final long value) {
         if (value < 0) {
-            return Timeout.INFINITE;
+            // public static final Timeout INFINITE = ZERO_MILLISECONDS;
+            // 5.3 java.lang.NoSuchFieldError: INFINITE
+            return Timeout.ofMilliseconds(0);
         }
         return Timeout.ofMilliseconds(value);
     }
