@@ -71,7 +71,6 @@ public class ClientDatasetTest extends TestBaseDataProcess {
                             .bucket(testBucketName)
                             .datasetName(dsName)
                             .description("updated description 1")
-                            .datasetMaxFileCount(200L)
                             .build());
 
             Assert.assertNotNull(updateResult);
