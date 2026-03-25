@@ -14,12 +14,12 @@ public final class SimpleQueryResponseBody {
     @JacksonXmlProperty(localName = "NextToken")
     private String nextToken;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "Files")
     @JacksonXmlProperty(localName = "File")
     private List<File> files;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "AggregationInfo")
+    @JacksonXmlElementWrapper(localName = "Aggregations")
+    @JacksonXmlProperty(localName = "Aggregation")
     private List<AggregationInfo> aggregations;
 
     @JacksonXmlProperty(localName = "TotalHits")
