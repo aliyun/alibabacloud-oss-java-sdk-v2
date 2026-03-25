@@ -102,8 +102,18 @@ public final class SemanticQueryRequest extends RequestModel {
             return this;
         }
 
+        public Builder withFields(String value) {
+            this.parameters.put("withFields", value);
+            return this;
+        }
+
         public Builder mediaTypes(List<String> value) {
             this.parameters.put("mediaTypes", DataProcessParamHelper.toStringList(value));
+            return this;
+        }
+
+        public Builder mediaTypes(String value) {
+            this.parameters.put("mediaTypes", value);
             return this;
         }
 
