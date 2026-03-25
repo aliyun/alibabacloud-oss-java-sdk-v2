@@ -306,11 +306,17 @@ public class Apache5HttpClientBuilder {
                 hostnameVerifier = new DefaultHostnameVerifier();
             }
 
-            tlsStrategy = ClientTlsStrategyBuilder
+            ClientTlsStrategyBuilder strategyBuilder =ClientTlsStrategyBuilder
                     .create()
                     .setSslContext(sslContext)
-                    .setHostnameVerifier(hostnameVerifier)
-                    .buildClassic();
+                    .setHostnameVerifier(hostnameVerifier);
+
+            if (Apache5Utils.hasBuildClassicMethod()) {
+                tlsStrategy = strategyBuilder.buildClassic();
+            } else {
+                tlsStrategy = (TlsSocketStrategy)strategyBuilder.build();
+            }
+
         } catch (Exception e) {
             throw new RuntimeException("SSLContext fail", e);
         }

@@ -289,11 +289,16 @@ public class Apache5AsyncHttpClientBuilder {
                 hostnameVerifier = new DefaultHostnameVerifier();
             }
 
-            tlsStrategy = ClientTlsStrategyBuilder
+            ClientTlsStrategyBuilder strategyBuilder =  ClientTlsStrategyBuilder
                     .create()
                     .setSslContext(sslContext)
-                    .setHostnameVerifier(hostnameVerifier)
-                    .buildAsync();
+                    .setHostnameVerifier(hostnameVerifier);
+
+            if (Apache5Utils.hasBuildAsyncMethod()) {
+                tlsStrategy = strategyBuilder.buildAsync();
+            } else {
+                tlsStrategy = strategyBuilder.build();
+            }
 
         } catch (Exception e) {
             throw new RuntimeException("SSLContext fail", e);
