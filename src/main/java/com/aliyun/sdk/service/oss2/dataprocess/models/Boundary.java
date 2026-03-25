@@ -21,8 +21,8 @@ public final class Boundary {
     @JacksonXmlProperty(localName = "Top")
     private Long top;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "Polygon")
+    @JacksonXmlElementWrapper(localName = "Polygon")
+    @JacksonXmlProperty(localName = "PointInt64")
     private List<PointInt64> polygon;
 
     public Boundary() {

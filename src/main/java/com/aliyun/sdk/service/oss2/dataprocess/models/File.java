@@ -67,7 +67,7 @@ public final class File {
     @JacksonXmlProperty(localName = "Timezone")
     private String timezone;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "Addresses")
     @JacksonXmlProperty(localName = "Address")
     private List<Address> addresses;
 
@@ -77,14 +77,14 @@ public final class File {
     @JacksonXmlProperty(localName = "Orientation")
     private Long orientation;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "Figures")
     @JacksonXmlProperty(localName = "Figure")
     private List<Figure> figures;
 
     @JacksonXmlProperty(localName = "FigureCount")
     private Long figureCount;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "Labels")
     @JacksonXmlProperty(localName = "Label")
     private List<Label> labels;
 
@@ -103,11 +103,11 @@ public final class File {
     @JacksonXmlProperty(localName = "ImageScore")
     private ImageScore imageScore;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "CroppingSuggestions")
     @JacksonXmlProperty(localName = "CroppingSuggestion")
     private List<CroppingSuggestion> croppingSuggestions;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "OCRContents")
     @JacksonXmlProperty(localName = "OCRContents")
     private List<OCRContents> ocrContents;
 
@@ -117,15 +117,15 @@ public final class File {
     @JacksonXmlProperty(localName = "VideoHeight")
     private Long videoHeight;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "VideoStreams")
     @JacksonXmlProperty(localName = "VideoStream")
     private List<VideoStream> videoStreams;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "Subtitles")
     @JacksonXmlProperty(localName = "Subtitle")
     private List<SubtitleStream> subtitles;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "AudioStreams")
     @JacksonXmlProperty(localName = "AudioStream")
     private List<AudioStream> audioStreams;
 
@@ -135,7 +135,7 @@ public final class File {
     @JacksonXmlProperty(localName = "AlbumArtist")
     private String albumArtist;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "AudioCovers")
     @JacksonXmlProperty(localName = "AudioCover")
     private List<Image> audioCovers;
 
@@ -247,15 +247,15 @@ public final class File {
     @JacksonXmlProperty(localName = "Duration")
     private Double duration;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "SemanticTypes")
     @JacksonXmlProperty(localName = "SemanticType")
     private List<String> semanticTypes;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "Elements")
     @JacksonXmlProperty(localName = "Element")
     private List<Element> elements;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "SceneElements")
     @JacksonXmlProperty(localName = "SceneElement")
     private List<SceneElement> sceneElements;
 

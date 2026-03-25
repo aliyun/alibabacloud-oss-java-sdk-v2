@@ -47,6 +47,18 @@ public class ClientQueryTest extends TestBaseDataProcess {
         Assert.assertNotNull("ContentType should not be null", f.contentType());
         Assert.assertNotNull("Size should not be null", f.size());
         Assert.assertTrue("Size should be > 0", f.size() > 0);
+
+        // Verify labels parsing (wrapper: Labels -> Label)
+        boolean anyFileHasLabels = false;
+        for (File file : result.files()) {
+            if (file.labels() != null && !file.labels().isEmpty()) {
+                anyFileHasLabels = true;
+                Label label = file.labels().get(0);
+                Assert.assertNotNull("Label.labelName should not be null", label.labelName());
+                break;
+            }
+        }
+        Assert.assertTrue("At least one file should have labels", anyFileHasLabels);
     }
 
     @Test

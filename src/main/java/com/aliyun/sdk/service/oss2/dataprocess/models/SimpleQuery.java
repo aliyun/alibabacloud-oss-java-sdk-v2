@@ -23,7 +23,7 @@ public final class SimpleQuery {
     private String operation;
 
     @JsonProperty("SubQueries")
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "SubQueries")
     @JacksonXmlProperty(localName = "SimpleQuery")
     private List<SimpleQuery> subQueries;
 

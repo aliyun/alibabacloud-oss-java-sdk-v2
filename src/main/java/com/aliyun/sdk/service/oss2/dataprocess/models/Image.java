@@ -21,11 +21,11 @@ public final class Image {
     @JacksonXmlProperty(localName = "ImageScore")
     private ImageScore imageScore;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "CroppingSuggestions")
     @JacksonXmlProperty(localName = "CroppingSuggestion")
     private List<CroppingSuggestion> croppingSuggestions;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlElementWrapper(localName = "OCRContents")
     @JacksonXmlProperty(localName = "OCRContents")
     private List<OCRContents> ocrContents;
 
