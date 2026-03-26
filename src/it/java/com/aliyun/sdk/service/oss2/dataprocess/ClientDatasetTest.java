@@ -34,6 +34,10 @@ public class ClientDatasetTest extends TestBaseDataProcess {
         Assert.assertEquals(200, createResult.statusCode());
         Assert.assertNotNull(createResult.dataset());
         assertThat(createResult.dataset().datasetName()).isEqualTo(dsName);
+        assertThat(createResult.dataset().workflowParameters().workflowParameters().size()).isEqualTo(1);
+        assertThat(createResult.dataset().workflowParameters().workflowParameters().get(0).name()).isEqualTo("ImageInsightEnable");
+        assertThat(createResult.dataset().workflowParameters().workflowParameters().get(0).value()).isEqualTo("True");
+
 
         try {
             // 2. Get dataset
