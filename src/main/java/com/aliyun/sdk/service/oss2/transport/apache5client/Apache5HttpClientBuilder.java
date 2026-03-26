@@ -78,7 +78,9 @@ public class Apache5HttpClientBuilder {
 
     private static Timeout millistoTimeout(final long value) {
         if (value < 0) {
-            return Timeout.INFINITE;
+            // public static final Timeout INFINITE = ZERO_MILLISECONDS;
+            // 5.3 java.lang.NoSuchFieldError: INFINITE
+            return Timeout.ofMilliseconds(0);
         }
         return Timeout.ofMilliseconds(value);
     }
@@ -261,58 +263,67 @@ public class Apache5HttpClientBuilder {
 
     private PoolingHttpClientConnectionManager createHttpClientConnectionManager() {
         // Tls Strategy
-        TlsSocketStrategy tlsStrategy = null;
+        //TlsSocketStrategy tlsStrategy = null;
+        Object tlsStrategy = null;
 
-        try {
-            List<TrustManager> trustManagerList = new ArrayList<>();
-            X509TrustManager[] trustManagers = this.x509TrustManagers;
+        if (Apache5Utils.hasTlsSocketStrategy()) {
+            try {
+                List<TrustManager> trustManagerList = new ArrayList<>();
+                X509TrustManager[] trustManagers = this.x509TrustManagers;
 
-            if (null != trustManagers) {
-                trustManagerList.addAll(Arrays.asList(trustManagers));
-            }
-
-            // get trustManager using default certification from jdk
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            if (this.keyStore != null) {
-                tmf.init(this.keyStore);
-            } else {
-                tmf.init((KeyStore) null);
-            }
-            trustManagerList.addAll(Arrays.asList(tmf.getTrustManagers()));
-
-            final List<X509TrustManager> finalTrustManagerList = new ArrayList<X509TrustManager>();
-            for (TrustManager tm : trustManagerList) {
-                if (tm instanceof X509TrustManager) {
-                    finalTrustManagerList.add((X509TrustManager) tm);
+                if (null != trustManagers) {
+                    trustManagerList.addAll(Arrays.asList(trustManagers));
                 }
-            }
-            boolean isVerifySSLEnable = !this.options.insecureSkipVerify();
-            CompositeX509TrustManager compositeX509TrustManager = new CompositeX509TrustManager(finalTrustManagerList);
-            compositeX509TrustManager.setVerifySSL(isVerifySSLEnable);
-            KeyManager[] keyManagers = null;
-            if (this.keyManagers != null) {
-                keyManagers = this.keyManagers;
-            }
 
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagers, new TrustManager[]{compositeX509TrustManager}, this.secureRandom);
+                // get trustManager using default certification from jdk
+                TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                if (this.keyStore != null) {
+                    tmf.init(this.keyStore);
+                } else {
+                    tmf.init((KeyStore) null);
+                }
+                trustManagerList.addAll(Arrays.asList(tmf.getTrustManagers()));
 
-            HostnameVerifier hostnameVerifier = null;
-            if (!isVerifySSLEnable) {
-                hostnameVerifier = new NoopHostnameVerifier();
-            } else if (this.hostnameVerifier != null) {
-                hostnameVerifier = this.hostnameVerifier;
-            } else {
-                hostnameVerifier = new DefaultHostnameVerifier();
+                final List<X509TrustManager> finalTrustManagerList = new ArrayList<X509TrustManager>();
+                for (TrustManager tm : trustManagerList) {
+                    if (tm instanceof X509TrustManager) {
+                        finalTrustManagerList.add((X509TrustManager) tm);
+                    }
+                }
+                boolean isVerifySSLEnable = !this.options.insecureSkipVerify();
+                CompositeX509TrustManager compositeX509TrustManager = new CompositeX509TrustManager(finalTrustManagerList);
+                compositeX509TrustManager.setVerifySSL(isVerifySSLEnable);
+                KeyManager[] keyManagers = null;
+                if (this.keyManagers != null) {
+                    keyManagers = this.keyManagers;
+                }
+
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(keyManagers, new TrustManager[]{compositeX509TrustManager}, this.secureRandom);
+
+                HostnameVerifier hostnameVerifier = null;
+                if (!isVerifySSLEnable) {
+                    hostnameVerifier = new NoopHostnameVerifier();
+                } else if (this.hostnameVerifier != null) {
+                    hostnameVerifier = this.hostnameVerifier;
+                } else {
+                    hostnameVerifier = new DefaultHostnameVerifier();
+                }
+
+                ClientTlsStrategyBuilder strategyBuilder =ClientTlsStrategyBuilder
+                        .create()
+                        .setSslContext(sslContext)
+                        .setHostnameVerifier(hostnameVerifier);
+
+                if (Apache5Utils.hasBuildClassicMethod()) {
+                    tlsStrategy = strategyBuilder.buildClassic();
+                } else {
+                    tlsStrategy = (TlsSocketStrategy)strategyBuilder.build();
+                }
+
+            } catch (Exception e) {
+                throw new RuntimeException("SSLContext fail", e);
             }
-
-            tlsStrategy = ClientTlsStrategyBuilder
-                    .create()
-                    .setSslContext(sslContext)
-                    .setHostnameVerifier(hostnameVerifier)
-                    .buildClassic();
-        } catch (Exception e) {
-            throw new RuntimeException("SSLContext fail", e);
         }
 
         // ConnectionConfig
@@ -329,11 +340,14 @@ public class Apache5HttpClientBuilder {
 
         PoolingHttpClientConnectionManagerBuilder builder =
                 PoolingHttpClientConnectionManagerBuilder.create()
-                        .setTlsSocketStrategy(tlsStrategy)
                         .setDnsResolver(this.dnsResolver)
                         .setDefaultConnectionConfig(connConfig)
                         .setMaxConnPerRoute(this.maxConnections)
                         .setMaxConnTotal(this.maxConnections);
+
+        if (tlsStrategy != null) {
+            builder.setTlsSocketStrategy((TlsSocketStrategy)tlsStrategy);
+        }
 
         return builder.build();
     }

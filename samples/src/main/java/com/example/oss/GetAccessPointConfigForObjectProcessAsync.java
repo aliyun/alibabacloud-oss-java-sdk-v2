@@ -1,0 +1,72 @@
+package com.example.oss;
+
+import com.aliyun.sdk.service.oss2.OSSAsyncClient;
+import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
+import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
+import com.aliyun.sdk.service.oss2.models.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import java.util.concurrent.CompletableFuture;
+
+public class GetAccessPointConfigForObjectProcessAsync implements Example {
+
+    private static void execute(
+            String endpoint,
+            String region,
+            String bucket,
+            String accessPointForObjectProcessName) {
+
+        CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
+
+        try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
+            
+            GetAccessPointConfigForObjectProcessRequest request = GetAccessPointConfigForObjectProcessRequest.newBuilder()
+                    .bucket(bucket)
+                    .accessPointForObjectProcessName(accessPointForObjectProcessName)
+                    .build();
+
+            CompletableFuture<GetAccessPointConfigForObjectProcessResult> future = client.getAccessPointConfigForObjectProcessAsync(request);
+
+            GetAccessPointConfigForObjectProcessResult result = future.get();
+
+            System.out.printf("Get access point config for object process success:\n");
+            System.out.printf("  Status Code: %d\n", result.statusCode());
+            
+            if (result.accessPointConfigForObjectProcessResult() != null) {
+                System.out.printf("  Access Point Config Result exists\n");
+            }
+
+        } catch (Exception e) {
+            System.out.printf("Error:\n%s", e);
+        }
+    }
+
+    private static OSSAsyncClient getDefaultAsyncClient(String endpoint, String region, CredentialsProvider provider) {
+        return OSSAsyncClient.newBuilder()
+                .region(region)
+                .endpoint(endpoint)
+                .credentialsProvider(provider)
+                .build();
+    }
+
+    @Override
+    public Options getOptions() {
+        Options opts = new Options();
+        opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("accessPointForObjectProcessName").desc("The full name of the access point for object process.").hasArg().required().get());
+        return opts;
+    }
+
+    @Override
+    public void runCmd(CommandLine cmd) throws ParseException {
+        String endpoint = cmd.getParsedOptionValue("endpoint");
+        String region = cmd.getParsedOptionValue("region");
+        String bucket = cmd.getParsedOptionValue("bucket");
+        String accessPointForObjectProcessName = cmd.getParsedOptionValue("accessPointForObjectProcessName");
+        execute(endpoint, region, bucket, accessPointForObjectProcessName);
+    }
+}

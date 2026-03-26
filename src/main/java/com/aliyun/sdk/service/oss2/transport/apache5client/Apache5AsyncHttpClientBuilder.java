@@ -72,7 +72,9 @@ public class Apache5AsyncHttpClientBuilder {
 
     private static Timeout millistoTimeout(final long value) {
         if (value < 0) {
-            return Timeout.INFINITE;
+            // public static final Timeout INFINITE = ZERO_MILLISECONDS;
+            // 5.3 java.lang.NoSuchFieldError: INFINITE
+            return Timeout.ofMilliseconds(0);
         }
         return Timeout.ofMilliseconds(value);
     }
@@ -289,11 +291,16 @@ public class Apache5AsyncHttpClientBuilder {
                 hostnameVerifier = new DefaultHostnameVerifier();
             }
 
-            tlsStrategy = ClientTlsStrategyBuilder
+            ClientTlsStrategyBuilder strategyBuilder =  ClientTlsStrategyBuilder
                     .create()
                     .setSslContext(sslContext)
-                    .setHostnameVerifier(hostnameVerifier)
-                    .buildAsync();
+                    .setHostnameVerifier(hostnameVerifier);
+
+            if (Apache5Utils.hasBuildAsyncMethod()) {
+                tlsStrategy = strategyBuilder.buildAsync();
+            } else {
+                tlsStrategy = strategyBuilder.build();
+            }
 
         } catch (Exception e) {
             throw new RuntimeException("SSLContext fail", e);
