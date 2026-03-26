@@ -84,6 +84,21 @@ public interface OSSDataProcessClient extends AutoCloseable {
     default DeleteDatasetResult deleteDataset(DeleteDatasetRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Lists datasets.
+     *
+     * @param request A {@link ListDatasetsRequest} for ListDatasets operation.
+     * @return A {@link ListDatasetsResult} for ListDatasets operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListDatasetsResult listDatasets(ListDatasetsRequest request) {
+        return listDatasets(request, OperationOptions.defaults());
+    }
+
+    default ListDatasetsResult listDatasets(ListDatasetsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 
     // Query api
