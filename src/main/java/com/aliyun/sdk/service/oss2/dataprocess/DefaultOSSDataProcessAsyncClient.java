@@ -62,6 +62,11 @@ public class DefaultOSSDataProcessAsyncClient implements OSSDataProcessAsyncClie
     }
 
     @Override
+    public CompletableFuture<ListDatasetsResult> listDatasetsAsync(ListDatasetsRequest request, OperationOptions options) {
+        return DatasetBasic.listDatasetsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
     public CompletableFuture<SimpleQueryResult> simpleQueryAsync(SimpleQueryRequest request, OperationOptions options) {
         return DatasetBasic.simpleQueryAsync(this.clientImpl, request, options);
     }
