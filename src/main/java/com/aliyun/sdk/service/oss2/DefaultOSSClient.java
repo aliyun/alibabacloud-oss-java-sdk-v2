@@ -658,6 +658,36 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public PutBucketObjectWormConfigurationResult putBucketObjectWormConfiguration(PutBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        return BucketObjectWormConfiguration.putBucketObjectWormConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketObjectWormConfigurationResult getBucketObjectWormConfiguration(GetBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        return BucketObjectWormConfiguration.getBucketObjectWormConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutObjectRetentionResult putObjectRetention(PutObjectRetentionRequest request, OperationOptions options) {
+        return ObjectWorm.putObjectRetention(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetObjectRetentionResult getObjectRetention(GetObjectRetentionRequest request, OperationOptions options) {
+        return ObjectWorm.getObjectRetention(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutObjectLegalHoldResult putObjectLegalHold(PutObjectLegalHoldRequest request, OperationOptions options) {
+        return ObjectWorm.putObjectLegalHold(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetObjectLegalHoldResult getObjectLegalHold(GetObjectLegalHoldRequest request, OperationOptions options) {
+        return ObjectWorm.getObjectLegalHold(this.clientImpl, request, options);
+    }
+  
+    @Override
     public CreateAccessPointForObjectProcessResult createAccessPointForObjectProcess(CreateAccessPointForObjectProcessRequest request, OperationOptions options) {
         return BucketObjectFcAccessPoint.createAccessPointForObjectProcess(this.clientImpl, request, options);
     }

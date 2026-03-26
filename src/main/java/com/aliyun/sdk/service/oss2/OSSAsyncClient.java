@@ -3013,8 +3013,151 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<GetBucketWormResult> getBucketWormAsync(GetBucketWormRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Queries the object-level retention policy configuration of a bucket.
+     *
+     * @param request A {@link GetBucketObjectWormConfigurationRequest} for GetBucketObjectWormConfiguration operation.
+     * @return A Java Future containing the {@link GetBucketObjectWormConfigurationResult} of the GetBucketObjectWormConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketObjectWormConfigurationResult> getBucketObjectWormConfigurationAsync(GetBucketObjectWormConfigurationRequest request) {
+        return getBucketObjectWormConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the object-level retention policy configuration of a bucket.
+     *
+     * @param request A {@link GetBucketObjectWormConfigurationRequest} for GetBucketObjectWormConfiguration operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketObjectWormConfigurationResult} of the GetBucketObjectWormConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketObjectWormConfigurationResult> getBucketObjectWormConfigurationAsync(GetBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
     //-----------------------------------------------------------------------
 
+    // Object Worm API
+
+    /**
+     * Sets the retention policy for an object.
+     *
+     * @param request A {@link PutObjectRetentionRequest} for PutObjectRetention operation.
+     * @return A Java Future containing the {@link PutObjectRetentionResult} of the PutObjectRetention operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutObjectRetentionResult> putObjectRetentionAsync(PutObjectRetentionRequest request) {
+        return putObjectRetentionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Sets the retention policy for an object.
+     *
+     * @param request A {@link PutObjectRetentionRequest} for PutObjectRetention operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutObjectRetentionResult} of the PutObjectRetention operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutObjectRetentionResult> putObjectRetentionAsync(PutObjectRetentionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the retention policy for an object.
+     *
+     * @param request A {@link GetObjectRetentionRequest} for GetObjectRetention operation.
+     * @return A Java Future containing the {@link GetObjectRetentionResult} of the GetObjectRetention operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetObjectRetentionResult> getObjectRetentionAsync(GetObjectRetentionRequest request) {
+        return getObjectRetentionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the retention policy for an object.
+     *
+     * @param request A {@link GetObjectRetentionRequest} for GetObjectRetention operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetObjectRetentionResult} of the GetObjectRetention operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetObjectRetentionResult> getObjectRetentionAsync(GetObjectRetentionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+  
+    /**
+     * Sets the legal hold status for an object.
+     *
+     * @param request A {@link PutObjectLegalHoldRequest} for PutObjectLegalHold operation.
+     * @return A Java Future containing the {@link PutObjectLegalHoldResult} of the PutObjectLegalHold operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutObjectLegalHoldResult> putObjectLegalHoldAsync(PutObjectLegalHoldRequest request) {
+        return putObjectLegalHoldAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Sets the legal hold status for an object.
+     *
+     * @param request A {@link PutObjectLegalHoldRequest} for PutObjectLegalHold operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutObjectLegalHoldResult} of the PutObjectLegalHold operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutObjectLegalHoldResult> putObjectLegalHoldAsync(PutObjectLegalHoldRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the legal hold status for an object.
+     *
+     * @param request A {@link GetObjectLegalHoldRequest} for GetObjectLegalHold operation.
+     * @return A Java Future containing the {@link GetObjectLegalHoldResult} of the GetObjectLegalHold operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetObjectLegalHoldResult> getObjectLegalHoldAsync(GetObjectLegalHoldRequest request) {
+        return getObjectLegalHoldAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets the legal hold status for an object.
+     *
+     * @param request A {@link GetObjectLegalHoldRequest} for GetObjectLegalHold operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetObjectLegalHoldResult} of the GetObjectLegalHold operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetObjectLegalHoldResult> getObjectLegalHoldAsync(GetObjectLegalHoldRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    // Bucket Object Worm Configuration API
+
+    /**
+     * Enables object retention on the bucket and configures a retention policy.
+     *
+     * @param request A {@link PutBucketObjectWormConfigurationRequest} for PutBucketObjectWormConfiguration operation.
+     * @return A Java Future containing the {@link PutBucketObjectWormConfigurationResult} of the PutBucketObjectWormConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketObjectWormConfigurationResult> putBucketObjectWormConfigurationAsync(PutBucketObjectWormConfigurationRequest request) {
+        return putBucketObjectWormConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Enables object retention on the bucket and configures a retention policy.
+     *
+     * @param request A {@link PutBucketObjectWormConfigurationRequest} for PutBucketObjectWormConfiguration operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketObjectWormConfigurationResult} of the PutBucketObjectWormConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketObjectWormConfigurationResult> putBucketObjectWormConfigurationAsync(PutBucketObjectWormConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }  
+  
     // object fc accesspoint api
 
     /**
@@ -3040,6 +3183,7 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
 
+  
     /**
      * Gets an access point for object process.
      *
@@ -3062,7 +3206,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<GetAccessPointForObjectProcessResult> getAccessPointForObjectProcessAsync(GetAccessPointForObjectProcessRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+  
     /**
      * Lists access points for object process.
      *
@@ -3131,7 +3275,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<GetAccessPointConfigForObjectProcessResult> getAccessPointConfigForObjectProcessAsync(GetAccessPointConfigForObjectProcessRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+  
     /**
      * Puts the access point configuration for object process.
      *
@@ -3271,7 +3415,7 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<PutBucketRequestPaymentResult> putBucketRequestPaymentAsync(PutBucketRequestPaymentRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
-
+  
     /**
      * Gets the request payment configuration for a bucket.
      *
