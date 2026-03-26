@@ -19,6 +19,7 @@ public final class BucketObjectWormConfiguration {
     public static PutBucketObjectWormConfigurationResult putBucketObjectWormConfiguration(ClientImpl impl, PutBucketObjectWormConfigurationRequest request, OperationOptions options) {
 
         requireNonNull(request.bucket(), "request.bucket is required");
+        validateObjectWormConfiguration(request.objectWormConfiguration());
 
         OperationInput input = SerdeBucketObjectWormConfiguration.fromPutBucketObjectWormConfiguration(request);
         OperationOutput output = impl.execute(input, options);
@@ -28,6 +29,7 @@ public final class BucketObjectWormConfiguration {
     public static CompletableFuture<PutBucketObjectWormConfigurationResult> putBucketObjectWormConfigurationAsync(ClientImpl impl, PutBucketObjectWormConfigurationRequest request, OperationOptions options) {
 
         requireNonNull(request.bucket(), "request.bucket is required");
+        validateObjectWormConfiguration(request.objectWormConfiguration());
 
         OperationInput input = SerdeBucketObjectWormConfiguration.fromPutBucketObjectWormConfiguration(request);
         return impl.executeAsync(input, options).thenApply(SerdeBucketObjectWormConfiguration::toPutBucketObjectWormConfiguration);
@@ -49,5 +51,28 @@ public final class BucketObjectWormConfiguration {
 
         OperationInput input = SerdeBucketObjectWormConfiguration.fromGetBucketObjectWormConfiguration(request);
         return impl.executeAsync(input, options).thenApply(SerdeBucketObjectWormConfiguration::toGetBucketObjectWormConfiguration);
+    }
+
+    private static void validateObjectWormConfiguration(ObjectWormConfiguration config) {
+        if (config != null && config.rule() != null) {
+            ObjectWormConfigurationRule rule = config.rule();
+            if (rule.defaultRetention() != null) {
+                ObjectWormConfigurationDefaultRetention retention = rule.defaultRetention();
+                Integer days = retention.days();
+                Integer years = retention.years();
+
+                if (days == null && years == null) {
+                    throw new IllegalArgumentException("days and years cannot both be null");
+                }
+
+                if (days != null && days <= 0) {
+                    throw new IllegalArgumentException("days must be greater than 0");
+                }
+
+                if (years != null && years <= 0) {
+                    throw new IllegalArgumentException("years must be greater than 0");
+                }
+            }
+        }
     }
 }

@@ -59,26 +59,6 @@ public final class PutBucketObjectWormConfigurationRequest extends RequestModel 
         }
 
         public PutBucketObjectWormConfigurationRequest build() {
-            if (objectWormConfiguration != null && objectWormConfiguration.rule() != null) {
-                ObjectWormConfigurationRule rule = objectWormConfiguration.rule();
-                if (rule.defaultRetention() != null) {
-                    ObjectWormConfigurationDefaultRetention retention = rule.defaultRetention();
-                    Integer days = retention.days();
-                    Integer years = retention.years();
-                    
-                    if (days == null && years == null) {
-                        throw new IllegalArgumentException("days and years cannot both be null");
-                    }
-                    
-                    if (days != null && days <= 0) {
-                        throw new IllegalArgumentException("days must be greater than 0");
-                    }
-   
-                    if (years != null && years <= 0) {
-                        throw new IllegalArgumentException("years must be greater than 0");
-                    }
-                }
-            }
             return new PutBucketObjectWormConfigurationRequest(this);
         }
 
