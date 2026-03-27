@@ -1,5 +1,13 @@
 # ChangeLog - Alibaba Cloud OSS SDK For Java V2
 
+## 版本号：0.3.2 日期：2026-03-27
+### 变更内容
+- Feature：Add bucket request payment api
+- Feature：Add access point for object process api
+- Feature：Add object worm api
+- Feature：Add data process client
+- Update：compatibility with Apache HttpClient 5.3/5.4
+
 ## 版本号：0.3.1 日期：2026-01-30
 ### 变更内容
 - Feature：Add access point api
