@@ -1,6 +1,7 @@
 package com.example.oss;
 
 import com.aliyun.sdk.service.oss2.OSSAsyncClient;
+import com.aliyun.sdk.service.oss2.OSSAsyncClientBuilder;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
@@ -18,11 +19,13 @@ public class PutPublicAccessBlockAsync implements Example {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
 
-        try (OSSAsyncClient client = OSSAsyncClient.newBuilder()
+        OSSAsyncClientBuilder builder = OSSAsyncClient.newBuilder()
                 .region(region)
-                .endpoint(endpoint)
-                .credentialsProvider(provider)
-                .build()) {
+                .credentialsProvider(provider);
+        if (endpoint != null) {
+            builder.endpoint(endpoint);
+        }
+        try (OSSAsyncClient client = builder.build()) {
 
             PublicAccessBlockConfiguration publicAccessBlockConfiguration = PublicAccessBlockConfiguration.newBuilder()
                     .blockPublicAccess(blockPublicAccess)
