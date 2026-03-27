@@ -45,7 +45,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java"
+          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java,com/aliyun/sdk/service/oss2/dataprocess/Client*Test.java"
 
   linux-test:
     name: Java ${{ matrix.java-version }} Maven Test on ubuntu
@@ -67,7 +67,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java"
+          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java,com/aliyun/sdk/service/oss2/dataprocess/Client*Test.java"
 
   test-graalvm:
     name: GraalVM Maven Test
@@ -82,4 +82,4 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java"
+          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java,com/aliyun/sdk/service/oss2/dataprocess/Client*Test.java"
