@@ -103,6 +103,24 @@ public final class DatasetBasic {
                 .thenApply(SerdeDatasetBasic::toSimpleQuery);
     }
 
+    // ==================== ListDatasets ====================
+
+    public static ListDatasetsResult listDatasets(ClientImpl impl, ListDatasetsRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromListDatasets(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toListDatasets(output);
+    }
+
+    public static CompletableFuture<ListDatasetsResult> listDatasetsAsync(ClientImpl impl, ListDatasetsRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromListDatasets(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toListDatasets);
+    }
+
     // ==================== SemanticQuery ====================
 
     public static SemanticQueryResult semanticQuery(ClientImpl impl, SemanticQueryRequest request, OperationOptions options) {

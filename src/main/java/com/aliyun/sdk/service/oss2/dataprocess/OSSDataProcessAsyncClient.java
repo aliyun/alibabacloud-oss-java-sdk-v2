@@ -85,6 +85,21 @@ public interface OSSDataProcessAsyncClient extends AutoCloseable {
     default CompletableFuture<DeleteDatasetResult> deleteDatasetAsync(DeleteDatasetRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Lists datasets.
+     *
+     * @param request A {@link ListDatasetsRequest} for ListDatasets operation.
+     * @return A Java Future containing the {@link ListDatasetsResult} of the ListDatasets operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListDatasetsResult> listDatasetsAsync(ListDatasetsRequest request) {
+        return listDatasetsAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<ListDatasetsResult> listDatasetsAsync(ListDatasetsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 
     // Query api

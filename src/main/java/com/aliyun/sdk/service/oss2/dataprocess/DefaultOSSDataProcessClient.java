@@ -55,6 +55,11 @@ public class DefaultOSSDataProcessClient implements OSSDataProcessClient {
     }
 
     @Override
+    public ListDatasetsResult listDatasets(ListDatasetsRequest request, OperationOptions options) {
+        return DatasetBasic.listDatasets(this.clientImpl, request, options);
+    }
+
+    @Override
     public SimpleQueryResult simpleQuery(SimpleQueryRequest request, OperationOptions options) {
         return DatasetBasic.simpleQuery(this.clientImpl, request, options);
     }

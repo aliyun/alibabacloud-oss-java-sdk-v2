@@ -171,6 +171,38 @@ public final class SerdeDatasetBasic {
                 .build();
     }
 
+    // ==================== ListDatasets ====================
+
+    public static OperationInput fromListDatasets(ListDatasetsRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "listDatasets");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("ListDatasets")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static ListDatasetsResult toListDatasets(OperationOutput output) {
+        return ListDatasetsResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(SerdeUtils.deserializeXmlBody(output, ListDatasetsResponseBody.class))
+                .build();
+    }
+
     // ==================== SemanticQuery ====================
 
     public static OperationInput fromSemanticQuery(SemanticQueryRequest request) {
