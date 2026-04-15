@@ -396,4 +396,26 @@ public class StringUtils {
     public static String trimToEmpty(final String str) {
         return str == null ? EMPTY : str.trim();
     }
+
+    public static Character findFirstOccurrence(String s, char... charsToMatch) {
+        int lowestIndex = Integer.MAX_VALUE;
+
+        for (char toMatch : charsToMatch) {
+            int currentIndex = s.indexOf(toMatch);
+            if (currentIndex != -1 && currentIndex < lowestIndex) {
+                lowestIndex = currentIndex;
+            }
+        }
+
+        return lowestIndex == Integer.MAX_VALUE ? null : s.charAt(lowestIndex);
+    }
+
+    public static void paramNotBlank(final String chars, final String paramName) {
+        if (chars == null) {
+            throw new NullPointerException(String.format("%s must not be null.", paramName));
+        }
+        if (StringUtils.isBlank(chars)) {
+            throw new IllegalArgumentException(String.format("%s must not be blank or empty.", paramName));
+        }
+    }
 }
