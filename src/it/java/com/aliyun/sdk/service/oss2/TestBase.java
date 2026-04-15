@@ -27,6 +27,7 @@ public class TestBase {
     public static String OSS_TEST_REGION = null;
     public static String OSS_TEST_ENDPOINT = null;
     public static String OSS_TEST_VECTORS_ENDPOINT = null;
+    public static String OSS_TEST_TABLES_ENDPOINT = null;
     public static String OSS_TEST_ACCESS_KEY_ID = null;
     public static String OSS_TEST_ACCESS_KEY_SECRET = null;
     public static String OSS_TEST_RAM_ROLE_ARN = null;
@@ -83,6 +84,10 @@ public class TestBase {
 
     public static String functionArn() {
         return Optional.ofNullable(OSS_TEST_FUNCTION_ARN).orElse(System.getenv().get("OSS_TEST_FUNCTION_ARN"));
+    }
+
+    public static String tablesEndpoint() {
+        return Optional.ofNullable(OSS_TEST_TABLES_ENDPOINT).orElse(System.getenv().get("OSS_TEST_TABLES_ENDPOINT"));
     }
 
     @BeforeClass
