@@ -31,6 +31,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.aliyun.sdk.service.oss2.AttributeKey.IS_BUCKET_ARN;
 import static com.aliyun.sdk.service.oss2.AttributeKey.SUBRESOURCE;
 import static com.aliyun.sdk.service.oss2.internal.OssUtils.EndpointType;
 import static com.aliyun.sdk.service.oss2.internal.OssUtils.buildHostPath;
@@ -263,9 +264,13 @@ public class ClientImpl implements AutoCloseable {
 
         // check bucket name
         if (input.bucket().isPresent()) {
-            String bucket = input.bucket().get();
-            if (!Ensure.isValidateBucketName(bucket)) {
-                throw new IllegalArgumentException("input.bucket is invalid, got " + bucket + ".");
+            if (input.opMetadata().containsKey(IS_BUCKET_ARN)) {
+                Ensure.assertValidateArnBucket((input.bucket().get()));
+            } else {
+                String bucket = input.bucket().get();
+                if (!Ensure.isValidateBucketName(bucket)) {
+                    throw new IllegalArgumentException("input.bucket is invalid, got " + bucket + ".");
+                }
             }
         }
 
@@ -596,14 +601,23 @@ public class ClientImpl implements AutoCloseable {
                 try {
                     if (data.length > 0) {
                         JsonNode root = JsonUtils.getJsonRootElement(data);
-                        if (root.has("Error")) {
-                            Iterator<Map.Entry<String, JsonNode>> iterator = root.get("Error").fields();
-                            while (iterator.hasNext()) {
-                                Map.Entry<String, JsonNode> entry = iterator.next();
-                                errorFields.put(entry.getKey(), entry.getValue().asText());
+                        if (headers.containsKey("x-oss-error-type")) {
+                            errorFields.put("Code", headers.get("x-oss-error-type"));
+                            if (root.has("message")) {
+                                errorFields.put("Message", root.get("message").textValue());
+                            } else {
+                                errorFields.put("Message", toErrorMessage("Not found key message", data));
                             }
                         } else {
-                            errorFields.put("Message", toErrorMessage("Not found key Error", data));
+                            if (root.has("Error")) {
+                                Iterator<Map.Entry<String, JsonNode>> iterator = root.get("Error").fields();
+                                while (iterator.hasNext()) {
+                                    Map.Entry<String, JsonNode> entry = iterator.next();
+                                    errorFields.put(entry.getKey(), entry.getValue().asText());
+                                }
+                            } else {
+                                errorFields.put("Message", toErrorMessage("Not found key Error", data));
+                            }
                         }
                     } else {
                         errorFields.put("Message", toErrorMessage("Empty body", data));

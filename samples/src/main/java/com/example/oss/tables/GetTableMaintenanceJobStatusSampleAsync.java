@@ -1,0 +1,102 @@
+package com.example.oss.tables;
+
+import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
+import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
+import com.aliyun.sdk.service.oss2.tables.OSSAsyncTablesClient;
+import com.aliyun.sdk.service.oss2.tables.OSSAsyncTablesClientBuilder;
+import com.aliyun.sdk.service.oss2.tables.models.GetTableMaintenanceJobStatusRequest;
+import com.aliyun.sdk.service.oss2.tables.models.GetTableMaintenanceJobStatusResult;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import java.util.concurrent.CompletableFuture;
+
+public class GetTableMaintenanceJobStatusSampleAsync implements com.example.oss.Example {
+
+    private static void execute(
+            String endpoint,
+            String region,
+            String tableBucketARN,
+            String namespace,
+            String name,
+            String tableARN) {
+
+        CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
+        OSSAsyncTablesClientBuilder clientBuilder = OSSAsyncTablesClient.newBuilder()
+                .credentialsProvider(provider)
+                .region(region);
+
+        if (endpoint != null) {
+            clientBuilder.endpoint(endpoint);
+        }
+
+        try (OSSAsyncTablesClient client = clientBuilder.build()) {
+
+            GetTableMaintenanceJobStatusRequest.Builder requestBuilder = GetTableMaintenanceJobStatusRequest.newBuilder()
+                    .tableBucketARN(tableBucketARN)
+                    .namespace(namespace)
+                    .name(name);
+            
+            if (tableARN != null) {
+                requestBuilder.tableARN(tableARN);
+            }
+            
+            GetTableMaintenanceJobStatusRequest request = requestBuilder.build();
+
+            CompletableFuture<GetTableMaintenanceJobStatusResult> future = client.getTableMaintenanceJobStatusAsync(request);
+
+            future.whenComplete((result, throwable) -> {
+                if (throwable != null) {
+                    System.out.printf("Error:%n%s", throwable);
+                } else {
+                    System.out.printf("Status code:%d, request id:%s%n",
+                            result.statusCode(), result.requestId());
+                    System.out.printf("Table ARN: %s%n", result.tableARN());
+                    
+                    if (result.jobStatus() != null && !result.jobStatus().isEmpty()) {
+                        System.out.println("Maintenance job status:");
+                        result.jobStatus().forEach((type, status) -> {
+                            System.out.printf("  Type: %s, Status: %s%n", type, status.status());
+                            if (status.lastRunTimestamp() != null) {
+                                System.out.printf("    LastRunTimestamp: %s%n", status.lastRunTimestamp());
+                            }
+                            if (status.failureMessage() != null && !status.failureMessage().isEmpty()) {
+                                System.out.printf("    FailureMessage: %s%n", status.failureMessage());
+                            }
+                        });
+                    } else {
+                        System.out.println("No maintenance job status found.");
+                    }
+                }
+            }).join();
+
+        } catch (Exception e) {
+            System.out.printf("Error:%n%s", e);
+        }
+    }
+
+    @Override
+    public Options getOptions() {
+        Options opts = new Options();
+        opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS Tables.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("region").desc("The region in which the table is located.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("tableBucketARN").desc("The ARN of the table bucket.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("namespace").desc("The namespace of the table.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("name").desc("The name of the table.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("tableARN").desc("The ARN of the table (required for admin users).").hasArg().get());
+        return opts;
+    }
+
+    @Override
+    public void runCmd(CommandLine cmd) throws ParseException {
+        String endpoint = cmd.getParsedOptionValue("endpoint");
+        String region = cmd.getParsedOptionValue("region");
+        String tableBucketARN = cmd.getParsedOptionValue("tableBucketARN");
+        String namespace = cmd.getParsedOptionValue("namespace");
+        String name = cmd.getParsedOptionValue("name");
+        String tableARN = cmd.getParsedOptionValue("tableARN");
+        execute(endpoint, region, tableBucketARN, namespace, name, tableARN);
+    }
+}

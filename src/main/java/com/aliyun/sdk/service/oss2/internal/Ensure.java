@@ -1,5 +1,11 @@
 package com.aliyun.sdk.service.oss2.internal;
 
+import com.aliyun.sdk.service.oss2.arns.Arn;
+import com.aliyun.sdk.service.oss2.arns.ArnResource;
+import com.aliyun.sdk.service.oss2.utils.StringUtils;
+
+import java.util.Optional;
+
 /**
  * Utility class for validating data formats used in OSS operations
  */
@@ -52,5 +58,28 @@ public final class Ensure {
             return false;
         }
         return value.length() < 1024;
+    }
+
+    public static void assertValidateArnBucket(String bucket) {
+        Arn arn = Arn.fromString(bucket);
+
+        // must have account id
+        if (StringUtils.isNullOrEmpty(arn.accountId().orElse(null))) {
+            throw new IllegalArgumentException("input.bucket does not contain account id");
+        }
+
+        // must have bucket resource
+        ArnResource resource = arn.resource();
+        if (!"bucket".equals(resource.resourceType().orElse("")) ||
+                StringUtils.isBlank(resource.resource()) ||
+                !StringUtils.isBlank(resource.qualifier().orElse(null)) ||
+                bucket.endsWith("/")) {
+            throw new IllegalArgumentException(String.format("input.bucket is not bucket arn, got " + bucket + "."));
+        }
+
+        // check bucket value
+        if (!isValidateBucketName(resource.resource())) {
+            throw new IllegalArgumentException("bucket resource is invalid, got " + bucket + ".");
+        }
     }
 }
