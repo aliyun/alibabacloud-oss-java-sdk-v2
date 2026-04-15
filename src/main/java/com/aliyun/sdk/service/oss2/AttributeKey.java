@@ -17,6 +17,8 @@ public final class AttributeKey<T> extends AttributeMap.Key<T> {
     public static final AttributeKey<Boolean> RESPONSE_HEADERS_READ = new AttributeKey<>(new UnsafeValueType(Boolean.class));
     public static final AttributeKey<BinaryDataConsumerSupplier> RESPONSE_CONSUMER_SUPPLIER = new AttributeKey<>(new UnsafeValueType(BinaryDataConsumerSupplier.class));
 
+    public static final AttributeKey<Boolean> IS_BUCKET_ARN = new AttributeKey<>(new UnsafeValueType(Boolean.class));
+
     private AttributeKey(Class<T> valueType) {
         super(valueType);
     }
