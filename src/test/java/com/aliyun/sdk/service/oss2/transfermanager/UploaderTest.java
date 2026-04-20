@@ -236,7 +236,8 @@ public class UploaderTest {
                 .bucket("bucket")
                 .key("key")
                 .build();
-        uploader.uploadFrom(request, null);
+        InputStream nullStream = null;
+        uploader.uploadFrom(request, nullStream);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -580,6 +581,135 @@ public class UploaderTest {
         assertNotNull(result);
         assertEquals(1, mock.initiateMultipartCount.get());
         assertEquals(4, mock.uploadPartCount.get());
+    }
+
+    // endregion
+
+    // region BinaryData Upload Tests
+
+    @Test
+    public void testUploadFromWithBinaryData() throws UploadError {
+        UploaderMockHttpClient mock = new UploaderMockHttpClient();
+        OSSClient client = createMockClient(mock);
+        Uploader uploader = new Uploader(client);
+
+        byte[] data = new byte[100];
+        Arrays.fill(data, (byte) 'A');
+        BinaryData binaryData = BinaryData.fromBytes(data);
+
+        PutObjectRequest request = PutObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        UploadResult result = uploader.uploadFrom(request, binaryData);
+        assertNotNull(result);
+        assertEquals(1, mock.putObjectCount.get());
+        assertEquals(0, mock.initiateMultipartCount.get());
+    }
+
+    @Test
+    public void testUploadFromWithBinaryDataStream() throws UploadError {
+        UploaderMockHttpClient mock = new UploaderMockHttpClient();
+        OSSClient client = createMockClient(mock);
+        Uploader uploader = new Uploader(client);
+
+        byte[] data = new byte[100];
+        Arrays.fill(data, (byte) 'B');
+        BinaryData binaryData = BinaryData.fromStream(new ByteArrayInputStream(data), (long) data.length);
+
+        PutObjectRequest request = PutObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        UploadResult result = uploader.uploadFrom(request, binaryData);
+        assertNotNull(result);
+        assertEquals(1, mock.putObjectCount.get());
+    }
+
+    @Test
+    public void testUploadFromWithBinaryDataMultipart() throws UploadError {
+        UploaderMockHttpClient mock = new UploaderMockHttpClient();
+        OSSClient client = createMockClient(mock);
+        Uploader uploader = new Uploader(client, UploaderOptions.newBuilder()
+                .partSize(100)
+                .parallelNum(1)
+                .build());
+
+        byte[] data = new byte[350];
+        Arrays.fill(data, (byte) 'C');
+        BinaryData binaryData = BinaryData.fromBytes(data);
+
+        PutObjectRequest request = PutObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        UploadResult result = uploader.uploadFrom(request, binaryData);
+        assertNotNull(result);
+        assertEquals(0, mock.putObjectCount.get());
+        assertEquals(1, mock.initiateMultipartCount.get());
+        assertEquals(4, mock.uploadPartCount.get());
+        assertEquals(1, mock.completeMultipartCount.get());
+    }
+
+    @Test
+    public void testUploadFromWithFileInputStream() throws Exception {
+        UploaderMockHttpClient mock = new UploaderMockHttpClient();
+        OSSClient client = createMockClient(mock);
+        Uploader uploader = new Uploader(client);
+
+        // Create temp file
+        File tempFile = File.createTempFile("upload-fis-", ".txt");
+        tempFile.deleteOnExit();
+        byte[] data = new byte[100];
+        Arrays.fill(data, (byte) 'D');
+        Files.write(tempFile.toPath(), data);
+
+        PutObjectRequest request = PutObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        try (FileInputStream fis = new FileInputStream(tempFile)) {
+            UploadResult result = uploader.uploadFrom(request, fis);
+            assertNotNull(result);
+            assertEquals(1, mock.putObjectCount.get());
+        }
+        tempFile.delete();
+    }
+
+    @Test
+    public void testUploadFromWithFileInputStreamMultipart() throws Exception {
+        UploaderMockHttpClient mock = new UploaderMockHttpClient();
+        OSSClient client = createMockClient(mock);
+        Uploader uploader = new Uploader(client, UploaderOptions.newBuilder()
+                .partSize(100)
+                .parallelNum(1)
+                .build());
+
+        // Create temp file larger than part size
+        File tempFile = File.createTempFile("upload-fis-multipart-", ".dat");
+        tempFile.deleteOnExit();
+        byte[] data = new byte[350];
+        Arrays.fill(data, (byte) 'E');
+        Files.write(tempFile.toPath(), data);
+
+        PutObjectRequest request = PutObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        try (FileInputStream fis = new FileInputStream(tempFile)) {
+            UploadResult result = uploader.uploadFrom(request, fis);
+            assertNotNull(result);
+            assertEquals(0, mock.putObjectCount.get());
+            assertEquals(1, mock.initiateMultipartCount.get());
+            assertTrue(mock.uploadPartCount.get() > 0);
+            assertEquals(1, mock.completeMultipartCount.get());
+        }
+        tempFile.delete();
     }
 
     // endregion

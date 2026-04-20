@@ -40,21 +40,71 @@ public class Uploader {
             throw new IllegalArgumentException("the body is null");
         }
 
+        // Try to determine total size for known stream types
+        Long totalSize = null;
+        
+        // For FileInputStream, use FileChannel.size()
+        if (body instanceof FileInputStream) {
+            try {
+                java.nio.channels.FileChannel channel = ((FileInputStream) body).getChannel();
+                totalSize = channel.size();
+            } catch (IOException e) {
+                // ignore, size will be unknown
+            }
+        } else if (body instanceof ByteArrayInputStream) {
+            try {
+                totalSize = (long) body.available();
+            } catch (IOException e) {
+                // ignore, size will be unknown
+            }
+        }
+
+        // Convert InputStream to BinaryData with size information if available
+        BinaryData binaryData = BinaryData.fromStream(body, totalSize);
+        
+        // Delegate to BinaryData version
+        return uploadFrom(request, binaryData, overrideOptions);
+    }
+
+    /**
+     * Uploads data from a BinaryData source.
+     * This method leverages the known content length from BinaryData for accurate multipart upload planning.
+     *
+     * @param request The put object request containing bucket, key, and other metadata
+     * @param body    The BinaryData containing the data to upload
+     * @return UploadResult containing upload metadata
+     * @throws UploadError if upload fails
+     */
+    public UploadResult uploadFrom(PutObjectRequest request, BinaryData body) throws UploadError {
+        return uploadFrom(request, body, null);
+    }
+
+    /**
+     * Uploads data from a BinaryData source with override options.
+     * This method leverages the known content length from BinaryData for accurate multipart upload planning.
+     *
+     * @param request       The put object request containing bucket, key, and other metadata
+     * @param body          The BinaryData containing the data to upload
+     * @param overrideOptions Override options for this upload operation
+     * @return UploadResult containing upload metadata
+     * @throws UploadError if upload fails
+     */
+    public UploadResult uploadFrom(PutObjectRequest request, BinaryData body, UploaderOptions overrideOptions) throws UploadError {
+        validateRequest(request);
+
+        if (body == null) {
+            throw new IllegalArgumentException("the body is null");
+        }
+
         UploaderOptions opts = overrideOptions != null ? overrideOptions : this.options;
         long partSize = opts.partSize();
         int parallelNum = opts.parallelNum();
 
-        // Determine total size if possible
-        long totalSize = -1;
-        if (body instanceof ByteArrayInputStream) {
-            try {
-                totalSize = body.available();
-            } catch (IOException e) {
-                // ignore
-            }
-        }
+        // Get total size from BinaryData - this is reliable as BinaryData knows its length
+        Long length = body.getLength();
+        long totalSize = length != null ? length : -1;
 
-        // Adjust part size
+        // Adjust part size based on actual data size
         if (totalSize > 0) {
             while (totalSize / partSize >= Defaults.MAX_UPLOAD_PARTS) {
                 partSize += opts.partSize();
@@ -62,10 +112,10 @@ public class Uploader {
         }
 
         if (totalSize >= 0 && totalSize < partSize) {
-            return singlePart(request, body, totalSize);
+            return singlePart(request, body.toStream(), totalSize);
         }
 
-        return multiPart(request, body, totalSize, partSize, parallelNum, opts.leavePartsOnError(),
+        return multiPart(request, body.toStream(), totalSize, partSize, parallelNum, opts.leavePartsOnError(),
                 null, null);
     }
 
