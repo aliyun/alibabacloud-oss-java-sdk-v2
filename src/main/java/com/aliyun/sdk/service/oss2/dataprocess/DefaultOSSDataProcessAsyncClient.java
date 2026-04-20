@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2.dataprocess;
 import com.aliyun.sdk.service.oss2.*;
 import com.aliyun.sdk.service.oss2.dataprocess.models.*;
 import com.aliyun.sdk.service.oss2.dataprocess.operations.DatasetBasic;
+import com.aliyun.sdk.service.oss2.dataprocess.operations.DataPipelineBasic;
 import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 
 import java.util.ArrayList;
@@ -74,5 +75,36 @@ public class DefaultOSSDataProcessAsyncClient implements OSSDataProcessAsyncClie
     @Override
     public CompletableFuture<SemanticQueryResult> semanticQueryAsync(SemanticQueryRequest request, OperationOptions options) {
         return DatasetBasic.semanticQueryAsync(this.clientImpl, request, options);
+    }
+
+    // DataPipeline API
+    @Override
+    public CompletableFuture<PutDataPipelineConfigurationResult> putDataPipelineConfigurationAsync(PutDataPipelineConfigurationRequest request, OperationOptions options) {
+        return DataPipelineBasic.putDataPipelineConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetDataPipelineConfigurationResult> getDataPipelineConfigurationAsync(GetDataPipelineConfigurationRequest request, OperationOptions options) {
+        return DataPipelineBasic.getDataPipelineConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteDataPipelineConfigurationResult> deleteDataPipelineConfigurationAsync(DeleteDataPipelineConfigurationRequest request, OperationOptions options) {
+        return DataPipelineBasic.deleteDataPipelineConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListDataPipelineConfigurationsResult> listDataPipelineConfigurationsAsync(ListDataPipelineConfigurationsRequest request, OperationOptions options) {
+        return DataPipelineBasic.listDataPipelineConfigurationsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PauseDataPipelineResult> pauseDataPipelineAsync(PauseDataPipelineRequest request, OperationOptions options) {
+        return DataPipelineBasic.pauseDataPipelineAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<RestartDataPipelineResult> restartDataPipelineAsync(RestartDataPipelineRequest request, OperationOptions options) {
+        return DataPipelineBasic.restartDataPipelineAsync(this.clientImpl, request, options);
     }
 }

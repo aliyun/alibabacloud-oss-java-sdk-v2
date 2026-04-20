@@ -135,4 +135,97 @@ public interface OSSDataProcessAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+    // DataPipeline api
+    //-----------------------------------------------------------------------
+    /**
+     * Creates or updates a Data Pipeline configuration.
+     *
+     * @param request A {@link PutDataPipelineConfigurationRequest} for PutDataPipelineConfiguration operation.
+     * @return A Java Future containing the {@link PutDataPipelineConfigurationResult} of the PutDataPipelineConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutDataPipelineConfigurationResult> putDataPipelineConfigurationAsync(PutDataPipelineConfigurationRequest request) {
+        return putDataPipelineConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<PutDataPipelineConfigurationResult> putDataPipelineConfigurationAsync(PutDataPipelineConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets a Data Pipeline configuration.
+     *
+     * @param request A {@link GetDataPipelineConfigurationRequest} for GetDataPipelineConfiguration operation.
+     * @return A Java Future containing the {@link GetDataPipelineConfigurationResult} of the GetDataPipelineConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetDataPipelineConfigurationResult> getDataPipelineConfigurationAsync(GetDataPipelineConfigurationRequest request) {
+        return getDataPipelineConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<GetDataPipelineConfigurationResult> getDataPipelineConfigurationAsync(GetDataPipelineConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes a Data Pipeline configuration.
+     *
+     * @param request A {@link DeleteDataPipelineConfigurationRequest} for DeleteDataPipelineConfiguration operation.
+     * @return A Java Future containing the {@link DeleteDataPipelineConfigurationResult} of the DeleteDataPipelineConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteDataPipelineConfigurationResult> deleteDataPipelineConfigurationAsync(DeleteDataPipelineConfigurationRequest request) {
+        return deleteDataPipelineConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<DeleteDataPipelineConfigurationResult> deleteDataPipelineConfigurationAsync(DeleteDataPipelineConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists Data Pipeline configurations.
+     *
+     * @param request A {@link ListDataPipelineConfigurationsRequest} for ListDataPipelineConfigurations operation.
+     * @return A Java Future containing the {@link ListDataPipelineConfigurationsResult} of the ListDataPipelineConfigurations operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListDataPipelineConfigurationsResult> listDataPipelineConfigurationsAsync(ListDataPipelineConfigurationsRequest request) {
+        return listDataPipelineConfigurationsAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<ListDataPipelineConfigurationsResult> listDataPipelineConfigurationsAsync(ListDataPipelineConfigurationsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Pauses a Data Pipeline.
+     *
+     * @param request A {@link PauseDataPipelineRequest} for PauseDataPipeline operation.
+     * @return A Java Future containing the {@link PauseDataPipelineResult} of the PauseDataPipeline operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PauseDataPipelineResult> pauseDataPipelineAsync(PauseDataPipelineRequest request) {
+        return pauseDataPipelineAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<PauseDataPipelineResult> pauseDataPipelineAsync(PauseDataPipelineRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Restarts a Data Pipeline.
+     *
+     * @param request A {@link RestartDataPipelineRequest} for RestartDataPipeline operation.
+     * @return A Java Future containing the {@link RestartDataPipelineResult} of the RestartDataPipeline operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<RestartDataPipelineResult> restartDataPipelineAsync(RestartDataPipelineRequest request) {
+        return restartDataPipelineAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<RestartDataPipelineResult> restartDataPipelineAsync(RestartDataPipelineRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
 }
