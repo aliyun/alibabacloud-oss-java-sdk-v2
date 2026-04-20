@@ -5,6 +5,7 @@ import com.aliyun.sdk.service.oss2.OSSClientBuilder;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.PutObjectRequest;
+import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transfermanager.UploadResult;
 import com.aliyun.sdk.service.oss2.transfermanager.Uploader;
 import com.aliyun.sdk.service.oss2.transfermanager.UploaderOptions;
@@ -12,7 +13,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
 import java.io.FileInputStream;
 
 public class UploadFrom implements Example {
@@ -35,17 +35,17 @@ public class UploadFrom implements Example {
         }
 
         try (OSSClient client = clientBuilder.build()) {
-             Uploader uploader = new Uploader(client);
+            // Uploader uploader = new Uploader(client);
 
             // Uploader with custom options
-            /* UploaderOptions options = UploaderOptions.newBuilder()
+            UploaderOptions options = UploaderOptions.newBuilder()
                      .partSize(100 * 1024)
                      .parallelNum(5)
                      .leavePartsOnError(true)
                      .enableCheckpoint(true)
                      .checkpointDir(checkpointDir)
                      .build();
-             Uploader uploader = new Uploader(client, options);*/
+             Uploader uploader = new Uploader(client, options);
 
             try (FileInputStream fis = new FileInputStream(filePath)) {
                 UploadResult result = uploader.uploadFrom(PutObjectRequest.newBuilder()
@@ -63,6 +63,26 @@ public class UploadFrom implements Example {
                         result.headers() != null ? result.headers().get("x-oss-server-time") : ""
                 );
             }
+
+            // Upload using BinaryData with known content length
+            /* long fileSize = new java.io.File(filePath).length();
+            try (FileInputStream fis = new FileInputStream(filePath)) {
+                BinaryData binaryData = BinaryData.fromStream(fis, fileSize);
+                UploadResult result = uploader.uploadFrom(PutObjectRequest.newBuilder()
+                        .bucket(bucket)
+                        .key(key)
+                        .build(), binaryData);
+
+                System.out.printf("[BinaryData] status code: %d, request id: %s, content md5: %s, etag: %s, hash crc64: %s, version id: %s, server time: %s%n",
+                        result.statusCode(),
+                        result.headers() != null ? result.headers().get("x-oss-request-id") : "",
+                        result.headers() != null ? result.headers().get("Content-MD5") : "",
+                        result.etag(),
+                        result.hashCrc64ecma(),
+                        result.versionId(),
+                        result.headers() != null ? result.headers().get("x-oss-server-time") : ""
+                );
+            } */
 
         } catch (Exception e) {
             System.out.printf("Error:%n%s", e);
