@@ -13,8 +13,8 @@ public final class SceneElement {
     @JacksonXmlProperty(localName = "TimeRange")
     private List<Long> timeRange;
 
-    @JacksonXmlElementWrapper(localName = "FrameTimes")
-    @JacksonXmlProperty(localName = "FrameTime")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "FrameTimes")
     private List<Long> frameTimes;
 
     @JacksonXmlProperty(localName = "VideoStreamIndex")
