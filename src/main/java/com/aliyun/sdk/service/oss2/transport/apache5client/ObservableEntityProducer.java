@@ -8,7 +8,6 @@ import org.apache.hc.core5.util.Args;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
 import java.util.List;
 import java.util.Set;
 

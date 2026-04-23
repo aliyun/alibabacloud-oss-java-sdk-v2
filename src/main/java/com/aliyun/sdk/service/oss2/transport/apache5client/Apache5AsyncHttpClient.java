@@ -3,7 +3,6 @@ package com.aliyun.sdk.service.oss2.transport.apache5client;
 import com.aliyun.sdk.service.oss2.transport.*;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
-import org.apache.hc.client5.http.async.methods.SimpleResponseConsumer;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.io.HttpClientConnectionManager;

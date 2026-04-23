@@ -15,7 +15,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
