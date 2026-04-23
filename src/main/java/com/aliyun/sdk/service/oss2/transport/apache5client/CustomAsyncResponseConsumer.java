@@ -4,7 +4,6 @@ import com.aliyun.sdk.service.oss2.transport.BinaryDataConsumerSupplier;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.core5.concurrent.CallbackContribution;
 import org.apache.hc.core5.concurrent.FutureCallback;
-import org.apache.hc.core5.function.Supplier;
 import org.apache.hc.core5.http.*;
 import org.apache.hc.core5.http.nio.AsyncEntityConsumer;
 import org.apache.hc.core5.http.nio.AsyncResponseConsumer;
