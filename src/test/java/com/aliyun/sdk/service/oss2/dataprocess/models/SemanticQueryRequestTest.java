@@ -25,6 +25,7 @@ public class SemanticQueryRequestTest {
         assertThat(request.withFields()).isNull();
         assertThat(request.mediaTypes()).isNull();
         assertThat(request.sourceUri()).isNull();
+        assertThat(request.simpleQuery()).isNull();
     }
 
     @Test
@@ -38,6 +39,11 @@ public class SemanticQueryRequestTest {
                 .withFields(Arrays.asList("Filename", "Size", "MediaType"))
                 .mediaTypes(Arrays.asList("video", "image"))
                 .sourceUri("oss://bucket/prefix/")
+                .simpleQuery(SimpleQuery.newBuilder()
+                        .field("Filename")
+                        .value("test")
+                        .operation("eq")
+                        .build())
                 .header("x-custom-header", "value1")
                 .parameter("extra-param", "extra-value")
                 .build();
@@ -50,6 +56,7 @@ public class SemanticQueryRequestTest {
         assertThat(request.withFields()).isEqualTo("[\"Filename\",\"Size\",\"MediaType\"]");
         assertThat(request.mediaTypes()).isEqualTo("[\"video\",\"image\"]");
         assertThat(request.sourceUri()).isEqualTo("oss://bucket/prefix/");
+        assertThat(request.simpleQuery()).isEqualTo("{\"Field\":\"Filename\",\"Value\":\"test\",\"Operation\":\"eq\"}");
         assertThat(request.headers()).contains(
                 new AbstractMap.SimpleEntry<>("x-custom-header", "value1"));
         assertThat(request.parameters()).contains(
@@ -62,6 +69,19 @@ public class SemanticQueryRequestTest {
         assertThat(copy.nextToken()).isEqualTo("next-token-value");
         assertThat(copy.maxResults()).isEqualTo(10);
         assertThat(copy.query()).isEqualTo("blue shirt man walking to table");
+
+        // Test toBuilder with simpleQuery
+        SemanticQueryRequest original2 = SemanticQueryRequest.newBuilder()
+                .bucket("test-bucket")
+                .simpleQuery(SimpleQuery.newBuilder()
+                        .field("Filename")
+                        .value("test")
+                        .operation("eq")
+                        .build())
+                .build();
+
+        SemanticQueryRequest copy2 = original2.toBuilder().build();
+        assertThat(copy2.simpleQuery()).isEqualTo("{\"Field\":\"Filename\",\"Value\":\"test\",\"Operation\":\"eq\"}");
     }
 
     @Test

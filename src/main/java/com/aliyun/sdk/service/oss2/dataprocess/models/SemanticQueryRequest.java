@@ -54,6 +54,10 @@ public final class SemanticQueryRequest extends RequestModel {
         return parameters.get("sourceURI");
     }
 
+    public String simpleQuery() {
+        return parameters.get("simpleQuery");
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }
@@ -119,6 +123,11 @@ public final class SemanticQueryRequest extends RequestModel {
 
         public Builder sourceUri(String value) {
             this.parameters.put("sourceURI", value);
+            return this;
+        }
+
+        public Builder simpleQuery(SimpleQuery value) {
+            this.parameters.put("simpleQuery", DataProcessParamHelper.toSimpleQuery(value));
             return this;
         }
 
