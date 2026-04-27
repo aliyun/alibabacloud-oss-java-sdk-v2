@@ -93,22 +93,6 @@ public class TestBase {
         return Optional.ofNullable(OSS_TEST_FUNCTION_ARN).orElse(System.getenv().get("OSS_TEST_FUNCTION_ARN"));
     }
 
-    public static String apiKey() {
-        return Optional.ofNullable(API_KEY).orElse(System.getenv().get("API_KEY"));
-    }
-
-    public static String modelType() {
-        return Optional.ofNullable(MODEL_TYPE).orElse(System.getenv().get("MODEL_TYPE"));
-    }
-
-    public static String dimension() {
-        return Optional.ofNullable(DIMENSION).orElse(System.getenv().get("DIMENSION"));
-    }
-
-    public static String roleName() {
-        return Optional.ofNullable(ROLE_NAME).orElse(System.getenv().get("ROLE_NAME"));
-    }
-
     @BeforeClass
     public static void oneTimeSetUp() {
         bucketNamePrefix = genBucketNamePrefix();

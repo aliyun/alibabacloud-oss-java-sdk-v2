@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * Integration tests for Data Pipeline CRUD operations via OSSDataProcessClient.
  */
-public class ClientDataPipelineTest extends TestBase {
+public class ClientDataPipelineTest extends TestBaseDataProcess {
 
     @Test
     public void testDataPipelineLifecycle() {

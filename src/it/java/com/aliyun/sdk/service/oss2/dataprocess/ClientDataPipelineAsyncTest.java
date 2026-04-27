@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Integration tests for Data Pipeline CRUD operations via OSSDataProcessAsyncClient.
  */
-public class ClientDataPipelineAsyncTest extends TestBase {
+public class ClientDataPipelineAsyncTest extends TestBaseDataProcess {
 
     @Test
     public void testDataPipelineLifecycleAsync() throws Exception {
