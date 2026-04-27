@@ -1,5 +1,6 @@
 package com.aliyun.sdk.service.oss2.models;
 
+import com.aliyun.sdk.service.oss2.progress.ProgressListener;
 import com.aliyun.sdk.service.oss2.transport.BinaryDataConsumerSupplier;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
 
@@ -12,12 +13,14 @@ public final class GetObjectRequest extends RequestModel {
     private final String bucket;
     private final String key;
     private final BinaryDataConsumerSupplier dataConsumerSupplier;
+    private final ProgressListener progressListener;
 
     private GetObjectRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
         this.key = builder.key;
         this.dataConsumerSupplier = builder.dataConsumerSupplier;
+        this.progressListener = builder.progressListener;
     }
 
     public static Builder newBuilder() {
@@ -182,6 +185,13 @@ public final class GetObjectRequest extends RequestModel {
         return this.dataConsumerSupplier;
     }
 
+    /**
+     * Gets the progress listener for monitoring data transfer during OSS operations.
+     */
+    public ProgressListener progressListener() {
+        return progressListener;
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }
@@ -190,6 +200,7 @@ public final class GetObjectRequest extends RequestModel {
         private String bucket;
         private String key;
         private BinaryDataConsumerSupplier dataConsumerSupplier;
+        private ProgressListener progressListener;
 
         private Builder() {
             super();
@@ -200,6 +211,7 @@ public final class GetObjectRequest extends RequestModel {
             this.bucket = request.bucket;
             this.key = request.key;
             this.dataConsumerSupplier = request.dataConsumerSupplier;
+            this.progressListener = request.progressListener;
         }
 
         /**
@@ -379,6 +391,14 @@ public final class GetObjectRequest extends RequestModel {
         public Builder dataConsumerSupplier(BinaryDataConsumerSupplier value) {
             requireNonNull(value);
             this.dataConsumerSupplier = value;
+            return this;
+        }
+
+        /**
+         * Sets the progress listener for monitoring data transfer during download.
+         */
+        public Builder progressListener(ProgressListener progressListener) {
+            this.progressListener = progressListener;
             return this;
         }
 
