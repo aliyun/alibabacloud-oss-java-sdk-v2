@@ -296,6 +296,9 @@ public class Copier {
             if (request.sourceVersionId() != null) {
                 partBuilder.sourceVersionId(request.sourceVersionId());
             }
+            if (request.requestPayer() != null) {
+                partBuilder.requestPayer(request.requestPayer());
+            }
 
             UploadPartCopyResult partResult = client.uploadPartCopy(partBuilder.build());
             String eTag = partResult.copyPartResult() != null ? partResult.copyPartResult().eTag() : null;
@@ -314,14 +317,23 @@ public class Copier {
         private CopyResult completeUpload(String uploadId, List<Part> completedParts) throws CopyError {
             completedParts.sort(Comparator.comparing(Part::partNumber));
 
-            CompleteMultipartUploadRequest completeRequest = CompleteMultipartUploadRequest.newBuilder()
+            CompleteMultipartUploadRequest.Builder completeRequestBuilder = CompleteMultipartUploadRequest.newBuilder()
                     .bucket(request.bucket())
                     .key(request.key())
                     .uploadId(uploadId)
                     .completeMultipartUpload(CompleteMultipartUpload.newBuilder()
                             .parts(completedParts)
-                            .build())
-                    .build();
+                            .build());
+
+            if (request.objectAcl() != null) {
+                completeRequestBuilder.objectAcl(request.objectAcl());
+            }
+
+            if (request.requestPayer() != null) {
+                completeRequestBuilder.requestPayer(request.requestPayer());
+            }
+
+            CompleteMultipartUploadRequest completeRequest = completeRequestBuilder.build();
 
             try {
                 CompleteMultipartUploadResult cmResult = client.completeMultipartUpload(completeRequest);
@@ -432,11 +444,17 @@ public class Copier {
 
         private void abortMultipartUpload(String uploadId) {
             try {
-                AbortMultipartUploadRequest abortRequest = AbortMultipartUploadRequest.newBuilder()
+                AbortMultipartUploadRequest.Builder abortRequestBuilder = AbortMultipartUploadRequest.newBuilder()
                         .bucket(request.bucket())
                         .key(request.key())
-                        .uploadId(uploadId)
-                        .build();
+                        .uploadId(uploadId);
+
+                if (request.requestPayer() != null) {
+                    abortRequestBuilder.requestPayer(request.requestPayer());
+                }
+
+                AbortMultipartUploadRequest abortRequest = abortRequestBuilder.build();
+
                 client.abortMultipartUpload(abortRequest);
             } catch (Exception ignored) {
                 // best effort abort

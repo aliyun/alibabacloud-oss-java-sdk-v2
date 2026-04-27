@@ -575,4 +575,164 @@ public class ClientCopierTest extends TestBase {
     }
 
     // endregion
+
+    // region Multipart Copy with StorageClass, ContentType, ACL
+
+    @Test
+    public void testMultipartCopyChangeStorageClass() throws Exception {
+        OSSClient client = getDefaultClient();
+        String srcKey = genObjectName() + "-cp-sc-src";
+        String dstKey = genObjectName() + "-cp-sc-dst";
+
+        int partSize = 100 * 1024;
+        int length = 2 * partSize + 1234;
+        byte[] data = randomData(length);
+        putObject(client, bucketName, srcKey, data);
+
+        // Verify source is Standard (default)
+        HeadObjectResult srcHead = client.headObject(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(srcKey)
+                .build());
+        Assert.assertTrue(srcHead.storageClass() == null || "Standard".equals(srcHead.storageClass()));
+
+        // Multipart copy with storageClass change -> disables shallow copy automatically
+        Copier copier = new Copier(client, CopierOptions.newBuilder()
+                .partSize(partSize)
+                .multipartCopyThreshold(partSize)
+                .parallelNum(2)
+                .build());
+
+        CopyResult result = copier.copy(CopyObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .sourceKey(srcKey)
+                .storageClass("IA")
+                .build());
+
+        Assert.assertNotNull(result);
+        Assert.assertNotNull(result.uploadId());
+
+        HeadObjectResult dstHead = client.headObject(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .build());
+        Assert.assertEquals("IA", dstHead.storageClass());
+
+        // Verify content
+        GetObjectResult getResult = client.getObject(GetObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .build());
+        byte[] downloaded = IOUtils.toByteArray(getResult.body());
+        Assert.assertArrayEquals(data, downloaded);
+    }
+
+    @Test
+    public void testMultipartCopyChangeContentType() throws Exception {
+        OSSClient client = getDefaultClient();
+        String srcKey = genObjectName() + "-cp-ct-src";
+        String dstKey = genObjectName() + "-cp-ct-dst";
+
+        int partSize = 100 * 1024;
+        int length = 2 * partSize + 1234;
+        byte[] data = randomData(length);
+
+        // Upload source with default content-type
+        client.putObject(PutObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(srcKey)
+                .contentType("application/octet-stream")
+                .body(BinaryData.fromBytes(data))
+                .build());
+
+        // Multipart copy with REPLACE metadata directive and new content-type
+        Copier copier = new Copier(client, CopierOptions.newBuilder()
+                .partSize(partSize)
+                .multipartCopyThreshold(partSize)
+                .parallelNum(2)
+                .disableShallowCopy(true)
+                .build());
+
+        CopyResult result = copier.copy(CopyObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .sourceKey(srcKey)
+                .metadataDirective("REPLACE")
+                .contentType("text/plain")
+                .build());
+
+        Assert.assertNotNull(result);
+
+        HeadObjectResult dstHead = client.headObject(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .build());
+        Assert.assertTrue(dstHead.contentType().contains("text/plain"));
+
+        // Verify content
+        GetObjectResult getResult = client.getObject(GetObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .build());
+        byte[] downloaded = IOUtils.toByteArray(getResult.body());
+        Assert.assertArrayEquals(data, downloaded);
+    }
+
+    @Test
+    public void testMultipartCopyChangeAcl() throws Exception {
+        OSSClient client = getDefaultClient();
+        String srcKey = genObjectName() + "-cp-acl-src";
+        String dstKey = genObjectName() + "-cp-acl-dst";
+
+        int partSize = 100 * 1024;
+        int length = 2 * partSize + 1234;
+        byte[] data = randomData(length);
+        putObject(client, bucketName, srcKey, data);
+
+        client.putBucketPublicAccessBlock(PutBucketPublicAccessBlockRequest.newBuilder()
+                .bucket(bucketName)
+                .bucketPublicAccessBlockConfiguration(
+                        BucketPublicAccessBlockConfiguration.newBuilder()
+                                .blockPublicAccess(false)
+                                .build())
+                .build());
+
+        // Multipart copy with public-read ACL
+        Copier copier = new Copier(client, CopierOptions.newBuilder()
+                .partSize(partSize)
+                .multipartCopyThreshold(partSize)
+                .parallelNum(2)
+                .disableShallowCopy(true)
+                .build());
+
+        CopyResult result = copier.copy(CopyObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .sourceKey(srcKey)
+                .objectAcl("public-read")
+                .build());
+
+        Assert.assertNotNull(result);
+
+        // Verify ACL
+        GetObjectAclResult aclResult = client.getObjectAcl(GetObjectAclRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .build());
+        Assert.assertNotNull(aclResult.accessControlPolicy());
+        Assert.assertEquals("public-read",
+                aclResult.accessControlPolicy().accessControlList().grant());
+
+        // Verify content
+        GetObjectResult getResult = client.getObject(GetObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .build());
+        byte[] downloaded = IOUtils.toByteArray(getResult.body());
+        Assert.assertArrayEquals(data, downloaded);
+    }
+
+    // endregion
+
 }
