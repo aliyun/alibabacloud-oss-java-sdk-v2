@@ -1,28 +1,24 @@
 package com.aliyun.sdk.service.oss2.dataprocess.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.List;
+import static java.util.Objects.requireNonNull;
 
 /**
- * Data pipeline configuration.
+ * The container that stores the data pipeline configuration.
  */
 @JacksonXmlRootElement(localName = "DataPipelineConfiguration")
-public final class DataPipelineConfiguration {
-    @JacksonXmlProperty(localName = "DataPipelineName")
-    private String dataPipelineName;
+public final class PutDataPipelineConfigurationConfiguration {
 
     @JacksonXmlProperty(localName = "DataPipelineDescription")
     private String dataPipelineDescription;
 
-    @JacksonXmlProperty(localName = "DataPipelineRole")
-    private String dataPipelineRole;
-
-    @JacksonXmlProperty(localName = "Status")
-    private String status;
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "Sources")
+    private List<DataPipelineSource> sources;
 
     @JacksonXmlProperty(localName = "DataPipelineEmbeddingConfiguration")
     private DataPipelineEmbeddingConfiguration dataPipelineEmbeddingConfiguration;
@@ -33,62 +29,50 @@ public final class DataPipelineConfiguration {
     @JacksonXmlProperty(localName = "DataPipelineError")
     private DataPipelineError dataPipelineError;
 
-    @JacksonXmlProperty(localName = "CreateTime")
-    private String createTime;
-
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "Sources")
-    private List<DataPipelineSource> sources;
-
-    public DataPipelineConfiguration() {
+    public PutDataPipelineConfigurationConfiguration() {
     }
 
-    private DataPipelineConfiguration(Builder builder) {
-        this.dataPipelineName = builder.dataPipelineName;
+    private PutDataPipelineConfigurationConfiguration(Builder builder) {
         this.dataPipelineDescription = builder.dataPipelineDescription;
-        this.dataPipelineRole = builder.dataPipelineRole;
-        this.status = builder.status;
+        this.sources = builder.sources;
         this.dataPipelineEmbeddingConfiguration = builder.dataPipelineEmbeddingConfiguration;
         this.destination = builder.destination;
         this.dataPipelineError = builder.dataPipelineError;
-        this.createTime = builder.createTime;
-        this.sources = builder.sources;
     }
 
-    public String dataPipelineName() {
-        return dataPipelineName;
-    }
-
+    /**
+     * Pipeline description
+     */
     public String dataPipelineDescription() {
         return dataPipelineDescription;
     }
 
-    public String dataPipelineRole() {
-        return dataPipelineRole;
+    /**
+     * List of data sources
+     */
+    public List<DataPipelineSource> sources() {
+        return sources;
     }
 
-    public String status() {
-        return status;
-    }
-
+    /**
+     * Embedding configuration
+     */
     public DataPipelineEmbeddingConfiguration dataPipelineEmbeddingConfiguration() {
         return dataPipelineEmbeddingConfiguration;
     }
 
+    /**
+     * Destination configuration
+     */
     public DataPipelineDestination destination() {
         return destination;
     }
 
+    /**
+     * Error configuration
+     */
     public DataPipelineError dataPipelineError() {
         return dataPipelineError;
-    }
-
-    public String createTime() {
-        return createTime;
-    }
-
-    public List<DataPipelineSource> sources() {
-        return sources;
     }
 
     public static Builder newBuilder() {
@@ -100,58 +84,49 @@ public final class DataPipelineConfiguration {
     }
 
     public static class Builder {
-        private String dataPipelineName;
         private String dataPipelineDescription;
-        private String dataPipelineRole;
-        private String status;
+        private List<DataPipelineSource> sources;
         private DataPipelineEmbeddingConfiguration dataPipelineEmbeddingConfiguration;
         private DataPipelineDestination destination;
         private DataPipelineError dataPipelineError;
-        private String createTime;
-        private List<DataPipelineSource> sources;
 
-        public Builder dataPipelineName(String value) {
-            this.dataPipelineName = value;
-            return this;
-        }
-
+        /**
+         * Pipeline description
+         */
         public Builder dataPipelineDescription(String value) {
             this.dataPipelineDescription = value;
             return this;
         }
 
-        public Builder dataPipelineRole(String value) {
-            this.dataPipelineRole = value;
+        /**
+         * List of data sources
+         */
+        public Builder sources(List<DataPipelineSource> value) {
+            this.sources = value;
             return this;
         }
 
-        public Builder status(String value) {
-            this.status = value;
-            return this;
-        }
-
+        /**
+         * Embedding configuration
+         */
         public Builder dataPipelineEmbeddingConfiguration(DataPipelineEmbeddingConfiguration value) {
             this.dataPipelineEmbeddingConfiguration = value;
             return this;
         }
 
+        /**
+         * Destination configuration
+         */
         public Builder destination(DataPipelineDestination value) {
             this.destination = value;
             return this;
         }
 
+        /**
+         * Error configuration
+         */
         public Builder dataPipelineError(DataPipelineError value) {
             this.dataPipelineError = value;
-            return this;
-        }
-
-        public Builder createTime(String value) {
-            this.createTime = value;
-            return this;
-        }
-
-        public Builder sources(List<DataPipelineSource> value) {
-            this.sources = value;
             return this;
         }
 
@@ -159,20 +134,16 @@ public final class DataPipelineConfiguration {
             super();
         }
 
-        private Builder(DataPipelineConfiguration from) {
-            this.dataPipelineName = from.dataPipelineName;
+        private Builder(PutDataPipelineConfigurationConfiguration from) {
             this.dataPipelineDescription = from.dataPipelineDescription;
-            this.dataPipelineRole = from.dataPipelineRole;
-            this.status = from.status;
+            this.sources = from.sources;
             this.dataPipelineEmbeddingConfiguration = from.dataPipelineEmbeddingConfiguration;
             this.destination = from.destination;
             this.dataPipelineError = from.dataPipelineError;
-            this.createTime = from.createTime;
-            this.sources = from.sources;
         }
 
-        public DataPipelineConfiguration build() {
-            return new DataPipelineConfiguration(this);
+        public PutDataPipelineConfigurationConfiguration build() {
+            return new PutDataPipelineConfigurationConfiguration(this);
         }
     }
 }

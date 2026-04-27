@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2.dataprocess.transform;
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.transform.SerdeUtils;
+import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.dataprocess.models.*;
 
@@ -27,13 +28,13 @@ public final class SerdeDataPipelineBasic {
         if (request.role() != null) {
             parameters.put("role", request.role());
         }
-
+        BinaryData body = SerdeUtils.serializeXmlBody(request.putDataPipelineConfigurationConfiguration());
         OperationInput input = OperationInput.newBuilder()
                 .opName("PutDataPipelineConfiguration")
-                .bucket(request.bucket())
                 .method("POST")
                 .headers(headers)
                 .parameters(parameters)
+                .body(body)
                 .build();
 
         SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
@@ -46,7 +47,6 @@ public final class SerdeDataPipelineBasic {
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(SerdeUtils.deserializeXmlBody(output, PutDataPipelineConfigurationResponseBody.class))
                 .build();
     }
 
@@ -66,8 +66,7 @@ public final class SerdeDataPipelineBasic {
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("GetDataPipelineConfiguration")
-                .bucket(request.bucket())
-                .method("GET")
+                .method("POST")
                 .headers(headers)
                 .parameters(parameters)
                 .build();
@@ -80,7 +79,7 @@ public final class SerdeDataPipelineBasic {
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(SerdeUtils.deserializeXmlBody(output, GetDataPipelineConfigurationResponseBody.class))
+                .innerBody(SerdeUtils.deserializeXmlBody(output, DataPipelineConfiguration.class))
                 .build();
     }
 
@@ -100,7 +99,6 @@ public final class SerdeDataPipelineBasic {
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("DeleteDataPipelineConfiguration")
-                .bucket(request.bucket())
                 .method("POST")
                 .headers(headers)
                 .parameters(parameters)
@@ -114,7 +112,6 @@ public final class SerdeDataPipelineBasic {
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(SerdeUtils.deserializeXmlBody(output, DeleteDataPipelineConfigurationResponseBody.class))
                 .build();
     }
 
@@ -140,8 +137,7 @@ public final class SerdeDataPipelineBasic {
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("ListDataPipelineConfigurations")
-                .bucket(request.bucket())
-                .method("GET")
+                .method("POST")
                 .headers(headers)
                 .parameters(parameters)
                 .build();
@@ -174,7 +170,6 @@ public final class SerdeDataPipelineBasic {
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("PauseDataPipeline")
-                .bucket(request.bucket())
                 .method("POST")
                 .headers(headers)
                 .parameters(parameters)
@@ -188,7 +183,6 @@ public final class SerdeDataPipelineBasic {
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(SerdeUtils.deserializeXmlBody(output, PauseDataPipelineResponseBody.class))
                 .build();
     }
 
@@ -208,7 +202,6 @@ public final class SerdeDataPipelineBasic {
 
         OperationInput input = OperationInput.newBuilder()
                 .opName("RestartDataPipeline")
-                .bucket(request.bucket())
                 .method("POST")
                 .headers(headers)
                 .parameters(parameters)
@@ -222,7 +215,6 @@ public final class SerdeDataPipelineBasic {
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(SerdeUtils.deserializeXmlBody(output, RestartDataPipelineResponseBody.class))
                 .build();
     }
 }

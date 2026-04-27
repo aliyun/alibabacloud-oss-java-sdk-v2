@@ -3580,4 +3580,56 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // data pipeline api
+
+    /**
+     * Initiates a data pipeline action request.
+     *
+     * @param request A {@link DoDataPipelineActionRequest} for DoDataPipelineAction operation.
+     * @return A {@link DoDataPipelineActionResult} for DoDataPipelineAction operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DoDataPipelineActionResult doDataPipelineAction(DoDataPipelineActionRequest request) {
+        return doDataPipelineAction(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Initiates a data pipeline action request.
+     *
+     * @param request A {@link DoDataPipelineActionRequest} for DoDataPipelineAction operation.
+     * @param options The operation options.
+     * @return A {@link DoDataPipelineActionResult} for DoDataPipelineAction operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DoDataPipelineActionResult doDataPipelineAction(DoDataPipelineActionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // meta query api
+
+    /**
+     * Initiates a meta query action request.
+     *
+     * @param request A {@link DoMetaQueryActionRequest} for DoMetaQueryAction operation.
+     * @return A {@link DoMetaQueryActionResult} for DoMetaQueryAction operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DoMetaQueryActionResult doMetaQueryAction(DoMetaQueryActionRequest request) {
+        return doMetaQueryAction(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Initiates a meta query action request.
+     *
+     * @param request A {@link DoMetaQueryActionRequest} for DoMetaQueryAction operation.
+     * @param options The operation options.
+     * @return A {@link DoMetaQueryActionResult} for DoMetaQueryAction operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DoMetaQueryActionResult doMetaQueryAction(DoMetaQueryActionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }

@@ -1,10 +1,8 @@
 package com.aliyun.sdk.service.oss2.dataprocess.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-
 import java.util.List;
 
 /**
@@ -18,15 +16,15 @@ public final class DataPipelineDestination {
     @JacksonXmlProperty(localName = "VectorKeyPrefix")
     private String vectorKeyPrefix;
 
-    @JacksonXmlElementWrapper(localName = "VectorIndexNames")
-    @JacksonXmlProperty(localName = "VectorIndexName")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "VectorIndexNames")
     private List<String> vectorIndexNames;
 
-    @JacksonXmlElementWrapper(localName = "ObjectTagToMetadata")
+    @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "ObjectTagToMetadata")
     private List<String> objectTagToMetadata;
 
-    @JacksonXmlElementWrapper(localName = "UsermetaToMetadata")
+    @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "UsermetaToMetadata")
     private List<String> usermetaToMetadata;
 

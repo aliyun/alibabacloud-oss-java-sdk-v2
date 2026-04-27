@@ -1,34 +1,42 @@
 package com.aliyun.sdk.service.oss2.dataprocess.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
-
 import static java.util.Objects.requireNonNull;
 
 /**
  * The request for the PutDataPipelineConfiguration operation.
  */
 public final class PutDataPipelineConfigurationRequest extends RequestModel {
-    private final String bucket;
+    private final PutDataPipelineConfigurationConfiguration putDataPipelineConfigurationConfiguration;
 
     private PutDataPipelineConfigurationRequest(Builder builder) {
         super(builder);
-        this.bucket = builder.bucket;
+        this.putDataPipelineConfigurationConfiguration = builder.putDataPipelineConfigurationConfiguration;
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public String bucket() {
-        return bucket;
-    }
-
+    /**
+     * The name of the data pipeline.
+     */
     public String dataPipelineName() {
         return parameters.get("dataPipelineName");
     }
 
+    /**
+     * The role for the data pipeline.
+     */
     public String role() {
         return parameters.get("role");
+    }
+
+    /**
+     * The container of the request body.
+     */
+    public PutDataPipelineConfigurationConfiguration putDataPipelineConfigurationConfiguration() {
+        return putDataPipelineConfigurationConfiguration;
     }
 
     public Builder toBuilder() {
@@ -36,7 +44,38 @@ public final class PutDataPipelineConfigurationRequest extends RequestModel {
     }
 
     public static class Builder extends RequestModel.Builder<Builder> {
-        private String bucket;
+        private PutDataPipelineConfigurationConfiguration putDataPipelineConfigurationConfiguration;
+
+        /**
+         * The name of the data pipeline.
+         */
+        public Builder dataPipelineName(String value) {
+            requireNonNull(value);
+            this.parameters.put("dataPipelineName", value);
+            return this;
+        }
+
+        /**
+         * The role for the data pipeline.
+         */
+        public Builder role(String value) {
+            requireNonNull(value);
+            this.parameters.put("role", value);
+            return this;
+        }
+
+        /**
+         * The container of the request body.
+         */
+        public Builder putDataPipelineConfigurationConfiguration(PutDataPipelineConfigurationConfiguration value) {
+            requireNonNull(value);
+            this.putDataPipelineConfigurationConfiguration = value;
+            return this;
+        }
+
+        public PutDataPipelineConfigurationRequest build() {
+            return new PutDataPipelineConfigurationRequest(this);
+        }
 
         private Builder() {
             super();
@@ -44,54 +83,7 @@ public final class PutDataPipelineConfigurationRequest extends RequestModel {
 
         private Builder(PutDataPipelineConfigurationRequest request) {
             super(request);
-            this.bucket = request.bucket;
-        }
-
-        public Builder bucket(String value) {
-            requireNonNull(value);
-            this.bucket = value;
-            return this;
-        }
-
-        public Builder dataPipelineName(String value) {
-            requireNonNull(value);
-            this.parameters.put("dataPipelineName", value);
-            return this;
-        }
-
-        public Builder role(String value) {
-            requireNonNull(value);
-            this.parameters.put("role", value);
-            return this;
-        }
-
-        public Builder dataPipelineDescription(String value) {
-            this.parameters.put("DataPipelineDescription", value);
-            return this;
-        }
-
-        public Builder sources(String value) {
-            this.parameters.put("Sources", value);
-            return this;
-        }
-
-        public Builder dataPipelineEmbeddingConfiguration(String value) {
-            this.parameters.put("DataPipelineEmbeddingConfiguration", value);
-            return this;
-        }
-
-        public Builder destination(String value) {
-            this.parameters.put("Destination", value);
-            return this;
-        }
-
-        public Builder dataPipelineError(String value) {
-            this.parameters.put("DataPipelineError", value);
-            return this;
-        }
-
-        public PutDataPipelineConfigurationRequest build() {
-            return new PutDataPipelineConfigurationRequest(this);
+            this.putDataPipelineConfigurationConfiguration = request.putDataPipelineConfigurationConfiguration;
         }
     }
 }

@@ -710,4 +710,14 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<GetBucketRequestPaymentResult> getBucketRequestPaymentAsync(GetBucketRequestPaymentRequest request, OperationOptions options) {
         return BucketRequestPayment.getBucketRequestPaymentAsync(this.clientImpl, request, options);
     }
+  
+    @Override
+    public CompletableFuture<DoDataPipelineActionResult> doDataPipelineActionAsync(DoDataPipelineActionRequest request, OperationOptions options) {
+        return DataBasic.doDataPipelineActionAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public CompletableFuture<DoMetaQueryActionResult> doMetaQueryActionAsync(DoMetaQueryActionRequest request, OperationOptions options) {
+        return DataBasic.doMetaQueryActionAsync(this.clientImpl, request, options);
+    }
 }
