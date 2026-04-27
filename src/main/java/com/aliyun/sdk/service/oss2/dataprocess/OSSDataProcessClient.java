@@ -133,4 +133,97 @@ public interface OSSDataProcessClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // DataPipeline api
+    //-----------------------------------------------------------------------
+    /**
+     * Creates or updates a Data Pipeline configuration.
+     *
+     * @param request A {@link PutDataPipelineConfigurationRequest} for PutDataPipelineConfiguration operation.
+     * @return A {@link PutDataPipelineConfigurationResult} for PutDataPipelineConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutDataPipelineConfigurationResult putDataPipelineConfiguration(PutDataPipelineConfigurationRequest request) {
+        return putDataPipelineConfiguration(request, OperationOptions.defaults());
+    }
+
+    default PutDataPipelineConfigurationResult putDataPipelineConfiguration(PutDataPipelineConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets a Data Pipeline configuration.
+     *
+     * @param request A {@link GetDataPipelineConfigurationRequest} for GetDataPipelineConfiguration operation.
+     * @return A {@link GetDataPipelineConfigurationResult} for GetDataPipelineConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetDataPipelineConfigurationResult getDataPipelineConfiguration(GetDataPipelineConfigurationRequest request) {
+        return getDataPipelineConfiguration(request, OperationOptions.defaults());
+    }
+
+    default GetDataPipelineConfigurationResult getDataPipelineConfiguration(GetDataPipelineConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes a Data Pipeline configuration.
+     *
+     * @param request A {@link DeleteDataPipelineConfigurationRequest} for DeleteDataPipelineConfiguration operation.
+     * @return A {@link DeleteDataPipelineConfigurationResult} for DeleteDataPipelineConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteDataPipelineConfigurationResult deleteDataPipelineConfiguration(DeleteDataPipelineConfigurationRequest request) {
+        return deleteDataPipelineConfiguration(request, OperationOptions.defaults());
+    }
+
+    default DeleteDataPipelineConfigurationResult deleteDataPipelineConfiguration(DeleteDataPipelineConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists Data Pipeline configurations.
+     *
+     * @param request A {@link ListDataPipelineConfigurationsRequest} for ListDataPipelineConfigurations operation.
+     * @return A {@link ListDataPipelineConfigurationsResult} for ListDataPipelineConfigurations operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListDataPipelineConfigurationsResult listDataPipelineConfigurations(ListDataPipelineConfigurationsRequest request) {
+        return listDataPipelineConfigurations(request, OperationOptions.defaults());
+    }
+
+    default ListDataPipelineConfigurationsResult listDataPipelineConfigurations(ListDataPipelineConfigurationsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Pauses a Data Pipeline.
+     *
+     * @param request A {@link PauseDataPipelineRequest} for PauseDataPipeline operation.
+     * @return A {@link PauseDataPipelineResult} for PauseDataPipeline operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PauseDataPipelineResult pauseDataPipeline(PauseDataPipelineRequest request) {
+        return pauseDataPipeline(request, OperationOptions.defaults());
+    }
+
+    default PauseDataPipelineResult pauseDataPipeline(PauseDataPipelineRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Restarts a Data Pipeline.
+     *
+     * @param request A {@link RestartDataPipelineRequest} for RestartDataPipeline operation.
+     * @return A {@link RestartDataPipelineResult} for RestartDataPipeline operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default RestartDataPipelineResult restartDataPipeline(RestartDataPipelineRequest request) {
+        return restartDataPipeline(request, OperationOptions.defaults());
+    }
+
+    default RestartDataPipelineResult restartDataPipeline(RestartDataPipelineRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }

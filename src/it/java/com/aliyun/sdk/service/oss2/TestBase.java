@@ -2,6 +2,8 @@ package com.aliyun.sdk.service.oss2;
 
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
+import com.aliyun.sdk.service.oss2.dataprocess.OSSDataProcessAsyncClient;
+import com.aliyun.sdk.service.oss2.dataprocess.OSSDataProcessClient;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.paginator.ListBucketsIterable;
 import com.aliyun.sdk.service.oss2.paginator.ListObjectVersionsIterable;
@@ -33,6 +35,10 @@ public class TestBase {
     public static String OSS_TEST_RAM_ROLE_ARN = null;
     public static String OSS_TEST_RAM_UID = null;
     public static String OSS_TEST_FUNCTION_ARN = null;
+    public static String API_KEY = null;
+    public static String MODEL_TYPE = null;
+    public static String DIMENSION = null;
+    public static String ROLE_NAME = null;
 
     // payer
     public static String OSS_TEST_PAYER_ACCESS_KEY_ID = null;
@@ -44,6 +50,8 @@ public class TestBase {
     protected static OSSClient instanceSync_;
 
     protected static OSSAsyncClient instanceAsync_;
+
+    protected static OSSDataProcessAsyncClient instanceDataProcessAsync_;
 
     //protected static Client instance_;
 
@@ -282,6 +290,29 @@ public class TestBase {
                 .accountId(accountId())
                 .credentialsProvider(provider)
                 .build();
+    }
+
+    public static OSSDataProcessClient getDataClient() {
+        CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
+        return OSSDataProcessClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .accountId(accountId())
+                .credentialsProvider(provider)
+                .build();
+    }
+
+    public static OSSDataProcessAsyncClient getDataAsyncClient() {
+        if (instanceDataProcessAsync_ == null) {
+            CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
+            instanceDataProcessAsync_ = OSSDataProcessAsyncClient.newBuilder()
+                    .region(region())
+                    .endpoint(endpoint())
+                    .accountId(accountId())
+                    .credentialsProvider(provider)
+                    .build();
+        }
+        return instanceDataProcessAsync_;
     }
 
     public static boolean compareFile(String fileNameLeft, String fileNameRight) throws IOException {

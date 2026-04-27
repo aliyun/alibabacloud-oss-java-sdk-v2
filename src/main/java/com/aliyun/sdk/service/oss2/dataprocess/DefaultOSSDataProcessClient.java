@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2.dataprocess;
 import com.aliyun.sdk.service.oss2.*;
 import com.aliyun.sdk.service.oss2.dataprocess.models.*;
 import com.aliyun.sdk.service.oss2.dataprocess.operations.DatasetBasic;
+import com.aliyun.sdk.service.oss2.dataprocess.operations.DataPipelineBasic;
 import com.aliyun.sdk.service.oss2.internal.ClientImpl;
 
 import java.util.ArrayList;
@@ -67,6 +68,37 @@ public class DefaultOSSDataProcessClient implements OSSDataProcessClient {
     @Override
     public SemanticQueryResult semanticQuery(SemanticQueryRequest request, OperationOptions options) {
         return DatasetBasic.semanticQuery(this.clientImpl, request, options);
+    }
+
+    // DataPipeline API
+    @Override
+    public PutDataPipelineConfigurationResult putDataPipelineConfiguration(PutDataPipelineConfigurationRequest request, OperationOptions options) {
+        return DataPipelineBasic.putDataPipelineConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetDataPipelineConfigurationResult getDataPipelineConfiguration(GetDataPipelineConfigurationRequest request, OperationOptions options) {
+        return DataPipelineBasic.getDataPipelineConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteDataPipelineConfigurationResult deleteDataPipelineConfiguration(DeleteDataPipelineConfigurationRequest request, OperationOptions options) {
+        return DataPipelineBasic.deleteDataPipelineConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListDataPipelineConfigurationsResult listDataPipelineConfigurations(ListDataPipelineConfigurationsRequest request, OperationOptions options) {
+        return DataPipelineBasic.listDataPipelineConfigurations(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PauseDataPipelineResult pauseDataPipeline(PauseDataPipelineRequest request, OperationOptions options) {
+        return DataPipelineBasic.pauseDataPipeline(this.clientImpl, request, options);
+    }
+
+    @Override
+    public RestartDataPipelineResult restartDataPipeline(RestartDataPipelineRequest request, OperationOptions options) {
+        return DataPipelineBasic.restartDataPipeline(this.clientImpl, request, options);
     }
 
     @Override
