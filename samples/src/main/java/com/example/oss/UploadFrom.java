@@ -7,7 +7,7 @@ import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsPro
 import com.aliyun.sdk.service.oss2.models.PutObjectRequest;
 import com.aliyun.sdk.service.oss2.transfermanager.UploadResult;
 import com.aliyun.sdk.service.oss2.transfermanager.Uploader;
-import com.aliyun.sdk.service.oss2.transfermanager.UploaderOptions;
+import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -51,7 +51,7 @@ public class UploadFrom implements Example {
                 UploadResult result = uploader.uploadFrom(PutObjectRequest.newBuilder()
                         .bucket(bucket)
                         .key(key)
-                        .build(), fis);
+                        .build(), BinaryData.fromStream(fis) );
 
                 System.out.printf("status code: %d, request id: %s, content md5: %s, etag: %s, hash crc64: %s, version id: %s, server time: %s%n",
                         result.statusCode(),
