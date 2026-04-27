@@ -1427,4 +1427,24 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketRequestPaymentResult> getBucketRequestPaymentAsync(GetBucketRequestPaymentRequest request, OperationOptions options) {
         return BucketRequestPayment.getBucketRequestPaymentAsync(this.clientImpl, request, options);
     }
+  
+    @Override
+    public DoDataPipelineActionResult doDataPipelineAction(DoDataPipelineActionRequest request, OperationOptions options) {
+        return DataBasic.doDataPipelineAction(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DoDataPipelineActionResult> doDataPipelineActionAsync(DoDataPipelineActionRequest request, OperationOptions options) {
+        return DataBasic.doDataPipelineActionAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public DoMetaQueryActionResult doMetaQueryAction(DoMetaQueryActionRequest request, OperationOptions options) {
+        return DataBasic.doMetaQueryAction(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DoMetaQueryActionResult> doMetaQueryActionAsync(DoMetaQueryActionRequest request, OperationOptions options) {
+        return DataBasic.doMetaQueryActionAsync(this.clientImpl, request, options);
+    }
 }
