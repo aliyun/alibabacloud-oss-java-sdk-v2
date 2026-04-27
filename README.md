@@ -2,7 +2,7 @@
 
 [![GitHub version](https://badge.fury.io/gh/aliyun%2Falibabacloud-oss-java-sdk-v2.svg)](https://badge.fury.io/gh/aliyun%2Falibabacloud-oss-java-sdk-v2)
 
-alibabacloud-oss-java-sdk-v2 is the developer preview for the v2 of the OSS SDK for the Java programming language
+alibabacloud-oss-java-sdk-v2 is the v2 of the OSS SDK for the Java programming language
 
 ## [README in Chinese](README-CN.md)
 
