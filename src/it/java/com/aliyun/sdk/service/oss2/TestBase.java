@@ -37,6 +37,7 @@ public class TestBase {
     public static String API_KEY = null;
     public static String MODEL_TYPE = null;
     public static String DIMENSION = null;
+    public static String ROLE_NAME = null;
 
     // payer
     public static String OSS_TEST_PAYER_ACCESS_KEY_ID = null;
@@ -102,6 +103,10 @@ public class TestBase {
 
     public static String dimension() {
         return Optional.ofNullable(DIMENSION).orElse(System.getenv().get("DIMENSION"));
+    }
+
+    public static String roleName() {
+        return Optional.ofNullable(ROLE_NAME).orElse(System.getenv().get("ROLE_NAME"));
     }
 
     @BeforeClass

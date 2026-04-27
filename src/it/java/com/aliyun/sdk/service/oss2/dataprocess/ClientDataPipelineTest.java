@@ -24,7 +24,7 @@ public class ClientDataPipelineTest extends TestBase {
     public void testDataPipelineLifecycle() {
         OSSDataProcessClient client = getDataClient();
         String pipelineName = "test-pipeline-" + System.currentTimeMillis();
-        String roleName = "immdatatest";
+        String roleName = roleName();
 
         // 1. Put Data Pipeline Configuration
         DataPipelineSourceFilterConfiguration filterConfig = DataPipelineSourceFilterConfiguration.newBuilder()
