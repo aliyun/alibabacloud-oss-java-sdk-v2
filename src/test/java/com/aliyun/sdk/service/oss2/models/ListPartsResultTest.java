@@ -7,6 +7,7 @@ import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -41,16 +42,25 @@ public class ListPartsResultTest {
         Part part1 = Part.newBuilder()
                 .partNumber(1L)
                 .eTag("\"3349DC700140D7F86A0784842780****\"")
+                .lastModified(Instant.parse("2012-02-23T07:01:34.000Z"))
+                .size(6291456L)
+                .hashCrc64ecma("1234567890")
                 .build();
 
         Part part2 = Part.newBuilder()
                 .partNumber(2L)
                 .eTag("\"3349DC700140D7F86A0784842780****\"")
+                .lastModified(Instant.parse("2012-02-23T07:01:12.000Z"))
+                .size(6291456L)
+                .hashCrc64ecma("2345678901")
                 .build();
 
         Part part3 = Part.newBuilder()
                 .partNumber(5L)
                 .eTag("\"7265F4D211B56873A381D321F586****\"")
+                .lastModified(Instant.parse("2012-02-23T07:02:03.000Z"))
+                .size(1024L)
+                .hashCrc64ecma("3456789012")
                 .build();
 
         List<Part> parts = Arrays.asList(part1, part2, part3);
@@ -83,14 +93,23 @@ public class ListPartsResultTest {
         Part resultPart1 = result.parts().get(0);
         assertThat(resultPart1.partNumber()).isEqualTo(1L);
         assertThat(resultPart1.eTag()).isEqualTo("\"3349DC700140D7F86A0784842780****\"");
+        assertThat(resultPart1.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:01:34.000Z"));
+        assertThat(resultPart1.size()).isEqualTo(6291456L);
+        assertThat(resultPart1.hashCrc64ecma()).isEqualTo("1234567890");
 
         Part resultPart2 = result.parts().get(1);
         assertThat(resultPart2.partNumber()).isEqualTo(2L);
         assertThat(resultPart2.eTag()).isEqualTo("\"3349DC700140D7F86A0784842780****\"");
+        assertThat(resultPart2.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:01:12.000Z"));
+        assertThat(resultPart2.size()).isEqualTo(6291456L);
+        assertThat(resultPart2.hashCrc64ecma()).isEqualTo("2345678901");
 
         Part resultPart3 = result.parts().get(2);
         assertThat(resultPart3.partNumber()).isEqualTo(5L);
         assertThat(resultPart3.eTag()).isEqualTo("\"7265F4D211B56873A381D321F586****\"");
+        assertThat(resultPart3.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:02:03.000Z"));
+        assertThat(resultPart3.size()).isEqualTo(1024L);
+        assertThat(resultPart3.hashCrc64ecma()).isEqualTo("3456789012");
     }
 
     @Test
@@ -102,6 +121,9 @@ public class ListPartsResultTest {
         Part part = Part.newBuilder()
                 .partNumber(1L)
                 .eTag("\"3349DC700140D7F86A0784842780****\"")
+                .lastModified(Instant.parse("2012-02-23T07:01:34.000Z"))
+                .size(6291456L)
+                .hashCrc64ecma("1234567890")
                 .build();
 
         ListPartResultXml listPartResultXml = new ListPartResultXml();
@@ -134,6 +156,9 @@ public class ListPartsResultTest {
         Part resultPart = copy.parts().get(0);
         assertThat(resultPart.partNumber()).isEqualTo(1L);
         assertThat(resultPart.eTag()).isEqualTo("\"3349DC700140D7F86A0784842780****\"");
+        assertThat(resultPart.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:01:34.000Z"));
+        assertThat(resultPart.size()).isEqualTo(6291456L);
+        assertThat(resultPart.hashCrc64ecma()).isEqualTo("1234567890");
     }
 
     @Test
@@ -187,14 +212,20 @@ public class ListPartsResultTest {
         Part resultPart1 = result.parts().get(0);
         assertThat(resultPart1.partNumber()).isEqualTo(1L);
         assertThat(resultPart1.eTag()).isEqualTo("\"3349DC700140D7F86A0784842780****\"");
+        assertThat(resultPart1.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:01:34.000Z"));
+        assertThat(resultPart1.size()).isEqualTo(6291456L);
 
         Part resultPart2 = result.parts().get(1);
         assertThat(resultPart2.partNumber()).isEqualTo(2L);
         assertThat(resultPart2.eTag()).isEqualTo("\"3349DC700140D7F86A0784842780****\"");
+        assertThat(resultPart2.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:01:12.000Z"));
+        assertThat(resultPart2.size()).isEqualTo(6291456L);
 
         Part resultPart3 = result.parts().get(2);
         assertThat(resultPart3.partNumber()).isEqualTo(5L);
         assertThat(resultPart3.eTag()).isEqualTo("\"7265F4D211B56873A381D321F586****\"");
+        assertThat(resultPart3.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:02:03.000Z"));
+        assertThat(resultPart3.size()).isEqualTo(1024L);
     }
 
     @Test
@@ -256,13 +287,19 @@ public class ListPartsResultTest {
         Part resultPart1 = result.parts().get(0);
         assertThat(resultPart1.partNumber()).isEqualTo(1L);
         assertThat(resultPart1.eTag()).isEqualTo("\"3349DC700140D7F86A0784842780****\"");
+        assertThat(resultPart1.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:01:34.000Z"));
+        assertThat(resultPart1.size()).isEqualTo(6291456L);
 
         Part resultPart2 = result.parts().get(1);
         assertThat(resultPart2.partNumber()).isEqualTo(2L);
         assertThat(resultPart2.eTag()).isEqualTo("\"3349DC700140D7F86A0784842780****\"");
+        assertThat(resultPart2.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:01:12.000Z"));
+        assertThat(resultPart2.size()).isEqualTo(6291456L);
 
         Part resultPart3 = result.parts().get(2);
         assertThat(resultPart3.partNumber()).isEqualTo(5L);
         assertThat(resultPart3.eTag()).isEqualTo("\"7265F4D211B56873A381D321F586****\"");
+        assertThat(resultPart3.lastModified()).isEqualTo(Instant.parse("2012-02-23T07:02:03.000Z"));
+        assertThat(resultPart3.size()).isEqualTo(1024L);
     }
 }

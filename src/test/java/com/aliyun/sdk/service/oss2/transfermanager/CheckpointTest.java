@@ -559,6 +559,7 @@ public class CheckpointTest {
                 .parallelNum(1)
                 .enableCheckpoint(true)
                 .checkpointDir(tmpDir.toString())
+                .enableCRC64Check(false)
                 .build();
         assertTrue(opts.enableCheckpoint());
         assertEquals(tmpDir.toString(), opts.checkpointDir());
@@ -618,6 +619,7 @@ public class CheckpointTest {
                 .parallelNum(1)
                 .enableCheckpoint(true)
                 .checkpointDir(tmpDir.toString())
+                .enableCRC64Check(false)
                 .build();
 
         Uploader uploader1 = new Uploader(client1, opts);

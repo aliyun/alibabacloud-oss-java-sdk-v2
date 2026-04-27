@@ -1,12 +1,15 @@
 package com.aliyun.sdk.service.oss2.transfermanager;
 
 import com.aliyun.sdk.service.oss2.OSSClient;
-import com.aliyun.sdk.service.oss2.OperationOptions;
+import com.aliyun.sdk.service.oss2.exceptions.InconsistentException;
+import com.aliyun.sdk.service.oss2.hash.CRC64;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.progress.ProgressListener;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MimeUtils;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -29,44 +32,24 @@ public class Uploader {
         return options;
     }
 
-    public UploadResult uploadFrom(PutObjectRequest request, InputStream body) throws UploadError {
+    public UploadResult uploadFrom(PutObjectRequest request, BinaryData body) throws UploadError {
         return uploadFrom(request, body, null);
     }
 
-    public UploadResult uploadFrom(PutObjectRequest request, InputStream body, UploaderOptions overrideOptions) throws UploadError {
+    public UploadResult uploadFrom(PutObjectRequest request, BinaryData body, UploaderOptions overrideOptions) throws UploadError {
         validateRequest(request);
-
         if (body == null) {
             throw new IllegalArgumentException("the body is null");
         }
 
-        UploaderOptions opts = overrideOptions != null ? overrideOptions : this.options;
-        long partSize = opts.partSize();
-        int parallelNum = opts.parallelNum();
+        UploaderDelegate delegate = new UploaderDelegate(client, request, options, overrideOptions);
+        delegate.adjustPartSize(body);
 
-        // Determine total size if possible
-        long totalSize = -1;
-        if (body instanceof ByteArrayInputStream) {
-            try {
-                totalSize = body.available();
-            } catch (IOException e) {
-                // ignore
-            }
+        if (delegate.totalSize >= 0 && delegate.totalSize < delegate.partSize) {
+            return delegate.singlePart(body);
         }
 
-        // Adjust part size
-        if (totalSize > 0) {
-            while (totalSize / partSize >= Defaults.MAX_UPLOAD_PARTS) {
-                partSize += opts.partSize();
-            }
-        }
-
-        if (totalSize >= 0 && totalSize < partSize) {
-            return singlePart(request, body, totalSize);
-        }
-
-        return multiPart(request, body, totalSize, partSize, parallelNum, opts.leavePartsOnError(),
-                null, null);
+        return delegate.multiPart(body);
     }
 
     public UploadResult uploadFile(PutObjectRequest request, String filePath) throws UploadError {
@@ -75,7 +58,6 @@ public class Uploader {
 
     public UploadResult uploadFile(PutObjectRequest request, String filePath, UploaderOptions overrideOptions) throws UploadError {
         validateRequest(request);
-
         if (filePath == null || filePath.isEmpty()) {
             throw new IllegalArgumentException("filePath is required");
         }
@@ -85,62 +67,16 @@ public class Uploader {
             throw new IllegalArgumentException("File not exists, " + filePath);
         }
 
-        UploaderOptions opts = overrideOptions != null ? overrideOptions : this.options;
-        long totalSize = file.length();
-        long partSize = opts.partSize();
-        int parallelNum = opts.parallelNum();
+        UploaderDelegate delegate = new UploaderDelegate(client, request, options, overrideOptions);
+        delegate.prepareFileUpload(file, filePath);
 
-        // Adjust part size
-        if (totalSize > 0) {
-            while (totalSize / partSize >= Defaults.MAX_UPLOAD_PARTS) {
-                partSize += opts.partSize();
-            }
+        if (delegate.totalSize < delegate.partSize) {
+            return delegate.singlePartFile(filePath);
         }
-
-        // Checkpoint support (only for file uploads)
-        UploadCheckpoint checkpoint = null;
-        boolean leavePartsOnError = opts.leavePartsOnError();
-        if (opts.enableCheckpoint()) {
-            String fileLastModified = String.valueOf(file.lastModified());
-            checkpoint = UploadCheckpoint.create(
-                    request.bucket(), request.key(), filePath,
-                    opts.checkpointDir(), totalSize, fileLastModified, partSize);
-            try {
-                checkpoint.load();
-            } catch (IOException e) {
-                throw new UploadError("", "oss://" + request.bucket() + "/" + request.key(), e);
-            }
-            // When checkpoint is enabled, always leave parts on error so we can resume
-            leavePartsOnError = true;
-        }
-
-        FileInputStream fis;
-        try {
-            fis = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            throw new UploadError("", "oss://" + request.bucket() + "/" + request.key(), e);
-        }
-
-        try {
-            // Detect content type from file extension
-            String contentType = getContentType(filePath);
-
-            if (totalSize < partSize && (checkpoint == null || !checkpoint.loaded)) {
-                return singlePartFile(request, fis, totalSize, contentType);
-            }
-
-            return multiPartFile(request, fis, totalSize, partSize, parallelNum, leavePartsOnError,
-                    contentType, checkpoint);
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException e) {
-                // ignore
-            }
-        }
+        return delegate.multiPartFile(filePath);
     }
 
-    private void validateRequest(PutObjectRequest request) {
+    private static void validateRequest(PutObjectRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("null field, request");
         }
@@ -152,106 +88,203 @@ public class Uploader {
         }
     }
 
-    private String getContentType(String filePath) {
-        if (filePath != null && !filePath.isEmpty()) {
-            String mimeType = MimeUtils.getMimetype(filePath, "application/octet-stream");
-            return mimeType;
-        }
-        return null;
-    }
+    // -------------------------------------------------------------------------
+    // UploaderDelegate per-upload state and logic
+    // -------------------------------------------------------------------------
 
-    private UploadResult singlePart(PutObjectRequest request, InputStream body, long totalSize) throws UploadError {
-        PutObjectRequest.Builder builder = PutObjectRequest.newBuilder()
-                .bucket(request.bucket())
-                .key(request.key())
-                .headers(request.headers())
-                .parameters(request.parameters())
-                .body(BinaryData.fromStream(body, totalSize >= 0 ? totalSize : null));
+    private static class UploaderDelegate {
+        private final OSSClient client;
+        private final PutObjectRequest request;
+        private final UploaderOptions opts;
 
-        try {
-            PutObjectResult result = client.putObject(builder.build());
-            return UploadResult.newBuilder()
-                    .etag(result.eTag())
-                    .versionId(result.versionId())
-                    .hashCrc64ecma(result.hashCrc64ecma())
-                    .headers(result.headers())
-                    .statusCode(result.statusCode())
-                    .build();
-        } catch (Exception e) {
-            throw new UploadError("", "oss://" + request.bucket() + "/" + request.key(), e);
-        }
-    }
+        // Upload state
+        long totalSize = -1;
+        long partSize;
+        private boolean leavePartsOnError;
+        private String contentType;
+        private UploadCheckpoint checkpoint;
 
-    private UploadResult singlePartFile(PutObjectRequest request, FileInputStream fis, long totalSize, String contentType) throws UploadError {
-        PutObjectRequest.Builder builder = PutObjectRequest.newBuilder()
-                .bucket(request.bucket())
-                .key(request.key())
-                .headers(request.headers())
-                .parameters(request.parameters())
-                .body(BinaryData.fromStream(fis, totalSize));
+        // CRC64
+        private final boolean enableCRC;
 
-        if (contentType != null && request.contentType() == null) {
-            builder.contentType(contentType);
+        // Progress
+        private final ProgressListener progressListener;
+        private final AtomicLong transferred = new AtomicLong(0);
+
+        UploaderDelegate(OSSClient client, PutObjectRequest request,
+                         UploaderOptions defaultOpts, UploaderOptions overrideOptions) {
+            this.client = client;
+            this.request = request;
+            this.opts = overrideOptions != null ? overrideOptions : defaultOpts;
+            this.partSize = opts.partSize();
+            this.leavePartsOnError = opts.leavePartsOnError();
+            this.enableCRC = opts.enableCRC64Check();
+            this.progressListener = request.progressListener();
         }
 
-        try {
-            PutObjectResult result = client.putObject(builder.build());
-            return UploadResult.newBuilder()
-                    .etag(result.eTag())
-                    .versionId(result.versionId())
-                    .hashCrc64ecma(result.hashCrc64ecma())
-                    .headers(result.headers())
-                    .statusCode(result.statusCode())
-                    .build();
-        } catch (Exception e) {
-            throw new UploadError("", "oss://" + request.bucket() + "/" + request.key(), e);
+        /**
+         * Determine total size from BinaryData and adjust part size to stay within MAX_UPLOAD_PARTS.
+         */
+        void adjustPartSize(BinaryData body) {
+            Long length = body.getLength();
+            if (length != null) {
+                totalSize = length;
+            }
+
+            adjustPartSizeForTotal();
         }
-    }
 
-    private UploadResult multiPart(PutObjectRequest request, InputStream body, long totalSize,
-                                   long partSize, int parallelNum, boolean leavePartsOnError,
-                                   String contentType, UploadCheckpoint checkpoint) throws UploadError {
-        return doMultiPart(request, body, totalSize, partSize, parallelNum, leavePartsOnError,
-                contentType, checkpoint);
-    }
+        /**
+         * Prepare file upload: set totalSize, contentType, checkpoint, and adjust partSize.
+         */
+        void prepareFileUpload(File file, String filePath) throws UploadError {
+            this.totalSize = file.length();
+            this.contentType = detectContentType(filePath);
 
-    private UploadResult multiPartFile(PutObjectRequest request, FileInputStream fis, long totalSize,
-                                       long partSize, int parallelNum, boolean leavePartsOnError,
-                                       String contentType, UploadCheckpoint checkpoint) throws UploadError {
-        return doMultiPart(request, fis, totalSize, partSize, parallelNum, leavePartsOnError,
-                contentType, checkpoint);
-    }
+            adjustPartSizeForTotal();
 
-    private UploadResult doMultiPart(PutObjectRequest request, InputStream body, long totalSize,
-                                     long partSize, int parallelNum, boolean leavePartsOnError,
-                                     String contentType, UploadCheckpoint checkpoint) throws UploadError {
-        String path = "oss://" + request.bucket() + "/" + request.key();
-
-        // Check if we can resume from checkpoint
-        String uploadId = null;
-        int startPartNum = 0;
-        long resumeOffset = 0;
-        Set<Integer> uploadedPartNumbers = Collections.emptySet();
-
-        if (checkpoint != null && checkpoint.loaded) {
-            uploadId = checkpoint.info.data.uploadInfo.uploadId;
-            // ListParts to find already uploaded parts
-            try {
-                ResumeInfo resumeInfo = getResumeInfo(request.bucket(), request.key(), uploadId, partSize);
-                startPartNum = resumeInfo.partNumber;
-                resumeOffset = resumeInfo.offset;
-                uploadedPartNumbers = resumeInfo.uploadedPartNumbers;
-            } catch (Exception e) {
-                // Failed to list parts, start fresh
-                uploadId = null;
-                startPartNum = 0;
-                resumeOffset = 0;
-                uploadedPartNumbers = Collections.emptySet();
+            if (opts.enableCheckpoint()) {
+                String fileLastModified = String.valueOf(file.lastModified());
+                this.checkpoint = UploadCheckpoint.create(
+                        request.bucket(), request.key(), filePath,
+                        opts.checkpointDir(), totalSize, fileLastModified, partSize);
+                try {
+                    checkpoint.load();
+                } catch (IOException e) {
+                    throw new UploadError("", ossPath(), e);
+                }
+                this.leavePartsOnError = true;
             }
         }
 
-        // Initiate multipart upload if needed
-        if (uploadId == null) {
+        private void adjustPartSizeForTotal() {
+            if (totalSize > 0) {
+                while (totalSize / partSize >= Defaults.MAX_UPLOAD_PARTS) {
+                    partSize += opts.partSize();
+                }
+            }
+        }
+
+        // -- Single part uploads --
+
+        UploadResult singlePart(BinaryData body) throws UploadError {
+            try {
+                PutObjectResult result = client.putObject(request.toBuilder()
+                        .body(body)
+                        .build());
+                return buildUploadResult(result);
+            } catch (Exception e) {
+                throw new UploadError("", ossPath(), e);
+            }
+        }
+
+        UploadResult singlePartFile(String filePath) throws UploadError {
+            try (FileInputStream fis = new FileInputStream(filePath)) {
+                PutObjectRequest.Builder builder = request.toBuilder()
+                        .body(BinaryData.fromStream(fis, totalSize));
+                applyContentType(builder);
+                PutObjectResult result = client.putObject(builder.build());
+                return buildUploadResult(result);
+            } catch (Exception e) {
+                throw new UploadError("", ossPath(), e);
+            }
+        }
+
+        private UploadResult buildUploadResult(PutObjectResult result) {
+            return UploadResult.newBuilder()
+                    .etag(result.eTag())
+                    .versionId(result.versionId())
+                    .hashCrc64ecma(result.hashCrc64ecma())
+                    .headers(result.headers())
+                    .statusCode(result.statusCode())
+                    .build();
+        }
+
+        // -- Multipart uploads --
+
+        UploadResult multiPart(BinaryData body) throws UploadError {
+            return doMultiPart(body);
+        }
+
+        UploadResult multiPartFile(String filePath) throws UploadError {
+            return doMultiPartFile(filePath);
+        }
+
+        private UploadResult doMultiPartFile(String filePath) throws UploadError {
+            // Try to resume from checkpoint
+            String uploadId = null;
+            List<Part> completedParts = Collections.synchronizedList(new ArrayList<>());
+
+            if (checkpoint != null && checkpoint.loaded) {
+                uploadId = checkpoint.info.data.uploadInfo.uploadId;
+                try {
+                    for (ListPartsResult result : client.listPartsPaginator(buildListPartsRequest(uploadId))) {
+                        for (Part p : result.parts()) {
+                            if (p.partNumber() == null || p.size() == null) continue;
+                            if (p.size() == partSize) {
+                                completedParts.add(p);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    uploadId = null;
+                    completedParts.clear();
+                }
+            }
+
+            // Report resumed progress
+            if (progressListener != null && !completedParts.isEmpty()) {
+                long resumedBytes = (long) completedParts.size() * partSize;
+                transferred.set(resumedBytes);
+                progressListener.onProgress(resumedBytes, resumedBytes, totalSize);
+            }
+
+            if (uploadId == null) {
+                uploadId = initiateUpload();
+            }
+
+            // Save checkpoint with uploadId
+            if (checkpoint != null) {
+                checkpoint.info.data.uploadInfo.uploadId = uploadId;
+                try {
+                    checkpoint.dump();
+                } catch (IOException ignored) {
+                }
+            }
+
+            AtomicReference<Exception> firstError = new AtomicReference<>();
+
+            uploadPartsFile(filePath, uploadId, completedParts, firstError);
+
+            if (firstError.get() != null) {
+                if (!leavePartsOnError) {
+                    abortMultipartUpload(uploadId);
+                }
+                throw new UploadError(uploadId, ossPath(), firstError.get());
+            }
+
+            return completeUpload(uploadId, completedParts);
+        }
+
+        private UploadResult doMultiPart(BinaryData body) throws UploadError {
+            String uploadId = initiateUpload();
+
+            List<Part> completedParts = Collections.synchronizedList(new ArrayList<>());
+            AtomicReference<Exception> firstError = new AtomicReference<>();
+
+            uploadParts(body, uploadId, completedParts, firstError);
+
+            if (firstError.get() != null) {
+                if (!leavePartsOnError) {
+                    abortMultipartUpload(uploadId);
+                }
+                throw new UploadError(uploadId, ossPath(), firstError.get());
+            }
+
+            return completeUpload(uploadId, completedParts);
+        }
+
+        private String initiateUpload() throws UploadError {
             InitiateMultipartUploadRequest.Builder initBuilder = InitiateMultipartUploadRequest.newBuilder()
                     .bucket(request.bucket())
                     .key(request.key())
@@ -262,292 +295,371 @@ public class Uploader {
                 initBuilder.contentType(contentType);
             }
 
-            InitiateMultipartUploadResult initResult;
             try {
-                initResult = client.initiateMultipartUpload(initBuilder.build());
+                InitiateMultipartUploadResult initResult = client.initiateMultipartUpload(initBuilder.build());
+                return initResult.initiateMultipartUpload().uploadId();
             } catch (Exception e) {
-                throw new UploadError("", path, e);
+                throw new UploadError("", ossPath(), e);
             }
-
-            uploadId = initResult.initiateMultipartUpload().uploadId();
         }
 
-        // Save checkpoint with uploadId
-        if (checkpoint != null) {
-            checkpoint.info.data.uploadInfo.uploadId = uploadId;
+        /**
+         * Sequentially reads chunks from the body via nextChunk and submits them
+         * for parallel upload.
+         */
+        private void uploadParts(BinaryData body, String uploadId,
+                                 List<Part> completedParts,
+                                 AtomicReference<Exception> firstError) {
+            InputStream stream = body.toStream();
+
+            ByteBufferPool pool = new ByteBufferPool((int) partSize, opts.parallelNum() + 1);
+            ExecutorService executor = Executors.newFixedThreadPool(opts.parallelNum());
+            List<Future<?>> futures = new ArrayList<>();
+            final String uid = uploadId;
+
             try {
-                checkpoint.dump();
-            } catch (IOException e) {
-                // best effort
-            }
-        }
+                int partNum = 0;
+                long readerPos = 0;
 
-        // Skip to resume offset if resuming
-        if (resumeOffset > 0 && body instanceof FileInputStream) {
-            try {
-                java.nio.channels.FileChannel channel = ((FileInputStream) body).getChannel();
-                channel.position(resumeOffset);
-            } catch (IOException e) {
-                // If seek fails, start from beginning
-                startPartNum = 0;
-                resumeOffset = 0;
-                uploadedPartNumbers = Collections.emptySet();
-            }
-        }
-
-        // Upload parts in parallel
-        List<Part> completedParts = Collections.synchronizedList(new ArrayList<>());
-        AtomicReference<Exception> firstError = new AtomicReference<>();
-        AtomicLong transferred = new AtomicLong(0);
-
-        // Add already uploaded parts to completedParts
-        final Set<Integer> alreadyUploaded = uploadedPartNumbers;
-
-        ExecutorService executor = Executors.newFixedThreadPool(parallelNum);
-        List<Future<?>> futures = new ArrayList<>();
-        final String finalUploadId = uploadId;
-
-        try {
-            long readerPos = resumeOffset;
-            int partNum = startPartNum;
-
-            if (body instanceof FileInputStream) {
-                // File-based: use RandomAccessFile-like reading with sections
-                FileInputStream fis = (FileInputStream) body;
-                java.nio.channels.FileChannel channel = fis.getChannel();
-
-                while (readerPos < totalSize && firstError.get() == null) {
-                    partNum++;
-                    long bytesLeft = totalSize - readerPos;
-                    long currentPartSize = Math.min(bytesLeft, partSize);
-                    final int currentPartNum = partNum;
-                    final long currentOffset = readerPos;
-                    final long currentSize = currentPartSize;
-
-                    // Skip already uploaded parts
-                    if (alreadyUploaded.contains(currentPartNum)) {
-                        readerPos += currentPartSize;
-                        continue;
-                    }
-
-                    futures.add(executor.submit(() -> {
-                        if (firstError.get() != null) return;
-                        try {
-                            // Read data from channel at specific position
-                            byte[] buffer = new byte[(int) currentSize];
-                            int totalRead = 0;
-                            synchronized (channel) {
-                                channel.position(currentOffset);
-                                java.io.InputStream partStream = java.nio.channels.Channels.newInputStream(channel);
-                                while (totalRead < currentSize) {
-                                    int read = partStream.read(buffer, totalRead, (int) currentSize - totalRead);
-                                    if (read == -1) break;
-                                    totalRead += read;
-                                }
-                            }
-
-                            UploadPartRequest partRequest = UploadPartRequest.newBuilder()
-                                    .bucket(request.bucket())
-                                    .key(request.key())
-                                    .parameter("uploadId", finalUploadId)
-                                    .parameter("partNumber", String.valueOf(currentPartNum))
-                                    .body(BinaryData.fromBytes(Arrays.copyOf(buffer, totalRead)))
-                                    .build();
-
-                            UploadPartResult partResult = client.uploadPart(partRequest);
-                            completedParts.add(Part.newBuilder()
-                                    .partNumber((long) currentPartNum)
-                                    .eTag(partResult.eTag())
-                                    .build());
-
-                            transferred.addAndGet(totalRead);
-                        } catch (Exception e) {
-                            firstError.compareAndSet(null, e);
-                        }
-                    }));
-
-                    readerPos += currentPartSize;
-                }
-            } else {
-                // Stream-based: read sequentially, submit parts for upload
                 while (firstError.get() == null) {
-                    byte[] buffer = new byte[(int) partSize];
-                    int totalRead = 0;
+                    DataChunk chunk;
                     try {
-                        while (totalRead < partSize) {
-                            int read = body.read(buffer, totalRead, (int) partSize - totalRead);
-                            if (read == -1) break;
-                            totalRead += read;
-                        }
+                        chunk = nextChunk(stream, readerPos, pool);
                     } catch (IOException e) {
                         firstError.compareAndSet(null, e);
                         break;
                     }
+                    if (chunk == null) break;
 
-                    if (totalRead == 0) break;
-
+                    readerPos += chunk.size;
                     partNum++;
                     final int currentPartNum = partNum;
-                    final byte[] partData = Arrays.copyOf(buffer, totalRead);
-                    final int partDataLen = totalRead;
+                    final int currentChunkSize = chunk.size;
+
+                    final DataChunk c = chunk;
+                    futures.add(executor.submit(() -> {
+                        if (firstError.get() != null) {
+                            pool.release(c.buffer);
+                            return;
+                        }
+                        try {
+                            uploadPart(uid, currentPartNum, c.data, currentChunkSize, completedParts);
+                        } catch (Exception e) {
+                            firstError.compareAndSet(null, e);
+                        } finally {
+                            pool.release(c.buffer);
+                        }
+                    }));
+
+                    if (chunk.last) break;
+                }
+
+                waitForFutures(futures, firstError);
+            } finally {
+                executor.shutdown();
+            }
+        }
+
+        /**
+         * Uploads file parts in parallel. Each worker opens its own FileInputStream
+         * and seeks to the chunk offset, avoiding memory buffering.
+         * Parts in {@code alreadyUploaded} are skipped for checkpoint resume.
+         */
+        private void uploadPartsFile(String filePath, String uploadId,
+                                     List<Part> completedParts,
+                                     AtomicReference<Exception> firstError) {
+            Set<Integer> alreadyUploaded = new HashSet<>();
+            for (Part p : completedParts) {
+                alreadyUploaded.add(p.partNumber().intValue());
+            }
+
+            ExecutorService executor = Executors.newFixedThreadPool(opts.parallelNum());
+            List<Future<?>> futures = new ArrayList<>();
+            final String uid = uploadId;
+
+            try {
+                int partNum = 0;
+                long offset = 0;
+
+                while (offset < totalSize && firstError.get() == null) {
+                    long chunkSize = Math.min(partSize, totalSize - offset);
+                    partNum++;
+
+                    if (alreadyUploaded.contains(partNum)) {
+                        offset += chunkSize;
+                        continue;
+                    }
+
+                    final int currentPartNum = partNum;
+                    final long currentOffset = offset;
+                    final long currentChunkSize = chunkSize;
 
                     futures.add(executor.submit(() -> {
                         if (firstError.get() != null) return;
-                        try {
-                            UploadPartRequest partRequest = UploadPartRequest.newBuilder()
-                                    .bucket(request.bucket())
-                                    .key(request.key())
-                                    .parameter("uploadId", finalUploadId)
-                                    .parameter("partNumber", String.valueOf(currentPartNum))
-                                    .body(BinaryData.fromBytes(partData))
-                                    .build();
-
-                            UploadPartResult partResult = client.uploadPart(partRequest);
-                            completedParts.add(Part.newBuilder()
-                                    .partNumber((long) currentPartNum)
-                                    .eTag(partResult.eTag())
-                                    .build());
-
-                            transferred.addAndGet(partDataLen);
+                        try (FileInputStream fis = new FileInputStream(filePath)) {
+                            long skipped = 0;
+                            while (skipped < currentOffset) {
+                                long n = fis.skip(currentOffset - skipped);
+                                if (n <= 0) break;
+                                skipped += n;
+                            }
+                            BinaryData data = BinaryData.fromStream(fis, currentChunkSize);
+                            uploadPart(uid, currentPartNum, data, (int) currentChunkSize, completedParts);
                         } catch (Exception e) {
                             firstError.compareAndSet(null, e);
                         }
                     }));
 
-                    if (totalRead < partSize) break;
+                    offset += chunkSize;
                 }
+
+                waitForFutures(futures, firstError);
+            } finally {
+                executor.shutdown();
+            }
+        }
+
+        /**
+         * Reads the next chunk from the stream into a pooled ByteBuffer. Returns null on EOF.
+         */
+        private DataChunk nextChunk(InputStream stream, long readerPos, ByteBufferPool pool) throws IOException {
+            long bytesLeft = totalSize >= 0 ? totalSize - readerPos : Long.MAX_VALUE;
+            if (bytesLeft <= 0) return null;
+
+            int chunkSize = (int) Math.min(partSize, bytesLeft);
+            ByteBuffer buffer = pool.acquire();
+            buffer.clear();
+            if (chunkSize < buffer.capacity()) {
+                buffer.limit(chunkSize);
             }
 
-            // Wait for all parts to complete
+            int totalRead = readFill(stream, buffer);
+            if (totalRead == 0) {
+                pool.release(buffer);
+                return null;
+            }
+
+            buffer.flip();
+            BinaryData data = BinaryData.fromByteBuffer(buffer);
+            return new DataChunk(data, buffer, totalRead, totalRead < chunkSize);
+        }
+
+        private static class DataChunk {
+            final BinaryData data;
+            final ByteBuffer buffer;
+            final int size;
+            final boolean last;
+
+            DataChunk(BinaryData data, ByteBuffer buffer, int size, boolean last) {
+                this.data = data;
+                this.buffer = buffer;
+                this.size = size;
+                this.last = last;
+            }
+        }
+
+        /**
+         * Reads from the stream into the ByteBuffer until it is full or EOF is reached.
+         * Returns the number of bytes actually read.
+         */
+        private static int readFill(InputStream stream, ByteBuffer buffer) throws IOException {
+            byte[] array = buffer.array();
+            int offset = buffer.arrayOffset() + buffer.position();
+            int totalRead = 0;
+            while (buffer.hasRemaining()) {
+                int read = stream.read(array, offset + totalRead, buffer.remaining());
+                if (read == -1) break;
+                totalRead += read;
+                buffer.position(buffer.position() + read);
+            }
+            return totalRead;
+        }
+
+        /**
+         * A simple pool of fixed-size ByteBuffers for reuse across upload chunks.
+         */
+        private static class ByteBufferPool {
+            private final int bufferSize;
+            private final ArrayBlockingQueue<ByteBuffer> pool;
+
+            ByteBufferPool(int bufferSize, int capacity) {
+                this.bufferSize = bufferSize;
+                this.pool = new ArrayBlockingQueue<>(capacity);
+            }
+
+            ByteBuffer acquire() {
+                ByteBuffer buf = pool.poll();
+                if (buf != null) {
+                    return buf;
+                }
+                return ByteBuffer.allocate(bufferSize);
+            }
+
+            void release(ByteBuffer buffer) {
+                if (buffer != null && buffer.capacity() == bufferSize) {
+                    pool.offer(buffer);
+                }
+            }
+        }
+
+        private void uploadPart(String uploadId, int partNum, BinaryData body, int dataSize,
+                                List<Part> completedParts) {
+            UploadPartRequest.Builder partBuilder = UploadPartRequest.newBuilder()
+                    .bucket(request.bucket())
+                    .key(request.key())
+                    .uploadId(uploadId)
+                    .partNumber((long) partNum)
+                    .body(body);
+
+            if (request.requestPayer() != null) {
+                partBuilder.requestPayer(request.requestPayer());
+            }
+
+            UploadPartRequest partRequest = partBuilder.build();
+
+            UploadPartResult partResult = client.uploadPart(partRequest);
+            Part.Builder pb = Part.newBuilder()
+                    .partNumber((long) partNum)
+                    .eTag(partResult.eTag())
+                    .size((long) dataSize);
+            if (enableCRC) {
+                pb.hashCrc64ecma(partResult.hashCRC64());
+            }
+            completedParts.add(pb.build());
+
+            if (progressListener != null) {
+                long total = transferred.addAndGet(dataSize);
+                progressListener.onProgress(dataSize, total, totalSize);
+            }
+        }
+
+        private UploadResult completeUpload(String uploadId, List<Part> completedParts) throws UploadError {
+            completedParts.sort(Comparator.comparing(Part::partNumber));
+
+            CompleteMultipartUploadRequest.Builder completeBuilder = CompleteMultipartUploadRequest.newBuilder()
+                    .bucket(request.bucket())
+                    .key(request.key())
+                    .uploadId(uploadId)
+                    .completeMultipartUpload(CompleteMultipartUpload.newBuilder()
+                            .parts(completedParts)
+                            .build());
+
+            if (request.objectAcl() != null) {
+                completeBuilder.objectAcl(request.objectAcl());
+            }
+            if (request.requestPayer() != null) {
+                completeBuilder.requestPayer(request.requestPayer());
+            }
+
+            CompleteMultipartUploadRequest completeRequest = completeBuilder.build();
+
+            try {
+                CompleteMultipartUploadResult cmResult = client.completeMultipartUpload(completeRequest);
+
+                if (enableCRC && cmResult.hashCRC64() != null) {
+                    verifyCRC64(completedParts, cmResult.hashCRC64(), cmResult.headers());
+                }
+
+                if (checkpoint != null) {
+                    checkpoint.remove();
+                }
+
+                if (progressListener != null) {
+                    progressListener.onFinish();
+                }
+
+                return UploadResult.newBuilder()
+                        .uploadId(uploadId)
+                        .etag(cmResult.completeMultipartUpload() != null ? cmResult.completeMultipartUpload().eTag() : null)
+                        .versionId(cmResult.versionId())
+                        .hashCrc64ecma(cmResult.hashCRC64())
+                        .headers(cmResult.headers())
+                        .statusCode(cmResult.statusCode())
+                        .build();
+            } catch (Exception e) {
+                if (!leavePartsOnError) {
+                    abortMultipartUpload(uploadId);
+                }
+                throw new UploadError(uploadId, ossPath(), e);
+            }
+        }
+
+        private void abortMultipartUpload(String uploadId) {
+            try {
+                AbortMultipartUploadRequest.Builder abortBuilder = AbortMultipartUploadRequest.newBuilder()
+                        .bucket(request.bucket())
+                        .key(request.key())
+                        .uploadId(uploadId);
+
+                if (request.requestPayer() != null) {
+                    abortBuilder.requestPayer(request.requestPayer());
+                }
+
+                AbortMultipartUploadRequest abortRequest = abortBuilder.build();
+                client.abortMultipartUpload(abortRequest);
+            } catch (Exception ignored) {
+            }
+        }
+
+        private void applyContentType(PutObjectRequest.Builder builder) {
+            if (contentType != null && request.contentType() == null) {
+                builder.contentType(contentType);
+            }
+        }
+
+        private static void waitForFutures(List<Future<?>> futures, AtomicReference<Exception> firstError) {
             for (Future<?> future : futures) {
+                if (firstError.get() != null) {
+                    future.cancel(false);
+                    continue;
+                }
                 try {
                     future.get();
+                } catch (CancellationException ignored) {
                 } catch (InterruptedException | ExecutionException e) {
                     if (firstError.get() == null) {
                         firstError.set(e.getCause() != null ? (Exception) e.getCause() : e);
                     }
                 }
             }
-
-        } finally {
-            executor.shutdown();
         }
 
-        // Check for errors
-        if (firstError.get() != null) {
-            if (!leavePartsOnError) {
-                abortMultipartUpload(request.bucket(), request.key(), uploadId);
+        private static String detectContentType(String filePath) {
+            if (filePath != null && !filePath.isEmpty()) {
+                return MimeUtils.getMimetype(filePath, "application/octet-stream");
             }
-            throw new UploadError(uploadId, path, firstError.get());
+            return null;
         }
 
-        // Complete multipart upload - include both newly uploaded and previously uploaded parts
-        // For resumed uploads, we need to re-list all parts to get complete list
-        if (!alreadyUploaded.isEmpty()) {
-            try {
-                ListPartsResult listResult = client.listParts(ListPartsRequest.newBuilder()
-                        .bucket(request.bucket())
-                        .key(request.key())
-                        .uploadId(uploadId)
-                        .build());
-                if (listResult.parts() != null) {
-                    for (Part p : listResult.parts()) {
-                        // Add parts that were already uploaded but not in our completedParts
-                        boolean found = false;
-                        for (Part cp : completedParts) {
-                            if (cp.partNumber().equals(p.partNumber())) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            completedParts.add(p);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                // best effort
+        private ListPartsRequest buildListPartsRequest(String uploadId) {
+            ListPartsRequest.Builder builder = ListPartsRequest.newBuilder()
+                    .bucket(request.bucket())
+                    .key(request.key())
+                    .uploadId(uploadId);
+
+            if (request.requestPayer() != null) {
+                builder.requestPayer(request.requestPayer());
+            }
+
+            return builder.build();
+        }
+
+
+        private void verifyCRC64(List<Part> parts, String serverCRC, Map<String, String> headers) {
+            long crc = 0;
+            for (Part p : parts) {
+                if (p.hashCrc64ecma() == null || p.size() == null) return;
+                long value = Long.parseUnsignedLong(p.hashCrc64ecma());
+                crc = CRC64.combine(crc, value, p.size());
+            }
+            String clientCRC = Long.toUnsignedString(crc);
+            if (!clientCRC.equals(serverCRC)) {
+                throw new InconsistentException(clientCRC, serverCRC, headers);
             }
         }
 
-        completedParts.sort(Comparator.comparing(Part::partNumber));
-
-        CompleteMultipartUploadRequest completeRequest = CompleteMultipartUploadRequest.newBuilder()
-                .bucket(request.bucket())
-                .key(request.key())
-                .parameter("uploadId", uploadId)
-                .completeMultipartUpload(CompleteMultipartUpload.newBuilder()
-                        .parts(completedParts)
-                        .build())
-                .build();
-
-        try {
-            CompleteMultipartUploadResult cmResult = client.completeMultipartUpload(completeRequest);
-
-            // Remove checkpoint on success
-            if (checkpoint != null) {
-                checkpoint.remove();
-            }
-
-            return UploadResult.newBuilder()
-                    .uploadId(uploadId)
-                    .etag(cmResult.completeMultipartUpload() != null ? cmResult.completeMultipartUpload().eTag() : null)
-                    .versionId(cmResult.versionId())
-                    .hashCrc64ecma(cmResult.hashCRC64())
-                    .headers(cmResult.headers())
-                    .statusCode(cmResult.statusCode())
-                    .build();
-        } catch (Exception e) {
-            if (!leavePartsOnError) {
-                abortMultipartUpload(request.bucket(), request.key(), uploadId);
-            }
-            throw new UploadError(uploadId, path, e);
-        }
-    }
-
-    private static class ResumeInfo {
-        int partNumber;
-        long offset;
-        Set<Integer> uploadedPartNumbers;
-    }
-
-    private ResumeInfo getResumeInfo(String bucket, String key, String uploadId, long partSize) {
-        ResumeInfo info = new ResumeInfo();
-        info.uploadedPartNumbers = new HashSet<>();
-
-        int checkPartNumber = 1;
-        ListPartsResult result = client.listParts(ListPartsRequest.newBuilder()
-                .bucket(bucket)
-                .key(key)
-                .uploadId(uploadId)
-                .build());
-
-        if (result.parts() != null) {
-            for (Part p : result.parts()) {
-                if (p.partNumber() != null && p.partNumber() == checkPartNumber) {
-                    info.uploadedPartNumbers.add(checkPartNumber);
-                    checkPartNumber++;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        info.partNumber = checkPartNumber - 1;
-        info.offset = (long) info.partNumber * partSize;
-        return info;
-    }
-
-    private void abortMultipartUpload(String bucket, String key, String uploadId) {
-        try {
-            AbortMultipartUploadRequest abortRequest = AbortMultipartUploadRequest.newBuilder()
-                    .bucket(bucket)
-                    .key(key)
-                    .parameter("uploadId", uploadId)
-                    .build();
-            client.abortMultipartUpload(abortRequest);
-        } catch (Exception ignored) {
-            // best effort abort
+        String ossPath() {
+            return "oss://" + request.bucket() + "/" + request.key();
         }
     }
 }

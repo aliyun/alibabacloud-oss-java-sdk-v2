@@ -13,6 +13,7 @@ import com.aliyun.sdk.service.oss2.models.internal.ListPartResultXml;
 import com.aliyun.sdk.service.oss2.progress.ProgressObserver;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transport.ResponseMessage;
+import com.aliyun.sdk.service.oss2.transport.StringBinaryData;
 import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
 import com.aliyun.sdk.service.oss2.utils.HttpUtils;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
@@ -148,7 +149,19 @@ public final class SerdeObjectMultipart {
 
         // body
         if (request.completeMultipartUpload() != null) {
-            BinaryData body = SerdeUtils.serializeXmlBody(request.completeMultipartUpload());
+            StringBuilder sb = new StringBuilder();
+            sb.append("<CompleteMultipartUpload>");
+            if (request.completeMultipartUpload().parts() != null) {
+                for (Part part : request.completeMultipartUpload().parts()) {
+                    sb.append("<Part>");
+                    sb.append("<PartNumber>").append(part.partNumber()).append("</PartNumber>");
+                    sb.append("<ETag>").append(part.eTag()).append("</ETag>");
+                    sb.append("</Part>");
+                }
+            }
+            sb.append("</CompleteMultipartUpload>");
+            //BinaryData body = SerdeUtils.serializeXmlBody(request.completeMultipartUpload());
+            BinaryData body = StringBinaryData.fromString(sb.toString());
             builder.body(body);
         }
 

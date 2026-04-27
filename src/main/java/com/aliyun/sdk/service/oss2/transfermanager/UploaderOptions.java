@@ -6,6 +6,7 @@ public class UploaderOptions {
     private final boolean leavePartsOnError;
     private final boolean enableCheckpoint;
     private final String checkpointDir;
+    private final boolean enableCRC64Check;
 
     private UploaderOptions(Builder builder) {
         this.partSize = builder.partSize > 0 ? builder.partSize : Defaults.DEFAULT_UPLOAD_PART_SIZE;
@@ -13,6 +14,7 @@ public class UploaderOptions {
         this.leavePartsOnError = builder.leavePartsOnError;
         this.enableCheckpoint = builder.enableCheckpoint;
         this.checkpointDir = builder.checkpointDir;
+        this.enableCRC64Check = builder.enableCRC64Check;
     }
 
     public static Builder newBuilder() {
@@ -43,12 +45,17 @@ public class UploaderOptions {
         return checkpointDir;
     }
 
+    public boolean enableCRC64Check() {
+        return enableCRC64Check;
+    }
+
     public static class Builder {
         private long partSize = Defaults.DEFAULT_UPLOAD_PART_SIZE;
         private int parallelNum = Defaults.DEFAULT_UPLOAD_PARALLEL;
         private boolean leavePartsOnError = false;
         private boolean enableCheckpoint = false;
         private String checkpointDir;
+        private boolean enableCRC64Check = Defaults.DEFAULT_UPLOAD_ENABLE_CRC64_CHECK;
 
         public Builder partSize(long value) {
             this.partSize = value;
@@ -72,6 +79,11 @@ public class UploaderOptions {
 
         public Builder checkpointDir(String value) {
             this.checkpointDir = value;
+            return this;
+        }
+
+        public Builder enableCRC64Check(boolean value) {
+            this.enableCRC64Check = value;
             return this;
         }
 
