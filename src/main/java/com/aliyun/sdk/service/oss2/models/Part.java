@@ -3,6 +3,8 @@ package com.aliyun.sdk.service.oss2.models;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+import java.time.Instant;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -16,12 +18,24 @@ public final class Part {
     @JacksonXmlProperty(localName = "ETag")
     private String eTag;
 
+    @JacksonXmlProperty(localName = "LastModified")
+    private Instant lastModified;
+
+    @JacksonXmlProperty(localName = "Size")
+    private Long size;
+
+    @JacksonXmlProperty(localName = "HashCrc64ecma")
+    private String hashCrc64ecma;
+
     public Part() {
     }
 
     private Part(Builder builder) {
         this.partNumber = builder.partNumber;
         this.eTag = builder.eTag;
+        this.lastModified = builder.lastModified;
+        this.size = builder.size;
+        this.hashCrc64ecma = builder.hashCrc64ecma;
     }
 
     public static Builder newBuilder() {
@@ -42,6 +56,28 @@ public final class Part {
         return this.eTag;
     }
 
+    /**
+     * The time when the part was uploaded.
+     */
+    public Instant lastModified() {
+        return this.lastModified;
+    }
+
+    /**
+     * The size of the uploaded part.
+     */
+    public Long size() {
+        return this.size;
+    }
+
+    /**
+     * The 64-bit CRC value of the object.
+     * This value is calculated based on the ECMA-182 standard.
+     */
+    public String hashCrc64ecma() {
+        return this.hashCrc64ecma;
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }
@@ -49,6 +85,9 @@ public final class Part {
     public static class Builder {
         private Long partNumber;
         private String eTag;
+        private Instant lastModified;
+        private Long size;
+        private String hashCrc64ecma;
 
         private Builder() {
             super();
@@ -57,6 +96,9 @@ public final class Part {
         private Builder(Part from) {
             this.partNumber = from.partNumber;
             this.eTag = from.eTag;
+            this.lastModified = from.lastModified;
+            this.size = from.size;
+            this.hashCrc64ecma = from.hashCrc64ecma;
         }
 
         /**
@@ -74,6 +116,31 @@ public final class Part {
         public Builder eTag(String value) {
             requireNonNull(value);
             this.eTag = value;
+            return this;
+        }
+
+        /**
+         * The time when the part was uploaded.
+         */
+        public Builder lastModified(Instant value) {
+            this.lastModified = value;
+            return this;
+        }
+
+        /**
+         * The size of the uploaded part.
+         */
+        public Builder size(Long value) {
+            this.size = value;
+            return this;
+        }
+
+        /**
+         * The 64-bit CRC value of the object.
+         * This value is calculated based on the ECMA-182 standard.
+         */
+        public Builder hashCrc64ecma(String value) {
+            this.hashCrc64ecma = value;
             return this;
         }
 

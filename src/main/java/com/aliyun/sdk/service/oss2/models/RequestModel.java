@@ -36,8 +36,10 @@ public class RequestModel {
         }
 
         protected Builder(RequestModel request) {
-            this.headers = request.headers;
-            this.parameters = request.parameters;
+            this.headers = MapUtils.caseInsensitiveMap();
+            this.headers.putAll(request.headers);
+            this.parameters = MapUtils.caseSensitiveMap();
+            this.parameters.putAll(request.parameters);
         }
 
         @SuppressWarnings("unchecked")
