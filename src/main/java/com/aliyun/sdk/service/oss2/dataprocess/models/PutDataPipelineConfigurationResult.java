@@ -7,10 +7,6 @@ import com.aliyun.sdk.service.oss2.models.ResultModel;
  */
 public final class PutDataPipelineConfigurationResult extends ResultModel {
 
-    public String requestId() {
-        PutDataPipelineConfigurationResponseBody body = (PutDataPipelineConfigurationResponseBody) innerBody;
-        return body != null ? body.requestId() : null;
-    }
 
     PutDataPipelineConfigurationResult(Builder builder) {
         super(builder);

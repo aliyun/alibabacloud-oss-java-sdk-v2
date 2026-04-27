@@ -8,19 +8,13 @@ import static java.util.Objects.requireNonNull;
  * The request for the PauseDataPipeline operation.
  */
 public final class PauseDataPipelineRequest extends RequestModel {
-    private final String bucket;
 
     private PauseDataPipelineRequest(Builder builder) {
         super(builder);
-        this.bucket = builder.bucket;
     }
 
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    public String bucket() {
-        return bucket;
     }
 
     public String dataPipelineName() {
@@ -32,7 +26,6 @@ public final class PauseDataPipelineRequest extends RequestModel {
     }
 
     public static class Builder extends RequestModel.Builder<Builder> {
-        private String bucket;
 
         private Builder() {
             super();
@@ -40,13 +33,6 @@ public final class PauseDataPipelineRequest extends RequestModel {
 
         private Builder(PauseDataPipelineRequest request) {
             super(request);
-            this.bucket = request.bucket;
-        }
-
-        public Builder bucket(String value) {
-            requireNonNull(value);
-            this.bucket = value;
-            return this;
         }
 
         public Builder dataPipelineName(String value) {

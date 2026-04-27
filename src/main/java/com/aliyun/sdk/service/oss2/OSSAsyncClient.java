@@ -3439,6 +3439,58 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // data pipeline api
+
+    /**
+     * Initiates a data pipeline action request.
+     *
+     * @param request A {@link DoDataPipelineActionRequest} for DoDataPipelineAction operation.
+     * @return A Java Future containing the {@link DoDataPipelineActionResult} of the DoDataPipelineAction operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DoDataPipelineActionResult> doDataPipelineActionAsync(DoDataPipelineActionRequest request) {
+        return doDataPipelineActionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Initiates a data pipeline action request.
+     *
+     * @param request A {@link DoDataPipelineActionRequest} for DoDataPipelineAction operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DoDataPipelineActionResult} of the DoDataPipelineAction operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DoDataPipelineActionResult> doDataPipelineActionAsync(DoDataPipelineActionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // meta query api
+
+    /**
+     * Initiates a meta query action request.
+     *
+     * @param request A {@link DoMetaQueryActionRequest} for DoMetaQueryAction operation.
+     * @return A Java Future containing the {@link DoMetaQueryActionResult} of the DoMetaQueryAction operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DoMetaQueryActionResult> doMetaQueryActionAsync(DoMetaQueryActionRequest request) {
+        return doMetaQueryActionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Initiates a meta query action request.
+     *
+     * @param request A {@link DoMetaQueryActionRequest} for DoMetaQueryAction operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DoMetaQueryActionResult} of the DoMetaQueryAction operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DoMetaQueryActionResult> doMetaQueryActionAsync(DoMetaQueryActionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }
 
 

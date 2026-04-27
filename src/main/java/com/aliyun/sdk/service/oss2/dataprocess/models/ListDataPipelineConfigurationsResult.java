@@ -2,14 +2,21 @@ package com.aliyun.sdk.service.oss2.dataprocess.models;
 
 import com.aliyun.sdk.service.oss2.models.ResultModel;
 
+import java.util.List;
+
 /**
  * The result for the ListDataPipelineConfigurations operation.
  */
 public final class ListDataPipelineConfigurationsResult extends ResultModel {
 
-    public DataPipelineListConfigurations dataPipelineConfigurations() {
+    public List<DataPipelineConfiguration> dataPipelineConfigurations() {
         ListDataPipelineConfigurationsResponseBody body = (ListDataPipelineConfigurationsResponseBody) innerBody;
         return body != null ? body.dataPipelineConfigurations() : null;
+    }
+
+    public String nextToken() {
+        ListDataPipelineConfigurationsResponseBody body = (ListDataPipelineConfigurationsResponseBody) innerBody;
+        return body != null ? body.nextToken() : null;
     }
 
     ListDataPipelineConfigurationsResult(Builder builder) {

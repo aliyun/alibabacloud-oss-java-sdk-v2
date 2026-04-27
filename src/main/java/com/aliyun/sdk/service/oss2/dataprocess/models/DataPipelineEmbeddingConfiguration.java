@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 /**
  * Embedding configuration for data pipeline.
  */
-@JacksonXmlRootElement(localName = "EmbeddingConfiguration")
+@JacksonXmlRootElement(localName = "DataPipelineEmbeddingConfiguration")
 public final class DataPipelineEmbeddingConfiguration {
     @JacksonXmlProperty(localName = "EmbeddingProvider")
     private String embeddingProvider;

@@ -7,10 +7,6 @@ import com.aliyun.sdk.service.oss2.models.ResultModel;
  */
 public final class RestartDataPipelineResult extends ResultModel {
 
-    public String requestId() {
-        RestartDataPipelineResponseBody body = (RestartDataPipelineResponseBody) innerBody;
-        return body != null ? body.requestId() : null;
-    }
 
     RestartDataPipelineResult(Builder builder) {
         super(builder);

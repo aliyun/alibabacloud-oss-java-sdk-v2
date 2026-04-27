@@ -7,11 +7,6 @@ import com.aliyun.sdk.service.oss2.models.ResultModel;
  */
 public final class PauseDataPipelineResult extends ResultModel {
 
-    public String requestId() {
-        PauseDataPipelineResponseBody body = (PauseDataPipelineResponseBody) innerBody;
-        return body != null ? body.requestId() : null;
-    }
-
     PauseDataPipelineResult(Builder builder) {
         super(builder);
     }

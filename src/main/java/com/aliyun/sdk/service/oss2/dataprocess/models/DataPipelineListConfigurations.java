@@ -10,12 +10,8 @@ import java.util.List;
 /**
  * Result of listing data pipeline configurations.
  */
-@JacksonXmlRootElement(localName = "ListDataPipelineConfigurationsResult")
 public final class DataPipelineListConfigurations {
-    @JacksonXmlProperty(localName = "NextToken")
-    private String nextToken;
-
-    @JacksonXmlElementWrapper(localName = "DataPipelineConfigurations")
+    @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "DataPipelineConfiguration")
     private List<DataPipelineConfiguration> dataPipelineConfigurations;
 
@@ -23,12 +19,7 @@ public final class DataPipelineListConfigurations {
     }
 
     private DataPipelineListConfigurations(Builder builder) {
-        this.nextToken = builder.nextToken;
         this.dataPipelineConfigurations = builder.dataPipelineConfigurations;
-    }
-
-    public String nextToken() {
-        return nextToken;
     }
 
     public List<DataPipelineConfiguration> dataPipelineConfigurations() {
@@ -44,13 +35,7 @@ public final class DataPipelineListConfigurations {
     }
 
     public static class Builder {
-        private String nextToken;
         private List<DataPipelineConfiguration> dataPipelineConfigurations;
-
-        public Builder nextToken(String value) {
-            this.nextToken = value;
-            return this;
-        }
 
         public Builder dataPipelineConfigurations(List<DataPipelineConfiguration> value) {
             this.dataPipelineConfigurations = value;
@@ -62,7 +47,6 @@ public final class DataPipelineListConfigurations {
         }
 
         private Builder(DataPipelineListConfigurations from) {
-            this.nextToken = from.nextToken;
             this.dataPipelineConfigurations = from.dataPipelineConfigurations;
         }
 

@@ -8,8 +8,8 @@ import com.aliyun.sdk.service.oss2.models.ResultModel;
 public final class GetDataPipelineConfigurationResult extends ResultModel {
 
     public DataPipelineConfiguration dataPipelineConfiguration() {
-        GetDataPipelineConfigurationResponseBody body = (GetDataPipelineConfigurationResponseBody) innerBody;
-        return body != null ? body.dataPipelineConfiguration() : null;
+        DataPipelineConfiguration body = (DataPipelineConfiguration) innerBody;
+        return body;
     }
 
     GetDataPipelineConfigurationResult(Builder builder) {

@@ -8,19 +8,13 @@ import static java.util.Objects.requireNonNull;
  * The request for the ListDataPipelineConfigurations operation.
  */
 public final class ListDataPipelineConfigurationsRequest extends RequestModel {
-    private final String bucket;
 
     private ListDataPipelineConfigurationsRequest(Builder builder) {
         super(builder);
-        this.bucket = builder.bucket;
     }
 
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    public String bucket() {
-        return bucket;
     }
 
     public String maxResults() {
@@ -40,7 +34,6 @@ public final class ListDataPipelineConfigurationsRequest extends RequestModel {
     }
 
     public static class Builder extends RequestModel.Builder<Builder> {
-        private String bucket;
 
         private Builder() {
             super();
@@ -48,13 +41,6 @@ public final class ListDataPipelineConfigurationsRequest extends RequestModel {
 
         private Builder(ListDataPipelineConfigurationsRequest request) {
             super(request);
-            this.bucket = request.bucket;
-        }
-
-        public Builder bucket(String value) {
-            requireNonNull(value);
-            this.bucket = value;
-            return this;
         }
 
         public Builder maxResults(Integer value) {

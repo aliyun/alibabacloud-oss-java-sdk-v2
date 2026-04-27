@@ -1,10 +1,8 @@
 package com.aliyun.sdk.service.oss2.dataprocess.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-
 import java.util.List;
 
 /**
@@ -12,12 +10,12 @@ import java.util.List;
  */
 @JacksonXmlRootElement(localName = "FilterConfiguration")
 public final class DataPipelineSourceFilterConfiguration {
-    @JacksonXmlElementWrapper(localName = "PrefixSet")
-    @JacksonXmlProperty(localName = "Prefix")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "PrefixSet")
     private List<String> prefixSet;
 
-    @JacksonXmlElementWrapper(localName = "ObjectMediaTypes")
-    @JacksonXmlProperty(localName = "ObjectMediaType")
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "ObjectMediaTypes")
     private List<String> objectMediaTypes;
 
     public DataPipelineSourceFilterConfiguration() {

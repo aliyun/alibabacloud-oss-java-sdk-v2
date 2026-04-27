@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 /**
  * Error configuration for data pipeline.
  */
-@JacksonXmlRootElement(localName = "Error")
+@JacksonXmlRootElement(localName = "DataPipelineError")
 public final class DataPipelineError {
     @JacksonXmlProperty(localName = "ErrorMode")
     private String errorMode;

@@ -746,4 +746,14 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketRequestPaymentResult getBucketRequestPayment(GetBucketRequestPaymentRequest request, OperationOptions options) {
         return BucketRequestPayment.getBucketRequestPayment(this.clientImpl, request, options);
     }
+  
+    @Override
+    public DoDataPipelineActionResult doDataPipelineAction(DoDataPipelineActionRequest request, OperationOptions options) {
+        return DataBasic.doDataPipelineAction(this.clientImpl, request, options);
+    }
+  
+    @Override
+    public DoMetaQueryActionResult doMetaQueryAction(DoMetaQueryActionRequest request, OperationOptions options) {
+        return DataBasic.doMetaQueryAction(this.clientImpl, request, options);
+    }
 }
