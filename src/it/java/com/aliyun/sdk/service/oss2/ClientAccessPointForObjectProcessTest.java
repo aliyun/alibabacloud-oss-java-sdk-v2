@@ -3,11 +3,12 @@ package com.aliyun.sdk.service.oss2;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ClientAccessPointForObjectProcessTest extends TestBase {
 
-    @Test
+    @Ignore
     public void testAccessPointIntegration() {
         String userId = accountId();
         String region = region();

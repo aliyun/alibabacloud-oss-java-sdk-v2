@@ -35,8 +35,8 @@ public final class DataBasic {
 
     public static DoMetaQueryActionResult doMetaQueryAction(ClientImpl impl, DoMetaQueryActionRequest request, OperationOptions options) {
 
+        requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.action(), "request.action is required");
-        requireNonNull(request.body(), "request.body is required");
 
         OperationInput input = SerdeDataBasic.fromDoMetaQueryAction(request);
         OperationOutput output = impl.execute(input, options);
@@ -45,8 +45,8 @@ public final class DataBasic {
 
     public static CompletableFuture<DoMetaQueryActionResult> doMetaQueryActionAsync(ClientImpl impl, DoMetaQueryActionRequest request, OperationOptions options) {
 
+        requireNonNull(request.bucket(), "request.bucket is required");
         requireNonNull(request.action(), "request.action is required");
-        requireNonNull(request.body(), "request.body is required");
 
         OperationInput input = SerdeDataBasic.fromDoMetaQueryAction(request);
         return impl.executeAsync(input, options).thenApply(SerdeDataBasic::toDoMetaQueryAction);
