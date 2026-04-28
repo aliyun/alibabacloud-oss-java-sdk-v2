@@ -1,5 +1,15 @@
 # ChangeLog - Alibaba Cloud OSS SDK For Java V2
 
+## 版本号：0.4.0 日期：2026-04-28
+### 变更内容
+- Feature：Add tables bucket
+- Feature：Add Downloader, Uploader and Copier
+- Feature：Data process client supports data pipeline api
+- Feature：Add DoDataPipeLineAction api
+- Feature：Add DoMetaQueryAction api
+- Update：Support returning part size, CRC64, and LastModified in ListParts
+- Fix SceneElement.frameTimes parsing error
+
 ## 版本号：0.3.2 日期：2026-03-27
 ### 变更内容
 - Feature：Add bucket request payment api
