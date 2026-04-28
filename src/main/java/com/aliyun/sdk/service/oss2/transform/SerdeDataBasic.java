@@ -71,6 +71,7 @@ public final class SerdeDataBasic {
         if (request.body() != null) {
             builder.body(request.body());
         }
+        builder.bucket(request.bucket());
 
         OperationInput input = builder.build();
         SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
