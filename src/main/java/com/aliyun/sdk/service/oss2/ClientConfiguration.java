@@ -8,6 +8,7 @@ import com.aliyun.sdk.service.oss2.transport.HttpClient;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ScheduledExecutorService;
 
 import static java.util.Objects.requireNonNull;
 
@@ -35,6 +36,7 @@ public final class ClientConfiguration {
     private final String proxyHost;
     private final Boolean disableUploadCRC64Check;
     private final String accountId;
+    private final ScheduledExecutorService scheduledExecutorService;
 
 
     private ClientConfiguration(Builder builder) {
@@ -61,6 +63,7 @@ public final class ClientConfiguration {
         this.proxyHost = builder.proxyHost;
         this.disableUploadCRC64Check = builder.disableUploadCRC64Check;
         this.accountId = builder.accountId;
+        this.scheduledExecutorService = builder.scheduledExecutorService;
     }
 
     public static Builder newBuilder() {
@@ -164,6 +167,22 @@ public final class ClientConfiguration {
         return Optional.ofNullable(accountId);
     }
 
+    /**
+     * Returns the optional scheduled executor service used for scheduling internal SDK tasks
+     * such as async retry attempts and timeout tracking.
+     * <p>
+     * If not set, the SDK will create a default single-thread scheduled executor.
+     * <p>
+     * <b>The SDK will not automatically close a user-provided executor when the client is closed.
+     * It is the responsibility of the caller to shut down the executor after all clients using it
+     * have been closed.</b>
+     *
+     * @return an Optional containing the configured ScheduledExecutorService, or empty if not set
+     */
+    public Optional<ScheduledExecutorService> scheduledExecutorService() {
+        return Optional.ofNullable(scheduledExecutorService);
+    }
+
 
     public Builder toBuilder() {
         return new Builder(this);
@@ -193,6 +212,7 @@ public final class ClientConfiguration {
         private String proxyHost;
         private Boolean disableUploadCRC64Check;
         private String accountId;
+        private ScheduledExecutorService scheduledExecutorService;
 
         protected Builder() {
         }
@@ -221,6 +241,7 @@ public final class ClientConfiguration {
             this.proxyHost = from.proxyHost;
             this.disableUploadCRC64Check = from.disableUploadCRC64Check;
             this.accountId = from.accountId;
+            this.scheduledExecutorService = from.scheduledExecutorService;
         }
 
         public Builder region(String region) {
@@ -356,6 +377,24 @@ public final class ClientConfiguration {
 
         public Builder accountId(String value) {
             this.accountId = value;
+            return this;
+        }
+
+        /**
+         * Configure the scheduled executor service used for scheduling internal SDK tasks
+         * such as async retry attempts and timeout tracking.
+         * <p>
+         * If not set, the SDK will create a default single-thread scheduled executor internally.
+         * <p>
+         * <b>The SDK will not automatically close a user-provided executor when the client is closed.
+         * It is the responsibility of the caller to shut down the executor after all clients using it
+         * have been closed.</b>
+         *
+         * @param value the ScheduledExecutorService to use
+         * @return this builder
+         */
+        public Builder scheduledExecutorService(ScheduledExecutorService value) {
+            this.scheduledExecutorService = value;
             return this;
         }
 

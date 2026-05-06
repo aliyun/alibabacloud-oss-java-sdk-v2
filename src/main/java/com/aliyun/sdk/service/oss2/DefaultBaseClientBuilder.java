@@ -8,6 +8,7 @@ import com.aliyun.sdk.service.oss2.transport.HttpClientOptions;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Internal base class for {@link DefaultOSSClientBuilder}, {@link DefaultOSSAsyncClientBuilder}
@@ -145,6 +146,21 @@ public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>
 
     public B accountId(String value) {
         cfgBuilder.accountId(value);
+        return (B) this;
+    }
+
+    /**
+     * The scheduled executor service used for scheduling internal SDK tasks
+     * such as async retry attempts and timeout tracking.
+     * <p>
+     * If not set, the SDK will create a default single-thread scheduled executor.
+     * <p>
+     * <b>The SDK will not automatically close a user-provided executor when the client is closed.
+     * It is the responsibility of the caller to shut down the executor after all clients using it
+     * have been closed.</b>
+     */
+    public B scheduledExecutorService(ScheduledExecutorService value) {
+        cfgBuilder.scheduledExecutorService(value);
         return (B) this;
     }
 
