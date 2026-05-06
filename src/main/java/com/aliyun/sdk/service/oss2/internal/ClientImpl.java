@@ -28,6 +28,8 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -80,13 +82,16 @@ public class ClientImpl implements AutoCloseable {
 
         InnerOptions innerOpts = new InnerOptions();
         innerOpts.setUserAgent(resolveUserAgent(config));
+        innerOpts.setScheduledExecutorService(resolveScheduledExecutorService(config), !config.scheduledExecutorService().isPresent());
+
         this.innerOptions = innerOpts;
 
         // build execute stack
         TransportExecuteMiddleware transport = new TransportExecuteMiddleware(opts.httpClient());
         ExecuteStack stack = new ExecuteStack(transport);
 
-        stack.push(x -> new RetryerExecuteMiddleware(x, this.options.retryer()), "Retryer");
+        stack.push(x -> new RetryerExecuteMiddleware(x, this.options.retryer(),
+                this.innerOptions.getScheduledExecutorService()), "Retryer");
         stack.push(x -> new SignerExecuteMiddleware(x, this.options.signer(), this.options.credentialsProvider()), "Signer");
         stack.push(ResponseCheckerExecuteMiddleware::new, "ResponseChecker");
         this.executeStack = stack;
@@ -102,6 +107,9 @@ public class ClientImpl implements AutoCloseable {
         HttpClient httpClient = options.httpClient();
         if (httpClient instanceof AutoCloseable) {
             ((AutoCloseable) httpClient).close();
+        }
+        if (innerOptions.getOwnScheduledExecutor() && innerOptions.getScheduledExecutorService() != null) {
+            innerOptions.getScheduledExecutorService().shutdown();
         }
     }
 
@@ -477,6 +485,26 @@ public class ClientImpl implements AutoCloseable {
     }
 
     /**
+     * Resolves the scheduled executor service for async retry and timeout scheduling.
+     * <p>
+     * If the user provided one via configuration, it is used as-is and will NOT be shut down
+     * by the SDK when the client is closed. Otherwise, a default single-thread daemon executor
+     * is created and will be shut down automatically on {@link #close()}.
+     *
+     * @param config Base client configuration
+     * @return The resolved ScheduledExecutorService
+     */
+    private ScheduledExecutorService resolveScheduledExecutorService(ClientConfiguration config) {
+        return config.scheduledExecutorService().orElseGet(() ->
+                Executors.newSingleThreadScheduledExecutor(r -> {
+                    Thread t = new Thread(r, "oss-sdk-scheduler");
+                    t.setDaemon(true);
+                    return t;
+                })
+        );
+    }
+
+    /**
      * Resolves and returns the signer implementation to be used by this client
      *
      * @param config Base client configuration
@@ -540,6 +568,8 @@ public class ClientImpl implements AutoCloseable {
     public static class InnerOptions {
 
         private String userAgent;
+        private ScheduledExecutorService scheduledExecutorService;
+        private boolean ownScheduledExecutor;
 
         public InnerOptions() {
         }
@@ -550,6 +580,22 @@ public class ClientImpl implements AutoCloseable {
 
         public void setUserAgent(String value) {
             this.userAgent = value;
+        }
+
+        public void setScheduledExecutorService(ScheduledExecutorService value, boolean ownScheduledExecutor) {
+            this.scheduledExecutorService = value;
+            this.ownScheduledExecutor = ownScheduledExecutor;
+        }
+
+        public ScheduledExecutorService getScheduledExecutorService() {
+            return scheduledExecutorService;
+        }
+
+        /**
+         * Whether the scheduledExecutorService is managed by the SDK (and should be shut down on close)
+         */
+        public boolean getOwnScheduledExecutor() {
+            return ownScheduledExecutor;
         }
     }
 
