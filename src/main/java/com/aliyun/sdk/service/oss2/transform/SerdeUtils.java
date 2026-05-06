@@ -5,6 +5,7 @@ import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.exceptions.DeserializationException;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
+import com.aliyun.sdk.service.oss2.transport.ByteArrayBinaryData;
 import com.aliyun.sdk.service.oss2.transport.StringBinaryData;
 import com.aliyun.sdk.service.oss2.utils.HttpUtils;
 import com.aliyun.sdk.service.oss2.utils.Md5Utils;
@@ -82,6 +83,19 @@ public final class SerdeUtils {
             return xmlMapper.readValue(xmlBytes, clz);
         } catch (Exception e) {
             throw new DeserializationException("Failed to parse XML", e);
+        }
+    }
+
+    public static BinaryData serializeXmlBodyAsBytes(Object value) {
+        if (value == null) {
+            return null;
+        }
+        ObjectMapper xmlMapper = new XmlMapper();
+        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        try {
+            return new ByteArrayBinaryData(xmlMapper.writeValueAsString(value).getBytes());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
