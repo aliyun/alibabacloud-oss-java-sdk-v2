@@ -3632,7 +3632,8 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
-         ucket replication api
+
+    // bucket replication api
     /**
      * Configures replication rules for a bucket to replicate data to other buckets in the same or different regions.
      *
