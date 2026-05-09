@@ -1447,4 +1447,24 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<DoMetaQueryActionResult> doMetaQueryActionAsync(DoMetaQueryActionRequest request, OperationOptions options) {
         return DataBasic.doMetaQueryActionAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketHttpsConfigResult putBucketHttpsConfig(PutBucketHttpsConfigRequest request, OperationOptions options) {
+        return BucketHttpsConfig.putBucketHttpsConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketHttpsConfigResult> putBucketHttpsConfigAsync(PutBucketHttpsConfigRequest request, OperationOptions options) {
+        return BucketHttpsConfig.putBucketHttpsConfigAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketHttpsConfigResult getBucketHttpsConfig(GetBucketHttpsConfigRequest request, OperationOptions options) {
+        return BucketHttpsConfig.getBucketHttpsConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketHttpsConfigResult> getBucketHttpsConfigAsync(GetBucketHttpsConfigRequest request, OperationOptions options) {
+        return BucketHttpsConfig.getBucketHttpsConfigAsync(this.clientImpl, request, options);
+    }
 }

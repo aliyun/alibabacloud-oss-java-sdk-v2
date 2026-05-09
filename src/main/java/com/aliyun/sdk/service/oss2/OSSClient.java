@@ -3632,4 +3632,54 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // bucket https config api
+
+    /**
+     * Configures HTTPS settings for a bucket.
+     *
+     * @param request A {@link PutBucketHttpsConfigRequest} for PutBucketHttpsConfig operation.
+     * @return A {@link PutBucketHttpsConfigResult} for PutBucketHttpsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketHttpsConfigResult putBucketHttpsConfig(PutBucketHttpsConfigRequest request) {
+        return putBucketHttpsConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures HTTPS settings for a bucket.
+     *
+     * @param request A {@link PutBucketHttpsConfigRequest} for PutBucketHttpsConfig operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketHttpsConfigResult} for PutBucketHttpsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketHttpsConfigResult putBucketHttpsConfig(PutBucketHttpsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the HTTPS configurations of a bucket.
+     *
+     * @param request A {@link GetBucketHttpsConfigRequest} for GetBucketHttpsConfig operation.
+     * @return A {@link GetBucketHttpsConfigResult} for GetBucketHttpsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketHttpsConfigResult getBucketHttpsConfig(GetBucketHttpsConfigRequest request) {
+        return getBucketHttpsConfig(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the HTTPS configurations of a bucket.
+     *
+     * @param request A {@link GetBucketHttpsConfigRequest} for GetBucketHttpsConfig operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketHttpsConfigResult} for GetBucketHttpsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketHttpsConfigResult getBucketHttpsConfig(GetBucketHttpsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
 }
