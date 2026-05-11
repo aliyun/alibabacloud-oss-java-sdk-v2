@@ -3632,4 +3632,102 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+
+    // style api
+    /**
+     * Creates or updates an image style.
+     *
+     * @param request A {@link PutStyleRequest} for PutStyle operation.
+     * @return A {@link PutStyleResult} for PutStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutStyleResult putStyle(PutStyleRequest request) {
+        return putStyle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates or updates an image style.
+     *
+     * @param request A {@link PutStyleRequest} for PutStyle operation.
+     * @param options The operation options.
+     * @return A {@link PutStyleResult} for PutStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutStyleResult putStyle(PutStyleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets an image style.
+     *
+     * @param request A {@link GetStyleRequest} for GetStyle operation.
+     * @return A {@link GetStyleResult} for GetStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetStyleResult getStyle(GetStyleRequest request) {
+        return getStyle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets an image style.
+     *
+     * @param request A {@link GetStyleRequest} for GetStyle operation.
+     * @param options The operation options.
+     * @return A {@link GetStyleResult} for GetStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetStyleResult getStyle(GetStyleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists image styles.
+     *
+     * @param request A {@link ListStyleRequest} for ListStyle operation.
+     * @return A {@link ListStyleResult} for ListStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListStyleResult listStyle(ListStyleRequest request) {
+        return listStyle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists image styles.
+     *
+     * @param request A {@link ListStyleRequest} for ListStyle operation.
+     * @param options The operation options.
+     * @return A {@link ListStyleResult} for ListStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListStyleResult listStyle(ListStyleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes an image style.
+     *
+     * @param request A {@link DeleteStyleRequest} for DeleteStyle operation.
+     * @return A {@link DeleteStyleResult} for DeleteStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteStyleResult deleteStyle(DeleteStyleRequest request) {
+        return deleteStyle(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes an image style.
+     *
+     * @param request A {@link DeleteStyleRequest} for DeleteStyle operation.
+     * @param options The operation options.
+     * @return A {@link DeleteStyleResult} for DeleteStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteStyleResult deleteStyle(DeleteStyleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
+
+
 }

@@ -720,4 +720,24 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<DoMetaQueryActionResult> doMetaQueryActionAsync(DoMetaQueryActionRequest request, OperationOptions options) {
         return DataBasic.doMetaQueryActionAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<PutStyleResult> putStyleAsync(PutStyleRequest request, OperationOptions options) {
+        return BucketStyle.putStyleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetStyleResult> getStyleAsync(GetStyleRequest request, OperationOptions options) {
+        return BucketStyle.getStyleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListStyleResult> listStyleAsync(ListStyleRequest request, OperationOptions options) {
+        return BucketStyle.listStyleAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteStyleResult> deleteStyleAsync(DeleteStyleRequest request, OperationOptions options) {
+        return BucketStyle.deleteStyleAsync(this.clientImpl, request, options);
+    }
 }
