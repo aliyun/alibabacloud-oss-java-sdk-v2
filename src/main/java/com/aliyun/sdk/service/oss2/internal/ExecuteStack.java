@@ -6,6 +6,7 @@ import com.aliyun.sdk.service.oss2.transport.ResponseMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
 /**
@@ -26,6 +27,8 @@ public class ExecuteStack {
      */
     private volatile ExecuteMiddleware cached;
 
+    private final ReentrantLock lock = new ReentrantLock();
+
     /**
      * Constructor that initializes the execution stack with a transport middleware
      *
@@ -43,7 +46,8 @@ public class ExecuteStack {
      */
     public ExecuteMiddleware resolve() {
         if (cached == null) {
-            synchronized (ExecuteStack.class) {
+            lock.lock();
+            try {
                 if (cached == null) {
                     ExecuteMiddleware prev = transport;
                     for (int i = stack.size() - 1; i >= 0; i--) {
@@ -51,6 +55,8 @@ public class ExecuteStack {
                     }
                     cached = prev;
                 }
+            } finally {
+                lock.unlock();
             }
         }
         return cached;
