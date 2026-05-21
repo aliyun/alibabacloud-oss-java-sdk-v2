@@ -3,7 +3,11 @@ package com.aliyun.sdk.service.oss2.vectors;
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.OperationOptions;
 import com.aliyun.sdk.service.oss2.OperationOutput;
+import com.aliyun.sdk.service.oss2.paginator.PaginatorOptions;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
+import com.aliyun.sdk.service.oss2.vectors.paginator.ListVectorBucketsIterable;
+import com.aliyun.sdk.service.oss2.vectors.paginator.ListVectorIndexesIterable;
+import com.aliyun.sdk.service.oss2.vectors.paginator.ListVectorsIterable;
 
 
 /**
@@ -118,6 +122,33 @@ public interface OSSVectorsClient extends AutoCloseable {
     default ListVectorBucketsResult listVectorBuckets(ListVectorBucketsRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * This is a variant of the ListVectorBuckets operation.
+     * The return type is a custom iterable that can be used to iterate through all the pages.
+     * SDK will internally handle making service calls for you.
+     *
+     * @param request A {@link ListVectorBucketsRequest} for ListVectorBuckets operation.
+     * @return A {@link ListVectorBucketsIterable} that can be used to iterate through all the response pages.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListVectorBucketsIterable listVectorBucketsPaginator(ListVectorBucketsRequest request) {
+        return listVectorBucketsPaginator(request, PaginatorOptions.defaults());
+    }
+
+    /**
+     * This is a variant of the ListVectorBuckets operation.
+     * The return type is a custom iterable that can be used to iterate through all the pages.
+     * SDK will internally handle making service calls for you.
+     *
+     * @param request A {@link ListVectorBucketsRequest} for ListVectorBuckets operation.
+     * @param options The paginator options.
+     * @return A {@link ListVectorBucketsIterable} that can be used to iterate through all the response pages.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListVectorBucketsIterable listVectorBucketsPaginator(ListVectorBucketsRequest request, PaginatorOptions options) {
+        return new ListVectorBucketsIterable(this, request, options);
+    }
     //-----------------------------------------------------------------------
 
     // vector index api
@@ -188,6 +219,33 @@ public interface OSSVectorsClient extends AutoCloseable {
      */
     default ListVectorIndexesResult listVectorIndexes(ListVectorIndexesRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * This is a variant of the ListVectorIndexes operation.
+     * The return type is a custom iterable that can be used to iterate through all the pages.
+     * SDK will internally handle making service calls for you.
+     *
+     * @param request A {@link ListVectorIndexesRequest} for ListVectorIndexes operation.
+     * @return A {@link ListVectorIndexesIterable} that can be used to iterate through all the response pages.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListVectorIndexesIterable listVectorIndexesPaginator(ListVectorIndexesRequest request) {
+        return listVectorIndexesPaginator(request, PaginatorOptions.defaults());
+    }
+
+    /**
+     * This is a variant of the ListVectorIndexes operation.
+     * The return type is a custom iterable that can be used to iterate through all the pages.
+     * SDK will internally handle making service calls for you.
+     *
+     * @param request A {@link ListVectorIndexesRequest} for ListVectorIndexes operation.
+     * @param options The paginator options.
+     * @return A {@link ListVectorIndexesIterable} that can be used to iterate through all the response pages.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListVectorIndexesIterable listVectorIndexesPaginator(ListVectorIndexesRequest request, PaginatorOptions options) {
+        return new ListVectorIndexesIterable(this, request, options);
     }
 
     /**
@@ -283,6 +341,33 @@ public interface OSSVectorsClient extends AutoCloseable {
      */
     default ListVectorsResult listVectors(ListVectorsRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * This is a variant of the ListVectors operation.
+     * The return type is a custom iterable that can be used to iterate through all the pages.
+     * SDK will internally handle making service calls for you.
+     *
+     * @param request A {@link ListVectorsRequest} for ListVectors operation.
+     * @return A {@link ListVectorsIterable} that can be used to iterate through all the response pages.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListVectorsIterable listVectorsPaginator(ListVectorsRequest request) {
+        return listVectorsPaginator(request, PaginatorOptions.defaults());
+    }
+
+    /**
+     * This is a variant of the ListVectors operation.
+     * The return type is a custom iterable that can be used to iterate through all the pages.
+     * SDK will internally handle making service calls for you.
+     *
+     * @param request A {@link ListVectorsRequest} for ListVectors operation.
+     * @param options The paginator options.
+     * @return A {@link ListVectorsIterable} that can be used to iterate through all the response pages.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListVectorsIterable listVectorsPaginator(ListVectorsRequest request, PaginatorOptions options) {
+        return new ListVectorsIterable(this, request, options);
     }
 
     /**

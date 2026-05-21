@@ -44,9 +44,11 @@ public class VectorRequestModel {
         }
 
         protected Builder(VectorRequestModel request) {
-            this.headers = request.headers;
-            this.parameters = request.parameters;
-            this.bodyFields = request.bodyFields;
+            this.headers = MapUtils.caseInsensitiveMap();
+            this.headers.putAll(request.headers);
+            this.parameters = MapUtils.caseSensitiveMap();
+            this.parameters.putAll(request.parameters);
+            this.bodyFields = new HashMap<>(request.bodyFields);
         }
 
         @SuppressWarnings("unchecked")
