@@ -192,17 +192,4 @@ public final class SerdeUtils {
         }
     }
 
-    public static BinaryData serializeXmlBodyAsBytes(Object value) {
-        if (value == null) {
-            return null;
-        }
-        ObjectMapper xmlMapper = new XmlMapper();
-        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        try {
-            return new ByteArrayBinaryData(xmlMapper.writeValueAsString(value).getBytes());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }
