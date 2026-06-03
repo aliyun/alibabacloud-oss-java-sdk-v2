@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,14 +29,25 @@ class RetryerExecuteMiddleware implements ExecuteMiddleware {
     private final Retryer retryer;
 
     /**
+     * Scheduled executor for non-blocking async retry delays.
+     * <p>
+     * Used instead of {@code Thread.sleep()} in {@link #attemptExecuteAsync} to avoid
+     * blocking the HTTP client's I/O reactor threads during retry backoff.
+     */
+    private final ScheduledExecutorService scheduledExecutor;
+
+    /**
      * Constructor that initializes the retry middleware with a next handler and retry strategy
      *
      * @param nextHandler The next middleware to invoke
      * @param retryer     The retry strategy to use when errors occur
+     * @param scheduledExecutor The scheduled executor for async retry delays
      */
-    public RetryerExecuteMiddleware(ExecuteMiddleware nextHandler, Retryer retryer) {
+    public RetryerExecuteMiddleware(ExecuteMiddleware nextHandler, Retryer retryer,
+                                    ScheduledExecutorService scheduledExecutor) {
         this.nextHandler = nextHandler;
         this.retryer = Optional.ofNullable(retryer).orElse(new NopRetryer());
+        this.scheduledExecutor = scheduledExecutor;
     }
 
     /**
@@ -156,15 +168,6 @@ class RetryerExecuteMiddleware implements ExecuteMiddleware {
                     return;
                 }
 
-                // delay
-                Duration delay = retryer.retryDelay(nextRetries, cause);
-                try {
-                    TimeUnit.MILLISECONDS.sleep(delay.toMillis());
-                } catch (InterruptedException e) {
-                    future.completeExceptionally(exception);
-                    return;
-                }
-
                 // reset to init state
                 if (context.requestBodyObserver != null) {
                     for (StreamObserver observer : context.requestBodyObserver) {
@@ -175,8 +178,17 @@ class RetryerExecuteMiddleware implements ExecuteMiddleware {
                 // reset to init signTime
                 context.signingContext.setSignTime(signTime);
 
-                // retry
-                attemptExecuteAsync(future, request, context, nextRetries, maxAttempts, signTime);
+                // Non-blocking delay via ScheduledExecutorService.
+                // Unlike Thread.sleep(), this does not block the HTTP client's I/O reactor thread
+                // during retry backoff, preserving async throughput.
+                Duration delay = retryer.retryDelay(nextRetries, cause);
+                try {
+                    scheduledExecutor.schedule(() ->
+                        attemptExecuteAsync(future, request, context, nextRetries, maxAttempts, signTime),
+                        delay.toMillis(), TimeUnit.MILLISECONDS);
+                } catch (Throwable t) {
+                    future.completeExceptionally(exception);
+                }
 
             } else {
                 future.complete(response);

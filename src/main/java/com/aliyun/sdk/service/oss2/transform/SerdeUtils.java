@@ -18,6 +18,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.w3c.dom.Element;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
 public final class SerdeUtils {
@@ -50,10 +51,21 @@ public final class SerdeUtils {
         if (value == null) {
             return null;
         }
+        return new StringBinaryData(toXmlString(value));
+    }
+
+    public static BinaryData serializeXmlBodyAsBytes(Object value) {
+        if (value == null) {
+            return null;
+        }
+        return new ByteArrayBinaryData(toXmlString(value).getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static String toXmlString(Object value) {
         ObjectMapper xmlMapper = new XmlMapper();
         xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         try {
-            return new StringBinaryData(xmlMapper.writeValueAsString(value));
+            return xmlMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
