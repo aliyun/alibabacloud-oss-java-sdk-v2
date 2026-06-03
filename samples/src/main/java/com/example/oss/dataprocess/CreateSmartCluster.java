@@ -35,8 +35,8 @@ public class CreateSmartCluster implements Example {
         try (OSSDataProcessClient client = clientBuilder.build()) {
 
             SmartClusterRule rule = SmartClusterRule.newBuilder()
-                    .ruleType("Keyword")
-                    .keywords(Arrays.asList("sample", "test"))
+                    .ruleType("keywords")
+                    .keywords(Arrays.asList("人物", "车辆"))
                     .build();
 
             CreateSmartClusterResult result = client.createSmartCluster(
