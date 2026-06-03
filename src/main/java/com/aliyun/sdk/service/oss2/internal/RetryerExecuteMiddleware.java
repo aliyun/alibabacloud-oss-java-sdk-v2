@@ -182,9 +182,13 @@ class RetryerExecuteMiddleware implements ExecuteMiddleware {
                 // Unlike Thread.sleep(), this does not block the HTTP client's I/O reactor thread
                 // during retry backoff, preserving async throughput.
                 Duration delay = retryer.retryDelay(nextRetries, cause);
-                scheduledExecutor.schedule(() ->
-                    attemptExecuteAsync(future, request, context, nextRetries, maxAttempts, signTime),
-                    delay.toMillis(), TimeUnit.MILLISECONDS);
+                try {
+                    scheduledExecutor.schedule(() ->
+                        attemptExecuteAsync(future, request, context, nextRetries, maxAttempts, signTime),
+                        delay.toMillis(), TimeUnit.MILLISECONDS);
+                } catch (Throwable t) {
+                    future.completeExceptionally(exception);
+                }
 
             } else {
                 future.complete(response);
