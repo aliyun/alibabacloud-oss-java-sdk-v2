@@ -226,4 +226,93 @@ public interface OSSDataProcessClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // MetaQuery api
+    //-----------------------------------------------------------------------
+    default OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request) {
+        return openMetaQuery(request, OperationOptions.defaults());
+    }
+
+    default OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request) {
+        return getMetaQueryStatus(request, OperationOptions.defaults());
+    }
+
+    default GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request) {
+        return closeMetaQuery(request, OperationOptions.defaults());
+    }
+
+    default CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request) {
+        return doMetaQuery(request, OperationOptions.defaults());
+    }
+
+    default DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // FileMeta api
+    //-----------------------------------------------------------------------
+    default DeleteFileMetaResult deleteFileMeta(DeleteFileMetaRequest request) {
+        return deleteFileMeta(request, OperationOptions.defaults());
+    }
+
+    default DeleteFileMetaResult deleteFileMeta(DeleteFileMetaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // SmartCluster api
+    //-----------------------------------------------------------------------
+    default CreateSmartClusterResult createSmartCluster(CreateSmartClusterRequest request) {
+        return createSmartCluster(request, OperationOptions.defaults());
+    }
+
+    default CreateSmartClusterResult createSmartCluster(CreateSmartClusterRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default GetSmartClusterResult getSmartCluster(GetSmartClusterRequest request) {
+        return getSmartCluster(request, OperationOptions.defaults());
+    }
+
+    default GetSmartClusterResult getSmartCluster(GetSmartClusterRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default UpdateSmartClusterResult updateSmartCluster(UpdateSmartClusterRequest request) {
+        return updateSmartCluster(request, OperationOptions.defaults());
+    }
+
+    default UpdateSmartClusterResult updateSmartCluster(UpdateSmartClusterRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default DeleteSmartClusterResult deleteSmartCluster(DeleteSmartClusterRequest request) {
+        return deleteSmartCluster(request, OperationOptions.defaults());
+    }
+
+    default DeleteSmartClusterResult deleteSmartCluster(DeleteSmartClusterRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default ListSmartClustersResult listSmartClusters(ListSmartClustersRequest request) {
+        return listSmartClusters(request, OperationOptions.defaults());
+    }
+
+    default ListSmartClustersResult listSmartClusters(ListSmartClustersRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }

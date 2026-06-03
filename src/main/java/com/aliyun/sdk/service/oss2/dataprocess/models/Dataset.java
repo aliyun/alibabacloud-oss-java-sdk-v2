@@ -39,9 +39,9 @@ public final class Dataset {
     @JacksonXmlProperty(localName = "FileCount")
     private Long fileCount;
 
+    @Deprecated
     @JacksonXmlProperty(localName = "TemplateId")
     private String templateId;
-
     @JacksonXmlProperty(localName = "TotalFileSize")
     private Long totalFileSize;
 
@@ -123,10 +123,10 @@ public final class Dataset {
         return this.fileCount;
     }
 
+    @Deprecated
     public String templateId() {
         return this.templateId;
     }
-
     public Long totalFileSize() {
         return this.totalFileSize;
     }
@@ -230,7 +230,7 @@ public final class Dataset {
             this.fileCount = fileCount;
             return this;
         }
-
+        @Deprecated
         public Builder templateId(String templateId) {
             this.templateId = templateId;
             return this;

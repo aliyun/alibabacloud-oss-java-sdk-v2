@@ -42,6 +42,11 @@ public final class SimpleQueryRequest extends RequestModel {
         return parameters.get("query");
     }
 
+    @Deprecated
+    public String simpleQuery() {
+        return parameters.get("simpleQuery");
+    }
+
     public String sort() {
         return parameters.get("sort");
     }
@@ -102,6 +107,23 @@ public final class SimpleQueryRequest extends RequestModel {
 
         public Builder query(SimpleQuery value) {
             this.parameters.put("query", DataProcessParamHelper.toSimpleQuery(value));
+            return this;
+        }
+
+        public Builder query(String value) {
+            this.parameters.put("query", value);
+            return this;
+        }
+
+        @Deprecated
+        public Builder simpleQuery(SimpleQuery value) {
+            this.parameters.put("simpleQuery", DataProcessParamHelper.toSimpleQuery(value));
+            return this;
+        }
+
+        @Deprecated
+        public Builder simpleQuery(String value) {
+            this.parameters.put("simpleQuery", value);
             return this;
         }
 

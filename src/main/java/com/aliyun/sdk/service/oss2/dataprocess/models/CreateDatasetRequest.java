@@ -33,10 +33,6 @@ public final class CreateDatasetRequest extends RequestModel {
         return parameters.get("description");
     }
 
-    public String templateId() {
-        return parameters.get("templateId");
-    }
-
     public String workflowParameters() {
         return parameters.get("workflowParameters");
     }
@@ -75,11 +71,6 @@ public final class CreateDatasetRequest extends RequestModel {
 
         public Builder description(String value) {
             this.parameters.put("description", value);
-            return this;
-        }
-
-        public Builder templateId(String value) {
-            this.parameters.put("templateId", value);
             return this;
         }
 
