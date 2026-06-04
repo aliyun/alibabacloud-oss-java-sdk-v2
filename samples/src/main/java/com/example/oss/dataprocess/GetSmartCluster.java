@@ -11,17 +11,14 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.util.Arrays;
-
-public class CreateSmartCluster implements Example {
+public class GetSmartCluster implements Example {
 
     private static void execute(
             String endpoint,
             String region,
             String bucket,
             String datasetName,
-            String name,
-            String clusterType) {
+            String objectId) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
         OSSDataProcessClientBuilder clientBuilder = OSSDataProcessClient.newBuilder()
@@ -34,26 +31,30 @@ public class CreateSmartCluster implements Example {
 
         try (OSSDataProcessClient client = clientBuilder.build()) {
 
-            SmartClusterRule rule = SmartClusterRule.newBuilder()
-                    .ruleType("keywords")
-                    .keywords(Arrays.asList("人物", "车辆"))
-                    .build();
-
-            CreateSmartClusterResult result = client.createSmartCluster(
-                    CreateSmartClusterRequest.newBuilder()
+            GetSmartClusterResult result = client.getSmartCluster(
+                    GetSmartClusterRequest.newBuilder()
                             .bucket(bucket)
                             .datasetName(datasetName)
-                            .name(name)
-                            .clusterType(clusterType != null ? clusterType : "User")
-                            .rules(Arrays.asList(rule))
-                            .description("test knowledge cluster")
+                            .objectId(objectId)
                             .build());
 
             System.out.printf("Status code:%d, request id:%s%n",
                     result.statusCode(), result.requestId());
 
-            if (result.objectId() != null) {
-                System.out.printf("Object ID:%s%n", result.objectId());
+            if (result.smartCluster() != null) {
+                SmartClusterInfo info = result.smartCluster();
+                System.out.printf("Object ID:%s%n", info.objectId());
+                System.out.printf("Name:%s%n", info.name());
+                System.out.printf("Cluster type:%s%n", info.clusterType());
+                System.out.printf("Description:%s%n", info.description());
+                System.out.printf("Create time:%s%n", info.createTime());
+                System.out.printf("Update time:%s%n", info.updateTime());
+                if (info.reason() != null) {
+                    System.out.printf("Reason:%s%n", info.reason());
+                }
+                if (info.rules() != null) {
+                    System.out.printf("Rules count:%d%n", info.rules().size());
+                }
             }
 
         } catch (Exception e) {
@@ -68,8 +69,7 @@ public class CreateSmartCluster implements Example {
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("datasetName").desc("The name of the dataset.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("name").desc("The name of the smart cluster.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("clusterType").desc("The type of the smart cluster.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("objectId").desc("The object ID of the smart cluster.").hasArg().required().get());
         return opts;
     }
 
@@ -79,8 +79,7 @@ public class CreateSmartCluster implements Example {
         String region = cmd.getParsedOptionValue("region");
         String bucket = cmd.getParsedOptionValue("bucket");
         String datasetName = cmd.getParsedOptionValue("datasetName");
-        String name = cmd.getParsedOptionValue("name");
-        String clusterType = cmd.getParsedOptionValue("clusterType");
-        execute(endpoint, region, bucket, datasetName, name, clusterType);
+        String objectId = cmd.getParsedOptionValue("objectId");
+        execute(endpoint, region, bucket, datasetName, objectId);
     }
 }

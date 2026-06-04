@@ -11,17 +11,15 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.util.Arrays;
-
-public class CreateSmartCluster implements Example {
+public class ListSmartClusters implements Example {
 
     private static void execute(
             String endpoint,
             String region,
             String bucket,
             String datasetName,
-            String name,
-            String clusterType) {
+            String clusterType,
+            Integer maxResults) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
         OSSDataProcessClientBuilder clientBuilder = OSSDataProcessClient.newBuilder()
@@ -34,26 +32,31 @@ public class CreateSmartCluster implements Example {
 
         try (OSSDataProcessClient client = clientBuilder.build()) {
 
-            SmartClusterRule rule = SmartClusterRule.newBuilder()
-                    .ruleType("keywords")
-                    .keywords(Arrays.asList("人物", "车辆"))
-                    .build();
+            ListSmartClustersRequest.Builder requestBuilder = ListSmartClustersRequest.newBuilder()
+                    .bucket(bucket)
+                    .datasetName(datasetName);
 
-            CreateSmartClusterResult result = client.createSmartCluster(
-                    CreateSmartClusterRequest.newBuilder()
-                            .bucket(bucket)
-                            .datasetName(datasetName)
-                            .name(name)
-                            .clusterType(clusterType != null ? clusterType : "User")
-                            .rules(Arrays.asList(rule))
-                            .description("test knowledge cluster")
-                            .build());
+            if (clusterType != null) {
+                requestBuilder.clusterType(clusterType);
+            }
+            if (maxResults != null) {
+                requestBuilder.maxResults(maxResults);
+            }
+
+            ListSmartClustersResult result = client.listSmartClusters(requestBuilder.build());
 
             System.out.printf("Status code:%d, request id:%s%n",
                     result.statusCode(), result.requestId());
 
-            if (result.objectId() != null) {
-                System.out.printf("Object ID:%s%n", result.objectId());
+            if (result.smartClusters() != null) {
+                for (SmartClusterInfo info : result.smartClusters()) {
+                    System.out.printf("Object ID:%s, name:%s, cluster type:%s, description:%s%n",
+                            info.objectId(), info.name(), info.clusterType(), info.description());
+                }
+            }
+
+            if (result.nextToken() != null && !result.nextToken().isEmpty()) {
+                System.out.printf("Next token:%s%n", result.nextToken());
             }
 
         } catch (Exception e) {
@@ -68,8 +71,8 @@ public class CreateSmartCluster implements Example {
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("datasetName").desc("The name of the dataset.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("name").desc("The name of the smart cluster.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("clusterType").desc("The type of the smart cluster.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("clusterType").desc("The type of the smart cluster to filter.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("maxResults").desc("The maximum number of results to return.").hasArg().get());
         return opts;
     }
 
@@ -79,8 +82,9 @@ public class CreateSmartCluster implements Example {
         String region = cmd.getParsedOptionValue("region");
         String bucket = cmd.getParsedOptionValue("bucket");
         String datasetName = cmd.getParsedOptionValue("datasetName");
-        String name = cmd.getParsedOptionValue("name");
         String clusterType = cmd.getParsedOptionValue("clusterType");
-        execute(endpoint, region, bucket, datasetName, name, clusterType);
+        Integer maxResults = cmd.getParsedOptionValue("maxResults") != null
+                ? Integer.parseInt(cmd.getParsedOptionValue("maxResults").toString()) : null;
+        execute(endpoint, region, bucket, datasetName, clusterType, maxResults);
     }
 }
