@@ -3491,6 +3491,100 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // style api
+    /**
+     * Creates or updates an image style.
+     *
+     * @param request A {@link PutStyleRequest} for PutStyle operation.
+     * @return A Java Future containing the {@link PutStyleResult} of the PutStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutStyleResult> putStyleAsync(PutStyleRequest request) {
+        return putStyleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates or updates an image style.
+     *
+     * @param request A {@link PutStyleRequest} for PutStyle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutStyleResult} of the PutStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutStyleResult> putStyleAsync(PutStyleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Lists image styles.
+     *
+     * @param request A {@link ListStyleRequest} for ListStyle operation.
+     * @return A Java Future containing the {@link ListStyleResult} of the ListStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListStyleResult> listStyleAsync(ListStyleRequest request) {
+        return listStyleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Lists image styles.
+     *
+     * @param request A {@link ListStyleRequest} for ListStyle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListStyleResult} of the ListStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListStyleResult> listStyleAsync(ListStyleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets an image style.
+     *
+     * @param request A {@link GetStyleRequest} for GetStyle operation.
+     * @return A Java Future containing the {@link GetStyleResult} of the GetStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetStyleResult> getStyleAsync(GetStyleRequest request) {
+        return getStyleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Gets an image style.
+     *
+     * @param request A {@link GetStyleRequest} for GetStyle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetStyleResult} of the GetStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetStyleResult> getStyleAsync(GetStyleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes an image style.
+     *
+     * @param request A {@link DeleteStyleRequest} for DeleteStyle operation.
+     * @return A Java Future containing the {@link DeleteStyleResult} of the DeleteStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteStyleResult> deleteStyleAsync(DeleteStyleRequest request) {
+        return deleteStyleAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes an image style.
+     *
+     * @param request A {@link DeleteStyleRequest} for DeleteStyle operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteStyleResult} of the DeleteStyle operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteStyleResult> deleteStyleAsync(DeleteStyleRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
 }
 
 

@@ -756,4 +756,24 @@ public class DefaultOSSClient implements OSSClient {
     public DoMetaQueryActionResult doMetaQueryAction(DoMetaQueryActionRequest request, OperationOptions options) {
         return DataBasic.doMetaQueryAction(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutStyleResult putStyle(PutStyleRequest request, OperationOptions options) {
+        return BucketStyle.putStyle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetStyleResult getStyle(GetStyleRequest request, OperationOptions options) {
+        return BucketStyle.getStyle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListStyleResult listStyle(ListStyleRequest request, OperationOptions options) {
+        return BucketStyle.listStyle(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteStyleResult deleteStyle(DeleteStyleRequest request, OperationOptions options) {
+        return BucketStyle.deleteStyle(this.clientImpl, request, options);
+    }
 }
