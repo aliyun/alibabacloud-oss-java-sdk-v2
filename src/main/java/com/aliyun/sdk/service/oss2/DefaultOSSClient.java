@@ -756,4 +756,34 @@ public class DefaultOSSClient implements OSSClient {
     public DoMetaQueryActionResult doMetaQueryAction(DoMetaQueryActionRequest request, OperationOptions options) {
         return DataBasic.doMetaQueryAction(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketReplicationResult putBucketReplication(PutBucketReplicationRequest request, OperationOptions options) {
+        return BucketReplication.putBucketReplication(this.clientImpl, request, options);
+    }
+
+    @Override
+    public PutBucketRtcResult putBucketRtc(PutBucketRtcRequest request, OperationOptions options) {
+        return BucketReplication.putBucketRtc(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketReplicationResult getBucketReplication(GetBucketReplicationRequest request, OperationOptions options) {
+        return BucketReplication.getBucketReplication(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketReplicationLocationResult getBucketReplicationLocation(GetBucketReplicationLocationRequest request, OperationOptions options) {
+        return BucketReplication.getBucketReplicationLocation(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketReplicationProgressResult getBucketReplicationProgress(GetBucketReplicationProgressRequest request, OperationOptions options) {
+        return BucketReplication.getBucketReplicationProgress(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketReplicationResult deleteBucketReplication(DeleteBucketReplicationRequest request, OperationOptions options) {
+        return BucketReplication.deleteBucketReplication(this.clientImpl, request, options);
+    }
 }
