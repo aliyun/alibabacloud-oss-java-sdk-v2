@@ -8,7 +8,7 @@ import java.util.List;
 
 @JacksonXmlRootElement(localName = "Dataset")
 public final class Dataset {
-
+    @Deprecated
     @JacksonXmlProperty(localName = "BindCount")
     private Long bindCount;
 
@@ -82,7 +82,7 @@ public final class Dataset {
     public Builder toBuilder() {
         return new Builder(this);
     }
-
+    @Deprecated
     public Long bindCount() {
         return this.bindCount;
     }
@@ -180,7 +180,7 @@ public final class Dataset {
             this.workflowParameters = dataset.workflowParameters;
             this.datasetConfig = dataset.datasetConfig;
         }
-
+        @Deprecated
         public Builder bindCount(Long bindCount) {
             this.bindCount = bindCount;
             return this;
