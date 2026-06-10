@@ -710,6 +710,54 @@ public class RetryerExecuteMiddlewareTest {
     }
 
     // -----------------------------------------------------------------------
+    // Async: shutdown executor does not hang in-flight retry future
+    // -----------------------------------------------------------------------
+    @Test
+    void testAsyncShutdownExecutorCompletesInFlightRetryFuture() {
+        ScheduledExecutorService localScheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "shutdown-test-scheduler");
+            t.setDaemon(true);
+            return t;
+        });
+
+        // Shutdown before use so schedule() throws RejectedExecutionException
+        localScheduler.shutdown();
+
+        AtomicInteger attempts = new AtomicInteger(0);
+
+        ExecuteMiddleware next = new ExecuteMiddleware() {
+            @Override
+            public ResponseMessage execute(RequestMessage request, ExecuteContext context) {
+                return dummyResponse();
+            }
+
+            @Override
+            public CompletableFuture<ResponseMessage> executeAsync(RequestMessage request, ExecuteContext context) {
+                attempts.incrementAndGet();
+                CompletableFuture<ResponseMessage> f = new CompletableFuture<>();
+                f.completeExceptionally(new CompletionException(new RequestException("fail")));
+                return f;
+            }
+        };
+
+        RetryerExecuteMiddleware middleware = new RetryerExecuteMiddleware(
+                next,
+                StandardRetryer.newBuilder()
+                        .maxAttempts(5)
+                        .backoffDelayer(new FixedDelayBackoff(Duration.ofMillis(10)))
+                        .build(),
+                localScheduler);
+
+        CompletableFuture<ResponseMessage> future = middleware.executeAsync(dummyRequest(), dummyContext(5));
+
+        // Future must complete exceptionally, not hang
+        assertThatThrownBy(() -> future.get(3, TimeUnit.SECONDS))
+                .isInstanceOf(ExecutionException.class);
+
+        assertThat(attempts.get()).isEqualTo(1);
+    }
+
+    // -----------------------------------------------------------------------
     // Sync: verify sync execute still works with scheduler injected
     // -----------------------------------------------------------------------
     @Test

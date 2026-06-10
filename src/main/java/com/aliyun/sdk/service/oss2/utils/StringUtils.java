@@ -233,6 +233,9 @@ public class StringUtils {
      * specifies a boolean value it should be "true" or "false" (case insensitive) or an exception will be thrown.
      */
     public static boolean safeStringToBoolean(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Value must not be null, expected 'false' or 'true'");
+        }
         if (value.equalsIgnoreCase("true")) {
             return true;
         } else if (value.equalsIgnoreCase("false")) {
@@ -251,6 +254,9 @@ public class StringUtils {
      * {@code null} if null String input
      */
     public static String replace(String originalString, String partToMatch, String replacement) {
+        if (originalString == null) {
+            return null;
+        }
         StringBuilder buffer = new StringBuilder(originalString.length());
         buffer.append(originalString);
 
