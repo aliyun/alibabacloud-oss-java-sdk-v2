@@ -1,5 +1,14 @@
 # ChangeLog - Alibaba Cloud OSS SDK For Java V2
 
+## 版本号：0.4.1 日期：2026-06-10
+### 变更内容
+- Update：Replace synchronized with ReentrantLock in ExecuteStack
+- Update：Remove blocking in async retry by using ScheduledExecutorService
+- Update：Serialize xml body to bytes for DataPipeline
+- Update：Handle executor shutdown gracefully in async retry
+- Update：Improve Uploader resource cleanup and utility null safety
+- Doc：Add Javadoc for ClientBuilder interfaces
+
 ## 版本号：0.4.0 日期：2026-04-28
 ### 变更内容
 - Feature：Add tables bucket
