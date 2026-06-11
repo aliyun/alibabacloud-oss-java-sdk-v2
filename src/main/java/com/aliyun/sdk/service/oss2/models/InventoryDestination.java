@@ -10,19 +10,27 @@ import static java.util.Objects.requireNonNull;
  @JacksonXmlRootElement(localName = "InventoryDestination")
 public final class InventoryDestination {  
     @JacksonXmlProperty(localName = "OSSBucketDestination")
-    private InventoryOSSBucketDestination oSSBucketDestination;
+    private InventoryOSSBucketDestination ossBucketDestination;
 
     public InventoryDestination() {}
 
-    private InventoryDestination(Builder builder) { 
-        this.oSSBucketDestination = builder.oSSBucketDestination; 
+    private InventoryDestination(Builder builder) {
+        this.ossBucketDestination = builder.ossBucketDestination;
     }
 
     /**
     * The container that stores information about the bucket in which exported inventory lists are stored.
     */
+    public InventoryOSSBucketDestination ossBucketDestination() {
+        return this.ossBucketDestination;
+    }
+
+    /**
+     * @deprecated use {@link #ossBucketDestination()} instead
+     */
+    @Deprecated
     public InventoryOSSBucketDestination oSSBucketDestination() {
-        return this.oSSBucketDestination;
+        return this.ossBucketDestination;
     }
 
     public static Builder newBuilder() {
@@ -33,25 +41,33 @@ public final class InventoryDestination {
         return new Builder(this);
     }
 
-    public static class Builder { 
-        private InventoryOSSBucketDestination oSSBucketDestination;
-        
+    public static class Builder {
+        private InventoryOSSBucketDestination ossBucketDestination;
+
         /**
         * The container that stores information about the bucket in which exported inventory lists are stored.
         */
-        public Builder oSSBucketDestination(InventoryOSSBucketDestination value) {
+        public Builder ossBucketDestination(InventoryOSSBucketDestination value) {
             requireNonNull(value);
-            this.oSSBucketDestination = value;
+            this.ossBucketDestination = value;
             return this;
         }
-        
+
+        /**
+         * @deprecated use {@link #ossBucketDestination(InventoryOSSBucketDestination)} instead
+         */
+        @Deprecated
+        public Builder oSSBucketDestination(InventoryOSSBucketDestination value) {
+            return ossBucketDestination(value);
+        }
+
 
         private Builder() {
             super();
         }
 
-        private Builder(InventoryDestination from) { 
-            this.oSSBucketDestination = from.oSSBucketDestination; 
+        private Builder(InventoryDestination from) {
+            this.ossBucketDestination = from.ossBucketDestination;
         }
 
         public InventoryDestination build() {

@@ -10,41 +10,65 @@ import static java.util.Objects.requireNonNull;
  @JacksonXmlRootElement(localName = "ApplyServerSideEncryptionByDefault")
 public final class ApplyServerSideEncryptionByDefault {  
     @JacksonXmlProperty(localName = "SSEAlgorithm")
-    private String sSEAlgorithm;
- 
+    private String sseAlgorithm;
+
     @JacksonXmlProperty(localName = "KMSMasterKeyID")
-    private String kMSMasterKeyID;
- 
+    private String kmsMasterKeyID;
+
     @JacksonXmlProperty(localName = "KMSDataEncryption")
-    private String kMSDataEncryption;
+    private String kmsDataEncryption;
 
     public ApplyServerSideEncryptionByDefault() {}
 
-    private ApplyServerSideEncryptionByDefault(Builder builder) { 
-        this.sSEAlgorithm = builder.sSEAlgorithm; 
-        this.kMSMasterKeyID = builder.kMSMasterKeyID; 
-        this.kMSDataEncryption = builder.kMSDataEncryption; 
+    private ApplyServerSideEncryptionByDefault(Builder builder) {
+        this.sseAlgorithm = builder.sseAlgorithm;
+        this.kmsMasterKeyID = builder.kmsMasterKeyID;
+        this.kmsDataEncryption = builder.kmsDataEncryption;
     }
 
     /**
     * The default server-side encryption method. Valid values: KMS, AES256, and SM4. You are charged when you call API operations to encrypt or decrypt data by using CMKs managed by KMS. For more information, see [Billing of KMS](~~52608~~). If the default server-side encryption method is configured for the destination bucket and ReplicaCMKID is configured in the CRR rule:*   If objects in the source bucket are not encrypted, they are encrypted by using the default encryption method of the destination bucket after they are replicated.*   If objects in the source bucket are encrypted by using SSE-KMS or SSE-OSS, they are encrypted by using the same method after they are replicated.For more information, see [Use data replication with server-side encryption](~~177216~~).
     */
+    public String sseAlgorithm() {
+        return this.sseAlgorithm;
+    }
+
+    /**
+     * @deprecated use {@link #sseAlgorithm()} instead
+     */
+    @Deprecated
     public String sSEAlgorithm() {
-        return this.sSEAlgorithm;
+        return this.sseAlgorithm;
     }
 
     /**
     * The CMK ID that is specified when SSEAlgorithm is set to KMS and a specified CMK is used for encryption. In other cases, leave this parameter empty.
     */
+    public String kmsMasterKeyID() {
+        return this.kmsMasterKeyID;
+    }
+
+    /**
+     * @deprecated use {@link #kmsMasterKeyID()} instead
+     */
+    @Deprecated
     public String kMSMasterKeyID() {
-        return this.kMSMasterKeyID;
+        return this.kmsMasterKeyID;
     }
 
     /**
     * The algorithm that is used to encrypt objects. If this parameter is not specified, objects are encrypted by using AES256. This parameter is valid only when SSEAlgorithm is set to KMS. Valid value: SM4.
     */
+    public String kmsDataEncryption() {
+        return this.kmsDataEncryption;
+    }
+
+    /**
+     * @deprecated use {@link #kmsDataEncryption()} instead
+     */
+    @Deprecated
     public String kMSDataEncryption() {
-        return this.kMSDataEncryption;
+        return this.kmsDataEncryption;
     }
 
     public static Builder newBuilder() {
@@ -55,47 +79,71 @@ public final class ApplyServerSideEncryptionByDefault {
         return new Builder(this);
     }
 
-    public static class Builder { 
-        private String sSEAlgorithm;
-        private String kMSMasterKeyID;
-        private String kMSDataEncryption;
-        
+    public static class Builder {
+        private String sseAlgorithm;
+        private String kmsMasterKeyID;
+        private String kmsDataEncryption;
+
         /**
         * The default server-side encryption method. Valid values: KMS, AES256, and SM4. You are charged when you call API operations to encrypt or decrypt data by using CMKs managed by KMS. For more information, see [Billing of KMS](~~52608~~). If the default server-side encryption method is configured for the destination bucket and ReplicaCMKID is configured in the CRR rule:*   If objects in the source bucket are not encrypted, they are encrypted by using the default encryption method of the destination bucket after they are replicated.*   If objects in the source bucket are encrypted by using SSE-KMS or SSE-OSS, they are encrypted by using the same method after they are replicated.For more information, see [Use data replication with server-side encryption](~~177216~~).
         */
-        public Builder sSEAlgorithm(String value) {
+        public Builder sseAlgorithm(String value) {
             requireNonNull(value);
-            this.sSEAlgorithm = value;
+            this.sseAlgorithm = value;
             return this;
         }
-        
+
+        /**
+         * @deprecated use {@link #sseAlgorithm(String)} instead
+         */
+        @Deprecated
+        public Builder sSEAlgorithm(String value) {
+            return sseAlgorithm(value);
+        }
+
         /**
         * The CMK ID that is specified when SSEAlgorithm is set to KMS and a specified CMK is used for encryption. In other cases, leave this parameter empty.
         */
-        public Builder kMSMasterKeyID(String value) {
+        public Builder kmsMasterKeyID(String value) {
             requireNonNull(value);
-            this.kMSMasterKeyID = value;
+            this.kmsMasterKeyID = value;
             return this;
         }
-        
+
+        /**
+         * @deprecated use {@link #kmsMasterKeyID(String)} instead
+         */
+        @Deprecated
+        public Builder kMSMasterKeyID(String value) {
+            return kmsMasterKeyID(value);
+        }
+
         /**
         * The algorithm that is used to encrypt objects. If this parameter is not specified, objects are encrypted by using AES256. This parameter is valid only when SSEAlgorithm is set to KMS. Valid value: SM4.
         */
-        public Builder kMSDataEncryption(String value) {
+        public Builder kmsDataEncryption(String value) {
             requireNonNull(value);
-            this.kMSDataEncryption = value;
+            this.kmsDataEncryption = value;
             return this;
         }
-        
+
+        /**
+         * @deprecated use {@link #kmsDataEncryption(String)} instead
+         */
+        @Deprecated
+        public Builder kMSDataEncryption(String value) {
+            return kmsDataEncryption(value);
+        }
+
 
         private Builder() {
             super();
         }
 
-        private Builder(ApplyServerSideEncryptionByDefault from) { 
-            this.sSEAlgorithm = from.sSEAlgorithm; 
-            this.kMSMasterKeyID = from.kMSMasterKeyID; 
-            this.kMSDataEncryption = from.kMSDataEncryption; 
+        private Builder(ApplyServerSideEncryptionByDefault from) {
+            this.sseAlgorithm = from.sseAlgorithm;
+            this.kmsMasterKeyID = from.kmsMasterKeyID;
+            this.kmsDataEncryption = from.kmsDataEncryption;
         }
 
         public ApplyServerSideEncryptionByDefault build() {
