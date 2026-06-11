@@ -766,4 +766,14 @@ public class DefaultOSSClient implements OSSClient {
     public DoMetaQueryActionResult doMetaQueryAction(DoMetaQueryActionRequest request, OperationOptions options) {
         return DataBasic.doMetaQueryAction(this.clientImpl, request, options);
     }
+
+    @Override
+    public PutBucketHttpsConfigResult putBucketHttpsConfig(PutBucketHttpsConfigRequest request, OperationOptions options) {
+        return BucketHttpsConfig.putBucketHttpsConfig(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketHttpsConfigResult getBucketHttpsConfig(GetBucketHttpsConfigRequest request, OperationOptions options) {
+        return BucketHttpsConfig.getBucketHttpsConfig(this.clientImpl, request, options);
+    }
 }
