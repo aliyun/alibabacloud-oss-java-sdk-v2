@@ -3540,6 +3540,56 @@ public interface OSSAsyncClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // bucket https config api
+
+    /**
+     * Configures HTTPS settings for a bucket.
+     *
+     * @param request A {@link PutBucketHttpsConfigRequest} for PutBucketHttpsConfig operation.
+     * @return A Java Future containing the {@link PutBucketHttpsConfigResult} of the PutBucketHttpsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketHttpsConfigResult> putBucketHttpsConfigAsync(PutBucketHttpsConfigRequest request) {
+        return putBucketHttpsConfigAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures HTTPS settings for a bucket.
+     *
+     * @param request A {@link PutBucketHttpsConfigRequest} for PutBucketHttpsConfig operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketHttpsConfigResult} of the PutBucketHttpsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketHttpsConfigResult> putBucketHttpsConfigAsync(PutBucketHttpsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the HTTPS configurations of a bucket.
+     *
+     * @param request A {@link GetBucketHttpsConfigRequest} for GetBucketHttpsConfig operation.
+     * @return A Java Future containing the {@link GetBucketHttpsConfigResult} of the GetBucketHttpsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketHttpsConfigResult> getBucketHttpsConfigAsync(GetBucketHttpsConfigRequest request) {
+        return getBucketHttpsConfigAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the HTTPS configurations of a bucket.
+     *
+     * @param request A {@link GetBucketHttpsConfigRequest} for GetBucketHttpsConfig operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketHttpsConfigResult} of the GetBucketHttpsConfig operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketHttpsConfigResult> getBucketHttpsConfigAsync(GetBucketHttpsConfigRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
 }
 
 

@@ -1,0 +1,95 @@
+package com.example.oss;
+
+import com.aliyun.sdk.service.oss2.OSSAsyncClient;
+import com.aliyun.sdk.service.oss2.OSSAsyncClientBuilder;
+import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
+import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
+import com.aliyun.sdk.service.oss2.models.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import java.util.List;
+
+public class GetBucketHttpsConfigAsync implements Example {
+
+    private static void execute(
+            String endpoint,
+            String region,
+            String bucket) {
+
+        CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
+
+        try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
+
+            GetBucketHttpsConfigResult result = client.getBucketHttpsConfigAsync(GetBucketHttpsConfigRequest.newBuilder()
+                            .bucket(bucket)
+                            .build()).get();
+
+            System.out.printf("Status code:%d, request id:%s\n",
+                    result.statusCode(), result.requestId());
+
+            HttpsConfiguration httpsConfiguration = result.httpsConfiguration();
+            if (httpsConfiguration != null) {
+                TLS tls = httpsConfiguration.tls();
+                if (tls != null) {
+                    System.out.printf("TLS enable: %s\n", tls.enable());
+                    List<String> tlsVersions = tls.tlsVersions();
+                    if (tlsVersions != null) {
+                        System.out.printf("TLS versions: %s\n", tlsVersions);
+                    }
+                }
+                CipherSuite cipherSuite = httpsConfiguration.cipherSuite();
+                if (cipherSuite != null) {
+                    System.out.printf("CipherSuite enable: %s\n", cipherSuite.enable());
+                    if (cipherSuite.strongCipherSuite() != null) {
+                        System.out.printf("Strong cipher suite: %s\n", cipherSuite.strongCipherSuite());
+                    }
+                    if (cipherSuite.customCipherSuites() != null) {
+                        System.out.printf("Custom cipher suites: %s\n", cipherSuite.customCipherSuites());
+                    }
+                    if (cipherSuite.tls13CustomCipherSuites() != null) {
+                        System.out.printf("TLS 1.3 custom cipher suites: %s\n", cipherSuite.tls13CustomCipherSuites());
+                    }
+                }
+            } else {
+                System.out.println("No HTTPS configuration found.");
+            }
+
+        } catch (Exception e) {
+            //If the exception is caused by ServiceException, detailed information can be obtained in this way.
+            //ServiceException se = ServiceException.asCause(e);
+            //if (se != null) {
+            //   System.out.printf("ServiceException: requestId:%s, errorCode:%s\n", se.requestId(), se.errorCode());
+            //}
+            System.out.printf("error:\n%s", e);
+        }
+    }
+
+    private static OSSAsyncClient getDefaultAsyncClient(String endpoint, String region, CredentialsProvider provider) {
+        OSSAsyncClientBuilder builder = OSSAsyncClient.newBuilder()
+                .region(region)
+                .credentialsProvider(provider);
+        if (endpoint != null) {
+            builder.endpoint(endpoint);
+        }
+        return builder.build();
+    }
+
+    @Override
+    public Options getOptions() {
+        Options opts = new Options();
+        opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
+        return opts;
+    }
+
+    @Override
+    public void runCmd(CommandLine cmd) throws ParseException {
+        String endpoint = cmd.getParsedOptionValue("endpoint");
+        String region = cmd.getParsedOptionValue("region");
+        String bucket = cmd.getParsedOptionValue("bucket");
+        execute(endpoint, region, bucket);
+    }
+}
