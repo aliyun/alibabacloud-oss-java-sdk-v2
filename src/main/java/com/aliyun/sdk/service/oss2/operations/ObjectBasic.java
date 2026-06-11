@@ -313,4 +313,43 @@ public final class ObjectBasic {
         OperationInput input = SerdeObjectBasic.fromSealAppendObject(request);
         return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toSealAppendObject);
     }
+
+    public static SelectObjectResult selectObject(ClientImpl impl, SelectObjectRequest request, OperationOptions options) {
+
+        requireNonNull(request.bucket(), "request.bucket is required");
+        requireNonNull(request.key(), "request.key is required");
+
+        OperationInput input = SerdeObjectBasic.fromSelectObject(request);
+        input.opMetadata().put(AttributeKey.RESPONSE_HEADERS_READ, Boolean.TRUE);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeObjectBasic.toSelectObject(output);
+    }
+
+    public static CompletableFuture<SelectObjectResult> selectObjectAsync(ClientImpl impl, SelectObjectRequest request, OperationOptions options) {
+
+        requireNonNull(request.bucket(), "request.bucket is required");
+        requireNonNull(request.key(), "request.key is required");
+
+        OperationInput input = SerdeObjectBasic.fromSelectObject(request);
+        return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toSelectObject);
+    }
+
+    public static CreateSelectObjectMetaResult createSelectObjectMeta(ClientImpl impl, CreateSelectObjectMetaRequest request, OperationOptions options) {
+
+        requireNonNull(request.bucket(), "request.bucket is required");
+        requireNonNull(request.key(), "request.key is required");
+
+        OperationInput input = SerdeObjectBasic.fromCreateSelectObjectMeta(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeObjectBasic.toCreateSelectObjectMeta(output);
+    }
+
+    public static CompletableFuture<CreateSelectObjectMetaResult> createSelectObjectMetaAsync(ClientImpl impl, CreateSelectObjectMetaRequest request, OperationOptions options) {
+
+        requireNonNull(request.bucket(), "request.bucket is required");
+        requireNonNull(request.key(), "request.key is required");
+
+        OperationInput input = SerdeObjectBasic.fromCreateSelectObjectMeta(request);
+        return impl.executeAsync(input, options).thenApply(SerdeObjectBasic::toCreateSelectObjectMeta);
+    }
 }

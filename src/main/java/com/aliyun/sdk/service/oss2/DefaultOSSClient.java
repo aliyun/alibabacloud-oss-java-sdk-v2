@@ -96,6 +96,16 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public SelectObjectResult selectObject(SelectObjectRequest request, OperationOptions options) {
+        return ObjectBasic.selectObject(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CreateSelectObjectMetaResult createSelectObjectMeta(CreateSelectObjectMetaRequest request, OperationOptions options) {
+        return ObjectBasic.createSelectObjectMeta(this.clientImpl, request, options);
+    }
+
+    @Override
     public PutObjectAclResult putObjectAcl(PutObjectAclRequest request, OperationOptions options) {
         return ObjectAcl.putObjectAcl(this.clientImpl, request, options);
     }

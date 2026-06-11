@@ -11,6 +11,7 @@ import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.models.internal.DeleteResultXml;
 import com.aliyun.sdk.service.oss2.progress.ProgressObserver;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
+import com.aliyun.sdk.service.oss2.transport.BinaryDataConsumerSupplier;
 import com.aliyun.sdk.service.oss2.transport.InputStreamBinaryData;
 import com.aliyun.sdk.service.oss2.transport.ResponseMessage;
 import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
@@ -18,8 +19,16 @@ import com.aliyun.sdk.service.oss2.utils.HttpUtils;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.utils.XmlUtils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
+
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -498,5 +507,254 @@ public final class SerdeObjectBasic {
                 .statusCode(output.statusCode)
                 .innerBody(innerBody)
                 .build();
+    }
+
+    public static OperationInput fromSelectObject(SelectObjectRequest request) {
+        OperationInput.Builder builder = OperationInput.newBuilder()
+                .opName("SelectObject")
+                .method("POST");
+
+        // default headers
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+        builder.headers(headers);
+
+        // parameters
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("x-oss-process", request.process());
+        builder.parameters(parameters);
+
+        // body
+        BinaryData body = SerdeUtils.serializeXmlBody(request.selectRequest());
+        builder.body(body);
+
+        builder.bucket(request.bucket());
+        builder.key(request.key());
+
+        // async data consumer
+        if (request.dataConsumerSupplier() != null) {
+            final BinaryDataConsumerSupplier userSupplier = request.dataConsumerSupplier();
+            BinaryDataConsumerSupplier decodingSupplier = new BinaryDataConsumerSupplier() {
+                @Override
+                public Object get() {
+                    Object inner = userSupplier.get();
+                    if (inner instanceof WritableByteChannel) {
+                        return new SelectFrameDecodingChannel((WritableByteChannel) inner);
+                    }
+                    throw new UnsupportedOperationException(
+                            "Only supports WritableByteChannel, but got " + inner.getClass().getName());
+                }
+
+                @Override
+                public boolean isReplayable() {
+                    return userSupplier.isReplayable();
+                }
+
+                @Override
+                public boolean autoRelease() {
+                    return userSupplier.autoRelease();
+                }
+            };
+            AttributeMap opMetadata = AttributeMap.empty();
+            opMetadata.put(AttributeKey.RESPONSE_CONSUMER_SUPPLIER, decodingSupplier);
+            builder.opMetadata(opMetadata);
+        }
+
+        OperationInput input = builder.build();
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+        return input;
+    }
+
+
+    public static SelectObjectResult toSelectObject(OperationOutput output) {
+        InputStream is;
+        BinaryData body = output.body().orElse(null);
+        if (body instanceof InputStreamBinaryData) {
+            is = ((InputStreamBinaryData) body).unwrap();
+        } else if (body != null) {
+            is = body.toStream();
+        } else {
+            is = new ByteArrayInputStream(new byte[0]);
+        }
+
+        boolean isRawOutput = "true".equalsIgnoreCase(output.headers.get("x-oss-select-output-raw"));
+        InputStream parsedStream = isRawOutput ? is : new SelectObjectInputStream(is);
+        return SelectObjectResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(parsedStream)
+                .build();
+    }
+
+
+    public static OperationInput fromCreateSelectObjectMeta(CreateSelectObjectMetaRequest request) {
+        OperationInput.Builder builder = OperationInput.newBuilder()
+                .opName("CreateSelectObjectMeta")
+                .method("POST");
+
+        // default headers
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+        builder.headers(headers);
+
+        // parameters
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("x-oss-process", request.process());
+        builder.parameters(parameters);
+
+        // body
+        SelectMetaRequest metaRequest = request.selectMetaRequest();
+        if (metaRequest != null) {
+            try {
+                XmlMapper xmlMapper = new XmlMapper();
+                xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                String rootName = "CsvMetaRequest";
+                if (metaRequest.inputSerialization() != null && metaRequest.inputSerialization().json() != null) {
+                    rootName = "JsonMetaRequest";
+                }
+                String xml = xmlMapper.writer(new DefaultXmlPrettyPrinter())
+                        .withRootName(rootName)
+                        .writeValueAsString(metaRequest);
+
+                builder.body(BinaryData.fromBytes(xml.getBytes(StandardCharsets.UTF_8)));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        builder.bucket(request.bucket());
+        builder.key(request.key());
+
+        OperationInput input = builder.build();
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+        return input;
+    }
+
+
+
+    public static CreateSelectObjectMetaResult toCreateSelectObjectMeta(OperationOutput output) {
+        InputStream is;
+        BinaryData body = output.body().orElse(null);
+        if (body instanceof InputStreamBinaryData) {
+            is = ((InputStreamBinaryData) body).unwrap();
+        } else if (body != null) {
+            is = body.toStream();
+        } else {
+            is = new ByteArrayInputStream(new byte[0]);
+        }
+
+        SelectObjectMeta innerBody = parseCreateSelectMetaStream(is);
+        return CreateSelectObjectMetaResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(innerBody)
+                .build();
+    }
+
+    private static SelectObjectMeta parseCreateSelectMetaStream(InputStream is) {
+        try {
+            byte[] frameTypeBytes = new byte[4];
+            byte[] payloadLengthBytes = new byte[4];
+            byte[] headerChecksumBytes = new byte[4];
+            byte[] scannedDataBytes = new byte[8];
+            byte[] payloadChecksumBytes = new byte[4];
+
+            while (true) {
+                readFully(is, frameTypeBytes);
+                if (frameTypeBytes[0] != 1) {
+                    throw new RuntimeException("Invalid select version: " + frameTypeBytes[0]);
+                }
+                readFully(is, payloadLengthBytes);
+                readFully(is, headerChecksumBytes);
+                readFully(is, scannedDataBytes);
+
+                int payloadLength = ByteBuffer.wrap(payloadLengthBytes).getInt();
+
+                frameTypeBytes[0] = 0;
+                int frameType = ByteBuffer.wrap(frameTypeBytes).getInt();
+
+                if (frameType == 8388612) {
+                    skipFully(is, payloadLength - 4);
+                    continue;
+                } else if (frameType == 8388614 || frameType == 8388615) {
+                    boolean isCsv = (frameType == 8388614);
+                    int actualPayloadLength = payloadLength - 8;
+
+                    byte[] totalScanSizeBytes = new byte[8];
+                    byte[] statusBytes = new byte[4];
+                    byte[] splitBytes = new byte[4];
+                    byte[] totalLineBytes = new byte[8];
+                    byte[] columnBytes = new byte[4];
+
+                    readFully(is, totalScanSizeBytes);
+                    readFully(is, statusBytes);
+                    readFully(is, splitBytes);
+                    readFully(is, totalLineBytes);
+
+                    if (isCsv) {
+                        readFully(is, columnBytes);
+                    }
+
+                    int errorMessageSize = isCsv ? (actualPayloadLength - 28) : (actualPayloadLength - 24);
+                    String errorMessage = "";
+                    if (errorMessageSize > 0) {
+                        byte[] errorMessageBytes = new byte[errorMessageSize];
+                        readFully(is, errorMessageBytes);
+                        errorMessage = new String(errorMessageBytes, StandardCharsets.UTF_8);
+                    }
+
+                    readFully(is, payloadChecksumBytes);
+
+                    long status = ByteBuffer.wrap(statusBytes).getInt() & 0xFFFFFFFFL;
+                    if (status / 100 != 2) {
+                        throw new RuntimeException("CreateSelectObjectMeta failed with status: " + status + ", error: " + errorMessage);
+                    }
+
+                    long offset = ByteBuffer.wrap(scannedDataBytes).getLong();
+                    long totalScanned = ByteBuffer.wrap(totalScanSizeBytes).getLong();
+                    long splitsCount = ByteBuffer.wrap(splitBytes).getInt() & 0xFFFFFFFFL;
+                    long rowsCount = ByteBuffer.wrap(totalLineBytes).getLong();
+                    Long columnsCount = isCsv ? (ByteBuffer.wrap(columnBytes).getInt() & 0xFFFFFFFFL) : null;
+
+                    return SelectObjectMeta.newBuilder()
+                            .offset(offset)
+                            .totalScanned(totalScanned)
+                            .status(status)
+                            .splitsCount(splitsCount)
+                            .rowsCount(rowsCount)
+                            .columnsCount(columnsCount)
+                            .errorMessage(errorMessage.isEmpty() ? null : errorMessage)
+                            .build();
+                } else {
+                    throw new RuntimeException("Unsupported frame type: " + frameType);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void readFully(InputStream is, byte[] buf) throws IOException {
+        int totalRead = 0;
+        while (totalRead < buf.length) {
+            int read = is.read(buf, totalRead, buf.length - totalRead);
+            if (read < 0) {
+                throw new IOException("Unexpected end of stream, need " + (buf.length - totalRead) + " more bytes");
+            }
+            totalRead += read;
+        }
+    }
+
+    private static void skipFully(InputStream is, long n) throws IOException {
+        long remaining = n;
+        while (remaining > 0) {
+            long skipped = is.skip(remaining);
+            if (skipped <= 0) {
+                throw new IOException("Failed to skip " + remaining + " bytes");
+            }
+            remaining -= skipped;
+        }
     }
 }
