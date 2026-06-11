@@ -28,7 +28,7 @@ public final class SerdeDataPipelineBasic {
         if (request.role() != null) {
             parameters.put("role", request.role());
         }
-        BinaryData body = SerdeUtils.serializeXmlBody(request.putDataPipelineConfigurationConfiguration());
+        BinaryData body = SerdeUtils.serializeXmlBodyAsBytes(request.putDataPipelineConfigurationConfiguration());
         OperationInput input = OperationInput.newBuilder()
                 .opName("PutDataPipelineConfiguration")
                 .method("POST")

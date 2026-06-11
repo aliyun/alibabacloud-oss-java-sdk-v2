@@ -103,6 +103,16 @@ public class DefaultOSSDualClient implements OSSDualClient {
     }
 
     @Override
+    public SelectObjectResult selectObject(SelectObjectRequest request, OperationOptions options) {
+        return ObjectBasic.selectObject(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CreateSelectObjectMetaResult createSelectObjectMeta(CreateSelectObjectMetaRequest request, OperationOptions options) {
+        return ObjectBasic.createSelectObjectMeta(this.clientImpl, request, options);
+    }
+
+    @Override
     public PutObjectAclResult putObjectAcl(PutObjectAclRequest request, OperationOptions options) {
         return ObjectAcl.putObjectAcl(this.clientImpl, request, options);
     }
@@ -305,6 +315,16 @@ public class DefaultOSSDualClient implements OSSDualClient {
     @Override
     public CompletableFuture<CleanRestoredObjectResult> cleanRestoredObjectAsync(CleanRestoredObjectRequest request, OperationOptions options) {
         return ObjectBasic.cleanRestoredObjectAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<SelectObjectResult> selectObjectAsync(SelectObjectRequest request, OperationOptions options) {
+        return ObjectBasic.selectObjectAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CreateSelectObjectMetaResult> createSelectObjectMetaAsync(CreateSelectObjectMetaRequest request, OperationOptions options) {
+        return ObjectBasic.createSelectObjectMetaAsync(this.clientImpl, request, options);
     }
 
     @Override

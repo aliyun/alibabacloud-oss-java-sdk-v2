@@ -357,6 +357,10 @@ public class Uploader {
                 waitForFutures(futures, firstError);
             } finally {
                 executor.shutdown();
+                try {
+                    stream.close();
+                } catch (IOException ignored) {
+                }
             }
         }
 

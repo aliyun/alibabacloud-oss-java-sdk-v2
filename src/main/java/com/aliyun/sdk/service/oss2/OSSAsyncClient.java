@@ -319,6 +319,55 @@ public interface OSSAsyncClient extends AutoCloseable {
     default CompletableFuture<CleanRestoredObjectResult> cleanRestoredObjectAsync(CleanRestoredObjectRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+
+    // select object api
+    //-----------------------------------------------------------------------
+
+    /**
+     * You can call this operation to execute SQL statements on an object.
+     *
+     * @param request A {@link SelectObjectRequest} for SelectObject operation.
+     * @return A Java Future containing the {@link SelectObjectResult} of the SelectObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<SelectObjectResult> selectObjectAsync(SelectObjectRequest request) {
+        return selectObjectAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to execute SQL statements on an object.
+     *
+     * @param request A {@link SelectObjectRequest} for SelectObject operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link SelectObjectResult} of the SelectObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<SelectObjectResult> selectObjectAsync(SelectObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to create select object meta.
+     *
+     * @param request A {@link CreateSelectObjectMetaRequest} for CreateSelectObjectMeta operation.
+     * @return A Java Future containing the {@link CreateSelectObjectMetaResult} of the CreateSelectObjectMeta operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateSelectObjectMetaResult> createSelectObjectMetaAsync(CreateSelectObjectMetaRequest request) {
+        return createSelectObjectMetaAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to create select object meta.
+     *
+     * @param request A {@link CreateSelectObjectMetaRequest} for CreateSelectObjectMeta operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link CreateSelectObjectMetaResult} of the CreateSelectObjectMeta operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateSelectObjectMetaResult> createSelectObjectMetaAsync(CreateSelectObjectMetaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 
     // object acl api

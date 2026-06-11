@@ -102,6 +102,16 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     }
 
     @Override
+    public CompletableFuture<SelectObjectResult> selectObjectAsync(SelectObjectRequest request, OperationOptions options) {
+        return ObjectBasic.selectObjectAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CreateSelectObjectMetaResult> createSelectObjectMetaAsync(CreateSelectObjectMetaRequest request, OperationOptions options) {
+        return ObjectBasic.createSelectObjectMetaAsync(this.clientImpl, request, options);
+    }
+
+    @Override
     public CompletableFuture<PutObjectAclResult> putObjectAclAsync(PutObjectAclRequest request, OperationOptions options) {
         return ObjectAcl.putObjectAclAsync(this.clientImpl, request, options);
     }

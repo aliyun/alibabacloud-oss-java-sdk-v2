@@ -318,6 +318,55 @@ public interface OSSClient extends AutoCloseable, Presignable {
     default CleanRestoredObjectResult cleanRestoredObject(CleanRestoredObjectRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+
+    // select object api
+    //-----------------------------------------------------------------------
+
+    /**
+     * You can call this operation to execute SQL statements on an object.
+     *
+     * @param request A {@link SelectObjectRequest} for SelectObject operation.
+     * @return A {@link SelectObjectResult} for SelectObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default SelectObjectResult selectObject(SelectObjectRequest request) {
+        return selectObject(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to execute SQL statements on an object.
+     *
+     * @param request A {@link SelectObjectRequest} for SelectObject operation.
+     * @param options The operation options.
+     * @return A {@link SelectObjectResult} for SelectObject operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default SelectObjectResult selectObject(SelectObjectRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * You can call this operation to create select object meta.
+     *
+     * @param request A {@link CreateSelectObjectMetaRequest} for CreateSelectObjectMeta operation.
+     * @return A {@link CreateSelectObjectMetaResult} for CreateSelectObjectMeta operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateSelectObjectMetaResult createSelectObjectMeta(CreateSelectObjectMetaRequest request) {
+        return createSelectObjectMeta(request, OperationOptions.defaults());
+    }
+
+    /**
+     * You can call this operation to create select object meta.
+     *
+     * @param request A {@link CreateSelectObjectMetaRequest} for CreateSelectObjectMeta operation.
+     * @param options The operation options.
+     * @return A {@link CreateSelectObjectMetaResult} for CreateSelectObjectMeta operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateSelectObjectMetaResult createSelectObjectMeta(CreateSelectObjectMetaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 
     // object acl api

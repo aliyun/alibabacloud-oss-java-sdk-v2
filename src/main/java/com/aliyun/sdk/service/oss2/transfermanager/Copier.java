@@ -398,7 +398,7 @@ public class Copier {
                     if (sourceHeaders != null) {
                         for (Map.Entry<String, String> entry : sourceHeaders.entrySet()) {
                             String key = entry.getKey();
-                            if (key != null && key.toLowerCase().startsWith("x-oss-meta")) {
+                            if (key != null && key.toLowerCase().startsWith("x-oss-meta-")) {
                                 initBuilder.header(key.toLowerCase(), entry.getValue());
                             }
                         }
