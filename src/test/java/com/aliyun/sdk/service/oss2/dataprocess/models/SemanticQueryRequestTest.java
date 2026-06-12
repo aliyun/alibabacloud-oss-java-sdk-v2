@@ -22,7 +22,6 @@ public class SemanticQueryRequestTest {
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
         assertThat(request.datasetName()).isNull();
-        assertThat(request.nextToken()).isNull();
         assertThat(request.maxResults()).isNull();
         assertThat(request.query()).isNull();
         assertThat(request.withFields()).isNull();
@@ -36,7 +35,6 @@ public class SemanticQueryRequestTest {
         SemanticQueryRequest request = SemanticQueryRequest.newBuilder()
                 .bucket("examplebucket")
                 .datasetName("test-dataset")
-                .nextToken("next-token-value")
                 .maxResults(10)
                 .query("blue shirt man walking to table")
                 .withFields(Arrays.asList("Filename", "Size", "MediaType"))
@@ -53,7 +51,6 @@ public class SemanticQueryRequestTest {
 
         assertThat(request.bucket()).isEqualTo("examplebucket");
         assertThat(request.datasetName()).isEqualTo("test-dataset");
-        assertThat(request.nextToken()).isEqualTo("next-token-value");
         assertThat(request.maxResults()).isEqualTo(10);
         assertThat(request.query()).isEqualTo("blue shirt man walking to table");
         assertThat(request.withFields()).isEqualTo("[\"Filename\",\"Size\",\"MediaType\"]");
@@ -69,7 +66,6 @@ public class SemanticQueryRequestTest {
         SemanticQueryRequest copy = request.toBuilder().build();
         assertThat(copy.bucket()).isEqualTo("examplebucket");
         assertThat(copy.datasetName()).isEqualTo("test-dataset");
-        assertThat(copy.nextToken()).isEqualTo("next-token-value");
         assertThat(copy.maxResults()).isEqualTo(10);
         assertThat(copy.query()).isEqualTo("blue shirt man walking to table");
 
@@ -110,7 +106,6 @@ public class SemanticQueryRequestTest {
         SemanticQueryRequest request = SemanticQueryRequest.newBuilder()
                 .bucket("test-bucket")
                 .datasetName("test-dataset")
-                .nextToken("test-token")
                 .maxResults(50)
                 .query("俯瞰白雪覆盖的森林")
                 .withFields(Arrays.asList("Filename", "Size"))
@@ -120,7 +115,6 @@ public class SemanticQueryRequestTest {
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
         assertThat(request.datasetName()).isEqualTo("test-dataset");
-        assertThat(request.nextToken()).isEqualTo("test-token");
         assertThat(request.maxResults()).isEqualTo(50);
         assertThat(request.query()).isEqualTo("俯瞰白雪覆盖的森林");
         assertThat(request.withFields()).isEqualTo("[\"Filename\",\"Size\"]");

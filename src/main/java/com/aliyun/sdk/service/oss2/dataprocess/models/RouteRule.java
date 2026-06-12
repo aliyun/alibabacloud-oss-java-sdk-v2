@@ -41,6 +41,7 @@ public final class RouteRule {
 
         public Builder type(String value) { this.type = value; return this; }
         public Builder autoCreateDataset(String value) { this.autoCreateDataset = value; return this; }
+        public Builder autoCreateDataset(Boolean value) { this.autoCreateDataset = value != null ? value.toString() : null; return this; }
         public Builder ossTagKey(String value) { this.ossTagKey = value; return this; }
 
         private Builder() {}

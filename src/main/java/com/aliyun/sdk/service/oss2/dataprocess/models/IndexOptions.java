@@ -37,6 +37,7 @@ public final class IndexOptions {
         private List<String> ignoreEvents;
 
         public Builder ignoreObjectDelete(String value) { this.ignoreObjectDelete = value; return this; }
+        public Builder ignoreObjectDelete(Boolean value) { this.ignoreObjectDelete = value != null ? value.toString() : null; return this; }
         public Builder ignoreEvents(List<String> value) { this.ignoreEvents = value; return this; }
 
         private Builder() {}

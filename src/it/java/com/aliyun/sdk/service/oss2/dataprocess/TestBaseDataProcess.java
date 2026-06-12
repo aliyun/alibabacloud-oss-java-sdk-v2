@@ -72,8 +72,8 @@ public class TestBaseDataProcess extends TestBase {
 
     @AfterClass
     public static void oneTimeSetDown() {
-        // Close MetaQuery if still open (best-effort).
-        closeMetaQueryQuietly();
+        // MetaQuery cannot be reopened shortly after closing, so comment it out for now
+        // closeMetaQueryQuietly();
 
 
         // Clean up created datasets

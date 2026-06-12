@@ -38,6 +38,7 @@ public final class InsightsLabelHighlightConfig {
         private List<InsightsLabelItem> labels;
 
         public Builder enable(String value) { this.enable = value; return this; }
+        public Builder enable(Boolean value) { this.enable = value != null ? value.toString() : null; return this; }
         public Builder labels(List<InsightsLabelItem> value) { this.labels = value; return this; }
 
         private Builder() {}

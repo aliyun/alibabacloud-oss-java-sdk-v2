@@ -42,6 +42,7 @@ public final class InsightsVideoCaptionConfig {
         private EnableConfig personReference;
 
         public Builder enable(String value) { this.enable = value; return this; }
+        public Builder enable(Boolean value) { this.enable = value != null ? value.toString() : null; return this; }
         public Builder prompt(String value) { this.prompt = value; return this; }
         public Builder personReference(EnableConfig value) { this.personReference = value; return this; }
 

@@ -28,6 +28,7 @@ public final class EnableConfig {
         private String enable;
 
         public Builder enable(String value) { this.enable = value; return this; }
+        public Builder enable(Boolean value) { this.enable = value != null ? value.toString() : null; return this; }
 
         private Builder() {}
         private Builder(EnableConfig from) {

@@ -4,6 +4,11 @@ import com.aliyun.sdk.service.oss2.models.ResultModel;
 
 public final class UpdateSmartClusterResult extends ResultModel {
 
+    public String objectId() {
+        UpdateSmartClusterResponseBody body = (UpdateSmartClusterResponseBody) innerBody;
+        return body != null ? body.objectId() : null;
+    }
+
     UpdateSmartClusterResult(Builder builder) { super(builder); }
 
     public static Builder newBuilder() { return new Builder(); }

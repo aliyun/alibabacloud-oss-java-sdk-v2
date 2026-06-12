@@ -35,6 +35,7 @@ public final class InsightsCaptionConfig {
         private String prompt;
 
         public Builder enable(String value) { this.enable = value; return this; }
+        public Builder enable(Boolean value) { this.enable = value != null ? value.toString() : null; return this; }
         public Builder prompt(String value) { this.prompt = value; return this; }
 
         private Builder() {}

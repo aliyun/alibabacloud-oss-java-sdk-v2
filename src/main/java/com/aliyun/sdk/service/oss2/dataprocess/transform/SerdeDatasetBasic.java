@@ -489,7 +489,7 @@ public final class SerdeDatasetBasic {
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
-                .innerBody(null)
+                .innerBody(SerdeUtils.deserializeXmlBody(output, UpdateSmartClusterResponseBody.class))
                 .build();
     }
 

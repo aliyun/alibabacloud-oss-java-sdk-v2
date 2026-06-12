@@ -16,6 +16,7 @@ public class UpdateSmartClusterResultTest {
         assertThat(result).isNotNull();
         assertThat(result.headers()).isNotNull();
         assertThat(result.headers().isEmpty()).isTrue();
+        assertThat(result.objectId()).isNull();
     }
 
     @Test
@@ -58,8 +59,14 @@ public class UpdateSmartClusterResultTest {
 
     @Test
     public void xmlBuilder() {
-        // Reference: sdk_internal_reference(3).md §15 UpdateSmartCluster - HTTP 200, no body
+        // Reference: sdk_internal_reference.md §15 UpdateSmartCluster response with ObjectId
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<UpdateSmartClusterResponse>"
+                + "<ObjectId>cluster-updated-789xyz</ObjectId>"
+                + "</UpdateSmartClusterResponse>";
+
         OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(xml))
                 .status("HTTP/1.1 200 OK")
                 .statusCode(200)
                 .build();
@@ -68,5 +75,6 @@ public class UpdateSmartClusterResultTest {
 
         assertThat(result).isNotNull();
         assertThat(result.statusCode()).isEqualTo(200);
+        assertThat(result.objectId()).isEqualTo("cluster-updated-789xyz");
     }
 }

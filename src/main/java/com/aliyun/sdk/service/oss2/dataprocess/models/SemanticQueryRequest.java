@@ -30,10 +30,6 @@ public final class SemanticQueryRequest extends RequestModel {
         return parameters.get("datasetName");
     }
 
-    @Deprecated
-    public String nextToken() {
-        return parameters.get("nextToken");
-    }
     public Integer maxResults() {
         return ConvertUtils.toIntegerOrNull(parameters.get("maxResults"));
     }
@@ -83,11 +79,6 @@ public final class SemanticQueryRequest extends RequestModel {
         public Builder datasetName(String value) {
             requireNonNull(value);
             this.parameters.put("datasetName", value);
-            return this;
-        }
-        @Deprecated
-        public Builder nextToken(String value) {
-            this.parameters.put("nextToken", value);
             return this;
         }
 

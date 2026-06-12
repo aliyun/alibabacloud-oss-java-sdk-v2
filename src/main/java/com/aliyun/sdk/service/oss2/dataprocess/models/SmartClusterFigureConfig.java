@@ -52,7 +52,9 @@ public final class SmartClusterFigureConfig {
         private List<String> enabledFeatures;
 
         public Builder autoGenerate(String value) { this.autoGenerate = value; return this; }
+        public Builder autoGenerate(Boolean value) { this.autoGenerate = value != null ? value.toString() : null; return this; }
         public Builder autoClustering(String value) { this.autoClustering = value; return this; }
+        public Builder autoClustering(Boolean value) { this.autoClustering = value != null ? value.toString() : null; return this; }
         public Builder minEntityCount(Long value) { this.minEntityCount = value; return this; }
         public Builder enabledFeatures(List<String> value) { this.enabledFeatures = value; return this; }
 
