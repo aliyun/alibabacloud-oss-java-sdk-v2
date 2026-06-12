@@ -3,7 +3,6 @@ package com.aliyun.sdk.service.oss2.encryption.crypto;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
-import java.nio.ByteBuffer;
 import java.security.Provider;
 
 public abstract class CryptoScheme {
@@ -26,17 +25,23 @@ public abstract class CryptoScheme {
     public static byte[] incrementBlocks(byte[] counter, long blockDelta) {
         if (blockDelta == 0)
             return counter;
-        if (counter == null || counter.length != 16)
-            throw new IllegalArgumentException();
+        if (counter == null || counter.length != 16) {
+            throw new IllegalArgumentException(
+                    "Counter must be 16 bytes, got: " + (counter == null ? "null" : counter.length));
+        }
 
-        ByteBuffer bb = ByteBuffer.allocate(8);
-        for (int i = 12; i <= 15; i++)
-            bb.put(i - 8, counter[i]);
-        long val = bb.getLong() + blockDelta; // increment by delta
-        bb.rewind();
-        byte[] result = bb.putLong(val).array();
+        // Read rightmost 64 bits as long (big-endian)
+        long val = 0;
+        for (int i = 8; i < 16; i++) {
+            val = (val << 8) | (counter[i] & 0xFFL);
+        }
+        val += blockDelta;
 
-        System.arraycopy(result, 0, counter, 8, 8);
+        // Write back (big-endian)
+        for (int i = 15; i >= 8; i--) {
+            counter[i] = (byte) (val & 0xFF);
+            val >>>= 8;
+        }
         return counter;
     }
 

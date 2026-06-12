@@ -10,57 +10,64 @@ import java.security.Provider;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class RSAEncryptionUnitTest {
+
+    private static final String PUBLIC_KEY_PEM_X509 =
+            "-----BEGIN PUBLIC KEY-----\n"
+                    + "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC4PMUWCK9kNTa8fHuZgc1aXfcz\n"
+                    + "rO1D6tyOkyhjdxa7LnRE5nXURTjla3YWbjqgPXHOKbcd6SSY0RWq8mZ5zLyqvUJP\n"
+                    + "9QsuY5k5Ic1sumHCJDIYfxu5qnHx28Zm6I/QWnNzXRioiK9+KfyOcKoHnkEbezu9\n"
+                    + "3XPCYYXuBzuuPHTC/wIDAQAB\n"
+                    + "-----END PUBLIC KEY-----";
+
     private static final String PRIVATE_KEY_PEM_PKCS8 =
             "-----BEGIN PRIVATE KEY-----\n"
-                    + "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMhRzRET44Xiq8mQ\n"
-                    + "Wn+wFHiKI/LlzOUp0eg4o6OG+H3doamKmgxvTn63TtdI4EMlTMoaGqpVAlkRBqEp\n"
-                    + "clRTSHebFjLFFAyGFZZZ0fUsfiz8YCN/iHmX7q0rFLqadkYfgiVsnPWm9s+JmPMP\n"
-                    + "oERa0YEwDFkiOo+BJGMmkHp8EisdAgMBAAECgYAbuSZ2TJhaeSppNO8xaL8Mh6G+\n"
-                    + "Bgu7U3RXfS84fH97e+bZvfLf8a+dXeUtakqPQGRGPCKgnC89AFw4hbHq9bO7iygc\n"
-                    + "0j57UVMmAURN9azX4cA+BH0am1sMkZ1UdziLzkkH6cq9u4Sab+SrTGZ1Dc55JWpm\n"
-                    + "rJ+WYZOdwIxQArlYAQJBAOkHCzd4NrvDhKtnKiYwyK/RRboZhZZfGe9JXMrYDnkB\n"
-                    + "CJKh6NTZE+FnosnO6+vYx7P2XuY6/KIm+91xo7pRrB0CQQDcEUzbPzabdD15g9J6\n"
-                    + "AHaScIC4pONlmYMu3sht3/PUqB0qve2nNG1Y2XGpLSX1uw3v0h9LAbDBsUWGJBKt\n"
-                    + "ZEsBAkAmz2CD3YaoIPkgnu77K1bRSXZmd0ezcqVcIAjPU8qdRpnJ6iNgB8Ny4BLR\n"
-                    + "r5/FSPaBt3+4soxO6VU7XWjaaC3VAkEAkFtQ3Sk0OvkfMkzEjn8rSJg/999Bw23V\n"
-                    + "3bMKKvkTS1YT++umr132tKe+pUkWc4EGfWCKYntzZTtR7dJP5im6AQJBAMZIDGwt\n"
-                    + "pIYUt9sE4rMzuym/dy/Nru9gGSx9HrFPopFpRGHrJoaaQryB+auQUy1ZDQILd815\n"
-                    + "x7BQ0ulJy4q6cKE=\n"
+                    + "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBALg8xRYIr2Q1Nrx8\n"
+                    + "e5mBzVpd9zOs7UPq3I6TKGN3FrsudETmddRFOOVrdhZuOqA9cc4ptx3pJJjRFary\n"
+                    + "ZnnMvKq9Qk/1Cy5jmTkhzWy6YcIkMhh/G7mqcfHbxmboj9Bac3NdGKiIr34p/I5w\n"
+                    + "qgeeQRt7O73dc8Jhhe4HO648dML/AgMBAAECgYAeuqwYv7wZV7LYf17SPM82mmOn\n"
+                    + "79jnMh41faAH7w4QjHACKfpPPHh/84uPtDT9EyKPQ2/ygjeDcaROjf2/pQF2pIUr\n"
+                    + "YyB5TPsvLWZQ4FY6GBXKhXf5A7oT2Qors9zuPeJIUzhx2pjFYs614Pj+bCLg9JlW\n"
+                    + "aF5oqRE+nPNdEqkzIQJBANt7kTn2xg9G6tHzyQ7TAACujmORKpUmrmoUUA3BhvQA\n"
+                    + "8A5A8yp07Yh4klL5gXO7rrhaE53sKGuLXyqrxxZFVFECQQDW4/+SoyPi9Yl6yksC\n"
+                    + "9RGSIJ/Jv5HUj1qyc1SoiE5wk2OiAth/HmQ8txgEJEcwCoo2Q18f9t4N0nibvLRB\n"
+                    + "+l5PAkAbVnnRUXZ8AqZO/mGFsixm6Vcc+cDnEQladys9e2R20gMUk2x2VlgbzoDT\n"
+                    + "Svaf1rm9hqK44ehq9NImu3yxvnLxAkBu+0vIONdU5Qi+0PFSsq0DcjP0Jysyw2LN\n"
+                    + "HQFRFSyluYlQZ/XWGSUdslYF9ZKKfjcJdVwQjxf5vYSqshfKp3rDAkB43xSmURn6\n"
+                    + "UcG5LbTnFW40MYsy9S7J9LRk//1cjspddnimpVDR8On/cIgx5jETN8mnHYQcuRJI\n"
+                    + "t+jBhBc4kRJr\n"
                     + "-----END PRIVATE KEY-----";
-    private final String PLAIN_TEXT = "kdnsknshiwonrjsn23e1vdjknvlsfnsl34ihsohnqm92u32jns.msl082mjk73643dns";
-    private final String PUBLIC_KEY_PEM_XC509 =
-            "-----BEGIN PUBLIC KEY-----\n"
-                    + "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIUc0RE+OF4qvJkFp/sBR4iiPy\n"
-                    + "5czlKdHoOKOjhvh93aGpipoMb05+t07XSOBDJUzKGhqqVQJZEQahKXJUU0h3mxYy\n"
-                    + "xRQMhhWWWdH1LH4s/GAjf4h5l+6tKxS6mnZGH4IlbJz1pvbPiZjzD6BEWtGBMAxZ\n"
-                    + "IjqPgSRjJpB6fBIrHQIDAQAB\n"
-                    + "-----END PUBLIC KEY-----";
-    private final String PRIVATE_KEY_PEM_PKCS1 =
+
+    private static final String PRIVATE_KEY_PEM_PKCS1 =
             "-----BEGIN RSA PRIVATE KEY-----\n"
-                    + "MIICXQIBAAKBgQDIUc0RE+OF4qvJkFp/sBR4iiPy5czlKdHoOKOjhvh93aGpipoM\n"
-                    + "b05+t07XSOBDJUzKGhqqVQJZEQahKXJUU0h3mxYyxRQMhhWWWdH1LH4s/GAjf4h5\n"
-                    + "l+6tKxS6mnZGH4IlbJz1pvbPiZjzD6BEWtGBMAxZIjqPgSRjJpB6fBIrHQIDAQAB\n"
-                    + "AoGAG7kmdkyYWnkqaTTvMWi/DIehvgYLu1N0V30vOHx/e3vm2b3y3/GvnV3lLWpK\n"
-                    + "j0BkRjwioJwvPQBcOIWx6vWzu4soHNI+e1FTJgFETfWs1+HAPgR9GptbDJGdVHc4\n"
-                    + "i85JB+nKvbuEmm/kq0xmdQ3OeSVqZqyflmGTncCMUAK5WAECQQDpBws3eDa7w4Sr\n"
-                    + "ZyomMMiv0UW6GYWWXxnvSVzK2A55AQiSoejU2RPhZ6LJzuvr2Mez9l7mOvyiJvvd\n"
-                    + "caO6UawdAkEA3BFM2z82m3Q9eYPSegB2knCAuKTjZZmDLt7Ibd/z1KgdKr3tpzRt\n"
-                    + "WNlxqS0l9bsN79IfSwGwwbFFhiQSrWRLAQJAJs9gg92GqCD5IJ7u+ytW0Ul2ZndH\n"
-                    + "s3KlXCAIz1PKnUaZyeojYAfDcuAS0a+fxUj2gbd/uLKMTulVO11o2mgt1QJBAJBb\n"
-                    + "UN0pNDr5HzJMxI5/K0iYP/ffQcNt1d2zCir5E0tWE/vrpq9d9rSnvqVJFnOBBn1g\n"
-                    + "imJ7c2U7Ue3ST+YpugECQQDGSAxsLaSGFLfbBOKzM7spv3cvza7vYBksfR6xT6KR\n"
-                    + "aURh6yaGmkK8gfmrkFMtWQ0CC3fNecewUNLpScuKunCh\n"
+                    + "MIICWwIBAAKBgQC4PMUWCK9kNTa8fHuZgc1aXfczrO1D6tyOkyhjdxa7LnRE5nXU\n"
+                    + "RTjla3YWbjqgPXHOKbcd6SSY0RWq8mZ5zLyqvUJP9QsuY5k5Ic1sumHCJDIYfxu5\n"
+                    + "qnHx28Zm6I/QWnNzXRioiK9+KfyOcKoHnkEbezu93XPCYYXuBzuuPHTC/wIDAQAB\n"
+                    + "AoGAHrqsGL+8GVey2H9e0jzPNppjp+/Y5zIeNX2gB+8OEIxwAin6Tzx4f/OLj7Q0\n"
+                    + "/RMij0Nv8oI3g3GkTo39v6UBdqSFK2MgeUz7Ly1mUOBWOhgVyoV3+QO6E9kKK7Pc\n"
+                    + "7j3iSFM4cdqYxWLOteD4/mwi4PSZVmheaKkRPpzzXRKpMyECQQDbe5E59sYPRurR\n"
+                    + "88kO0wAAro5jkSqVJq5qFFANwYb0APAOQPMqdO2IeJJS+YFzu664WhOd7Chri18q\n"
+                    + "q8cWRVRRAkEA1uP/kqMj4vWJespLAvURkiCfyb+R1I9asnNUqIhOcJNjogLYfx5k\n"
+                    + "PLcYBCRHMAqKNkNfH/beDdJ4m7y0QfpeTwJAG1Z50VF2fAKmTv5hhbIsZulXHPnA\n"
+                    + "5xEJWncrPXtkdtIDFJNsdlZYG86A00r2n9a5vYaiuOHoavTSJrt8sb5y8QJAbvtL\n"
+                    + "yDjXVOUIvtDxUrKtA3Iz9CcrMsNizR0BURUspbmJUGf11hklHbJWBfWSin43CXVc\n"
+                    + "EI8X+b2EqrIXyqd6wwJAeN8UplEZ+lHBuS205xVuNDGLMvUuyfS0ZP/9XI7KXXZ4\n"
+                    + "pqVQ0fDp/3CIMeYxEzfJpx2EHLkSSLfowYQXOJESaw==\n"
                     + "-----END RSA PRIVATE KEY-----";
+
+    private final String PLAIN_TEXT = "kdnsknshiwonrjsn23e1vdjknvlsfnsl34ihsohnqm92u32jns.msl082mjk73643dns";
 
     @Test
     public void testUsePrivateKeyPKCS8() {
         try {
-            final RSAPrivateKey privateKey = SimpleRSAEncryptionMaterials.getPrivateKeyFromPemPKCS8(PRIVATE_KEY_PEM_PKCS8);
-            final RSAPublicKey publicKey = SimpleRSAEncryptionMaterials.getPublicKeyFromPemX509(PUBLIC_KEY_PEM_XC509);
+            final RSAPrivateKey privateKey = RsaMasterCipher.parsePrivateKeyFromPemPKCS8(PRIVATE_KEY_PEM_PKCS8);
+            final RSAPublicKey publicKey = RsaMasterCipher.parsePublicKeyFromPem(PUBLIC_KEY_PEM_X509);
 
             KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
@@ -76,8 +83,8 @@ public class RSAEncryptionUnitTest {
     @Test
     public void testUsePrivateKeyPKCS1() {
         try {
-            final RSAPrivateKey privateKey = SimpleRSAEncryptionMaterials.getPrivateKeyFromPemPKCS1(PRIVATE_KEY_PEM_PKCS1);
-            final RSAPublicKey publicKey = SimpleRSAEncryptionMaterials.getPublicKeyFromPemX509(PUBLIC_KEY_PEM_XC509);
+            final RSAPrivateKey privateKey = RsaMasterCipher.parsePrivateKeyFromPemPKCS1(PRIVATE_KEY_PEM_PKCS1);
+            final RSAPublicKey publicKey = RsaMasterCipher.parsePublicKeyFromPem(PUBLIC_KEY_PEM_X509);
 
             KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
@@ -94,14 +101,14 @@ public class RSAEncryptionUnitTest {
     @Test
     public void testUsePrivateKeyPKCS1AndPKCS8() {
         try {
-            final RSAPrivateKey privateKeyPKCS1 = SimpleRSAEncryptionMaterials.getPrivateKeyFromPemPKCS1(PRIVATE_KEY_PEM_PKCS1);
-            final RSAPublicKey publicKey = SimpleRSAEncryptionMaterials.getPublicKeyFromPemX509(PUBLIC_KEY_PEM_XC509);
-            final RSAPrivateKey privateKeyPKCS8 = SimpleRSAEncryptionMaterials.getPrivateKeyFromPemPKCS8(PRIVATE_KEY_PEM_PKCS8);
+            final RSAPrivateKey privateKeyPKCS1 = RsaMasterCipher.parsePrivateKeyFromPemPKCS1(PRIVATE_KEY_PEM_PKCS1);
+            final RSAPublicKey publicKey = RsaMasterCipher.parsePublicKeyFromPem(PUBLIC_KEY_PEM_X509);
+            final RSAPrivateKey privateKeyPKCS8 = RsaMasterCipher.parsePrivateKeyFromPemPKCS8(PRIVATE_KEY_PEM_PKCS8);
 
             // encrypt by public key
             byte[] encryptedData = encrypt(publicKey, PLAIN_TEXT.getBytes());
 
-            // dicrypt by private key pkcs1
+            // decrypt by private key pkcs1
             byte[] decryptedData = decrypt(privateKeyPKCS1, encryptedData);
             String decryptedStrPKCS1 = new String(decryptedData);
             Assert.assertEquals(PLAIN_TEXT, decryptedStrPKCS1);
@@ -114,6 +121,43 @@ public class RSAEncryptionUnitTest {
             e.printStackTrace();
             Assert.fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void testRsaMasterCipherRoundTrip() {
+        Map<String, String> desc = new HashMap<>();
+        desc.put("key", "value");
+
+        RSAPublicKey pub = RsaMasterCipher.parsePublicKeyFromPem(PUBLIC_KEY_PEM_X509);
+        RSAPrivateKey priv = RsaMasterCipher.parsePrivateKeyFromPemPKCS1(PRIVATE_KEY_PEM_PKCS1);
+        RsaMasterCipher masterCipher = RsaMasterCipher.of(new KeyPair(pub, priv), desc);
+
+        byte[] plaintext = PLAIN_TEXT.getBytes();
+        byte[] encrypted = masterCipher.encrypt(plaintext);
+        byte[] decrypted = masterCipher.decrypt(encrypted);
+
+        assertArrayEquals(plaintext, decrypted);
+        assertEquals("RSA/NONE/PKCS1Padding", masterCipher.getWrapAlgorithm());
+        Assert.assertNotNull(masterCipher.getMatDesc());
+    }
+
+    @Test
+    public void testRsaMasterCipherKeyRotation() {
+        RSAPublicKey pub = RsaMasterCipher.parsePublicKeyFromPem(PUBLIC_KEY_PEM_X509);
+        RSAPrivateKey priv = RsaMasterCipher.parsePrivateKeyFromPemPKCS1(PRIVATE_KEY_PEM_PKCS1);
+        RsaMasterCipher masterCipher = RsaMasterCipher.of(new KeyPair(pub, priv), null);
+
+        // Create a second key pair for rotation (same key, different description)
+        KeyPair keyPair2 = new KeyPair(pub, priv);
+        Map<String, String> desc2 = new HashMap<>();
+        desc2.put("version", "2");
+        masterCipher.addKeyPair(keyPair2, desc2);
+
+        // Encrypt with primary, decrypt should work
+        byte[] plaintext = "rotation test data".getBytes();
+        byte[] encrypted = masterCipher.encrypt(plaintext);
+        byte[] decrypted = masterCipher.decrypt(encrypted);
+        assertArrayEquals(plaintext, decrypted);
     }
 
     private byte[] encrypt(PublicKey publicKey, byte[] plainData) throws Exception {
