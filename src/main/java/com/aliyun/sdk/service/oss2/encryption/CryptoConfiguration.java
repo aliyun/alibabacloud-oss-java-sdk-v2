@@ -5,73 +5,27 @@ import java.security.Provider;
 import java.security.SecureRandom;
 
 /**
- * The crypto configuration used to configure storage method of crypto info,
- * content crypto mode, secure random generator and content crypto provider.
+ * The crypto configuration used to configure secure random generator and content crypto provider.
  */
 public class CryptoConfiguration implements Cloneable, Serializable {
+    private static final long serialVersionUID = -610360281849259785L;
+    private static final SecureRandom SRAND = new SecureRandom();
     /**
      * Default crypto configuration.
      */
     public static final CryptoConfiguration DEFAULT = new CryptoConfiguration();
-    private static final long serialVersionUID = -610360281849259785L;
-    private static final SecureRandom SRAND = new SecureRandom();
-    private ContentCryptoMode contentCryptoMode;
-    private CryptoStorageMethod storageMethod;
     private Provider contentCryptoProvider;
     private SecureRandom secureRandom;
 
     public CryptoConfiguration() {
-        this.contentCryptoMode = ContentCryptoMode.AES_CTR_MODE;
-        this.storageMethod = CryptoStorageMethod.ObjectMetadata;
         this.secureRandom = SRAND;
         this.contentCryptoProvider = null;
     }
 
-    public CryptoConfiguration(ContentCryptoMode contentCryptoMode,
-                               CryptoStorageMethod storageMethod,
-                               SecureRandom secureRandom,
+    public CryptoConfiguration(SecureRandom secureRandom,
                                Provider contentCryptoProvider) {
-        this.contentCryptoMode = contentCryptoMode;
-        this.storageMethod = storageMethod;
         this.secureRandom = secureRandom;
         this.contentCryptoProvider = contentCryptoProvider;
-    }
-
-    /**
-     * Gets the content crypto mode to the specified crypto mode.
-     *
-     * @return contentCryptoMode
-     * the content crypto mode {@link ContentCryptoMode}.
-     */
-    public ContentCryptoMode getContentCryptoMode() {
-        return this.contentCryptoMode;
-    }
-
-    /**
-     * Sets the content crypto mode to the specified crypto mode.
-     *
-     * @param contentCryptoMode the content crypto mode {@link ContentCryptoMode}.
-     */
-    public void setContentCryptoMode(ContentCryptoMode contentCryptoMode) {
-        this.contentCryptoMode = contentCryptoMode;
-    }
-
-    /**
-     * Gets the storage method.
-     *
-     * @return the storage method of the cryto information storing.
-     */
-    public CryptoStorageMethod getStorageMethod() {
-        return this.storageMethod;
-    }
-
-    /**
-     * Sets the storage method to the specified storage method.
-     *
-     * @param storageMethod the storage method of the cryto information sotoring.
-     */
-    public void setStorageMethod(CryptoStorageMethod storageMethod) {
-        this.storageMethod = storageMethod;
     }
 
     /**
@@ -139,9 +93,7 @@ public class CryptoConfiguration implements Cloneable, Serializable {
     @Override
     public CryptoConfiguration clone() {
         CryptoConfiguration config = new CryptoConfiguration();
-        config.setContentCryptoMode(contentCryptoMode);
         config.setSecureRandom(secureRandom);
-        config.setStorageMethod(storageMethod);
         config.setContentCryptoProvider(contentCryptoProvider);
         return config;
     }

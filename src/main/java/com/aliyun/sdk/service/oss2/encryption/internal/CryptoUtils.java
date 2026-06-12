@@ -2,12 +2,17 @@ package com.aliyun.sdk.service.oss2.encryption.internal;
 
 
 import com.aliyun.sdk.service.oss2.encryption.crypto.CryptoScheme;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CryptoUtils {
     private static final String RANGE_PREFIX = "bytes=";
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final TypeReference<Map<String, String>> MAP_TYPE = new TypeReference<Map<String, String>>() {};
 
     /**
      * Checks there an encryption info in the metadata.
@@ -22,18 +27,28 @@ public class CryptoUtils {
      * @return the corresponding material description from the given json string.
      */
     public static Map<String, String> getDescFromJsonString(String jsonString) {
-        Map<String, String> map = new HashMap<String, String>();
-        // TODO
-        /*
-        if (jsonString != null) {
-            Object json = ParseUtil.parseJSON(jsonString);
-            Map<String, Object> jmap = CommonUtil.assertAsMap(json);
-            for (Object o : jmap.keySet()) {
-                map.put((String) o, (String) jmap.get(o));
-            }
+        if (jsonString == null || jsonString.isEmpty()) {
+            return Collections.emptyMap();
         }
-         */
-        return map;
+        try {
+            return MAPPER.readValue(jsonString, MAP_TYPE);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse matdesc JSON: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * @return JSON string representation of the material description map.
+     */
+    public static String toJsonString(Map<String, String> map) {
+        if (map == null || map.isEmpty()) {
+            return null;
+        }
+        try {
+            return MAPPER.writeValueAsString(map);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to serialize matdesc to JSON: " + e.getMessage(), e);
+        }
     }
 
     public static long[] parseRange(String range) {
@@ -43,28 +58,44 @@ public class CryptoUtils {
         }
 
         if (!range.startsWith(RANGE_PREFIX)) {
-            throw new RuntimeException("Range does not start with " + RANGE_PREFIX, null);
+            throw new IllegalArgumentException("Range does not start with " + RANGE_PREFIX + ": " + oriRange);
         }
 
-        range = range.substring(6);
+        range = range.substring(RANGE_PREFIX.length());
+
+        // Reject multi-range (e.g. "bytes=0-10,20-30")
+        if (range.contains(",")) {
+            throw new IllegalArgumentException(
+                    "Multi-range is not supported for encrypted getObject: " + oriRange);
+        }
 
         long lstart = -1;
         long lend = -1;
         try {
-            String start = range.substring(0, range.indexOf('-'));
+            int dashIdx = range.indexOf('-');
+            if (dashIdx < 0) {
+                throw new IllegalArgumentException("Invalid range format (missing '-'): " + oriRange);
+            }
+            String start = range.substring(0, dashIdx);
             if (!start.isEmpty()) {
                 lstart = Long.parseLong(start);
             }
-            String end = range.substring(range.indexOf('-') + 1);
+            String end = range.substring(dashIdx + 1);
             if (!end.isEmpty()) {
                 lend = Long.parseLong(end);
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Parse range fail", e);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Failed to parse range: " + oriRange, e);
         }
 
-        if ((lstart < 0 && lend < 0) || (lstart > 0 && lend > 0 && lstart > lend)) {
-            throw new RuntimeException("Invalid range value " + oriRange, null);
+        // Reject suffix range (e.g. "bytes=-100")
+        if (lstart < 0 && lend >= 0) {
+            throw new IllegalArgumentException(
+                    "Suffix-range is not supported for encrypted getObject: " + oriRange);
+        }
+
+        if ((lstart < 0 && lend < 0) || (lstart >= 0 && lend >= 0 && lstart > lend)) {
+            throw new IllegalArgumentException("Invalid range value: " + oriRange);
         }
 
         return new long[]{lstart, lend};
@@ -107,5 +138,29 @@ public class CryptoUtils {
         adjustedCryptoRange[0] = range[0] < 0 ? range[0] : ((range[0] / CryptoScheme.BLOCK_SIZE) * CryptoScheme.BLOCK_SIZE);
         adjustedCryptoRange[1] = range[1];
         return adjustedCryptoRange;
+    }
+
+    /**
+     * Adjusts a Content-Range header value by adding discardCount to the start position.
+     * E.g. "bytes 0-100/200" with discardCount=5 → "bytes 5-100/200"
+     */
+    public static String adjustContentRange(String contentRange, long discardCount) {
+        if (contentRange == null || contentRange.isEmpty()) {
+            return null;
+        }
+        // Format: "bytes start-end/total"
+        int space = contentRange.indexOf(' ');
+        if (space < 0) return null;
+        int dash = contentRange.indexOf('-', space);
+        if (dash < 0) return null;
+        try {
+            long start = Long.parseLong(contentRange.substring(space + 1, dash).trim());
+            start += discardCount;
+            String prefix = contentRange.substring(0, space + 1);
+            String tail = contentRange.substring(dash);
+            return prefix + start + tail;
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

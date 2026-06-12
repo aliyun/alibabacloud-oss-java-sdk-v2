@@ -14,11 +14,15 @@ import static java.util.Objects.requireNonNull;
 public final class InitiateMultipartUploadRequest extends RequestModel {
     private final String bucket;
     private final String key;
+    private final Long csePartSize;
+    private final Long cseDataSize;
 
     private InitiateMultipartUploadRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
         this.key = builder.key;
+        this.csePartSize = builder.csePartSize;
+        this.cseDataSize = builder.cseDataSize;
     }
 
     public static Builder newBuilder() {
@@ -166,6 +170,22 @@ public final class InitiateMultipartUploadRequest extends RequestModel {
         return CastUtils.toMetadata(this.headers);
     }
 
+    /**
+     * The part size for client-side encryption multipart upload. Must be a positive multiple of 16 bytes.
+     * This field is used by OSSEncryptionClient and is not sent to OSS.
+     */
+    public Long csePartSize() {
+        return csePartSize;
+    }
+
+    /**
+     * The total data size for client-side encryption multipart upload.
+     * This field is used by OSSEncryptionClient and is not sent to OSS.
+     */
+    public Long cseDataSize() {
+        return cseDataSize;
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }
@@ -173,6 +193,8 @@ public final class InitiateMultipartUploadRequest extends RequestModel {
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
         private String key;
+        private Long csePartSize;
+        private Long cseDataSize;
 
         private Builder() {
             super();
@@ -182,6 +204,8 @@ public final class InitiateMultipartUploadRequest extends RequestModel {
             super(request);
             this.bucket = request.bucket;
             this.key = request.key;
+            this.csePartSize = request.csePartSize;
+            this.cseDataSize = request.cseDataSize;
         }
 
         /**
@@ -352,6 +376,25 @@ public final class InitiateMultipartUploadRequest extends RequestModel {
         public Builder metadata(Map<String, String> value) {
             requireNonNull(value);
             value.forEach((k, v) -> this.headers.put("x-oss-meta-" + k, v));
+            return this;
+        }
+
+        /**
+         * The part size for client-side encryption multipart upload.
+         * Must be a positive multiple of 16 bytes (128 bits).
+         * This field is used by OSSEncryptionClient and is not sent to OSS as a header.
+         */
+        public Builder csePartSize(Long value) {
+            this.csePartSize = value;
+            return this;
+        }
+
+        /**
+         * The total data size for client-side encryption multipart upload.
+         * This field is used by OSSEncryptionClient and is not sent to OSS as a header.
+         */
+        public Builder cseDataSize(Long value) {
+            this.cseDataSize = value;
             return this;
         }
 

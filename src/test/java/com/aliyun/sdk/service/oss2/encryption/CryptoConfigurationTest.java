@@ -12,19 +12,13 @@ public class CryptoConfigurationTest {
     @Test
     public void testConstruction() {
         CryptoConfiguration cryptoConfig = new CryptoConfiguration();
-        assertEquals(ContentCryptoMode.AES_CTR_MODE, cryptoConfig.getContentCryptoMode());
-        assertEquals(CryptoStorageMethod.ObjectMetadata, cryptoConfig.getStorageMethod());
         assertEquals(SecureRandom.class.getName(), cryptoConfig.getSecureRandom().getClass().getName());
         assertNull(cryptoConfig.getContentCryptoProvider());
 
         cryptoConfig = new CryptoConfiguration(
-                ContentCryptoMode.AES_CTR_MODE,
-                CryptoStorageMethod.ObjectMetadata,
                 new SecureRandom(),
                 CryptoTestUtils.getBouncyCastleProvider());
 
-        assertEquals(ContentCryptoMode.AES_CTR_MODE, cryptoConfig.getContentCryptoMode());
-        assertEquals(CryptoStorageMethod.ObjectMetadata, cryptoConfig.getStorageMethod());
         assertEquals(SecureRandom.class.getName(), cryptoConfig.getSecureRandom().getClass().getName());
         assertEquals("BC", cryptoConfig.getContentCryptoProvider().getName());
     }
