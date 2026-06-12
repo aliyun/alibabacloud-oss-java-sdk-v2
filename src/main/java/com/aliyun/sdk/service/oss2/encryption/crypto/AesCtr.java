@@ -39,8 +39,7 @@ public class AesCtr extends CryptoScheme {
     }
 
     private byte[] computeJ0(byte[] nonce) {
-        final int blockSize = BLOCK_SIZE;
-        byte[] J0 = new byte[blockSize];
+        byte[] J0 = new byte[BLOCK_SIZE];
         System.arraycopy(nonce, 0, J0, 0, nonce.length);
         return J0;
     }
