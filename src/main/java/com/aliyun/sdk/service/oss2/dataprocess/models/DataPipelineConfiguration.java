@@ -24,6 +24,9 @@ public final class DataPipelineConfiguration {
     @JacksonXmlProperty(localName = "Status")
     private String status;
 
+    @JacksonXmlProperty(localName = "Phase")
+    private String phase;
+
     @JacksonXmlProperty(localName = "DataPipelineEmbeddingConfiguration")
     private DataPipelineEmbeddingConfiguration dataPipelineEmbeddingConfiguration;
 
@@ -48,6 +51,7 @@ public final class DataPipelineConfiguration {
         this.dataPipelineDescription = builder.dataPipelineDescription;
         this.dataPipelineRole = builder.dataPipelineRole;
         this.status = builder.status;
+        this.phase = builder.phase;
         this.dataPipelineEmbeddingConfiguration = builder.dataPipelineEmbeddingConfiguration;
         this.destination = builder.destination;
         this.dataPipelineError = builder.dataPipelineError;
@@ -69,6 +73,10 @@ public final class DataPipelineConfiguration {
 
     public String status() {
         return status;
+    }
+
+    public String phase() {
+        return phase;
     }
 
     public DataPipelineEmbeddingConfiguration dataPipelineEmbeddingConfiguration() {
@@ -104,6 +112,7 @@ public final class DataPipelineConfiguration {
         private String dataPipelineDescription;
         private String dataPipelineRole;
         private String status;
+        private String phase;
         private DataPipelineEmbeddingConfiguration dataPipelineEmbeddingConfiguration;
         private DataPipelineDestination destination;
         private DataPipelineError dataPipelineError;
@@ -127,6 +136,11 @@ public final class DataPipelineConfiguration {
 
         public Builder status(String value) {
             this.status = value;
+            return this;
+        }
+
+        public Builder phase(String value) {
+            this.phase = value;
             return this;
         }
 
@@ -164,6 +178,7 @@ public final class DataPipelineConfiguration {
             this.dataPipelineDescription = from.dataPipelineDescription;
             this.dataPipelineRole = from.dataPipelineRole;
             this.status = from.status;
+            this.phase = from.phase;
             this.dataPipelineEmbeddingConfiguration = from.dataPipelineEmbeddingConfiguration;
             this.destination = from.destination;
             this.dataPipelineError = from.dataPipelineError;
