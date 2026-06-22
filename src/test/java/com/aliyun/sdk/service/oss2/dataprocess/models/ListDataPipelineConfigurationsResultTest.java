@@ -68,6 +68,7 @@ public class ListDataPipelineConfigurationsResultTest {
                 "      <DataPipelineDescription>使用百炼多模态模型为业务数据向量化</DataPipelineDescription>\n" +
                 "      <DataPipelineRole>my-data-pipeline-role</DataPipelineRole>\n" +
                 "      <Status>Running</Status>\n" +
+                "      <Phase>IncrementalScanning</Phase>\n" +
                 "      <Sources>\n" +
                 "          <InputBucket>my-bucket</InputBucket>\n" +
                 "          <InputDataScope>All</InputDataScope>\n" +
@@ -128,6 +129,7 @@ public class ListDataPipelineConfigurationsResultTest {
         assertThat(result.dataPipelineConfigurations().get(0).dataPipelineDescription()).isEqualTo("使用百炼多模态模型为业务数据向量化");
         assertThat(result.dataPipelineConfigurations().get(0).dataPipelineRole()).isEqualTo("my-data-pipeline-role");
         assertThat(result.dataPipelineConfigurations().get(0).status()).isEqualTo("Running");
+        assertThat(result.dataPipelineConfigurations().get(0).phase()).isEqualTo("IncrementalScanning");
         assertThat(result.dataPipelineConfigurations().get(0).createTime()).isEqualTo("2021-06-29T14:50:13.011643661+08:00");
         assertThat(result.dataPipelineConfigurations().get(0).sources()).isNotNull();
         assertThat(result.dataPipelineConfigurations().get(0).sources().size()).isEqualTo(1);
