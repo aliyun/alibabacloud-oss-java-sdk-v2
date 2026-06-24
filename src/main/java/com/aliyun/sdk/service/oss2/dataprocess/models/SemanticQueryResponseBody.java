@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * XML response body for the SemanticQuery operation.
  */
-@JacksonXmlRootElement(localName = "SemanticQueryResult")
+@JacksonXmlRootElement(localName = "MetaQuery")
 public final class SemanticQueryResponseBody {
     @JacksonXmlElementWrapper(localName = "Files")
     @JacksonXmlProperty(localName = "File")

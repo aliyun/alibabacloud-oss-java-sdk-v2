@@ -199,14 +199,27 @@ public final class File {
     @JacksonXmlProperty(localName = "ContentMd5")
     private String contentMd5;
 
+    /**
+     * OSS user-defined metadata items. Per the IMM tunnel contract, the XML payload uses a
+     * fixed wrapper structure {@code <OSSUserMeta><UserMeta><Key>k</Key><Value>v</Value></UserMeta>...</OSSUserMeta>},
+     * so this is modeled as an {@link OSSUserMeta} container holding a list of
+     * {@link UserMeta} entries (not a {@link Map}, which cannot represent the
+     * {@code <Key>}/{@code <Value>} element pairs reliably).
+     */
     @JacksonXmlProperty(localName = "OSSUserMeta")
-    private Map<String, Object> ossUserMeta;
+    private OSSUserMeta ossUserMeta;
 
     @JacksonXmlProperty(localName = "OSSTaggingCount")
     private Long ossTaggingCount;
 
+    /**
+     * OSS object tagging items. Per the IMM tunnel contract, the XML payload uses a fixed
+     * wrapper structure {@code <OSSTagging><Tagging><Key>k</Key><Value>v</Value></Tagging>...</OSSTagging>},
+     * so this is modeled as an {@link OSSTagging} container holding a list of
+     * {@link Tagging} entries.
+     */
     @JacksonXmlProperty(localName = "OSSTagging")
-    private Map<String, Object> ossTagging;
+    private OSSTagging ossTagging;
 
     @JacksonXmlProperty(localName = "OSSExpiration")
     private String ossExpiration;
@@ -608,7 +621,7 @@ public final class File {
         return this.contentMd5;
     }
 
-    public Map<String, Object> ossUserMeta() {
+    public OSSUserMeta ossUserMeta() {
         return this.ossUserMeta;
     }
 
@@ -616,7 +629,7 @@ public final class File {
         return this.ossTaggingCount;
     }
 
-    public Map<String, Object> ossTagging() {
+    public OSSTagging ossTagging() {
         return this.ossTagging;
     }
 
@@ -761,9 +774,9 @@ public final class File {
         private String ossCrc64;
         private String objectAcl;
         private String contentMd5;
-        private Map<String, Object> ossUserMeta;
+        private OSSUserMeta ossUserMeta;
         private Long ossTaggingCount;
-        private Map<String, Object> ossTagging;
+        private OSSTagging ossTagging;
         private String ossExpiration;
         private String ossVersionId;
         private String ossDeleteMarker;
@@ -1174,7 +1187,7 @@ public final class File {
             return this;
         }
 
-        public Builder ossUserMeta(Map<String, Object> ossUserMeta) {
+        public Builder ossUserMeta(OSSUserMeta ossUserMeta) {
             this.ossUserMeta = ossUserMeta;
             return this;
         }
@@ -1184,7 +1197,7 @@ public final class File {
             return this;
         }
 
-        public Builder ossTagging(Map<String, Object> ossTagging) {
+        public Builder ossTagging(OSSTagging ossTagging) {
             this.ossTagging = ossTagging;
             return this;
         }

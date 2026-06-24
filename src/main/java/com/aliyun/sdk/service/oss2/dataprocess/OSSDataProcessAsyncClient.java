@@ -228,4 +228,93 @@ public interface OSSDataProcessAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+    // MetaQuery api
+    //-----------------------------------------------------------------------
+    default CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request) {
+        return openMetaQueryAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request) {
+        return getMetaQueryStatusAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request) {
+        return closeMetaQueryAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request) {
+        return doMetaQueryAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // FileMeta api
+    //-----------------------------------------------------------------------
+    default CompletableFuture<DeleteFileMetaResult> deleteFileMetaAsync(DeleteFileMetaRequest request) {
+        return deleteFileMetaAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<DeleteFileMetaResult> deleteFileMetaAsync(DeleteFileMetaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
+    // SmartCluster api
+    //-----------------------------------------------------------------------
+    default CompletableFuture<CreateSmartClusterResult> createSmartClusterAsync(CreateSmartClusterRequest request) {
+        return createSmartClusterAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<CreateSmartClusterResult> createSmartClusterAsync(CreateSmartClusterRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CompletableFuture<GetSmartClusterResult> getSmartClusterAsync(GetSmartClusterRequest request) {
+        return getSmartClusterAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<GetSmartClusterResult> getSmartClusterAsync(GetSmartClusterRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CompletableFuture<UpdateSmartClusterResult> updateSmartClusterAsync(UpdateSmartClusterRequest request) {
+        return updateSmartClusterAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<UpdateSmartClusterResult> updateSmartClusterAsync(UpdateSmartClusterRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CompletableFuture<DeleteSmartClusterResult> deleteSmartClusterAsync(DeleteSmartClusterRequest request) {
+        return deleteSmartClusterAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<DeleteSmartClusterResult> deleteSmartClusterAsync(DeleteSmartClusterRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    default CompletableFuture<ListSmartClustersResult> listSmartClustersAsync(ListSmartClustersRequest request) {
+        return listSmartClustersAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<ListSmartClustersResult> listSmartClustersAsync(ListSmartClustersRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
 }

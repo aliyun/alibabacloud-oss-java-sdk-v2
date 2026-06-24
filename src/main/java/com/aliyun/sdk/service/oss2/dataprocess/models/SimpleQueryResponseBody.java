@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * XML response body for the SimpleQuery operation.
  */
-@JacksonXmlRootElement(localName = "SimpleQueryResult")
+@JacksonXmlRootElement(localName = "MetaQuery")
 public final class SimpleQueryResponseBody {
     @JacksonXmlProperty(localName = "NextToken")
     private String nextToken;

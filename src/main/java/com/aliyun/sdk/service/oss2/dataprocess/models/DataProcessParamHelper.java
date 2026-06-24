@@ -43,6 +43,21 @@ public final class DataProcessParamHelper {
     }
 
     /**
+     * Converts a list of SmartClusterRule to a JSON string for use as a query parameter.
+     */
+    public static String toSmartClusterRules(List<SmartClusterRule> value) {
+        return toJson(value);
+    }
+
+    /**
+     * Converts a SmartClusterRule to a JSON string for use as a query parameter.
+     */
+    public static String toSmartClusterRule(SmartClusterRule value) {
+        return toJson(value);
+    }
+
+
+    /**
      * Converts a list of strings to a JSON array string for use as a query parameter.
      */
     public static String toStringList(List<String> value) {

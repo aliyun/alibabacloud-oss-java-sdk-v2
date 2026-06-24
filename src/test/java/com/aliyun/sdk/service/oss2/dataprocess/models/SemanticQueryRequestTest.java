@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.util.AbstractMap;
 import java.util.Arrays;
 
+import com.aliyun.sdk.service.oss2.OperationInput;
+import com.aliyun.sdk.service.oss2.dataprocess.transform.SerdeDatasetBasic;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SemanticQueryRequestTest {
@@ -19,7 +22,6 @@ public class SemanticQueryRequestTest {
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
         assertThat(request.datasetName()).isNull();
-        assertThat(request.nextToken()).isNull();
         assertThat(request.maxResults()).isNull();
         assertThat(request.query()).isNull();
         assertThat(request.withFields()).isNull();
@@ -33,7 +35,6 @@ public class SemanticQueryRequestTest {
         SemanticQueryRequest request = SemanticQueryRequest.newBuilder()
                 .bucket("examplebucket")
                 .datasetName("test-dataset")
-                .nextToken("next-token-value")
                 .maxResults(10)
                 .query("blue shirt man walking to table")
                 .withFields(Arrays.asList("Filename", "Size", "MediaType"))
@@ -50,7 +51,6 @@ public class SemanticQueryRequestTest {
 
         assertThat(request.bucket()).isEqualTo("examplebucket");
         assertThat(request.datasetName()).isEqualTo("test-dataset");
-        assertThat(request.nextToken()).isEqualTo("next-token-value");
         assertThat(request.maxResults()).isEqualTo(10);
         assertThat(request.query()).isEqualTo("blue shirt man walking to table");
         assertThat(request.withFields()).isEqualTo("[\"Filename\",\"Size\",\"MediaType\"]");
@@ -66,7 +66,6 @@ public class SemanticQueryRequestTest {
         SemanticQueryRequest copy = request.toBuilder().build();
         assertThat(copy.bucket()).isEqualTo("examplebucket");
         assertThat(copy.datasetName()).isEqualTo("test-dataset");
-        assertThat(copy.nextToken()).isEqualTo("next-token-value");
         assertThat(copy.maxResults()).isEqualTo(10);
         assertThat(copy.query()).isEqualTo("blue shirt man walking to table");
 
@@ -107,7 +106,6 @@ public class SemanticQueryRequestTest {
         SemanticQueryRequest request = SemanticQueryRequest.newBuilder()
                 .bucket("test-bucket")
                 .datasetName("test-dataset")
-                .nextToken("test-token")
                 .maxResults(50)
                 .query("俯瞰白雪覆盖的森林")
                 .withFields(Arrays.asList("Filename", "Size"))
@@ -117,11 +115,59 @@ public class SemanticQueryRequestTest {
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
         assertThat(request.datasetName()).isEqualTo("test-dataset");
-        assertThat(request.nextToken()).isEqualTo("test-token");
         assertThat(request.maxResults()).isEqualTo(50);
         assertThat(request.query()).isEqualTo("俯瞰白雪覆盖的森林");
         assertThat(request.withFields()).isEqualTo("[\"Filename\",\"Size\"]");
         assertThat(request.mediaTypes()).isEqualTo("video");
         assertThat(request.sourceUri()).isEqualTo("oss://bucket/video/");
+    }
+
+    @Test
+    public void xmlBuilder() {
+        // Reference: sdk_internal_reference(3).md §11 SemanticQuery URL params
+        SemanticQueryRequest request = SemanticQueryRequest.newBuilder()
+                .bucket("examplebucket")
+                .datasetName("photos-2026")
+                .query("客厅里的猫")
+                .mediaTypes(Arrays.asList("image", "video"))
+                .simpleQuery(SimpleQuery.newBuilder()
+                        .field("Size")
+                        .value("102400")
+                        .operation("gt")
+                        .build())
+                .withFields(Arrays.asList("OSSURI", "Insights"))
+                .maxResults(20)
+                .build();
+
+        OperationInput input = SerdeDatasetBasic.fromSemanticQuery(request);
+
+        assertThat(input.bucket().get()).isEqualTo("examplebucket");
+        assertThat(input.parameters().get("action")).isEqualTo("semanticQuery");
+        assertThat(input.parameters().get("metaQuery")).isEqualTo("");
+        assertThat(input.parameters().get("datasetName")).isEqualTo("photos-2026");
+        assertThat(input.parameters().get("query")).isEqualTo("客厅里的猫");
+        assertThat(input.parameters().get("maxResults")).isEqualTo("20");
+        assertThat(input.parameters().get("mediaTypes")).isNotNull();
+        assertThat(input.parameters().get("simpleQuery")).isNotNull();
+        assertThat(input.method()).isEqualTo("POST");
+    }
+
+    @Test
+    public void xmlBuilderWithSourceURI() {
+        // Reference: sdk_internal_reference(3).md §11 sourceURI mode
+        SemanticQueryRequest request = SemanticQueryRequest.newBuilder()
+                .bucket("examplebucket")
+                .datasetName("photos-2026")
+                .sourceUri("oss://examplebucket/photos/cat.jpg")
+                .mediaTypes(Arrays.asList("image"))
+                .maxResults(10)
+                .build();
+
+        OperationInput input = SerdeDatasetBasic.fromSemanticQuery(request);
+
+        assertThat(input.bucket().get()).isEqualTo("examplebucket");
+        assertThat(input.parameters().get("action")).isEqualTo("semanticQuery");
+        assertThat(input.parameters().get("sourceURI")).isEqualTo("oss://examplebucket/photos/cat.jpg");
+        assertThat(input.method()).isEqualTo("POST");
     }
 }

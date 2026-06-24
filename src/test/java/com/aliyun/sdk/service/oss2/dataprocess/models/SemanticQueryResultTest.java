@@ -105,7 +105,11 @@ public class SemanticQueryResultTest {
                 .ossCrc64("2327801188977127298")
                 .ossObjectType("Normal")
                 .ossStorageClass("Standard")
-                .ossTagging(ossTagging)
+                .ossTagging(OSSTagging.newBuilder().tagging(Arrays.asList(
+                        new Tagging().toBuilder()
+                                .key("routing-dataset")
+                                .value("test-dataset-sem-vid-1776774492")
+                                .build())).build())
                 .ossTaggingCount(1L)
                 .objectAcl("default")
                 .size(3320455L)
