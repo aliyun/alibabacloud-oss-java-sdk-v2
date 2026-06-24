@@ -8,6 +8,7 @@ import com.aliyun.sdk.service.oss2.hash.CRC64Observer;
 import com.aliyun.sdk.service.oss2.hash.CRC64ResponseChecker;
 import com.aliyun.sdk.service.oss2.io.StreamObserver;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.models.internal.CopyObjectResultXml;
 import com.aliyun.sdk.service.oss2.models.internal.DeleteResultXml;
 import com.aliyun.sdk.service.oss2.progress.ProgressObserver;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
@@ -123,8 +124,7 @@ public final class SerdeObjectBasic {
     }
 
     public static CopyObjectResult toCopyObject(OperationOutput output) {
-        Object innerBody = null;
-        innerBody = SerdeUtils.deserializeXmlBody(output, String.class);
+        CopyObjectResultXml innerBody = (CopyObjectResultXml) SerdeUtils.deserializeXmlBody(output, CopyObjectResultXml.class);
 
         return CopyObjectResult.newBuilder()
                 .headers(output.headers)

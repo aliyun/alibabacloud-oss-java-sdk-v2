@@ -1,5 +1,7 @@
 package com.aliyun.sdk.service.oss2.models;
 
+import com.aliyun.sdk.service.oss2.models.internal.CopyObjectResultXml;
+
 /**
  * The result for the CopyObject operation.
  */
@@ -68,16 +70,26 @@ public final class CopyObjectResult extends ResultModel {
      * An ETag is created when an object is created to identify the content of the object.
      */
     public String eTag() {
-        String value = headers.get("ETag");
-        return value;
+        if (innerBody instanceof CopyObjectResultXml) {
+            CopyObjectResultXml body = (CopyObjectResultXml) innerBody;
+            if (body.eTag != null) {
+                return body.eTag;
+            }
+        }
+        return headers.get("ETag");
     }
 
     /**
      * The time when the returned objects were last modified.
      */
     public String lastModified() {
-        String value = headers.get("Last-Modified");
-        return value;
+        if (innerBody instanceof CopyObjectResultXml) {
+            CopyObjectResultXml body = (CopyObjectResultXml) innerBody;
+            if (body.lastModified != null) {
+                return body.lastModified;
+            }
+        }
+        return headers.get("Last-Modified");
     }
 
     public Builder toBuilder() {
