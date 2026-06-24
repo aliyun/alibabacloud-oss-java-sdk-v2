@@ -107,4 +107,57 @@ public class DefaultOSSDataProcessAsyncClient implements OSSDataProcessAsyncClie
     public CompletableFuture<RestartDataPipelineResult> restartDataPipelineAsync(RestartDataPipelineRequest request, OperationOptions options) {
         return DataPipelineBasic.restartDataPipelineAsync(this.clientImpl, request, options);
     }
+
+    // MetaQuery API
+    @Override
+    public CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(OpenMetaQueryRequest request, OperationOptions options) {
+        return DatasetBasic.openMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return DatasetBasic.getMetaQueryStatusAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(CloseMetaQueryRequest request, OperationOptions options) {
+        return DatasetBasic.closeMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(DoMetaQueryRequest request, OperationOptions options) {
+        return DatasetBasic.doMetaQueryAsync(this.clientImpl, request, options);
+    }
+
+    // FileMeta API
+    @Override
+    public CompletableFuture<DeleteFileMetaResult> deleteFileMetaAsync(DeleteFileMetaRequest request, OperationOptions options) {
+        return DatasetBasic.deleteFileMetaAsync(this.clientImpl, request, options);
+    }
+
+    // SmartCluster API
+    @Override
+    public CompletableFuture<CreateSmartClusterResult> createSmartClusterAsync(CreateSmartClusterRequest request, OperationOptions options) {
+        return DatasetBasic.createSmartClusterAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetSmartClusterResult> getSmartClusterAsync(GetSmartClusterRequest request, OperationOptions options) {
+        return DatasetBasic.getSmartClusterAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<UpdateSmartClusterResult> updateSmartClusterAsync(UpdateSmartClusterRequest request, OperationOptions options) {
+        return DatasetBasic.updateSmartClusterAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteSmartClusterResult> deleteSmartClusterAsync(DeleteSmartClusterRequest request, OperationOptions options) {
+        return DatasetBasic.deleteSmartClusterAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListSmartClustersResult> listSmartClustersAsync(ListSmartClustersRequest request, OperationOptions options) {
+        return DatasetBasic.listSmartClustersAsync(this.clientImpl, request, options);
+    }
 }

@@ -9,9 +9,6 @@ import java.util.List;
 @JacksonXmlRootElement(localName = "Dataset")
 public final class Dataset {
 
-    @JacksonXmlProperty(localName = "BindCount")
-    private Long bindCount;
-
     @JacksonXmlProperty(localName = "CreateTime")
     private String createTime;
 
@@ -39,9 +36,6 @@ public final class Dataset {
     @JacksonXmlProperty(localName = "FileCount")
     private Long fileCount;
 
-    @JacksonXmlProperty(localName = "TemplateId")
-    private String templateId;
-
     @JacksonXmlProperty(localName = "TotalFileSize")
     private Long totalFileSize;
 
@@ -58,7 +52,6 @@ public final class Dataset {
     }
 
     private Dataset(Builder builder) {
-        this.bindCount = builder.bindCount;
         this.createTime = builder.createTime;
         this.datasetMaxBindCount = builder.datasetMaxBindCount;
         this.datasetMaxEntityCount = builder.datasetMaxEntityCount;
@@ -68,7 +61,6 @@ public final class Dataset {
         this.datasetName = builder.datasetName;
         this.description = builder.description;
         this.fileCount = builder.fileCount;
-        this.templateId = builder.templateId;
         this.totalFileSize = builder.totalFileSize;
         this.updateTime = builder.updateTime;
         this.workflowParameters = builder.workflowParameters;
@@ -81,10 +73,6 @@ public final class Dataset {
 
     public Builder toBuilder() {
         return new Builder(this);
-    }
-
-    public Long bindCount() {
-        return this.bindCount;
     }
 
     public String createTime() {
@@ -123,10 +111,6 @@ public final class Dataset {
         return this.fileCount;
     }
 
-    public String templateId() {
-        return this.templateId;
-    }
-
     public Long totalFileSize() {
         return this.totalFileSize;
     }
@@ -144,7 +128,6 @@ public final class Dataset {
     }
 
     public static class Builder {
-        private Long bindCount;
         private String createTime;
         private Long datasetMaxBindCount;
         private Long datasetMaxEntityCount;
@@ -154,7 +137,6 @@ public final class Dataset {
         private String datasetName;
         private String description;
         private Long fileCount;
-        private String templateId;
         private Long totalFileSize;
         private String updateTime;
         private WorkflowParameters workflowParameters;
@@ -164,7 +146,6 @@ public final class Dataset {
         }
 
         private Builder(Dataset dataset) {
-            this.bindCount = dataset.bindCount;
             this.createTime = dataset.createTime;
             this.datasetMaxBindCount = dataset.datasetMaxBindCount;
             this.datasetMaxEntityCount = dataset.datasetMaxEntityCount;
@@ -174,16 +155,10 @@ public final class Dataset {
             this.datasetName = dataset.datasetName;
             this.description = dataset.description;
             this.fileCount = dataset.fileCount;
-            this.templateId = dataset.templateId;
             this.totalFileSize = dataset.totalFileSize;
             this.updateTime = dataset.updateTime;
             this.workflowParameters = dataset.workflowParameters;
             this.datasetConfig = dataset.datasetConfig;
-        }
-
-        public Builder bindCount(Long bindCount) {
-            this.bindCount = bindCount;
-            return this;
         }
 
         public Builder createTime(String createTime) {
@@ -228,11 +203,6 @@ public final class Dataset {
 
         public Builder fileCount(Long fileCount) {
             this.fileCount = fileCount;
-            return this;
-        }
-
-        public Builder templateId(String templateId) {
-            this.templateId = templateId;
             return this;
         }
 

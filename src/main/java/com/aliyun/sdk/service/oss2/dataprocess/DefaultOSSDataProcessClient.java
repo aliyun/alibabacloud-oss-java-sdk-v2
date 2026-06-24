@@ -101,6 +101,59 @@ public class DefaultOSSDataProcessClient implements OSSDataProcessClient {
         return DataPipelineBasic.restartDataPipeline(this.clientImpl, request, options);
     }
 
+    // MetaQuery API
+    @Override
+    public OpenMetaQueryResult openMetaQuery(OpenMetaQueryRequest request, OperationOptions options) {
+        return DatasetBasic.openMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetMetaQueryStatusResult getMetaQueryStatus(GetMetaQueryStatusRequest request, OperationOptions options) {
+        return DatasetBasic.getMetaQueryStatus(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CloseMetaQueryResult closeMetaQuery(CloseMetaQueryRequest request, OperationOptions options) {
+        return DatasetBasic.closeMetaQuery(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DoMetaQueryResult doMetaQuery(DoMetaQueryRequest request, OperationOptions options) {
+        return DatasetBasic.doMetaQuery(this.clientImpl, request, options);
+    }
+
+    // FileMeta API
+    @Override
+    public DeleteFileMetaResult deleteFileMeta(DeleteFileMetaRequest request, OperationOptions options) {
+        return DatasetBasic.deleteFileMeta(this.clientImpl, request, options);
+    }
+
+    // SmartCluster API
+    @Override
+    public CreateSmartClusterResult createSmartCluster(CreateSmartClusterRequest request, OperationOptions options) {
+        return DatasetBasic.createSmartCluster(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetSmartClusterResult getSmartCluster(GetSmartClusterRequest request, OperationOptions options) {
+        return DatasetBasic.getSmartCluster(this.clientImpl, request, options);
+    }
+
+    @Override
+    public UpdateSmartClusterResult updateSmartCluster(UpdateSmartClusterRequest request, OperationOptions options) {
+        return DatasetBasic.updateSmartCluster(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteSmartClusterResult deleteSmartCluster(DeleteSmartClusterRequest request, OperationOptions options) {
+        return DatasetBasic.deleteSmartCluster(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListSmartClustersResult listSmartClusters(ListSmartClustersRequest request, OperationOptions options) {
+        return DatasetBasic.listSmartClusters(this.clientImpl, request, options);
+    }
+
     @Override
     public void close() throws Exception {
         this.clientImpl.close();

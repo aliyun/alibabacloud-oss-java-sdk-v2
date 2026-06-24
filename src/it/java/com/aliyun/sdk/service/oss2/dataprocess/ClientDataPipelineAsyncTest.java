@@ -33,7 +33,7 @@ public class ClientDataPipelineAsyncTest extends TestBaseDataProcess {
         OSSVectorsClient vectorsClient = getVectorsClient();
         OSSClient ossClient = getDefaultClient();
         String pipelineName = "test-async-" + System.currentTimeMillis();
-        String roleName = "immdatatest";
+        String roleName = roleName();
 
         DataPipelineSourceFilterConfiguration filterConfig = DataPipelineSourceFilterConfiguration.newBuilder()
                 .prefixSet(Arrays.asList("prefix1/", "prefix2/prefix3/"))
@@ -216,6 +216,44 @@ public class ClientDataPipelineAsyncTest extends TestBaseDataProcess {
                         .build());
             } catch (Exception ignored) {
             }
+        }
+    }
+
+    @Test
+    public void testGetNonExistentPipelineConfigurationAsync() throws Exception {
+        OSSDataProcessAsyncClient client = getDataAsyncClient();
+
+        try {
+            client.getDataPipelineConfigurationAsync(GetDataPipelineConfigurationRequest.newBuilder()
+                    .dataPipelineName("non-existent-pipeline-async-" + System.currentTimeMillis())
+                    .build()).get();
+            Assert.fail("Expected ServiceException for non-existent pipeline");
+        } catch (Exception e) {
+            ServiceException serviceException = findCause(e, ServiceException.class);
+            Assert.assertNotNull("Expected ServiceException", serviceException);
+            Assert.assertTrue("Expected 404 or 400 status",
+                    serviceException.statusCode() == 404 || serviceException.statusCode() == 400);
+        }
+    }
+
+    @Test
+    public void testDeleteNonExistentPipelineConfigurationAsync() throws Exception {
+        OSSDataProcessAsyncClient client = getDataAsyncClient();
+
+        try {
+            DeleteDataPipelineConfigurationResult deleteResult = client.deleteDataPipelineConfigurationAsync(
+                    DeleteDataPipelineConfigurationRequest.newBuilder()
+                            .dataPipelineName("non-existent-pipeline-async-" + System.currentTimeMillis())
+                            .build()).get();
+            // Delete might return 204 even if not exists
+            Assert.assertNotNull(deleteResult);
+            Assert.assertTrue("Expected 200, 204 or 404",
+                    deleteResult.statusCode() == 200 || deleteResult.statusCode() == 204 || deleteResult.statusCode() == 404);
+        } catch (Exception e) {
+            // Or throw 404
+            ServiceException serviceException = findCause(e, ServiceException.class);
+            Assert.assertNotNull("Expected ServiceException", serviceException);
+            Assert.assertEquals("Expected 404 status", 404, serviceException.statusCode());
         }
     }
 

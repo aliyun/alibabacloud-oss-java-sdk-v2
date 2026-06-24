@@ -234,4 +234,326 @@ public final class SerdeDatasetBasic {
                 .innerBody(SerdeUtils.deserializeXmlBody(output, SemanticQueryResponseBody.class))
                 .build();
     }
+
+    // ==================== OpenMetaQuery ====================
+
+    public static OperationInput fromOpenMetaQuery(OpenMetaQueryRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "openMetaQuery");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("OpenMetaQuery")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .body(SerdeUtils.serializeXmlBody(request.metaQueryBody()))
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static OpenMetaQueryResult toOpenMetaQuery(OperationOutput output) {
+        return OpenMetaQueryResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(null)
+                .build();
+    }
+
+    // ==================== GetMetaQueryStatus ====================
+
+    public static OperationInput fromGetMetaQueryStatus(GetMetaQueryStatusRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "getMetaQueryStatus");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("GetMetaQueryStatus")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static GetMetaQueryStatusResult toGetMetaQueryStatus(OperationOutput output) {
+        return GetMetaQueryStatusResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(SerdeUtils.deserializeXmlBody(output, MetaQueryStatus.class))
+                .build();
+    }
+
+    // ==================== CloseMetaQuery ====================
+
+    public static OperationInput fromCloseMetaQuery(CloseMetaQueryRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "closeMetaQuery");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("CloseMetaQuery")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static CloseMetaQueryResult toCloseMetaQuery(OperationOutput output) {
+        return CloseMetaQueryResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(null)
+                .build();
+    }
+
+    // ==================== DoMetaQuery ====================
+
+    public static OperationInput fromDoMetaQuery(DoMetaQueryRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "doMetaQuery");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("DoMetaQuery")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .body(SerdeUtils.serializeXmlBodyAsBytes(request.metaQueryBody()))
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static DoMetaQueryResult toDoMetaQuery(OperationOutput output) {
+        return DoMetaQueryResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(SerdeUtils.deserializeXmlBody(output, DoMetaQueryResponseBody.class))
+                .build();
+    }
+
+    // ==================== DeleteFileMeta ====================
+
+    public static OperationInput fromDeleteFileMeta(DeleteFileMetaRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "deleteFileMeta");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("DeleteFileMeta")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static DeleteFileMetaResult toDeleteFileMeta(OperationOutput output) {
+        return DeleteFileMetaResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(null)
+                .build();
+    }
+
+    // ==================== CreateSmartCluster ====================
+
+    public static OperationInput fromCreateSmartCluster(CreateSmartClusterRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "createSmartCluster");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("CreateSmartCluster")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static CreateSmartClusterResult toCreateSmartCluster(OperationOutput output) {
+        return CreateSmartClusterResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(SerdeUtils.deserializeXmlBody(output, CreateSmartClusterResponseBody.class))
+                .build();
+    }
+
+    // ==================== GetSmartCluster ====================
+
+    public static OperationInput fromGetSmartCluster(GetSmartClusterRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "getSmartCluster");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("GetSmartCluster")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static GetSmartClusterResult toGetSmartCluster(OperationOutput output) {
+        return GetSmartClusterResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(SerdeUtils.deserializeXmlBody(output, GetSmartClusterResponseBody.class))
+                .build();
+    }
+
+    // ==================== UpdateSmartCluster ====================
+
+    public static OperationInput fromUpdateSmartCluster(UpdateSmartClusterRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "updateSmartCluster");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("UpdateSmartCluster")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static UpdateSmartClusterResult toUpdateSmartCluster(OperationOutput output) {
+        return UpdateSmartClusterResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(SerdeUtils.deserializeXmlBody(output, UpdateSmartClusterResponseBody.class))
+                .build();
+    }
+
+    // ==================== DeleteSmartCluster ====================
+
+    public static OperationInput fromDeleteSmartCluster(DeleteSmartClusterRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "deleteSmartCluster");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("DeleteSmartCluster")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static DeleteSmartClusterResult toDeleteSmartCluster(OperationOutput output) {
+        return DeleteSmartClusterResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(null)
+                .build();
+    }
+
+    // ==================== ListSmartClusters ====================
+
+    public static OperationInput fromListSmartClusters(ListSmartClustersRequest request) {
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/xml");
+
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("metaQuery", "");
+        parameters.put("action", "listSmartClusters");
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("ListSmartClusters")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .build();
+
+        SerdeUtils.serializeInput(request, input, SerdeUtils.addContentMd5);
+
+        return input;
+    }
+
+    public static ListSmartClustersResult toListSmartClusters(OperationOutput output) {
+        return ListSmartClustersResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(SerdeUtils.deserializeXmlBody(output, ListSmartClustersResponseBody.class))
+                .build();
+    }
 }

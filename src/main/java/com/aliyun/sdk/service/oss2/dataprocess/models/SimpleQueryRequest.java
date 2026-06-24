@@ -105,6 +105,11 @@ public final class SimpleQueryRequest extends RequestModel {
             return this;
         }
 
+        public Builder query(String value) {
+            this.parameters.put("query", value);
+            return this;
+        }
+
         public Builder sort(String value) {
             this.parameters.put("sort", value);
             return this;

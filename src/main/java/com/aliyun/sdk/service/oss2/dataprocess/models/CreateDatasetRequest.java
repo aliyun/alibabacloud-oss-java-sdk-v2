@@ -33,6 +33,7 @@ public final class CreateDatasetRequest extends RequestModel {
         return parameters.get("description");
     }
 
+    @Deprecated
     public String templateId() {
         return parameters.get("templateId");
     }
@@ -78,6 +79,7 @@ public final class CreateDatasetRequest extends RequestModel {
             return this;
         }
 
+        @Deprecated
         public Builder templateId(String value) {
             this.parameters.put("templateId", value);
             return this;

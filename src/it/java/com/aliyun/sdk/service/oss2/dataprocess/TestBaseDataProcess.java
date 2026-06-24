@@ -5,8 +5,10 @@ import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.dataprocess.models.*;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public class TestBaseDataProcess extends TestBase {
@@ -61,10 +63,19 @@ public class TestBaseDataProcess extends TestBase {
         dataProcessClient = createDataProcessClient();
         dataProcessAsyncClient = createDataProcessAsyncClient();
         testDatasetName = genDatasetName();
+
+        // Prerequisite: all dataprocess Client* integration tests depend on MetaQuery being open.
+        // Default to semantic mode so other tests (Dataset/Query/SmartCluster/DataPipeline/DeleteFileMeta)
+        // can run uniformly. ClientMetaQueryTest will close & reopen with basic mode for its own cases.
+        openMetaQueryQuietly("semantic");
     }
 
     @AfterClass
     public static void oneTimeSetDown() {
+        // MetaQuery cannot be reopened shortly after closing, so comment it out for now
+        // closeMetaQueryQuietly();
+
+
         // Clean up created datasets
         if (dataProcessClient != null && testDatasetName != null) {
             try {
@@ -76,6 +87,51 @@ public class TestBaseDataProcess extends TestBase {
             }
         }
         TestBase.oneTimeSetDown();
+    }
+
+    /**
+     * Opens MetaQuery on the test bucket with the given mode in a best-effort manner.
+     * Swallows exceptions (e.g. already opened with the same/different mode) so that
+     * test setup remains resilient.
+     */
+    protected static void openMetaQueryQuietly(String mode) {
+        if (dataProcessClient == null || testBucketName == null || testBucketName.isEmpty()) {
+            return;
+        }
+        try {
+            dataProcessClient.openMetaQuery(
+                    OpenMetaQueryRequest.newBuilder()
+                            .bucket(testBucketName)
+                            .mode(mode)
+                            .metaQueryBody(MetaQueryOpenBody.newBuilder()
+//                                    .routeRule(RouteRule.newBuilder()
+//                                            .type("OSSTag")
+//                                            .autoCreateDataset("true")
+//                                            .ossTagKey("test-routing-dataset:dataset-name")
+//                                            .build())
+//                                    .indexOptions(IndexOptions.newBuilder()
+//                                            .ignoreObjectDelete("true")
+//                                            .build())
+                                    .build())
+                            .build());
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * Closes MetaQuery on the test bucket in a best-effort manner.
+     */
+    protected static void closeMetaQueryQuietly() {
+        if (dataProcessClient == null || testBucketName == null || testBucketName.isEmpty()) {
+            return;
+        }
+        try {
+            dataProcessClient.closeMetaQuery(
+                    CloseMetaQueryRequest.newBuilder()
+                            .bucket(testBucketName)
+                            .build());
+        } catch (Exception ignored) {
+        }
     }
 
     protected static String genDatasetName() {

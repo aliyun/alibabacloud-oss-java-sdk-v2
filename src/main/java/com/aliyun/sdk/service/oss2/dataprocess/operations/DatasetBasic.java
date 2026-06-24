@@ -138,4 +138,184 @@ public final class DatasetBasic {
         return impl.executeAsync(input, options)
                 .thenApply(SerdeDatasetBasic::toSemanticQuery);
     }
+
+    // ==================== OpenMetaQuery ====================
+
+    public static OpenMetaQueryResult openMetaQuery(ClientImpl impl, OpenMetaQueryRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromOpenMetaQuery(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toOpenMetaQuery(output);
+    }
+
+    public static CompletableFuture<OpenMetaQueryResult> openMetaQueryAsync(ClientImpl impl, OpenMetaQueryRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromOpenMetaQuery(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toOpenMetaQuery);
+    }
+
+    // ==================== GetMetaQueryStatus ====================
+
+    public static GetMetaQueryStatusResult getMetaQueryStatus(ClientImpl impl, GetMetaQueryStatusRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromGetMetaQueryStatus(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toGetMetaQueryStatus(output);
+    }
+
+    public static CompletableFuture<GetMetaQueryStatusResult> getMetaQueryStatusAsync(ClientImpl impl, GetMetaQueryStatusRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromGetMetaQueryStatus(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toGetMetaQueryStatus);
+    }
+
+    // ==================== CloseMetaQuery ====================
+
+    public static CloseMetaQueryResult closeMetaQuery(ClientImpl impl, CloseMetaQueryRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromCloseMetaQuery(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toCloseMetaQuery(output);
+    }
+
+    public static CompletableFuture<CloseMetaQueryResult> closeMetaQueryAsync(ClientImpl impl, CloseMetaQueryRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromCloseMetaQuery(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toCloseMetaQuery);
+    }
+
+    // ==================== DoMetaQuery ====================
+
+    public static DoMetaQueryResult doMetaQuery(ClientImpl impl, DoMetaQueryRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromDoMetaQuery(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toDoMetaQuery(output);
+    }
+
+    public static CompletableFuture<DoMetaQueryResult> doMetaQueryAsync(ClientImpl impl, DoMetaQueryRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromDoMetaQuery(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toDoMetaQuery);
+    }
+
+    // ==================== DeleteFileMeta ====================
+
+    public static DeleteFileMetaResult deleteFileMeta(ClientImpl impl, DeleteFileMetaRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromDeleteFileMeta(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toDeleteFileMeta(output);
+    }
+
+    public static CompletableFuture<DeleteFileMetaResult> deleteFileMetaAsync(ClientImpl impl, DeleteFileMetaRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromDeleteFileMeta(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toDeleteFileMeta);
+    }
+
+    // ==================== CreateSmartCluster ====================
+
+    public static CreateSmartClusterResult createSmartCluster(ClientImpl impl, CreateSmartClusterRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromCreateSmartCluster(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toCreateSmartCluster(output);
+    }
+
+    public static CompletableFuture<CreateSmartClusterResult> createSmartClusterAsync(ClientImpl impl, CreateSmartClusterRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromCreateSmartCluster(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toCreateSmartCluster);
+    }
+
+    // ==================== GetSmartCluster ====================
+
+    public static GetSmartClusterResult getSmartCluster(ClientImpl impl, GetSmartClusterRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromGetSmartCluster(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toGetSmartCluster(output);
+    }
+
+    public static CompletableFuture<GetSmartClusterResult> getSmartClusterAsync(ClientImpl impl, GetSmartClusterRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromGetSmartCluster(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toGetSmartCluster);
+    }
+
+    // ==================== UpdateSmartCluster ====================
+
+    public static UpdateSmartClusterResult updateSmartCluster(ClientImpl impl, UpdateSmartClusterRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromUpdateSmartCluster(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toUpdateSmartCluster(output);
+    }
+
+    public static CompletableFuture<UpdateSmartClusterResult> updateSmartClusterAsync(ClientImpl impl, UpdateSmartClusterRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromUpdateSmartCluster(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toUpdateSmartCluster);
+    }
+
+    // ==================== DeleteSmartCluster ====================
+
+    public static DeleteSmartClusterResult deleteSmartCluster(ClientImpl impl, DeleteSmartClusterRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromDeleteSmartCluster(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toDeleteSmartCluster(output);
+    }
+
+    public static CompletableFuture<DeleteSmartClusterResult> deleteSmartClusterAsync(ClientImpl impl, DeleteSmartClusterRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromDeleteSmartCluster(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toDeleteSmartCluster);
+    }
+
+    // ==================== ListSmartClusters ====================
+
+    public static ListSmartClustersResult listSmartClusters(ClientImpl impl, ListSmartClustersRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromListSmartClusters(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeDatasetBasic.toListSmartClusters(output);
+    }
+
+    public static CompletableFuture<ListSmartClustersResult> listSmartClustersAsync(ClientImpl impl, ListSmartClustersRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeDatasetBasic.fromListSmartClusters(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeDatasetBasic::toListSmartClusters);
+    }
 }
