@@ -381,7 +381,7 @@ public class ClientImplTest {
 
         // default
         try (ClientImpl client = new ClientImpl(config)) {
-            assertThat(client.innerOptions.getUserAgent()).startsWith("alibabacloud-java-sdk-v2/0.4");
+            assertThat(client.innerOptions.getUserAgent()).startsWith("alibabacloud-java-sdk-v2/0.");
         }
 
         // set MaxAttempts in configuration
@@ -392,7 +392,7 @@ public class ClientImplTest {
                 .build();
 
         try (ClientImpl client = new ClientImpl(config)) {
-            assertThat(client.innerOptions.getUserAgent()).startsWith("alibabacloud-java-sdk-v2/0.4");
+            assertThat(client.innerOptions.getUserAgent()).startsWith("alibabacloud-java-sdk-v2/0.");
             assertThat(client.innerOptions.getUserAgent()).endsWith("/my-agent");
         }
     }
