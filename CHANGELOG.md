@@ -1,5 +1,13 @@
 # ChangeLog - Alibaba Cloud OSS SDK For Java V2
 
+## 版本号：0.5.0 日期：2026-06-26
+### 变更内容
+- Feature：Add select object api
+- Feature：Add bucket https config api
+- Feature：Add client-side encryption
+- Feature：Dataprocess client supports more apis
+- Break Change: Adjusted model fields in dataprocess client to match updated server response schema.
+
 ## 版本号：0.4.1 日期：2026-06-10
 ### 变更内容
 - Update：Replace synchronized with ReentrantLock in ExecuteStack
