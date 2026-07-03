@@ -477,4 +477,247 @@ public class PutBucketInventoryRequestTest {
         // Compare with expected XML (ignoring differences in formatting)
         assertThat(xmlContent).isEqualTo(expectedXml);
     }
+
+    @Test
+    public void testMonthlyScheduleWithDayOfMonth() throws JsonProcessingException {
+        String xml = "" +
+                "<InventoryConfiguration>\n" +
+                "  <Id>monthly-report</Id>\n" +
+                "  <IsEnabled>true</IsEnabled>\n" +
+                "  <Filter>\n" +
+                "    <Prefix>logs/</Prefix>\n" +
+                "  </Filter>\n" +
+                "  <Destination>\n" +
+                "    <OSSBucketDestination>\n" +
+                "      <Format>CSV</Format>\n" +
+                "      <AccountId>100000000000000</AccountId>\n" +
+                "      <RoleArn>acs:ram::100000000000000:role/AliyunOSSRole</RoleArn>\n" +
+                "      <Bucket>acs:oss:::destbucket</Bucket>\n" +
+                "      <Prefix>monthly-inventory/</Prefix>\n" +
+                "    </OSSBucketDestination>\n" +
+                "  </Destination>\n" +
+                "  <Schedule>\n" +
+                "    <Frequency>Monthly</Frequency>\n" +
+                "    <DayOfMonth>3</DayOfMonth>\n" +
+                "  </Schedule>\n" +
+                "  <IncludedObjectVersions>All</IncludedObjectVersions>\n" +
+                "  <OptionalFields>\n" +
+                "    <Field>Size</Field>\n" +
+                "    <Field>LastModifiedDate</Field>\n" +
+                "    <Field>ETag</Field>\n" +
+                "    <Field>StorageClass</Field>\n" +
+                "    <Field>IsMultipartUploaded</Field>\n" +
+                "    <Field>EncryptionStatus</Field>\n" +
+                "  </OptionalFields>\n" +
+                "</InventoryConfiguration>";
+        ObjectMapper xmlMapper = new XmlMapper();
+        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        InventoryConfiguration xmlConfiguration = xmlMapper.readValue(xml, InventoryConfiguration.class);
+        String expectedXml = xmlMapper.writeValueAsString(xmlConfiguration);
+
+        InventoryOSSBucketDestination destination = InventoryOSSBucketDestination.newBuilder()
+                .format("CSV")
+                .accountId("100000000000000")
+                .roleArn("acs:ram::100000000000000:role/AliyunOSSRole")
+                .bucket("acs:oss:::destbucket")
+                .prefix("monthly-inventory/")
+                .build();
+
+        InventoryDestination inventoryDestination = InventoryDestination.newBuilder()
+                .ossBucketDestination(destination)
+                .build();
+
+        InventorySchedule schedule = InventorySchedule.newBuilder()
+                .frequency(InventoryFrequencyType.MONTHLY.toString())
+                .dayOfMonth(3)
+                .build();
+
+        InventoryFilter filter = InventoryFilter.newBuilder()
+                .prefix("logs/")
+                .build();
+
+        List<String> fields = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                InventoryOptionalFieldType.E_TAG.toString(),
+                InventoryOptionalFieldType.STORAGE_CLASS.toString(),
+                InventoryOptionalFieldType.IS_MULTIPART_UPLOADED.toString(),
+                InventoryOptionalFieldType.ENCRYPTION_STATUS.toString()
+        );
+        OptionalFields optionalFields = OptionalFields.newBuilder()
+                .fields(fields)
+                .build();
+
+        InventoryConfiguration inventoryConfiguration = InventoryConfiguration.newBuilder()
+                .id("monthly-report")
+                .isEnabled(true)
+                .destination(inventoryDestination)
+                .schedule(schedule)
+                .filter(filter)
+                .includedObjectVersions("All")
+                .optionalFields(optionalFields)
+                .build();
+
+        PutBucketInventoryRequest request = PutBucketInventoryRequest.newBuilder()
+                .bucket("xml-bucket")
+                .inventoryId("monthly-report")
+                .inventoryConfiguration(inventoryConfiguration)
+                .build();
+
+        OperationInput input = SerdeBucketInventory.fromPutBucketInventory(request);
+
+        assertThat(input.bucket().get()).isEqualTo("xml-bucket");
+        assertThat(input.parameters().get("inventoryId")).isEqualTo("monthly-report");
+
+        // Verify the XML body content
+        BinaryData body = input.body().get();
+        String xmlContent = new String(body.toBytes(), StandardCharsets.UTF_8);
+        assertThat(xmlContent).contains("<Frequency>Monthly</Frequency>");
+        assertThat(xmlContent).contains("<DayOfMonth>3</DayOfMonth>");
+
+        // Compare with expected XML
+        assertThat(xmlContent).isEqualTo(expectedXml);
+    }
+
+    @Test
+    public void testOnceScheduleWithAutoDelete() throws JsonProcessingException {
+        String xml = "" +
+                "<InventoryConfiguration>\n" +
+                "  <Id>once-report</Id>\n" +
+                "  <IsEnabled>true</IsEnabled>\n" +
+                "  <Filter>\n" +
+                "    <Prefix>log/</Prefix>\n" +
+                "  </Filter>\n" +
+                "  <Destination>\n" +
+                "    <OSSBucketDestination>\n" +
+                "      <Format>CSV</Format>\n" +
+                "      <AccountId>100000000000000</AccountId>\n" +
+                "      <RoleArn>acs:ram::100000000000000:role/AliyunOSSRole</RoleArn>\n" +
+                "      <Bucket>acs:oss:::destbucket</Bucket>\n" +
+                "      <Prefix>once-inventory/</Prefix>\n" +
+                "    </OSSBucketDestination>\n" +
+                "  </Destination>\n" +
+                "  <Schedule>\n" +
+                "    <Frequency>Once</Frequency>\n" +
+                "    <AutoDelete>true</AutoDelete>\n" +
+                "  </Schedule>\n" +
+                "  <IncludedObjectVersions>All</IncludedObjectVersions>\n" +
+                "  <OptionalFields>\n" +
+                "    <Field>Size</Field>\n" +
+                "    <Field>LastModifiedDate</Field>\n" +
+                "    <Field>StorageClass</Field>\n" +
+                "  </OptionalFields>\n" +
+                "</InventoryConfiguration>";
+        ObjectMapper xmlMapper = new XmlMapper();
+        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        InventoryConfiguration xmlConfiguration = xmlMapper.readValue(xml, InventoryConfiguration.class);
+        String expectedXml = xmlMapper.writeValueAsString(xmlConfiguration);
+
+        InventoryOSSBucketDestination destination = InventoryOSSBucketDestination.newBuilder()
+                .format("CSV")
+                .accountId("100000000000000")
+                .roleArn("acs:ram::100000000000000:role/AliyunOSSRole")
+                .bucket("acs:oss:::destbucket")
+                .prefix("once-inventory/")
+                .build();
+
+        InventoryDestination inventoryDestination = InventoryDestination.newBuilder()
+                .ossBucketDestination(destination)
+                .build();
+
+        InventorySchedule schedule = InventorySchedule.newBuilder()
+                .frequency(InventoryFrequencyType.ONCE.toString())
+                .autoDelete(true)
+                .build();
+
+        InventoryFilter filter = InventoryFilter.newBuilder()
+                .prefix("log/")
+                .build();
+
+        List<String> fields = Arrays.asList(
+                InventoryOptionalFieldType.SIZE.toString(),
+                InventoryOptionalFieldType.LAST_MODIFIED_DATE.toString(),
+                InventoryOptionalFieldType.STORAGE_CLASS.toString()
+        );
+        OptionalFields optionalFields = OptionalFields.newBuilder()
+                .fields(fields)
+                .build();
+
+        InventoryConfiguration inventoryConfiguration = InventoryConfiguration.newBuilder()
+                .id("once-report")
+                .isEnabled(true)
+                .destination(inventoryDestination)
+                .schedule(schedule)
+                .filter(filter)
+                .includedObjectVersions("All")
+                .optionalFields(optionalFields)
+                .build();
+
+        PutBucketInventoryRequest request = PutBucketInventoryRequest.newBuilder()
+                .bucket("xml-bucket")
+                .inventoryId("once-report")
+                .inventoryConfiguration(inventoryConfiguration)
+                .build();
+
+        OperationInput input = SerdeBucketInventory.fromPutBucketInventory(request);
+
+        assertThat(input.bucket().get()).isEqualTo("xml-bucket");
+        assertThat(input.parameters().get("inventoryId")).isEqualTo("once-report");
+
+        // Verify the XML body content
+        BinaryData body = input.body().get();
+        String xmlContent = new String(body.toBytes(), StandardCharsets.UTF_8);
+        assertThat(xmlContent).contains("<Frequency>Once</Frequency>");
+        assertThat(xmlContent).contains("<AutoDelete>true</AutoDelete>");
+
+        // Compare with expected XML
+        assertThat(xmlContent).isEqualTo(expectedXml);
+    }
+
+    @Test
+    public void testNewOptionalFieldTypes() {
+        // Verify the new optional field types are available
+        assertThat(InventoryOptionalFieldType.KEY.toString()).isEqualTo("Key");
+        assertThat(InventoryOptionalFieldType.VERSION_ID.toString()).isEqualTo("VersionId");
+        assertThat(InventoryOptionalFieldType.IS_DELETE_MARKER.toString()).isEqualTo("IsDeleteMarker");
+
+        // Verify fromString parsing
+        assertThat(InventoryOptionalFieldType.fromString("Key")).isEqualTo(InventoryOptionalFieldType.KEY);
+        assertThat(InventoryOptionalFieldType.fromString("VersionId")).isEqualTo(InventoryOptionalFieldType.VERSION_ID);
+        assertThat(InventoryOptionalFieldType.fromString("IsDeleteMarker")).isEqualTo(InventoryOptionalFieldType.IS_DELETE_MARKER);
+    }
+
+    @Test
+    public void testNewFrequencyTypes() {
+        // Verify the new frequency types are available
+        assertThat(InventoryFrequencyType.MONTHLY.toString()).isEqualTo("Monthly");
+        assertThat(InventoryFrequencyType.ONCE.toString()).isEqualTo("Once");
+
+        // Verify fromString parsing
+        assertThat(InventoryFrequencyType.fromString("Monthly")).isEqualTo(InventoryFrequencyType.MONTHLY);
+        assertThat(InventoryFrequencyType.fromString("Once")).isEqualTo(InventoryFrequencyType.ONCE);
+    }
+
+    @Test
+    public void testScheduleToBuilderPreservesNewFields() {
+        InventorySchedule schedule = InventorySchedule.newBuilder()
+                .frequency("Monthly")
+                .dayOfMonth(15)
+                .build();
+
+        InventorySchedule copy = schedule.toBuilder().build();
+        assertThat(copy.frequency()).isEqualTo("Monthly");
+        assertThat(copy.dayOfMonth()).isEqualTo(15);
+        assertThat(copy.autoDelete()).isNull();
+
+        InventorySchedule onceSchedule = InventorySchedule.newBuilder()
+                .frequency("Once")
+                .autoDelete(false)
+                .build();
+
+        InventorySchedule onceCopy = onceSchedule.toBuilder().build();
+        assertThat(onceCopy.frequency()).isEqualTo("Once");
+        assertThat(onceCopy.autoDelete()).isEqualTo(false);
+        assertThat(onceCopy.dayOfMonth()).isNull();
+    }
 }
