@@ -64,6 +64,21 @@ public enum InventoryOptionalFieldType {
     @JsonProperty("Crc64")
     CRC64("Crc64"),
     /**
+     * Object key (URL encoded)
+     */
+    @JsonProperty("Key")
+    KEY("Key"),
+    /**
+     * Object version ID
+     */
+    @JsonProperty("VersionId")
+    VERSION_ID("VersionId"),
+    /**
+     * Whether the object version is a delete marker
+     */
+    @JsonProperty("IsDeleteMarker")
+    IS_DELETE_MARKER("IsDeleteMarker"),
+    /**
      * Unknown type
      */
     @JsonProperty("UNKNOWN")
