@@ -7,6 +7,8 @@ public enum InventoryFrequencyType {
 
     DAILY("Daily"),
     WEEKLY("Weekly"),
+    MONTHLY("Monthly"),
+    ONCE("Once"),
     UNKNOWN("UNKNOWN");
 
     /**

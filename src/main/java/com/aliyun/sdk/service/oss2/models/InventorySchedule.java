@@ -11,18 +11,40 @@ import static java.util.Objects.requireNonNull;
 public final class InventorySchedule {  
     @JacksonXmlProperty(localName = "Frequency")
     private String frequency;
+ 
+    @JacksonXmlProperty(localName = "DayOfMonth")
+    private Integer dayOfMonth;
+ 
+    @JacksonXmlProperty(localName = "AutoDelete")
+    private Boolean autoDelete;
 
     public InventorySchedule() {}
 
     private InventorySchedule(Builder builder) { 
         this.frequency = builder.frequency; 
+        this.dayOfMonth = builder.dayOfMonth; 
+        this.autoDelete = builder.autoDelete; 
     }
 
     /**
-    * The frequency at which the inventory list is exported. Valid values:- Daily: The inventory list is exported on a daily basis. - Weekly: The inventory list is exported on a weekly basis. 
+    * The frequency at which the inventory list is exported. Valid values: Daily, Weekly, Monthly, Once.
     */
     public String frequency() {
         return this.frequency;
+    }
+
+    /**
+    * The day of the month on which the inventory list is exported each month. Valid only when Frequency is set to Monthly. Valid values: 1 to 31.
+    */
+    public Integer dayOfMonth() {
+        return this.dayOfMonth;
+    }
+
+    /**
+    * Specifies whether to automatically delete the Once inventory configuration after the inventory list is exported. Valid only when Frequency is set to Once.
+    */
+    public Boolean autoDelete() {
+        return this.autoDelete;
     }
 
     public static Builder newBuilder() {
@@ -35,14 +57,33 @@ public final class InventorySchedule {
 
     public static class Builder { 
         private String frequency;
+        private Integer dayOfMonth;
+        private Boolean autoDelete;
         
         /**
-        * The frequency at which the inventory list is exported. Valid values:- Daily: The inventory list is exported on a daily basis. - Weekly: The inventory list is exported on a weekly basis. 
+        * The frequency at which the inventory list is exported. Valid values: Daily, Weekly, Monthly, Once.
         */
         public Builder frequency(String value) {
             requireNonNull(value);
             this.frequency = value;
-            return this;
+            return this;        
+        }
+        
+        /**
+        * The day of the month on which the inventory list is exported each month. Valid only when Frequency is set to Monthly. Valid values: 1 to 31.
+        */
+        public Builder dayOfMonth(Integer value) {
+            requireNonNull(value);
+            this.dayOfMonth = value;
+            return this;        
+        }
+        
+        /**
+        * Specifies whether to automatically delete the Once inventory configuration after the inventory list is exported. Valid only when Frequency is set to Once.
+        */
+        public Builder autoDelete(Boolean value) {
+            this.autoDelete = value;
+            return this;        
         }
         
 
@@ -52,6 +93,8 @@ public final class InventorySchedule {
 
         private Builder(InventorySchedule from) { 
             this.frequency = from.frequency; 
+            this.dayOfMonth = from.dayOfMonth; 
+            this.autoDelete = from.autoDelete; 
         }
 
         public InventorySchedule build() {
