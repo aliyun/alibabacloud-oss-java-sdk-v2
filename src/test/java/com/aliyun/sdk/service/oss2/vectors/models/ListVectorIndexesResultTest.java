@@ -91,7 +91,7 @@ public class ListVectorIndexesResultTest {
                 "      \"metadata\": {\n" +
                 "        \"nonFilterableMetadataKeys\": [\"key1\", \"key2\"]\n" +
                 "      },\n" +
-                "      \"vectorBucketName\": \"test-bucket\",\n" +
+                "      \"bucketArn\": \"acs:oss:::test-bucket\",\n" +
                 "      \"status\": \"Active\"\n" +
                 "    }\n" +
                 "  ],\n" +
@@ -122,7 +122,7 @@ public class ListVectorIndexesResultTest {
         assertThat(index.dataType()).isEqualTo("float32");
         assertThat(index.dimension()).isEqualTo(128);
         assertThat(index.distanceMetric()).isEqualTo("cosine");
-        assertThat(index.vectorBucketName()).isEqualTo("test-bucket");
+        assertThat(index.bucketArn()).isEqualTo("acs:oss:::test-bucket");
         assertThat(index.status()).isEqualTo("Active");
 
         Map<String, Object> metadata = index.metadata();
@@ -145,7 +145,7 @@ public class ListVectorIndexesResultTest {
                 .dataType("vector")
                 .dimension(128)
                 .distanceMetric("EUCLIDEAN")
-                .vectorBucketName("test-bucket")
+                .bucketArn("acs:oss:::test-bucket")
                 .status("Active")
                 .build();
 

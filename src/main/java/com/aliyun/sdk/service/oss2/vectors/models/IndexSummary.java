@@ -20,8 +20,11 @@ public class IndexSummary {
     private String distanceMetric;
     @JsonProperty("metadata")
     private Map<String, Object> metadata;
+    @Deprecated
     @JsonProperty("vectorBucketName")
     private String vectorBucketName;
+    @JsonProperty("bucketArn")
+    private String bucketArn;
     @JsonProperty("status")
     private String status;
 
@@ -36,6 +39,7 @@ public class IndexSummary {
         this.distanceMetric = builder.distanceMetric;
         this.metadata = builder.metadata;
         this.vectorBucketName = builder.vectorBucketName;
+        this.bucketArn = builder.bucketArn;
         this.status = builder.status;
     }
 
@@ -67,8 +71,16 @@ public class IndexSummary {
         return metadata;
     }
 
+    /**
+     * @deprecated Use {@link #bucketArn()} instead.
+     */
+    @Deprecated
     public String vectorBucketName() {
         return vectorBucketName;
+    }
+
+    public String bucketArn() {
+        return bucketArn;
     }
 
     public String status() {
@@ -87,6 +99,7 @@ public class IndexSummary {
         private String distanceMetric;
         private Map<String, Object> metadata;
         private String vectorBucketName;
+        private String bucketArn;
         private String status;
 
         private Builder() {
@@ -100,6 +113,7 @@ public class IndexSummary {
             this.distanceMetric = from.distanceMetric;
             this.metadata = from.metadata;
             this.vectorBucketName = from.vectorBucketName;
+            this.bucketArn = from.bucketArn;
             this.status = from.status;
         }
 
@@ -133,8 +147,17 @@ public class IndexSummary {
             return this;
         }
 
+        /**
+         * @deprecated Use {@link #bucketArn(String)} instead.
+         */
+        @Deprecated
         public Builder vectorBucketName(String vectorBucketName) {
             this.vectorBucketName = vectorBucketName;
+            return this;
+        }
+
+        public Builder bucketArn(String bucketArn) {
+            this.bucketArn = bucketArn;
             return this;
         }
 
