@@ -83,6 +83,7 @@ public class ClientImpl implements AutoCloseable {
         InnerOptions innerOpts = new InnerOptions();
         innerOpts.setUserAgent(resolveUserAgent(config));
         innerOpts.setScheduledExecutorService(resolveScheduledExecutorService(config), !config.scheduledExecutorService().isPresent());
+        innerOpts.setInitError(resolveInitError(config));
 
         this.innerOptions = innerOpts;
 
@@ -121,6 +122,11 @@ public class ClientImpl implements AutoCloseable {
      * @return Returns a fully constructed {@link OperationOutput} object
      */
     public OperationOutput execute(OperationInput input, OperationOptions opts) {
+        // surface deferred initialization error, if any
+        if (this.innerOptions.getInitError() != null) {
+            throw this.innerOptions.getInitError();
+        }
+
         // verify input
         verifyOperation(input);
 
@@ -150,6 +156,12 @@ public class ClientImpl implements AutoCloseable {
      */
     public CompletableFuture<OperationOutput> executeAsync(OperationInput input, OperationOptions opts) {
         CompletableFuture<OperationOutput> future = new CompletableFuture<>();
+
+        // surface deferred initialization error, if any
+        if (this.innerOptions.getInitError() != null) {
+            future.completeExceptionally(this.innerOptions.getInitError());
+            return future;
+        }
 
         try {
             // verify input
@@ -187,6 +199,11 @@ public class ClientImpl implements AutoCloseable {
      * @return the presigned url.
      */
     public PresignInnerResult presignInner(OperationInput input, OperationOptions opts) {
+        // surface deferred initialization error, if any
+        if (this.innerOptions.getInitError() != null) {
+            throw this.innerOptions.getInitError();
+        }
+
         // verify input
         verifyOperation(input);
 
@@ -349,6 +366,14 @@ public class ClientImpl implements AutoCloseable {
         }
         context.signingContext = signCtx;
 
+        // resolve bucket name for signing only; keep input.bucket() as the logical name
+        if (options.bucketNameResolver() != null && input.bucket().isPresent()) {
+            String resolved = options.bucketNameResolver().buildBucketName(input);
+            if (resolved != null) {
+                signCtx.setBucket(resolved);
+            }
+        }
+
         // request
         // request::host & path & query
         StringBuilder url = new StringBuilder();
@@ -385,14 +410,31 @@ public class ClientImpl implements AutoCloseable {
      * @param config Base client configuration
      * @return The resolved ClientOptions instance {@link ClientOptions}
      */
+    /**
+     * Validates configuration that should not fail client construction but instead
+     * be surfaced when an operation is invoked (mirrors the Go SDK InitError behavior).
+     *
+     * @param config Base client configuration
+     * @return The deferred error, or null if the configuration is valid
+     */
+    private RuntimeException resolveInitError(ClientConfiguration config) {
+        String accountId = config.accountId().orElse("");
+        if (!accountId.isEmpty() && !Ensure.isValidAccountId(accountId)) {
+            return new IllegalArgumentException("invalid account id: " + accountId + ", must be pure digits");
+        }
+        return null;
+    }
+
     private ClientOptions resolveConfig(ClientConfiguration config) {
         if (!config.credentialsProvider().isPresent()) {
             throw new IllegalArgumentException("credentialsProvider is null");
         }
+        String accountId = config.accountId().orElse("");
         URI endpoint = resolveEndpoint(config);
         return new ClientOptions.Builder()
                 .product(Defaults.Product)
                 .region(config.region().orElse(""))
+                .accountId(accountId)
                 .endpoint(endpoint)
                 .retryer(resolveRetryer(config))
                 .signer(resolveSigner(config))
@@ -570,8 +612,17 @@ public class ClientImpl implements AutoCloseable {
         private String userAgent;
         private ScheduledExecutorService scheduledExecutorService;
         private boolean ownScheduledExecutor;
+        private RuntimeException initError;
 
         public InnerOptions() {
+        }
+
+        public RuntimeException getInitError() {
+            return initError;
+        }
+
+        public void setInitError(RuntimeException value) {
+            this.initError = value;
         }
 
         public String getUserAgent() {

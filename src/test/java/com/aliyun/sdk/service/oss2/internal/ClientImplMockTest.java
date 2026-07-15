@@ -4222,6 +4222,69 @@ public class ClientImplMockTest {
         }
     }
 
+    @Test
+    public void invokeOperationInvalidAccountId() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .accountId("abc")
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("ListBuckets")
+                    .method("GET")
+                    .build();
+
+            try {
+                client.execute(input, OperationOptions.defaults());
+                Assert.fail("should not here");
+            } catch (IllegalArgumentException e) {
+                assertThat(e.getMessage()).contains("invalid account id");
+                // The error must short-circuit before any request reaches the transport
+                assertThat(mockHandler.requests).isNull();
+            }
+        }
+    }
+
+    @Test
+    public void invokeOperationAsyncInvalidAccountId() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .accountId("abc")
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("ListBuckets")
+                    .method("GET")
+                    .build();
+
+            try {
+                CompletableFuture<OperationOutput> futureOutput = client.executeAsync(input, OperationOptions.defaults());
+                futureOutput.get();
+                Assert.fail("should not here");
+            } catch (Exception e) {
+                assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+                assertThat(e.getCause().getMessage()).contains("invalid account id");
+                assertThat(mockHandler.requests).isNull();
+            }
+        }
+    }
+
     static class MockHttpClient implements HttpClient {
 
         public RequestMessage lastRequest;

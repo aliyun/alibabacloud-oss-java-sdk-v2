@@ -6,6 +6,7 @@ import com.aliyun.sdk.service.oss2.signer.Signer;
 import com.aliyun.sdk.service.oss2.transport.HttpClient;
 import com.aliyun.sdk.service.oss2.types.AddressStyleType;
 import com.aliyun.sdk.service.oss2.types.AuthMethodType;
+import com.aliyun.sdk.service.oss2.types.BucketNameResolver;
 import com.aliyun.sdk.service.oss2.types.EndpointProvider;
 
 import java.net.URI;
@@ -24,6 +25,8 @@ public class ClientOptions {
     private final List<String> additionalHeaders;
     private final int featureFlags;
     private final EndpointProvider endpointProvider;
+    private final BucketNameResolver bucketNameResolver;
+    private final String accountId;
 
     private ClientOptions(Builder builder) {
         this.product = builder.product;
@@ -38,6 +41,8 @@ public class ClientOptions {
         this.additionalHeaders = builder.additionalHeaders;
         this.featureFlags = builder.featureFlags;
         this.endpointProvider = builder.endpointProvider;
+        this.bucketNameResolver = builder.bucketNameResolver;
+        this.accountId = builder.accountId;
     }
 
     public String product() {
@@ -88,6 +93,13 @@ public class ClientOptions {
         return endpointProvider;
     }
 
+    public BucketNameResolver bucketNameResolver() {
+        return bucketNameResolver;
+    }
+
+    public String accountId() {
+        return accountId;
+    }
 
     public Builder toBuilder() {
         return new Builder()
@@ -102,8 +114,9 @@ public class ClientOptions {
                 .httpClient(this.httpClient)
                 .additionalHeaders(this.additionalHeaders)
                 .featureFlags(this.featureFlags)
-                .endpointProvider(this.endpointProvider);
-
+                .endpointProvider(this.endpointProvider)
+                .bucketNameResolver(this.bucketNameResolver)
+                .accountId(this.accountId);
     }
 
     public static class Builder {
@@ -119,6 +132,8 @@ public class ClientOptions {
         private List<String> additionalHeaders;
         private int featureFlags;
         private EndpointProvider endpointProvider;
+        private BucketNameResolver bucketNameResolver;
+        private String accountId;
 
         public Builder product(String product) {
             this.product = product;
@@ -177,6 +192,16 @@ public class ClientOptions {
 
         public Builder endpointProvider(EndpointProvider value) {
             this.endpointProvider = value;
+            return this;
+        }
+
+        public Builder bucketNameResolver(BucketNameResolver value) {
+            this.bucketNameResolver = value;
+            return this;
+        }
+
+        public Builder accountId(String value) {
+            this.accountId = value;
             return this;
         }
 
