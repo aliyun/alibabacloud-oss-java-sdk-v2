@@ -216,7 +216,6 @@ public class SignerV1Test {
         context.setExpiration(Instant.ofEpochSecond(1699808204));
         context.setAuthMethodQuery(true);
 
-
         Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("param1", "value1");
         parameters.put("+param1", "value3");
@@ -249,5 +248,33 @@ public class SignerV1Test {
         Assert.assertEquals("VmWfLWfxbR3MSFvUx5%2BnyQhCa3g%3D", queries.get("Signature"));
 
     }
+
+    @Test
+    public void testDateHeaderFormat_SingleDigitDayOfMonth() {
+        StaticCredentialsProvider provider = new StaticCredentialsProvider("ak", "sk");
+        Credentials cred = provider.getCredentials();
+
+        RequestMessage request = RequestMessage.newBuilder()
+                .method("GET")
+                .uri("http://examplebucket.oss-cn-hangzhou.aliyuncs.com/test.txt")
+                .build();
+
+        SigningContext context = new SigningContext();
+        context.setBucket("examplebucket");
+        context.setKey("test.txt");
+        context.setRequest(request);
+        context.setCredentials(cred);
+
+        // July 1, 2026 08:21:54 UTC - single digit day
+        context.setSignTime(Instant.parse("2026-07-01T08:21:54Z"));
+
+        SignerV1 signer = new SignerV1();
+        signer.sign(context);
+
+        String dateHeader = request.headers().get("Date");
+        // Must have zero-padded day: "Wed, 01 Jul 2026 08:21:54 GMT"
+        Assert.assertEquals("Wed, 01 Jul 2026 08:21:54 GMT", dateHeader);
+    }
+
 }
 
