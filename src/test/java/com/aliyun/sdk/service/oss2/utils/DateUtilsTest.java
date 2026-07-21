@@ -79,6 +79,26 @@ public class DateUtilsTest {
         String expectedString = "Wed, 07 May 2014 17:43:26 GMT";
         assertThat(string).isEqualTo(expectedString);
     }
+    @Test
+    public void formatRfc822Date_AllSingleDigitDays_ZeroPadded() {
+        // Verify all single-digit days (1-9) produce zero-padded day-of-month
+        String[][] testCases = {
+                {"2026-07-01T12:00:00Z", "Wed, 01 Jul 2026 12:00:00 GMT"},
+                {"2026-07-02T12:00:00Z", "Thu, 02 Jul 2026 12:00:00 GMT"},
+                {"2026-07-03T12:00:00Z", "Fri, 03 Jul 2026 12:00:00 GMT"},
+                {"2026-07-04T12:00:00Z", "Sat, 04 Jul 2026 12:00:00 GMT"},
+                {"2026-07-05T12:00:00Z", "Sun, 05 Jul 2026 12:00:00 GMT"},
+                {"2026-07-06T12:00:00Z", "Mon, 06 Jul 2026 12:00:00 GMT"},
+                {"2026-07-07T12:00:00Z", "Tue, 07 Jul 2026 12:00:00 GMT"},
+                {"2026-07-08T12:00:00Z", "Wed, 08 Jul 2026 12:00:00 GMT"},
+                {"2026-07-09T12:00:00Z", "Thu, 09 Jul 2026 12:00:00 GMT"},
+        };
+
+        for (String[] tc : testCases) {
+            String result = DateUtils.formatRfc822Date(Instant.parse(tc[0]));
+            assertThat(result).isEqualTo(tc[1]);
+        }
+    }
 
     @Test
     public void parseRfc822Date_DateWithTwoDigitDayOfMonth_ReturnsInstantObject() throws ParseException {

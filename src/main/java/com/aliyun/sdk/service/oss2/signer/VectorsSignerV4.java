@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2.signer;
 
 import com.aliyun.sdk.service.oss2.credentials.Credentials;
 import com.aliyun.sdk.service.oss2.transport.RequestMessage;
+import com.aliyun.sdk.service.oss2.utils.DateUtils;
 import com.aliyun.sdk.service.oss2.utils.StringUtils;
 
 import javax.crypto.Mac;
@@ -452,7 +453,7 @@ public class VectorsSignerV4 implements Signer {
      * @return RFC 2822 formatted date-time string
      */
     private String formatRfc2822(Instant instant) {
-        return instant.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.RFC_1123_DATE_TIME);
+        return DateUtils.formatRfc822Date(instant);
     }
 
     /**

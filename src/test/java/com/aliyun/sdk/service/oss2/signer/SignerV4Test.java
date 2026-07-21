@@ -252,7 +252,6 @@ public class SignerV4Test {
         parameters.put("|param2", "");
         parameters.put("param2", "");
 
-
         Optional<String> query = encodeQueryParameters(parameters);
         StringBuilder url = new StringBuilder();
         url.append(request.uri().getScheme()).append("://").append(request.uri().getAuthority()).append(request.uri().getPath());
@@ -421,7 +420,6 @@ public class SignerV4Test {
         context.setAuthMethodQuery(true);
         context.setAdditionalHeaders(Arrays.asList("x-oss-no-exist", "ZAbc", "x-oss-head1", "abc"));
 
-
         query = encodeQueryParameters(parameters);
         StringBuilder url2 = new StringBuilder();
         query.ifPresent(s -> url2.append("?").append(s));
@@ -488,6 +486,39 @@ public class SignerV4Test {
                 "x-oss-meta-zzz:value1\n";
 
         assertEquals(expected, result);
+    }
+
+    @Test
+    public void testDateHeaderFormat_SingleDigitDayOfMonth() throws UnsupportedEncodingException {
+        StaticCredentialsProvider provider = new StaticCredentialsProvider("ak", "sk");
+        Credentials cred = provider.getCredentials();
+        RequestMessage request = RequestMessage.newBuilder()
+                .method("GET")
+                .uri("http://bucket.oss-cn-hangzhou.aliyuncs.com")
+                .build();
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("content-type", "text/plain");
+        headers.put("x-oss-content-sha256", "UNSIGNED-PAYLOAD");
+        request = updateRequestHeaders(request, headers);
+
+        SigningContext context = new SigningContext();
+        context.setBucket("bucket");
+        context.setKey("test.txt");
+        context.setRequest(request);
+        context.setCredentials(cred);
+        context.setProduct("oss");
+        context.setRegion("cn-hangzhou");
+
+        // July 1, 2026 08:21:54 UTC - single digit day
+        context.setSignTime(Instant.parse("2026-07-01T08:21:54Z"));
+
+        SignerV4 signer = new SignerV4();
+        signer.sign(context);
+
+        String dateHeader = context.getRequest().headers().get("Date");
+        // Must have zero-padded day: "Wed, 01 Jul 2026 08:21:54 GMT"
+        assertEquals("Wed, 01 Jul 2026 08:21:54 GMT", dateHeader);
     }
 
     private RequestMessage updateRequestHeaders(RequestMessage request, Map<String, String> headers) throws UnsupportedEncodingException {

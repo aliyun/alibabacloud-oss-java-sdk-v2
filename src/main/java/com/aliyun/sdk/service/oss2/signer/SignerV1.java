@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2.signer;
 
 import com.aliyun.sdk.service.oss2.credentials.Credentials;
 import com.aliyun.sdk.service.oss2.transport.RequestMessage;
+import com.aliyun.sdk.service.oss2.utils.DateUtils;
 import com.aliyun.sdk.service.oss2.utils.StringUtils;
 
 import javax.crypto.Mac;
@@ -12,7 +13,6 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -307,8 +307,7 @@ public class SignerV1 implements Signer {
      * @return The formatted date-time string in RFC 2822 format
      */
     private String formatDateTimeRfc2822(ZonedDateTime zonedDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.RFC_1123_DATE_TIME;
-        return zonedDateTime.format(formatter);
+        return DateUtils.formatRfc822Date(zonedDateTime.toInstant());
     }
 
     /**
