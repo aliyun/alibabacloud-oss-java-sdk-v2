@@ -61,6 +61,14 @@ public final class ListBucketSpacesResult extends ResultModel {
     }
 
     /**
+     * The name of the bucket space after which the list operation began.
+     */
+    public String startAfter() {
+        ListBucketSpacesResultXml body = resultBody();
+        return body != null ? body.startAfter : null;
+    }
+
+    /**
      * Indicates whether the list is truncated.
      */
     public Boolean isTruncated() {
@@ -108,6 +116,9 @@ public final class ListBucketSpacesResult extends ResultModel {
 
         @JacksonXmlProperty(localName = "NextContinuationToken")
         public String nextContinuationToken;
+
+        @JacksonXmlProperty(localName = "StartAfter")
+        public String startAfter;
 
         @JacksonXmlProperty(localName = "IsTruncated")
         public Boolean isTruncated;

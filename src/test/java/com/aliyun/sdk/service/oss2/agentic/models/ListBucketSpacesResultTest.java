@@ -31,6 +31,7 @@ public class ListBucketSpacesResultTest {
                 "  <MaxKeys>100</MaxKeys>\n" +
                 "  <ContinuationToken>token-1</ContinuationToken>\n" +
                 "  <NextContinuationToken>token-2</NextContinuationToken>\n" +
+                "  <StartAfter>space-000</StartAfter>\n" +
                 "  <IsTruncated>true</IsTruncated>\n" +
                 "  <BucketSpaces>\n" +
                 "    <BucketSpace>\n" +
@@ -64,6 +65,7 @@ public class ListBucketSpacesResultTest {
         assertThat(result.maxKeys()).isEqualTo(100);
         assertThat(result.continuationToken()).isEqualTo("token-1");
         assertThat(result.nextContinuationToken()).isEqualTo("token-2");
+        assertThat(result.startAfter()).isEqualTo("space-000");
         assertThat(result.isTruncated()).isTrue();
 
         List<BucketSpaceSummary> spaces = result.bucketSpaces();

@@ -41,6 +41,13 @@ public final class ListBucketSpacesRequest extends RequestModel {
     }
 
     /**
+     * The name of the bucket space after which the list operation begins.
+     */
+    public String startAfter() {
+        return parameters.get("start-after");
+    }
+
+    /**
      * The maximum number of results to return.
      */
     public Long maxKeys() {
@@ -84,6 +91,14 @@ public final class ListBucketSpacesRequest extends RequestModel {
          */
         public Builder continuationToken(String value) {
             this.parameters.put("continuation-token", value);
+            return this;
+        }
+
+        /**
+         * The name of the bucket space after which the list operation begins.
+         */
+        public Builder startAfter(String value) {
+            this.parameters.put("start-after", value);
             return this;
         }
 

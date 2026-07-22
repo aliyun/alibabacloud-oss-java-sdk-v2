@@ -14,12 +14,14 @@ public class ListBucketSpacesRequestTest {
                 .bucket("test-bucket")
                 .prefix("space-")
                 .continuationToken("token-123")
+                .startAfter("space-000")
                 .maxKeys(100L)
                 .build();
 
         assertThat(request.bucket()).isEqualTo("test-bucket");
         assertThat(request.prefix()).isEqualTo("space-");
         assertThat(request.continuationToken()).isEqualTo("token-123");
+        assertThat(request.startAfter()).isEqualTo("space-000");
         assertThat(request.maxKeys()).isEqualTo(100L);
     }
 
@@ -43,6 +45,7 @@ public class ListBucketSpacesRequestTest {
         ListBucketSpacesRequest request = ListBucketSpacesRequest.newBuilder()
                 .bucket("test-bucket")
                 .continuationToken("token-xyz")
+                .startAfter("space-000")
                 .maxKeys(200L)
                 .build();
 
@@ -54,6 +57,7 @@ public class ListBucketSpacesRequestTest {
         assertThat(input.parameters().get("agenticBucket")).isEqualTo("");
         assertThat(input.parameters().get("bucketSpace")).isEqualTo("");
         assertThat(input.parameters().get("continuation-token")).isEqualTo("token-xyz");
+        assertThat(input.parameters().get("start-after")).isEqualTo("space-000");
         assertThat(input.parameters().get("max-keys")).isEqualTo("200");
     }
 }
