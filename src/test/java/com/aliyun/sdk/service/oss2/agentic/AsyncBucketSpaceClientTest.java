@@ -5,6 +5,7 @@ import com.aliyun.sdk.service.oss2.DefaultOSSAsyncClient;
 import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.credentials.AnonymousCredentialsProvider;
+import com.aliyun.sdk.service.oss2.types.AddressStyleType;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -32,7 +33,8 @@ public class AsyncBucketSpaceClientTest {
         BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
-                "cn-hangzhou"
+                "cn-hangzhou",
+                AddressStyleType.VirtualHosted
         );
 
         OperationInput input = OperationInput.newBuilder()
@@ -48,7 +50,8 @@ public class AsyncBucketSpaceClientTest {
         BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
-                "cn-hangzhou"
+                "cn-hangzhou",
+                AddressStyleType.VirtualHosted
         );
 
         OperationInput input = OperationInput.newBuilder().build();
@@ -62,7 +65,8 @@ public class AsyncBucketSpaceClientTest {
         BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
-                "cn-hangzhou"
+                "cn-hangzhou",
+                AddressStyleType.VirtualHosted
         );
 
         OperationInput input = OperationInput.newBuilder()
@@ -78,7 +82,8 @@ public class AsyncBucketSpaceClientTest {
         BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
-                "cn-hangzhou"
+                "cn-hangzhou",
+                AddressStyleType.VirtualHosted
         );
 
         OperationInput input = OperationInput.newBuilder()
@@ -95,12 +100,34 @@ public class AsyncBucketSpaceClientTest {
         BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
-                "cn-hangzhou"
+                "cn-hangzhou",
+                AddressStyleType.VirtualHosted
         );
 
         OperationInput input = OperationInput.newBuilder().build();
 
         String url = provider.buildURL(input);
         assertThat(url).isEqualTo("https://oss-cn-hangzhou.aliyuncs.com/");
+    }
+
+    @Test
+    public void testBucketSpaceProviderBuildURLPathStyle() {
+        BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
+                URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                "1234567890",
+                "cn-hangzhou",
+                AddressStyleType.Path
+        );
+
+        OperationInput input = OperationInput.newBuilder()
+                .bucket("my-space")
+                .key("test-object.txt")
+                .build();
+        assertThat(provider.buildURL(input))
+                .isEqualTo("https://oss-cn-hangzhou.aliyuncs.com/my-space-1234567890-cn-hangzhou-bs-apsr/test-object.txt");
+
+        input = OperationInput.newBuilder().build();
+        assertThat(provider.buildURL(input))
+                .isEqualTo("https://oss-cn-hangzhou.aliyuncs.com/");
     }
 }

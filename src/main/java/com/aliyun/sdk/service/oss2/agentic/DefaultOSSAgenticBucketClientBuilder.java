@@ -5,6 +5,7 @@ import com.aliyun.sdk.service.oss2.transport.HttpClient;
 import com.aliyun.sdk.service.oss2.transport.HttpClientOptions;
 import com.aliyun.sdk.service.oss2.transport.apache4client.Apache4HttpClientBuilder;
 import com.aliyun.sdk.service.oss2.transport.apache5client.Apache5HttpClientBuilder;
+import com.aliyun.sdk.service.oss2.types.AddressStyleType;
 import com.aliyun.sdk.service.oss2.types.BucketNameResolver;
 import com.aliyun.sdk.service.oss2.types.EndpointProvider;
 import com.aliyun.sdk.service.oss2.utils.HttpUtils;
@@ -34,7 +35,8 @@ class DefaultOSSAgenticBucketClientBuilder extends DefaultBaseClientBuilder<OSSA
         return new DefaultOSSAgenticBucketClient(config,
                 x -> {
                     AgenticProvider provider = new AgenticProvider(
-                            x.endpoint(), accountId, region, "ab-apsr");
+                            x.endpoint(), accountId, region, "ab-apsr",
+                            x.addressStyle());
                     return x.toBuilder()
                             .endpointProvider(provider)
                             .bucketNameResolver(provider)
@@ -72,12 +74,14 @@ class DefaultOSSAgenticBucketClientBuilder extends DefaultBaseClientBuilder<OSSA
         private final String accountId;
         private final String region;
         private final String suffix;
+        private final AddressStyleType addressStyle;
 
-        AgenticProvider(URI endpoint, String accountId, String region, String suffix) {
+        AgenticProvider(URI endpoint, String accountId, String region, String suffix, AddressStyleType addressStyle) {
             this.endpoint = endpoint;
             this.accountId = accountId;
             this.region = region;
             this.suffix = suffix;
+            this.addressStyle = addressStyle;
         }
 
         @Override
@@ -90,22 +94,24 @@ class DefaultOSSAgenticBucketClientBuilder extends DefaultBaseClientBuilder<OSSA
         @Override
         public String buildURL(OperationInput input) {
             List<String> paths = new ArrayList<>();
-            String host;
-
+            String host = endpoint.getAuthority();
             if (input.bucket().isPresent()) {
-                host = String.format("%s.%s", buildBucketName(input), endpoint.getAuthority());
-            } else {
-                host = endpoint.getAuthority();
+                switch (addressStyle) {
+                    case Path:
+                        paths.add(buildBucketName(input));
+                        if (!input.key().isPresent()) {
+                            paths.add("");
+                        }
+                        break;
+                    default:
+                        host = String.format("%s.%s", buildBucketName(input), endpoint.getAuthority());
+                        break;
+                }
             }
-
             if (input.key().isPresent()) {
                 paths.add(HttpUtils.urlEncodePath(input.key().get()));
             }
-
-            return String.format("%s://%s/%s",
-                    endpoint.getScheme(),
-                    host,
-                    String.join("/", paths));
+            return String.format("%s://%s/%s", endpoint.getScheme(), host, String.join("/", paths));
         }
     }
 }

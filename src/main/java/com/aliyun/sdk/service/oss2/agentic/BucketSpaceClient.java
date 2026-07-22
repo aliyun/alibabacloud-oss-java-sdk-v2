@@ -4,6 +4,7 @@ import com.aliyun.sdk.service.oss2.ClientConfiguration;
 import com.aliyun.sdk.service.oss2.ClientOptions;
 import com.aliyun.sdk.service.oss2.OSSClient;
 import com.aliyun.sdk.service.oss2.OperationInput;
+import com.aliyun.sdk.service.oss2.types.AddressStyleType;
 import com.aliyun.sdk.service.oss2.types.BucketNameResolver;
 import com.aliyun.sdk.service.oss2.types.EndpointProvider;
 import com.aliyun.sdk.service.oss2.utils.HttpUtils;
@@ -52,7 +53,8 @@ public final class BucketSpaceClient {
 
         allOptFns.add(options -> {
             BucketSpaceProvider provider = new BucketSpaceProvider(
-                    options.endpoint(), accountId, region);
+                    options.endpoint(), accountId, region,
+                    options.addressStyle());
             return options.toBuilder()
                     .endpointProvider(provider)
                     .bucketNameResolver(provider)
@@ -68,12 +70,14 @@ public final class BucketSpaceClient {
         private final URI endpoint;
         private final String accountId;
         private final String region;
+        private final AddressStyleType addressStyle;
         private static final String SUFFIX = "bs-apsr";
 
-        BucketSpaceProvider(URI endpoint, String accountId, String region) {
+        BucketSpaceProvider(URI endpoint, String accountId, String region, AddressStyleType addressStyle) {
             this.endpoint = endpoint;
             this.accountId = accountId;
             this.region = region;
+            this.addressStyle = addressStyle;
         }
 
         @Override
@@ -86,22 +90,24 @@ public final class BucketSpaceClient {
         @Override
         public String buildURL(OperationInput input) {
             List<String> paths = new ArrayList<>();
-            String host;
-
+            String host = endpoint.getAuthority();
             if (input.bucket().isPresent()) {
-                host = String.format("%s.%s", buildBucketName(input), endpoint.getAuthority());
-            } else {
-                host = endpoint.getAuthority();
+                switch (addressStyle) {
+                    case Path:
+                        paths.add(buildBucketName(input));
+                        if (!input.key().isPresent()) {
+                            paths.add("");
+                        }
+                        break;
+                    default:
+                        host = String.format("%s.%s", buildBucketName(input), endpoint.getAuthority());
+                        break;
+                }
             }
-
             if (input.key().isPresent()) {
                 paths.add(HttpUtils.urlEncodePath(input.key().get()));
             }
-
-            return String.format("%s://%s/%s",
-                    endpoint.getScheme(),
-                    host,
-                    String.join("/", paths));
+            return String.format("%s://%s/%s", endpoint.getScheme(), host, String.join("/", paths));
         }
     }
 }

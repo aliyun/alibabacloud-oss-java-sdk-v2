@@ -7,6 +7,7 @@ import com.aliyun.sdk.service.oss2.agentic.models.ListAgenticBucketsRequest;
 import com.aliyun.sdk.service.oss2.agentic.models.PutAgenticBucketAclRequest;
 import com.aliyun.sdk.service.oss2.agentic.transform.SerdeAgenticBucketBasic;
 import com.aliyun.sdk.service.oss2.credentials.AnonymousCredentialsProvider;
+import com.aliyun.sdk.service.oss2.types.AddressStyleType;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -85,7 +86,7 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
         DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
                 new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
                         URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
-                        "1234567890", "cn-hangzhou", "ab-apsr");
+                        "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHosted);
 
         OperationInput input = OperationInput.newBuilder()
                 .bucket("my-bucket")
@@ -103,7 +104,7 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
         DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
                 new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
                         URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
-                        "1234567890", "cn-hangzhou", "ab-apsr");
+                        "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHosted);
 
         OperationInput input = OperationInput.newBuilder()
                 .bucket("my-bucket")
@@ -124,11 +125,38 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
     }
 
     @Test
+    public void testAgenticProviderBuildURLPathStyle() {
+        DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
+                new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.Path);
+
+        // Under path-style the physical name lives in the path, host stays bare.
+        OperationInput input = OperationInput.newBuilder()
+                .bucket("my-bucket")
+                .build();
+        assertThat(provider.buildURL(input))
+                .isEqualTo("https://oss-cn-hangzhou.aliyuncs.com/my-bucket-1234567890-cn-hangzhou-ab-apsr/");
+
+        input = OperationInput.newBuilder()
+                .bucket("my-bucket")
+                .key("my-key")
+                .build();
+        assertThat(provider.buildURL(input))
+                .isEqualTo("https://oss-cn-hangzhou.aliyuncs.com/my-bucket-1234567890-cn-hangzhou-ab-apsr/my-key");
+
+        // A region-level op (no bucket) still routes to the bare endpoint.
+        input = OperationInput.newBuilder().build();
+        assertThat(provider.buildURL(input))
+                .isEqualTo("https://oss-cn-hangzhou.aliyuncs.com/");
+    }
+
+    @Test
     public void testBucketSpaceProvider() {
         DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
                 new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
                         URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
-                        "1234567890", "cn-hangzhou", "bs-apsr");
+                        "1234567890", "cn-hangzhou", "bs-apsr", AddressStyleType.VirtualHosted);
 
         OperationInput input = OperationInput.newBuilder()
                 .bucket("my-space")
@@ -143,7 +171,7 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
         DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
                 new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
                         URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
-                        "1234567890", "cn-hangzhou", "ab-apsr");
+                        "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHosted);
 
         // A bucket-scoped op (GetAgenticBucket) routes to the derived bucket host
         OperationInput bucketInput = SerdeAgenticBucketBasic.fromGetAgenticBucket(

@@ -47,7 +47,8 @@ public final class AsyncBucketSpaceClient {
 
         allOptFns.add(options -> {
             BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
-                    options.endpoint(), accountId, region);
+                    options.endpoint(), accountId, region,
+                    options.addressStyle());
             return options.toBuilder()
                     .endpointProvider(provider)
                     .bucketNameResolver(provider)
