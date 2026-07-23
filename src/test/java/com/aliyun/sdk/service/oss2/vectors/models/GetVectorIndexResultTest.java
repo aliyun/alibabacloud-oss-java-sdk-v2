@@ -86,7 +86,7 @@ public class GetVectorIndexResultTest {
                 "      \"nonFilterableMetadataKeys\": [\"key1\", \"key2\"]\n" +
                 "    },\n" +
                 "    \"status\": \"Active\",\n" +
-                "    \"vectorBucketName\": \"test-bucket\"\n" +
+                "    \"bucketArn\": \"acs:oss:::test-bucket\"\n" +
                 "  }\n" +
                 "}";
 
@@ -111,7 +111,7 @@ public class GetVectorIndexResultTest {
         assertThat(result.index().distanceMetric()).isEqualTo("cosine");
         assertThat(result.index().indexName()).isEqualTo("test-index");
         assertThat(result.index().status()).isEqualTo("Active");
-        assertThat(result.index().vectorBucketName()).isEqualTo("test-bucket");
+        assertThat(result.index().bucketArn()).isEqualTo("acs:oss:::test-bucket");
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-xml-builder-test");
@@ -141,7 +141,7 @@ public class GetVectorIndexResultTest {
                 "      \"nonFilterableMetadataKeys\": [\"key1\", \"key2\"]\n" +
                 "    },\n" +
                 "    \"status\": \"Active\",\n" +
-                "    \"vectorBucketName\": \"test-bucket\"\n" +
+                "    \"bucketArn\": \"acs:oss:::test-bucket\"\n" +
                 "  }\n" +
                 "}";
 
@@ -165,7 +165,7 @@ public class GetVectorIndexResultTest {
         assertThat(indexSummary.distanceMetric()).isEqualTo("cosine");
         assertThat(indexSummary.indexName()).isEqualTo("test-index");
         assertThat(indexSummary.status()).isEqualTo("Active");
-        assertThat(indexSummary.vectorBucketName()).isEqualTo("test-bucket");
+        assertThat(indexSummary.bucketArn()).isEqualTo("acs:oss:::test-bucket");
 
         assertThat(indexSummary.metadata()).isNotNull();
         Object nonFilterableKeysObj = indexSummary.metadata().get("nonFilterableMetadataKeys");
@@ -173,6 +173,56 @@ public class GetVectorIndexResultTest {
         assertThat(nonFilterableKeysObj).isInstanceOf(List.class);
         List<String> nonFilterableKeys = (List<String>) nonFilterableKeysObj;
         assertThat(nonFilterableKeys).containsExactly("key1", "key2");
+    }
+
+    @Test
+    public void testLegacyVectorBucketNameOnly() {
+        String jsonData = "{\n" +
+                "  \"index\": {\n" +
+                "    \"indexName\": \"test-index\",\n" +
+                "    \"status\": \"Active\",\n" +
+                "    \"vectorBucketName\": \"test-bucket\"\n" +
+                "  }\n" +
+                "}";
+
+        OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(jsonData))
+                .headers(MapUtils.of("x-oss-request-id", "req-legacy-test"))
+                .status("OK")
+                .statusCode(200)
+                .build();
+
+        GetVectorIndexResult result = SerdeVectorIndexBasic.toGetVectorIndex(output);
+
+        assertThat(result.index()).isNotNull();
+        assertThat(result.index().indexName()).isEqualTo("test-index");
+        assertThat(result.index().vectorBucketName()).isEqualTo("test-bucket");
+        assertThat(result.index().bucketArn()).isNull();
+    }
+
+    @Test
+    public void testBothBucketFields() {
+        String jsonData = "{\n" +
+                "  \"index\": {\n" +
+                "    \"indexName\": \"test-index\",\n" +
+                "    \"status\": \"Active\",\n" +
+                "    \"vectorBucketName\": \"test-bucket\",\n" +
+                "    \"bucketArn\": \"acs:oss:::test-bucket\"\n" +
+                "  }\n" +
+                "}";
+
+        OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(jsonData))
+                .headers(MapUtils.of("x-oss-request-id", "req-both-test"))
+                .status("OK")
+                .statusCode(200)
+                .build();
+
+        GetVectorIndexResult result = SerdeVectorIndexBasic.toGetVectorIndex(output);
+
+        assertThat(result.index()).isNotNull();
+        assertThat(result.index().vectorBucketName()).isEqualTo("test-bucket");
+        assertThat(result.index().bucketArn()).isEqualTo("acs:oss:::test-bucket");
     }
 
     private GetVectorIndexResultJson createTestGetVectorIndexBodyJson() {
@@ -192,7 +242,7 @@ public class GetVectorIndexResultTest {
         builder.metadata(metadata);
 
         builder.status("Active");
-        builder.vectorBucketName("test-bucket");
+        builder.bucketArn("acs:oss:::test-bucket");
 
         GetVectorIndexResultJson bodyJson = new GetVectorIndexResultJson();
         bodyJson.index = builder.build();
