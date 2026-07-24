@@ -8,18 +8,12 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
 
     @Test
     public void testListBucketSpaces() {
-        OSSAgenticBucketClient client = newAgenticClient();
-        String bucket = genAgenticBucketName();
+        OSSAgenticBucketClient client = agenticClient;
+        String bucket = agenticBucketName;
 
-        try {
-            createAgenticBucket(client, bucket);
-
-            ListBucketSpacesResult listResult = client.listBucketSpaces(
-                    ListBucketSpacesRequest.newBuilder().bucket(bucket).build());
-            Assert.assertNotNull(listResult);
-            Assert.assertEquals(200, listResult.statusCode());
-        } finally {
-            cleanAgenticBucket(bucket);
-        }
+        ListBucketSpacesResult listResult = client.listBucketSpaces(
+                ListBucketSpacesRequest.newBuilder().bucket(bucket).build());
+        Assert.assertNotNull(listResult);
+        Assert.assertEquals(200, listResult.statusCode());
     }
 }

@@ -22,8 +22,8 @@ import java.util.Optional;
 import java.util.Random;
 
 public class TestBase {
-    protected static final String BUCKET_NAME_PREFIX = "java-sdk-test-bucket-";
-    protected static final String OJBJECT_NAME_PREFIX = "java-sdk-test-object-";
+    protected static final String BUCKET_NAME_PREFIX = "oss-sdk-test-java-bucket-";
+    protected static final String OJBJECT_NAME_PREFIX = "oss-sdk-test-java-object-";
     protected static final long DELETE_OBJECTS_ONETIME_LIMIT = 1000;
     // OSS test configuration
     public static String OSS_TEST_REGION = null;
