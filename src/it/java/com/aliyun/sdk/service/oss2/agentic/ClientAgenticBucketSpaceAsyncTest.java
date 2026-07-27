@@ -1,15 +1,14 @@
 package com.aliyun.sdk.service.oss2.agentic;
 
-import com.aliyun.sdk.service.oss2.ClientConfiguration;
-import com.aliyun.sdk.service.oss2.OSSClient;
+import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.agentic.models.*;
-import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
-public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
+public class ClientAgenticBucketSpaceAsyncTest extends TestBaseAgentic {
 
     private static String genBucketSpacePrefix() {
         return "oss-sdk-test-java-bs-" + new Random().nextInt(5000);
@@ -20,40 +19,41 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
     }
 
     /**
-     * BucketSpace lifecycle via standard OSSClient (reused interfaces):
+     * BucketSpace lifecycle via standard OSSAsyncClient (reused interfaces):
      * Pass the full BucketSpace name {prefix}-{uid}-{region}-bs-apsr directly.
      * Host: {prefix}-{uid}-{region}-bs-apsr.{endpoint}
      * Header: x-oss-agentic-bucket: {agenticBucketName}
      */
     @Test
-    public void testBucketSpaceLifecycle() {
+    public void testBucketSpaceLifecycleAsync() throws ExecutionException, InterruptedException {
         String bsPrefix = genBucketSpacePrefix();
         String bsFullName = bsPrefix + "-" + accountId() + "-" + region() + "-bs-apsr";
         String bsFullAgenticBucket = getFullAgenticBucketName();
 
+        OSSAsyncClient asyncClient = getDefaultAsyncClient();
+
         try {
-            // 1. PutBucket (reused) - standard OSSClient with full BucketSpace name
-            //    Host: {prefix}-{uid}-{region}-bs-apsr.oss-{region}-internal.aliyuncs.com
-            //    Header: x-oss-agentic-bucket: {agenticBucketName}
-            PutBucketResult putResult = getDefaultClient().putBucket(PutBucketRequest.newBuilder()
+            // 1. PutBucket (reused) - standard OSSAsyncClient with full BucketSpace name
+            PutBucketResult putResult = asyncClient.putBucketAsync(PutBucketRequest.newBuilder()
                     .bucket(bsFullName)
                     .agenticBucket(bsFullAgenticBucket)
-                    .build());
+                    .build()).get();
             Assert.assertNotNull(putResult);
             Assert.assertEquals(200, putResult.statusCode());
             waitForCacheExpiration(1);
 
             // 2. GetBucketInfo (reused) - verify BucketResourceType and AgenticBucketName
-            GetBucketInfoResult infoResult = getDefaultClient().getBucketInfo(
-                    GetBucketInfoRequest.newBuilder().bucket(bsFullName).build());
+            GetBucketInfoResult infoResult = asyncClient.getBucketInfoAsync(
+                    GetBucketInfoRequest.newBuilder().bucket(bsFullName).build()).get();
             Assert.assertNotNull(infoResult);
             Assert.assertEquals(200, infoResult.statusCode());
             Assert.assertEquals("AgenticBucketSpace", infoResult.bucketInfo().bucketResourceType());
             Assert.assertNotNull(infoResult.bucketInfo().agenticBucketName());
 
-            // 3. ListBucketSpaces - verify the created BucketSpace via OSSAgenticBucketClient
-            ListBucketSpacesResult listResult = agenticClient.listBucketSpaces(
-                    ListBucketSpacesRequest.newBuilder().bucket(agenticBucketName).prefix(bsPrefix).build());
+            // 3. ListBucketSpaces - verify the created BucketSpace via OSSAsyncAgenticBucketClient
+            OSSAsyncAgenticBucketClient asyncAgenticClient = newAgenticAsyncClient();
+            ListBucketSpacesResult listResult = asyncAgenticClient.listBucketSpacesAsync(
+                    ListBucketSpacesRequest.newBuilder().bucket(agenticBucketName).prefix(bsPrefix).build()).get();
             Assert.assertNotNull(listResult);
             Assert.assertEquals(200, listResult.statusCode());
             boolean found = false;
@@ -70,56 +70,48 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
         } finally {
             // 4. DeleteBucket (reused) - cleanup
             try {
-                getDefaultClient().deleteBucket(DeleteBucketRequest.newBuilder()
-                        .bucket(bsFullName).build());
+                asyncClient.deleteBucketAsync(DeleteBucketRequest.newBuilder()
+                        .bucket(bsFullName).build()).get();
             } catch (Exception ignore) {
             }
         }
     }
 
     /**
-     * BucketSpace lifecycle via BucketSpaceClient:
-     * Pass the short prefix only; BucketSpaceClient auto-expands to
-     * {prefix}-{uid}-{region}-bs-apsr.
-     * <p>
-     * Note: BucketSpaceClient returns a standard OSSClient, so listBucketSpaces
-     * (an OSSAgenticBucketClient-only operation) is NOT available through it.
+     * BucketSpace lifecycle via OSSAsyncClient (mirrors BucketSpaceClient test):
+     * BucketSpaceClient is sync-only (wraps OSSClient). For async, we use
+     * OSSAsyncClient with the full BucketSpace name to achieve the same result.
      */
     @Test
-    public void testBucketSpaceClientIndependent() {
+    public void testBucketSpaceClientIndependentAsync() throws ExecutionException, InterruptedException {
         String bsPrefix = genBucketSpacePrefix();
         String expectedFullName = bsPrefix + "-" + accountId() + "-" + region() + "-bs-apsr";
         String bsFullAgenticBucket = getFullAgenticBucketName();
 
-        ClientConfiguration config = ClientConfiguration.newBuilder()
-                .region(region())
-                .endpoint(endpoint())
-                .accountId(accountId())
-                .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
-                .build();
+        OSSAsyncClient asyncClient = getDefaultAsyncClient();
 
-        OSSClient bsClient = BucketSpaceClient.create(config);
         try {
-            // 1. PutBucket (reused) - BucketSpaceClient auto-expands prefix to full name
-            PutBucketResult putResult = bsClient.putBucket(PutBucketRequest.newBuilder()
-                    .bucket(bsPrefix)
+            // 1. PutBucket (reused) - full BucketSpace name (BucketSpaceClient auto-expands in sync)
+            PutBucketResult putResult = asyncClient.putBucketAsync(PutBucketRequest.newBuilder()
+                    .bucket(expectedFullName)
                     .agenticBucket(bsFullAgenticBucket)
-                    .build());
+                    .build()).get();
             Assert.assertNotNull(putResult);
             Assert.assertEquals(200, putResult.statusCode());
             waitForCacheExpiration(1);
 
-            // 2. GetBucketInfo (reused) - verify via BucketSpaceClient
-            GetBucketInfoResult infoResult = bsClient.getBucketInfo(
-                    GetBucketInfoRequest.newBuilder().bucket(bsPrefix).build());
+            // 2. GetBucketInfo (reused) - verify via OSSAsyncClient
+            GetBucketInfoResult infoResult = asyncClient.getBucketInfoAsync(
+                    GetBucketInfoRequest.newBuilder().bucket(expectedFullName).build()).get();
             Assert.assertNotNull(infoResult);
             Assert.assertEquals(200, infoResult.statusCode());
             Assert.assertEquals("AgenticBucketSpace", infoResult.bucketInfo().bucketResourceType());
             Assert.assertNotNull(infoResult.bucketInfo().agenticBucketName());
 
-            // 3. ListBucketSpaces - cross-verify the created BucketSpace via agenticClient
-            ListBucketSpacesResult listResult = agenticClient.listBucketSpaces(
-                    ListBucketSpacesRequest.newBuilder().bucket(agenticBucketName).prefix(bsPrefix).build());
+            // 3. ListBucketSpaces - cross-verify the created BucketSpace via async agentic client
+            OSSAsyncAgenticBucketClient asyncAgenticClient = newAgenticAsyncClient();
+            ListBucketSpacesResult listResult = asyncAgenticClient.listBucketSpacesAsync(
+                    ListBucketSpacesRequest.newBuilder().bucket(agenticBucketName).prefix(bsPrefix).build()).get();
             Assert.assertNotNull(listResult);
             Assert.assertEquals(200, listResult.statusCode());
             boolean found = false;
@@ -134,10 +126,10 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
             Assert.assertTrue("BucketSpaceClient-created BucketSpace should appear in list", found);
 
         } finally {
-            // 4. DeleteBucket (reused) - cleanup via BucketSpaceClient
+            // 4. DeleteBucket (reused) - cleanup via OSSAsyncClient
             try {
-                bsClient.deleteBucket(DeleteBucketRequest.newBuilder()
-                        .bucket(bsPrefix).build());
+                asyncClient.deleteBucketAsync(DeleteBucketRequest.newBuilder()
+                        .bucket(expectedFullName).build()).get();
             } catch (Exception ignore) {
             }
         }

@@ -58,6 +58,26 @@ public class TestBaseAgentic extends TestBase {
                 .build();
     }
 
+    public static OSSAsyncAgenticBucketClient newAgenticAsyncClient() {
+        CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
+        return OSSAsyncAgenticBucketClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .accountId(accountId())
+                .credentialsProvider(provider)
+                .build();
+    }
+
+    public static OSSAsyncAgenticBucketClient newInvalidAkAgenticAsyncClient() {
+        CredentialsProvider provider = new StaticCredentialsProvider("invalid-ak", "invalid-sk");
+        return OSSAsyncAgenticBucketClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .accountId(accountId())
+                .credentialsProvider(provider)
+                .build();
+    }
+
     public static void createAgenticBucket(OSSAgenticBucketClient client, String bucket) {
         client.createAgenticBucket(CreateAgenticBucketRequest.newBuilder()
                 .bucket(bucket)
