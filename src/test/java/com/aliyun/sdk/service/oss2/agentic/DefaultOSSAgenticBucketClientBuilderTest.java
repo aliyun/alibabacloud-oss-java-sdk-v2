@@ -83,8 +83,8 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
 
     @Test
     public void testAgenticProviderBuildBucketName() {
-        DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
-                new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
+        AgenticProvider provider =
+                new AgenticProvider(
                         URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                         "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHosted);
 
@@ -101,8 +101,8 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
 
     @Test
     public void testAgenticProviderBuildURL() {
-        DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
-                new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
+        AgenticProvider provider =
+                new AgenticProvider(
                         URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                         "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHosted);
 
@@ -126,8 +126,8 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
 
     @Test
     public void testAgenticProviderBuildURLPathStyle() {
-        DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
-                new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
+        AgenticProvider provider =
+                new AgenticProvider(
                         URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                         "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.Path);
 
@@ -153,8 +153,8 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
 
     @Test
     public void testBucketSpaceProvider() {
-        DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
-                new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
+        AgenticProvider provider =
+                new AgenticProvider(
                         URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                         "1234567890", "cn-hangzhou", "bs-apsr", AddressStyleType.VirtualHosted);
 
@@ -168,8 +168,8 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
 
     @Test
     public void testHostRoutingRegionVsBucket() {
-        DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
-                new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
+        AgenticProvider provider =
+                new AgenticProvider(
                         URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                         "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHosted);
 
@@ -200,5 +200,86 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
                     .isInstanceOf(NullPointerException.class)
                     .hasMessageContaining("request.acl is required");
         }
+    }
+
+    @Test
+    public void testAgenticProviderMissingRequiredFields() {
+        OperationInput input = OperationInput.newBuilder().bucket("my-bucket").build();
+
+        // Missing accountId
+        AgenticProvider p1 =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHosted);
+        assertThatThrownBy(() -> p1.buildURL(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("AccountId");
+        assertThatThrownBy(() -> p1.buildBucketName(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("AccountId");
+
+        // Missing region
+        AgenticProvider p2 =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "1234567890", "", "ab-apsr", AddressStyleType.VirtualHosted);
+        assertThatThrownBy(() -> p2.buildURL(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Region");
+        assertThatThrownBy(() -> p2.buildBucketName(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Region");
+
+        // null accountId/region is normalized to "" in the constructor, so it
+        // surfaces as the required-field error rather than a NullPointerException
+        AgenticProvider pNull =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        null, null, "ab-apsr", AddressStyleType.VirtualHosted);
+        assertThatThrownBy(() -> pNull.buildBucketName(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("AccountId");
+
+        // No bucket: validation is skipped, no error
+        assertThat(p2.buildBucketName(OperationInput.newBuilder().build())).isNull();
+    }
+
+    @Test
+    public void testAgenticProviderHostLabelTooLong() {
+        // full name = "{bucket}-1234567890-cn-hangzhou-ab-apsr" -> len(bucket) + 31
+        String suffixPart = "-1234567890-cn-hangzhou-ab-apsr";
+        AgenticProvider vh =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHosted);
+
+        // Boundary: full name == 63 (bucket 32) is allowed in virtual-hosted style
+        String okName = repeat('a', 32);
+        assertThat((okName + suffixPart).length()).isEqualTo(63);
+        assertThat(vh.buildURL(OperationInput.newBuilder().bucket(okName).build()))
+                .isEqualTo("https://" + okName + suffixPart + ".oss-cn-hangzhou.aliyuncs.com/");
+
+        // Over limit: full name == 64 (bucket 33) is rejected in virtual-hosted style
+        String longName = repeat('a', 33);
+        assertThat((longName + suffixPart).length()).isEqualTo(64);
+        assertThatThrownBy(() -> vh.buildURL(OperationInput.newBuilder().bucket(longName).build()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("exceeds the maximum length of 63 characters");
+
+        // Path style has no DNS label limit, so the same long name is fine
+        AgenticProvider path =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.Path);
+        assertThat(path.buildURL(OperationInput.newBuilder().bucket(longName).build()))
+                .isEqualTo("https://oss-cn-hangzhou.aliyuncs.com/" + longName + suffixPart + "/");
+    }
+
+    private static String repeat(char c, int n) {
+        StringBuilder sb = new StringBuilder(n);
+        for (int i = 0; i < n; i++) {
+            sb.append(c);
+        }
+        return sb.toString();
     }
 }

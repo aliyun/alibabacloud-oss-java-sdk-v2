@@ -12,10 +12,11 @@ public class BucketSpaceClientTest {
 
     @Test
     public void testBucketSpaceProviderBuildBucketName() {
-        BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
+        AgenticProvider provider = new AgenticProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
                 "cn-hangzhou",
+                "bs-apsr",
                 AddressStyleType.VirtualHosted
         );
 
@@ -29,10 +30,11 @@ public class BucketSpaceClientTest {
 
     @Test
     public void testBucketSpaceProviderBuildBucketNameNoBucket() {
-        BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
+        AgenticProvider provider = new AgenticProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
                 "cn-hangzhou",
+                "bs-apsr",
                 AddressStyleType.VirtualHosted
         );
 
@@ -44,10 +46,11 @@ public class BucketSpaceClientTest {
 
     @Test
     public void testBucketSpaceProviderBuildURL() {
-        BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
+        AgenticProvider provider = new AgenticProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
                 "cn-hangzhou",
+                "bs-apsr",
                 AddressStyleType.VirtualHosted
         );
 
@@ -61,10 +64,11 @@ public class BucketSpaceClientTest {
 
     @Test
     public void testBucketSpaceProviderBuildURLWithKey() {
-        BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
+        AgenticProvider provider = new AgenticProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
                 "cn-hangzhou",
+                "bs-apsr",
                 AddressStyleType.VirtualHosted
         );
 
@@ -79,10 +83,11 @@ public class BucketSpaceClientTest {
 
     @Test
     public void testBucketSpaceProviderBuildURLNoBucket() {
-        BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
+        AgenticProvider provider = new AgenticProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
                 "cn-hangzhou",
+                "bs-apsr",
                 AddressStyleType.VirtualHosted
         );
 
@@ -94,10 +99,11 @@ public class BucketSpaceClientTest {
 
     @Test
     public void testBucketSpaceProviderBuildURLPathStyle() {
-        BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
+        AgenticProvider provider = new AgenticProvider(
                 URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
                 "1234567890",
                 "cn-hangzhou",
+                "bs-apsr",
                 AddressStyleType.Path
         );
 
