@@ -46,8 +46,9 @@ public final class AsyncBucketSpaceClient {
         final String region = config.region().orElse("");
 
         allOptFns.add(options -> {
-            BucketSpaceClient.BucketSpaceProvider provider = new BucketSpaceClient.BucketSpaceProvider(
-                    options.endpoint(), accountId, region);
+            AgenticProvider provider = new AgenticProvider(
+                    options.endpoint(), accountId, region, "bs-apsr",
+                    options.addressStyle());
             return options.toBuilder()
                     .endpointProvider(provider)
                     .bucketNameResolver(provider)

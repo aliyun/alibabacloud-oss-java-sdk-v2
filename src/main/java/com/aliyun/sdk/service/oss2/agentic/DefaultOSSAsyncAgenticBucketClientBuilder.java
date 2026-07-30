@@ -21,9 +21,10 @@ class DefaultOSSAsyncAgenticBucketClientBuilder extends DefaultBaseClientBuilder
 
         return new DefaultOSSAsyncAgenticBucketClient(config,
                 x -> {
-                    DefaultOSSAgenticBucketClientBuilder.AgenticProvider provider =
-                            new DefaultOSSAgenticBucketClientBuilder.AgenticProvider(
-                                    x.endpoint(), accountId, region, "ab-apsr");
+                    AgenticProvider provider =
+                            new AgenticProvider(
+                                    x.endpoint(), accountId, region, "ab-apsr",
+                                    x.addressStyle());
                     return x.toBuilder()
                             .endpointProvider(provider)
                             .bucketNameResolver(provider)
