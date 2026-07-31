@@ -5,6 +5,7 @@ import com.aliyun.sdk.service.oss2.OSSClient;
 import com.aliyun.sdk.service.oss2.agentic.models.*;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.Random;
@@ -137,6 +138,111 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
             // 4. DeleteBucket (reused) - cleanup via BucketSpaceClient
             try {
                 bsClient.deleteBucket(DeleteBucketRequest.newBuilder()
+                        .bucket(bsPrefix).build());
+            } catch (Exception ignore) {
+            }
+        }
+    }
+
+    /**
+     * BucketSpace object operations via path-style BucketSpaceClient.
+     * Verifies put_object / get_object / delete_object / get_bucket_acl work
+     * correctly with usePathStyle(true), mirroring Python
+     * test_bucket_space_object_operations_path_style.
+     */
+    @Test
+    public void testBucketSpaceObjectOperationsPathStyle() {
+        String bsPrefix = genBucketSpacePrefix();
+        String bsFullAgenticBucket = getFullAgenticBucketName();
+
+        // Create BucketSpace via standard BucketSpaceClient first
+        ClientConfiguration stdConfig = ClientConfiguration.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .accountId(accountId())
+                .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
+                .build();
+        OSSClient stdClient = BucketSpaceClient.create(stdConfig);
+        PutBucketResult putResult = stdClient.putBucket(PutBucketRequest.newBuilder()
+                .bucket(bsPrefix)
+                .agenticBucket(bsFullAgenticBucket)
+                .build());
+        Assert.assertEquals(200, putResult.statusCode());
+        waitForCacheExpiration(1);
+
+        try {
+            // Use path-style client for object operations
+            ClientConfiguration pathConfig = ClientConfiguration.newBuilder()
+                    .region(region())
+                    .endpoint(endpoint())
+                    .accountId(accountId())
+                    .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
+                    .usePathStyle(true)
+                    .build();
+            OSSClient pathClient = BucketSpaceClient.create(pathConfig);
+            String key = "path-style-test.txt";
+
+            // put_object via path-style
+            try {
+                PutObjectResult putObjResult = pathClient.putObject(PutObjectRequest.newBuilder()
+                        .bucket(bsPrefix)
+                        .key(key)
+                        .body(BinaryData.fromString("hello path style"))
+                        .build());
+                Assert.assertEquals(200, putObjResult.statusCode());
+            } catch (Exception e) {
+                if (!isSecondLevelDomainForbidden(e)) {
+                    throw e;
+                }
+                System.out.println("put_object path-style not supported: " + e.getMessage());
+            }
+
+            // get_object via path-style
+            try {
+                GetObjectResult getObjResult = pathClient.getObject(GetObjectRequest.newBuilder()
+                        .bucket(bsPrefix)
+                        .key(key)
+                        .build());
+                Assert.assertEquals(200, getObjResult.statusCode());
+            } catch (Exception e) {
+                if (!isSecondLevelDomainForbidden(e)) {
+                    throw e;
+                }
+                System.out.println("get_object path-style not supported: " + e.getMessage());
+            }
+
+            // delete_object via path-style
+            try {
+                DeleteObjectResult delObjResult = pathClient.deleteObject(DeleteObjectRequest.newBuilder()
+                        .bucket(bsPrefix)
+                        .key(key)
+                        .build());
+                Assert.assertEquals(204, delObjResult.statusCode());
+            } catch (Exception e) {
+                if (!isSecondLevelDomainForbidden(e)) {
+                    throw e;
+                }
+                System.out.println("delete_object path-style not supported: " + e.getMessage());
+            }
+
+            // get_bucket_acl via path-style
+            try {
+                GetBucketAclResult aclResult = pathClient.getBucketAcl(GetBucketAclRequest.newBuilder()
+                        .bucket(bsPrefix)
+                        .build());
+                Assert.assertEquals(200, aclResult.statusCode());
+                Assert.assertNotNull(aclResult.accessControlPolicy());
+            } catch (Exception e) {
+                if (!isSecondLevelDomainForbidden(e)) {
+                    throw e;
+                }
+                System.out.println("get_bucket_acl path-style not supported: " + e.getMessage());
+            }
+
+        } finally {
+            // Cleanup BucketSpace
+            try {
+                stdClient.deleteBucket(DeleteBucketRequest.newBuilder()
                         .bucket(bsPrefix).build());
             } catch (Exception ignore) {
             }

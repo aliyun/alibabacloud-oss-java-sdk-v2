@@ -2,7 +2,9 @@ package com.aliyun.sdk.service.oss2.agentic;
 
 import com.aliyun.sdk.service.oss2.OSSAsyncClient;
 import com.aliyun.sdk.service.oss2.agentic.models.*;
+import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.*;
+import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.Random;
@@ -130,6 +132,104 @@ public class ClientAgenticBucketSpaceAsyncTest extends TestBaseAgentic {
             try {
                 asyncClient.deleteBucketAsync(DeleteBucketRequest.newBuilder()
                         .bucket(expectedFullName).build()).get();
+            } catch (Exception ignore) {
+            }
+        }
+    }
+
+    /**
+     * BucketSpace object operations via path-style OSSAsyncClient (async).
+     * BucketSpaceClient is sync-only, so this test uses OSSAsyncClient with
+     * usePathStyle(true) and the full BucketSpace name for object operations,
+     * mirroring Python test_bucket_space_object_operations_path_style.
+     */
+    @Test
+    public void testBucketSpaceObjectOperationsPathStyleAsync() throws ExecutionException, InterruptedException {
+        String bsPrefix = genBucketSpacePrefix();
+        String bsFullName = bsPrefix + "-" + accountId() + "-" + region() + "-bs-apsr";
+        String bsFullAgenticBucket = getFullAgenticBucketName();
+
+        // Create BucketSpace via standard OSSAsyncClient first
+        OSSAsyncClient stdAsyncClient = getDefaultAsyncClient();
+        PutBucketResult putResult = stdAsyncClient.putBucketAsync(PutBucketRequest.newBuilder()
+                .bucket(bsFullName)
+                .agenticBucket(bsFullAgenticBucket)
+                .build()).get();
+        Assert.assertEquals(200, putResult.statusCode());
+        waitForCacheExpiration(1);
+
+        try {
+            // Use path-style async client for object operations
+            OSSAsyncClient pathAsyncClient = OSSAsyncClient.newBuilder()
+                    .region(region())
+                    .endpoint(endpoint())
+                    .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
+                    .usePathStyle(true)
+                    .build();
+            String key = "path-style-test.txt";
+
+            // put_object via path-style
+            try {
+                PutObjectResult putObjResult = pathAsyncClient.putObjectAsync(PutObjectRequest.newBuilder()
+                        .bucket(bsFullName)
+                        .key(key)
+                        .body(BinaryData.fromString("hello path style"))
+                        .build()).get();
+                Assert.assertEquals(200, putObjResult.statusCode());
+            } catch (Exception e) {
+                if (!isSecondLevelDomainForbidden(e)) {
+                    throw e;
+                }
+                System.out.println("put_object path-style not supported: " + e.getMessage());
+            }
+
+            // get_object via path-style
+            try {
+                GetObjectResult getObjResult = pathAsyncClient.getObjectAsync(GetObjectRequest.newBuilder()
+                        .bucket(bsFullName)
+                        .key(key)
+                        .build()).get();
+                Assert.assertEquals(200, getObjResult.statusCode());
+            } catch (Exception e) {
+                if (!isSecondLevelDomainForbidden(e)) {
+                    throw e;
+                }
+                System.out.println("get_object path-style not supported: " + e.getMessage());
+            }
+
+            // delete_object via path-style
+            try {
+                DeleteObjectResult delObjResult = pathAsyncClient.deleteObjectAsync(DeleteObjectRequest.newBuilder()
+                        .bucket(bsFullName)
+                        .key(key)
+                        .build()).get();
+                Assert.assertEquals(204, delObjResult.statusCode());
+            } catch (Exception e) {
+                if (!isSecondLevelDomainForbidden(e)) {
+                    throw e;
+                }
+                System.out.println("delete_object path-style not supported: " + e.getMessage());
+            }
+
+            // get_bucket_acl via path-style
+            try {
+                GetBucketAclResult aclResult = pathAsyncClient.getBucketAclAsync(GetBucketAclRequest.newBuilder()
+                        .bucket(bsFullName)
+                        .build()).get();
+                Assert.assertEquals(200, aclResult.statusCode());
+                Assert.assertNotNull(aclResult.accessControlPolicy());
+            } catch (Exception e) {
+                if (!isSecondLevelDomainForbidden(e)) {
+                    throw e;
+                }
+                System.out.println("get_bucket_acl path-style not supported: " + e.getMessage());
+            }
+
+        } finally {
+            // Cleanup BucketSpace
+            try {
+                stdAsyncClient.deleteBucketAsync(DeleteBucketRequest.newBuilder()
+                        .bucket(bsFullName).build()).get();
             } catch (Exception ignore) {
             }
         }

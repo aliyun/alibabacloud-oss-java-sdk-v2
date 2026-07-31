@@ -114,4 +114,42 @@ public class ClientAgenticBucketBasicTest extends TestBaseAgentic {
             Assert.assertEquals("InvalidAccessKeyId", serr.errorCode());
         }
     }
+
+    /**
+     * Verify basic agentic bucket operations work under path-style addressing.
+     * Mirrors Go/Python TestAgenticPathStyle: probe with GetAgenticBucket first;
+     * if the endpoint rejects path-style (SecondLevelDomainForbidden), skip
+     * rather than fail.
+     */
+    @Test
+    public void testAgenticBucketPathStyle() {
+        OSSAgenticBucketClient client = newAgenticClientPathStyle();
+        String bucket = agenticBucketName;
+
+        // Probe: GetAgenticBucket via path-style
+        GetAgenticBucketResult getResult;
+        try {
+            getResult = client.getAgenticBucket(
+                    GetAgenticBucketRequest.newBuilder().bucket(bucket).build());
+        } catch (Exception e) {
+            if (isSecondLevelDomainForbidden(e)) {
+                System.out.println("path-style addressing not allowed on this endpoint: " + e.getMessage());
+                return;
+            }
+            throw e;
+        }
+        Assert.assertEquals(200, getResult.statusCode());
+        Assert.assertNotNull(getResult.agenticBucketInfo());
+        assertThat(getResult.agenticBucketInfo().name()).contains(bucket);
+
+        // ListAgenticBuckets via path-style client (service-level op with no bucket label)
+        ListAgenticBucketsResult listResult = client.listAgenticBuckets(
+                ListAgenticBucketsRequest.newBuilder().build());
+        Assert.assertEquals(200, listResult.statusCode());
+
+        // ListBucketSpaces via path-style AgenticBucketClient
+        ListBucketSpacesResult bsResult = client.listBucketSpaces(
+                ListBucketSpacesRequest.newBuilder().bucket(bucket).build());
+        Assert.assertEquals(200, bsResult.statusCode());
+    }
 }

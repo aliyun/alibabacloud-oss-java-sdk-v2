@@ -144,4 +144,39 @@ public class ClientAgenticBucketAttributeTest extends TestBaseAgentic {
                 DeleteAgenticBucketPublicAccessBlockRequest.newBuilder().bucket(bucket).build());
         Assert.assertTrue(deleteResult.statusCode() == 200 || deleteResult.statusCode() == 204);
     }
+
+    /**
+     * Test put and get agentic bucket ACL using path-style addressing.
+     * Mirrors Go/Python probe: if the endpoint rejects path-style
+     * (SecondLevelDomainForbidden), skip rather than fail.
+     */
+    @Test
+    public void testAgenticBucketAclPathStyle() {
+        OSSAgenticBucketClient client = newAgenticClientPathStyle();
+        String bucket = agenticBucketName;
+
+        // Probe: Put ACL via path-style client
+        PutAgenticBucketAclResult putResult;
+        try {
+            putResult = client.putAgenticBucketAcl(
+                    PutAgenticBucketAclRequest.newBuilder()
+                            .bucket(bucket)
+                            .acl("private")
+                            .build());
+        } catch (Exception e) {
+            if (isSecondLevelDomainForbidden(e)) {
+                System.out.println("path-style addressing not allowed on this endpoint: " + e.getMessage());
+                return;
+            }
+            throw e;
+        }
+        Assert.assertEquals(200, putResult.statusCode());
+
+        // Get ACL via path-style client
+        GetAgenticBucketAclResult getResult = client.getAgenticBucketAcl(
+                GetAgenticBucketAclRequest.newBuilder().bucket(bucket).build());
+        Assert.assertEquals(200, getResult.statusCode());
+        Assert.assertNotNull(getResult.accessControlPolicy());
+        assertThat(getResult.accessControlPolicy().accessControlList().grant()).isEqualTo("private");
+    }
 }
