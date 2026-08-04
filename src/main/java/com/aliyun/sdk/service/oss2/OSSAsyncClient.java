@@ -3590,6 +3590,125 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
 
     //-----------------------------------------------------------------------
+
+    // batch operations api
+
+    /**
+     * Creates a batch operation job to perform specified operations on a large number of objects.
+     *
+     * @param request A {@link CreateJobRequest} for CreateJob operation.
+     * @return A Java Future containing the {@link CreateJobResult} of the CreateJob operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateJobResult> createJobAsync(CreateJobRequest request) {
+        return createJobAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a batch operation job to perform specified operations on a large number of objects.
+     *
+     * @param request A {@link CreateJobRequest} for CreateJob operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link CreateJobResult} of the CreateJob operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<CreateJobResult> createJobAsync(CreateJobRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the details and status of a batch operation job.
+     *
+     * @param request A {@link DescribeJobRequest} for DescribeJob operation.
+     * @return A Java Future containing the {@link DescribeJobResult} of the DescribeJob operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DescribeJobResult> describeJobAsync(DescribeJobRequest request) {
+        return describeJobAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the details and status of a batch operation job.
+     *
+     * @param request A {@link DescribeJobRequest} for DescribeJob operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DescribeJobResult} of the DescribeJob operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DescribeJobResult> describeJobAsync(DescribeJobRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the list of batch operation jobs.
+     *
+     * @param request A {@link ListJobsRequest} for ListJobs operation.
+     * @return A Java Future containing the {@link ListJobsResult} of the ListJobs operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListJobsResult> listJobsAsync(ListJobsRequest request) {
+        return listJobsAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the list of batch operation jobs.
+     *
+     * @param request A {@link ListJobsRequest} for ListJobs operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link ListJobsResult} of the ListJobs operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<ListJobsResult> listJobsAsync(ListJobsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Updates the priority of a batch operation job.
+     *
+     * @param request A {@link UpdateJobPriorityRequest} for UpdateJobPriority operation.
+     * @return A Java Future containing the {@link UpdateJobPriorityResult} of the UpdateJobPriority operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<UpdateJobPriorityResult> updateJobPriorityAsync(UpdateJobPriorityRequest request) {
+        return updateJobPriorityAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Updates the priority of a batch operation job.
+     *
+     * @param request A {@link UpdateJobPriorityRequest} for UpdateJobPriority operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link UpdateJobPriorityResult} of the UpdateJobPriority operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<UpdateJobPriorityResult> updateJobPriorityAsync(UpdateJobPriorityRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Updates the status of a batch operation job.
+     *
+     * @param request A {@link UpdateJobStatusRequest} for UpdateJobStatus operation.
+     * @return A Java Future containing the {@link UpdateJobStatusResult} of the UpdateJobStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<UpdateJobStatusResult> updateJobStatusAsync(UpdateJobStatusRequest request) {
+        return updateJobStatusAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Updates the status of a batch operation job.
+     *
+     * @param request A {@link UpdateJobStatusRequest} for UpdateJobStatus operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link UpdateJobStatusResult} of the UpdateJobStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<UpdateJobStatusResult> updateJobStatusAsync(UpdateJobStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
 }
 
 

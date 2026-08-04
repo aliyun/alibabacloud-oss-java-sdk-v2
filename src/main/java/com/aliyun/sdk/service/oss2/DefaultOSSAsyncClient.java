@@ -740,4 +740,29 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<GetBucketHttpsConfigResult> getBucketHttpsConfigAsync(GetBucketHttpsConfigRequest request, OperationOptions options) {
         return BucketHttpsConfig.getBucketHttpsConfigAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<CreateJobResult> createJobAsync(CreateJobRequest request, OperationOptions options) {
+        return BatchOperations.createJobAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DescribeJobResult> describeJobAsync(DescribeJobRequest request, OperationOptions options) {
+        return BatchOperations.describeJobAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<ListJobsResult> listJobsAsync(ListJobsRequest request, OperationOptions options) {
+        return BatchOperations.listJobsAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<UpdateJobPriorityResult> updateJobPriorityAsync(UpdateJobPriorityRequest request, OperationOptions options) {
+        return BatchOperations.updateJobPriorityAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<UpdateJobStatusResult> updateJobStatusAsync(UpdateJobStatusRequest request, OperationOptions options) {
+        return BatchOperations.updateJobStatusAsync(this.clientImpl, request, options);
+    }
 }
