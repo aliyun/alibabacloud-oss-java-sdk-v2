@@ -12,6 +12,9 @@ public final class JobOperation {
     @JacksonXmlProperty(localName = "PutObjectTagging")
     private JobPutObjectTagging putObjectTagging;
 
+    @JacksonXmlProperty(localName = "AddObjectTagging")
+    private JobAddObjectTagging addObjectTagging;
+
     @JacksonXmlProperty(localName = "DeleteObjectTagging")
     private JobDeleteObjectTagging deleteObjectTagging;
 
@@ -26,6 +29,7 @@ public final class JobOperation {
 
     private JobOperation(Builder builder) {
         this.putObjectTagging = builder.putObjectTagging;
+        this.addObjectTagging = builder.addObjectTagging;
         this.deleteObjectTagging = builder.deleteObjectTagging;
         this.putObjectAcl = builder.putObjectAcl;
         this.restoreObject = builder.restoreObject;
@@ -37,6 +41,10 @@ public final class JobOperation {
 
     public JobPutObjectTagging putObjectTagging() {
         return this.putObjectTagging;
+    }
+
+    public JobAddObjectTagging addObjectTagging() {
+        return this.addObjectTagging;
     }
 
     public JobDeleteObjectTagging deleteObjectTagging() {
@@ -57,6 +65,7 @@ public final class JobOperation {
 
     public static class Builder {
         private JobPutObjectTagging putObjectTagging;
+        private JobAddObjectTagging addObjectTagging;
         private JobDeleteObjectTagging deleteObjectTagging;
         private JobPutObjectAcl putObjectAcl;
         private JobRestoreObject restoreObject;
@@ -67,6 +76,7 @@ public final class JobOperation {
 
         private Builder(JobOperation from) {
             this.putObjectTagging = from.putObjectTagging;
+            this.addObjectTagging = from.addObjectTagging;
             this.deleteObjectTagging = from.deleteObjectTagging;
             this.putObjectAcl = from.putObjectAcl;
             this.restoreObject = from.restoreObject;
@@ -74,6 +84,11 @@ public final class JobOperation {
 
         public Builder putObjectTagging(JobPutObjectTagging value) {
             this.putObjectTagging = value;
+            return this;
+        }
+
+        public Builder addObjectTagging(JobAddObjectTagging value) {
+            this.addObjectTagging = value;
             return this;
         }
 

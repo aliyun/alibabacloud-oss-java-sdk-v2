@@ -69,6 +69,73 @@ public class CreateJobRequestTest {
     }
 
     @Test
+    public void testWithAddObjectTaggingOperation() {
+        Tag tag1 = Tag.newBuilder().key("Environment").value("Production").build();
+        Tag tag2 = Tag.newBuilder().key("Project").value("MyProject").build();
+        TagSet tagSet = TagSet.newBuilder().tags(Arrays.asList(tag1, tag2)).build();
+
+        JobAddObjectTagging addTagging = JobAddObjectTagging.newBuilder()
+                .tagSet(tagSet)
+                .build();
+
+        JobOperation operation = JobOperation.newBuilder()
+                .addObjectTagging(addTagging)
+                .build();
+
+        CreateJobRequestBody body = CreateJobRequestBody.newBuilder()
+                .operation(operation)
+                .priority(10L)
+                .roleArn("arn:acs:ram::uid:role/BatchOperationRole")
+                .clientRequestToken("token-1")
+                .build();
+
+        assertThat(body.operation()).isNotNull();
+        assertThat(body.operation().addObjectTagging()).isNotNull();
+        assertThat(body.operation().addObjectTagging().tagSet()).isNotNull();
+        assertThat(body.operation().addObjectTagging().tagSet().tags()).hasSize(2);
+        assertThat(body.operation().addObjectTagging().tagSet().tags().get(0).key()).isEqualTo("Environment");
+        assertThat(body.operation().addObjectTagging().tagSet().tags().get(0).value()).isEqualTo("Production");
+        assertThat(body.operation().addObjectTagging().tagSet().tags().get(1).key()).isEqualTo("Project");
+        assertThat(body.operation().addObjectTagging().tagSet().tags().get(1).value()).isEqualTo("MyProject");
+        assertThat(body.operation().putObjectTagging()).isNull();
+    }
+
+    @Test
+    public void testAddObjectTaggingXmlSerialization() throws JsonProcessingException {
+        Tag tag = Tag.newBuilder().key("env").value("prod").build();
+        TagSet tagSet = TagSet.newBuilder().tags(Arrays.asList(tag)).build();
+
+        JobAddObjectTagging addTagging = JobAddObjectTagging.newBuilder()
+                .tagSet(tagSet)
+                .build();
+
+        JobOperation operation = JobOperation.newBuilder()
+                .addObjectTagging(addTagging)
+                .build();
+
+        CreateJobRequestBody body = CreateJobRequestBody.newBuilder()
+                .confirmationRequired(false)
+                .operation(operation)
+                .priority(10L)
+                .roleArn("arn:acs:ram::uid:role/BatchOperationRole")
+                .clientRequestToken("token-add")
+                .build();
+
+        CreateJobRequest request = CreateJobRequest.newBuilder()
+                .createJobBody(body)
+                .build();
+
+        OperationInput input = SerdeBatchOperations.fromCreateJob(request);
+        BinaryData bodyData = input.body().get();
+        String xmlContent = new String(bodyData.toBytes(), StandardCharsets.UTF_8);
+        assertThat(xmlContent).contains("<AddObjectTagging>");
+        assertThat(xmlContent).contains("<TagSet>");
+        assertThat(xmlContent).contains("<Key>env</Key>");
+        assertThat(xmlContent).contains("<Value>prod</Value>");
+        assertThat(xmlContent).doesNotContain("<PutObjectTagging>");
+    }
+
+    @Test
     public void testWithDeleteObjectTaggingOperation() {
         JobDeleteObjectTagging deleteTagging = JobDeleteObjectTagging.newBuilder().build();
         JobOperation operation = JobOperation.newBuilder()
@@ -312,6 +379,14 @@ public class CreateJobRequestTest {
                 "        </Tag>\n" +
                 "      </TagSet>\n" +
                 "    </PutObjectTagging>\n" +
+                "    <AddObjectTagging>\n" +
+                "      <TagSet>\n" +
+                "        <Tag>\n" +
+                "          <Key>Environment</Key>\n" +
+                "          <Value>Production</Value>\n" +
+                "        </Tag>\n" +
+                "      </TagSet>\n" +
+                "    </AddObjectTagging>\n" +
                 "    <DeleteObjectTagging>\n" +
                 "    </DeleteObjectTagging>\n" +
                 "    <PutObjectAcl>\n" +
@@ -361,6 +436,10 @@ public class CreateJobRequestTest {
                 .tagSet(tagSet)
                 .build();
 
+        JobAddObjectTagging addTagging = JobAddObjectTagging.newBuilder()
+                .tagSet(tagSet)
+                .build();
+
         JobDeleteObjectTagging deleteTagging = JobDeleteObjectTagging.newBuilder().build();
 
         JobPutObjectAcl putAcl = JobPutObjectAcl.newBuilder()
@@ -374,6 +453,7 @@ public class CreateJobRequestTest {
 
         JobOperation operation = JobOperation.newBuilder()
                 .putObjectTagging(putTagging)
+                .addObjectTagging(addTagging)
                 .deleteObjectTagging(deleteTagging)
                 .putObjectAcl(putAcl)
                 .restoreObject(restore)
