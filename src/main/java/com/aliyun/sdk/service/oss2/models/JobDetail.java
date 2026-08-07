@@ -1,9 +1,6 @@
 package com.aliyun.sdk.service.oss2.models;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-
-import java.util.List;
 
 /**
  * The detailed information about a batch operation job.
@@ -52,9 +49,8 @@ public final class JobDetail {
     @JacksonXmlProperty(localName = "ProgressSummary")
     private JobProgressSummary progressSummary;
 
-    @JacksonXmlElementWrapper(localName = "FailureReasons")
-    @JacksonXmlProperty(localName = "JobFailure")
-    private List<JobFailure> failureReasons;
+    @JacksonXmlProperty(localName = "FailureReasons")
+    private FailureReasons failureReasons;
 
     public JobDetail() {
     }
@@ -137,7 +133,7 @@ public final class JobDetail {
         return this.progressSummary;
     }
 
-    public List<JobFailure> failureReasons() {
+    public FailureReasons failureReasons() {
         return this.failureReasons;
     }
 
@@ -160,7 +156,7 @@ public final class JobDetail {
         private String statusUpdateReason;
         private Long terminationDate;
         private JobProgressSummary progressSummary;
-        private List<JobFailure> failureReasons;
+        private FailureReasons failureReasons;
 
         private Builder() {
             super();
@@ -254,7 +250,7 @@ public final class JobDetail {
             return this;
         }
 
-        public Builder failureReasons(List<JobFailure> value) {
+        public Builder failureReasons(FailureReasons value) {
             this.failureReasons = value;
             return this;
         }

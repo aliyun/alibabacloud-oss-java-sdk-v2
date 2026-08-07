@@ -149,6 +149,119 @@ public class DescribeJobResultTest {
     }
 
     @Test
+    public void testXmlWithFailureReasons() {
+        String xml =
+                "<DescribeJobResult>\n" +
+                "  <Job>\n" +
+                "    <ConfirmationRequired>false</ConfirmationRequired>\n" +
+                "    <CreationTime>1785831911</CreationTime>\n" +
+                "    <FailureReasons>\n" +
+                "      <JobFailure>\n" +
+                "        <FailureCode>TooManyFailures</FailureCode>\n" +
+                "        <FailureReason>Too many failures.</FailureReason>\n" +
+                "      </JobFailure>\n" +
+                "    </FailureReasons>\n" +
+                "    <JobId>ZDc3YmY1ODUyNjg2NDM3OGExM2Y2YmQ5NDk0NWI2NTU=</JobId>\n" +
+                "    <Operation>\n" +
+                "      <PutObjectAcl>\n" +
+                "        <ObjectAcl>public-read</ObjectAcl>\n" +
+                "      </PutObjectAcl>\n" +
+                "    </Operation>\n" +
+                "    <Report>\n" +
+                "      <Enabled>true</Enabled>\n" +
+                "      <Bucket>sdk-oss-test-hz-zxl</Bucket>\n" +
+                "      <Prefix>batch-reports/</Prefix>\n" +
+                "      <ReportScope>AllTasks</ReportScope>\n" +
+                "    </Report>\n" +
+                "    <Description>Batch put object acl job</Description>\n" +
+                "    <Priority>10</Priority>\n" +
+                "    <RoleArn>acs:ram::1303778382245978:role/oss-sdk-batch-test</RoleArn>\n" +
+                "    <KeyPrefixManifestGenerator>\n" +
+                "      <SourceBucket>sdk-oss-test-hz-zxl</SourceBucket>\n" +
+                "      <Prefix>test/</Prefix>\n" +
+                "    </KeyPrefixManifestGenerator>\n" +
+                "    <ProgressSummary>\n" +
+                "      <NumberOfTasksFailed>3</NumberOfTasksFailed>\n" +
+                "      <NumberOfTasksSucceeded>0</NumberOfTasksSucceeded>\n" +
+                "      <TotalNumberOfTasks>3</TotalNumberOfTasks>\n" +
+                "      <Timers>\n" +
+                "        <ElapsedTimeInActiveSeconds>8</ElapsedTimeInActiveSeconds>\n" +
+                "      </Timers>\n" +
+                "    </ProgressSummary>\n" +
+                "    <Status>Failed</Status>\n" +
+                "    <TerminationDate>1785831929</TerminationDate>\n" +
+                "  </Job>\n" +
+                "</DescribeJobResult>";
+
+        OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(xml))
+                .statusCode(200)
+                .status("OK")
+                .build();
+
+        DescribeJobResult result = SerdeBatchOperations.toDescribeJob(output);
+        assertThat(result.describeJobResult()).isNotNull();
+
+        JobDetail job = result.describeJobResult().job();
+        assertThat(job.confirmationRequired()).isFalse();
+        assertThat(job.creationTime()).isEqualTo(1785831911L);
+        assertThat(job.jobId()).isEqualTo("ZDc3YmY1ODUyNjg2NDM3OGExM2Y2YmQ5NDk0NWI2NTU=");
+        assertThat(job.description()).isEqualTo("Batch put object acl job");
+        assertThat(job.priority()).isEqualTo(10L);
+        assertThat(job.roleArn()).isEqualTo("acs:ram::1303778382245978:role/oss-sdk-batch-test");
+        assertThat(job.status()).isEqualTo("Failed");
+        assertThat(job.terminationDate()).isEqualTo(1785831929L);
+
+        // Verify FailureReasons - single JobFailure object
+        assertThat(job.failureReasons()).isNotNull();
+        assertThat(job.failureReasons().jobFailure()).isNotNull();
+        assertThat(job.failureReasons().jobFailure().failureCode()).isEqualTo("TooManyFailures");
+        assertThat(job.failureReasons().jobFailure().failureReason()).isEqualTo("Too many failures.");
+
+        // Verify operation
+        assertThat(job.operation()).isNotNull();
+        assertThat(job.operation().putObjectAcl()).isNotNull();
+        assertThat(job.operation().putObjectAcl().objectAcl()).isEqualTo("public-read");
+
+        // Verify report
+        assertThat(job.report()).isNotNull();
+        assertThat(job.report().enabled()).isTrue();
+        assertThat(job.report().bucket()).isEqualTo("sdk-oss-test-hz-zxl");
+
+        // Verify progress summary
+        assertThat(job.progressSummary()).isNotNull();
+        assertThat(job.progressSummary().numberOfTasksFailed()).isEqualTo(3L);
+        assertThat(job.progressSummary().numberOfTasksSucceeded()).isEqualTo(0L);
+        assertThat(job.progressSummary().totalNumberOfTasks()).isEqualTo(3L);
+    }
+
+    @Test
+    public void testBuilderWithFailureReasons() {
+        JobDetail job = JobDetail.newBuilder()
+                .jobId("job456")
+                .status("Failed")
+                .failureReasons(FailureReasons.newBuilder()
+                        .jobFailure(JobFailure.newBuilder()
+                                .failureCode("TooManyFailures")
+                                .failureReason("Too many failures.")
+                                .build())
+                        .build())
+                .build();
+
+        assertThat(job.failureReasons()).isNotNull();
+        assertThat(job.failureReasons().jobFailure()).isNotNull();
+        assertThat(job.failureReasons().jobFailure().failureCode()).isEqualTo("TooManyFailures");
+        assertThat(job.failureReasons().jobFailure().failureReason()).isEqualTo("Too many failures.");
+
+        // Verify toBuilder round-trip
+        JobDetail copy = job.toBuilder().build();
+        assertThat(copy.failureReasons()).isNotNull();
+        assertThat(copy.failureReasons().jobFailure()).isNotNull();
+        assertThat(copy.failureReasons().jobFailure().failureCode()).isEqualTo("TooManyFailures");
+        assertThat(copy.failureReasons().jobFailure().failureReason()).isEqualTo("Too many failures.");
+    }
+
+    @Test
     public void testToBuilder() {
         DescribeJobResult result = DescribeJobResult.newBuilder()
                 .statusCode(200)

@@ -44,11 +44,10 @@ public class DescribeJob implements Example {
                         job.jobId(), job.description(), job.status(), job.priority(),
                         job.statusUpdateReason());
 
-                if (job.failureReasons() != null && !job.failureReasons().isEmpty()) {
-                    for (JobFailure failure : job.failureReasons()) {
-                        System.out.printf("Failure - code:%s, reason:%s%n",
-                                failure.failureCode(), failure.failureReason());
-                    }
+                if (job.failureReasons() != null && job.failureReasons().jobFailure() != null) {
+                    System.out.printf("Failure - code:%s, reason:%s%n",
+                            job.failureReasons().jobFailure().failureCode(),
+                            job.failureReasons().jobFailure().failureReason());
                 }
 
                 if (job.operation() != null) {
