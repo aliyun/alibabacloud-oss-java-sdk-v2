@@ -8,16 +8,11 @@ import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.junit.Assert;
 import org.junit.Test;
-import java.util.Random;
 
 public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
 
-    private static String genBucketSpacePrefix() {
-        return "oss-sdk-test-java-bs-" + new Random().nextInt(5000);
-    }
-
     private static String getFullAgenticBucketName() {
-        return agenticBucketName + "-" + accountId() + "-" + region() + "-ab-apsr";
+        return buildFullName(agenticBucketName, AGENTIC_BUCKET_SUFFIX);
     }
 
     /**
@@ -28,8 +23,8 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
      */
     @Test
     public void testBucketSpaceLifecycle() {
-        String bsPrefix = genBucketSpacePrefix();
-        String bsFullName = bsPrefix + "-" + accountId() + "-" + region() + "-bs-apsr";
+        String bsPrefix = genBucketSpaceName();
+        String bsFullName = buildFullName(bsPrefix, BUCKET_SPACE_SUFFIX);
         String bsFullAgenticBucket = getFullAgenticBucketName();
 
         try {
@@ -69,7 +64,8 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
             Assert.assertTrue("Created BucketSpace should appear in list", found);
 
         } finally {
-            // 4. DeleteBucket (reused) - cleanup
+            // 4. DeleteBucket (reused) - cleanup, a non-empty bucket space cannot be deleted
+            cleanBucketSpaceObjects(bsFullName);
             try {
                 getDefaultClient().deleteBucket(DeleteBucketRequest.newBuilder()
                         .bucket(bsFullName).build());
@@ -88,8 +84,8 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
      */
     @Test
     public void testBucketSpaceClientIndependent() {
-        String bsPrefix = genBucketSpacePrefix();
-        String expectedFullName = bsPrefix + "-" + accountId() + "-" + region() + "-bs-apsr";
+        String bsPrefix = genBucketSpaceName();
+        String expectedFullName = buildFullName(bsPrefix, BUCKET_SPACE_SUFFIX);
         String bsFullAgenticBucket = getFullAgenticBucketName();
 
         ClientConfiguration config = ClientConfiguration.newBuilder()
@@ -136,6 +132,7 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
 
         } finally {
             // 4. DeleteBucket (reused) - cleanup via BucketSpaceClient
+            cleanBucketSpaceObjects(expectedFullName);
             try {
                 bsClient.deleteBucket(DeleteBucketRequest.newBuilder()
                         .bucket(bsPrefix).build());
@@ -152,7 +149,8 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
      */
     @Test
     public void testBucketSpaceObjectOperationsPathStyle() {
-        String bsPrefix = genBucketSpacePrefix();
+        String bsPrefix = genBucketSpaceName();
+        String bsFullName = buildFullName(bsPrefix, BUCKET_SPACE_SUFFIX);
         String bsFullAgenticBucket = getFullAgenticBucketName();
 
         // Create BucketSpace via standard BucketSpaceClient first
@@ -240,7 +238,9 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
             }
 
         } finally {
-            // Cleanup BucketSpace
+            // Cleanup BucketSpace: drain first, the object deleted above may still be there when
+            // the path-style delete was refused by the endpoint.
+            cleanBucketSpaceObjects(bsFullName);
             try {
                 stdClient.deleteBucket(DeleteBucketRequest.newBuilder()
                         .bucket(bsPrefix).build());

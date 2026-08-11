@@ -7,17 +7,12 @@ import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.junit.Assert;
 import org.junit.Test;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class ClientAgenticBucketSpaceAsyncTest extends TestBaseAgentic {
 
-    private static String genBucketSpacePrefix() {
-        return "oss-sdk-test-java-bs-" + new Random().nextInt(5000);
-    }
-
     private static String getFullAgenticBucketName() {
-        return agenticBucketName + "-" + accountId() + "-" + region() + "-ab-apsr";
+        return buildFullName(agenticBucketName, AGENTIC_BUCKET_SUFFIX);
     }
 
     /**
@@ -28,8 +23,8 @@ public class ClientAgenticBucketSpaceAsyncTest extends TestBaseAgentic {
      */
     @Test
     public void testBucketSpaceLifecycleAsync() throws ExecutionException, InterruptedException {
-        String bsPrefix = genBucketSpacePrefix();
-        String bsFullName = bsPrefix + "-" + accountId() + "-" + region() + "-bs-apsr";
+        String bsPrefix = genBucketSpaceName();
+        String bsFullName = buildFullName(bsPrefix, BUCKET_SPACE_SUFFIX);
         String bsFullAgenticBucket = getFullAgenticBucketName();
 
         OSSAsyncClient asyncClient = getDefaultAsyncClient();
@@ -70,7 +65,8 @@ public class ClientAgenticBucketSpaceAsyncTest extends TestBaseAgentic {
             Assert.assertTrue("Created BucketSpace should appear in list", found);
 
         } finally {
-            // 4. DeleteBucket (reused) - cleanup
+            // 4. DeleteBucket (reused) - cleanup, a non-empty bucket space cannot be deleted
+            cleanBucketSpaceObjects(bsFullName);
             try {
                 asyncClient.deleteBucketAsync(DeleteBucketRequest.newBuilder()
                         .bucket(bsFullName).build()).get();
@@ -86,8 +82,8 @@ public class ClientAgenticBucketSpaceAsyncTest extends TestBaseAgentic {
      */
     @Test
     public void testBucketSpaceClientIndependentAsync() throws ExecutionException, InterruptedException {
-        String bsPrefix = genBucketSpacePrefix();
-        String expectedFullName = bsPrefix + "-" + accountId() + "-" + region() + "-bs-apsr";
+        String bsPrefix = genBucketSpaceName();
+        String expectedFullName = buildFullName(bsPrefix, BUCKET_SPACE_SUFFIX);
         String bsFullAgenticBucket = getFullAgenticBucketName();
 
         OSSAsyncClient asyncClient = getDefaultAsyncClient();
@@ -129,6 +125,7 @@ public class ClientAgenticBucketSpaceAsyncTest extends TestBaseAgentic {
 
         } finally {
             // 4. DeleteBucket (reused) - cleanup via OSSAsyncClient
+            cleanBucketSpaceObjects(expectedFullName);
             try {
                 asyncClient.deleteBucketAsync(DeleteBucketRequest.newBuilder()
                         .bucket(expectedFullName).build()).get();
@@ -145,8 +142,8 @@ public class ClientAgenticBucketSpaceAsyncTest extends TestBaseAgentic {
      */
     @Test
     public void testBucketSpaceObjectOperationsPathStyleAsync() throws ExecutionException, InterruptedException {
-        String bsPrefix = genBucketSpacePrefix();
-        String bsFullName = bsPrefix + "-" + accountId() + "-" + region() + "-bs-apsr";
+        String bsPrefix = genBucketSpaceName();
+        String bsFullName = buildFullName(bsPrefix, BUCKET_SPACE_SUFFIX);
         String bsFullAgenticBucket = getFullAgenticBucketName();
 
         // Create BucketSpace via standard OSSAsyncClient first
@@ -226,7 +223,9 @@ public class ClientAgenticBucketSpaceAsyncTest extends TestBaseAgentic {
             }
 
         } finally {
-            // Cleanup BucketSpace
+            // Cleanup BucketSpace: drain first, the object deleted above may still be there when
+            // the path-style delete was refused by the endpoint.
+            cleanBucketSpaceObjects(bsFullName);
             try {
                 stdAsyncClient.deleteBucketAsync(DeleteBucketRequest.newBuilder()
                         .bucket(bsFullName).build()).get();

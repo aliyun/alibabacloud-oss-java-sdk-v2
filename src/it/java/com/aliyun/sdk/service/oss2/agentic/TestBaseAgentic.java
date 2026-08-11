@@ -1,25 +1,60 @@
 package com.aliyun.sdk.service.oss2.agentic;
 
+import com.aliyun.sdk.service.oss2.OSSClient;
 import com.aliyun.sdk.service.oss2.TestBase;
 import com.aliyun.sdk.service.oss2.agentic.models.*;
 import com.aliyun.sdk.service.oss2.agentic.paginator.ListAgenticBucketsIterable;
+import com.aliyun.sdk.service.oss2.agentic.paginator.ListBucketSpacesIterable;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.StaticCredentialsProvider;
 import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
+import com.aliyun.sdk.service.oss2.models.DeleteBucketRequest;
+import com.aliyun.sdk.service.oss2.models.DeleteObjectRequest;
+import com.aliyun.sdk.service.oss2.models.ListObjectsV2Request;
+import com.aliyun.sdk.service.oss2.models.ListObjectsV2Result;
+import com.aliyun.sdk.service.oss2.models.ObjectSummary;
+import com.aliyun.sdk.service.oss2.paginator.ListObjectsV2Iterable;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+
 import java.util.Random;
 
+/**
+ * Shared helpers for the agentic integration tests: client factories, name builders and the
+ * prefix based reaper that bounds the backlog left by the two-phase agentic bucket lifecycle.
+ * <p>
+ * The service requires PutAgenticBucketStatus(Disabled) before DeleteAgenticBucket, and the bucket
+ * only becomes deletable roughly 24 hours later. A run therefore cannot delete the buckets it
+ * creates; it only marks them Disabled and reclaims the ones left behind by earlier runs whose
+ * readiness window has elapsed.
+ */
 public class TestBaseAgentic extends TestBase {
-    protected static final String AGENTIC_BUCKET_NAME_PREFIX = "oss-sdk-test-java-ab-";
+    /**
+     * The 'ab' / 'bs' markers are what the reaper filters on. The prefixes are kept short on
+     * purpose: the resolved name {bucket}-{accountId}-{region}-ab-apsr becomes a DNS host label
+     * and must stay within 63 characters, which leaves 23 characters for prefix plus random part
+     * (63 - 1 - 16 for the account id - 1 - 14 for the longest region - 8 for '-ab-apsr').
+     */
+    protected static final String AGENTIC_BUCKET_NAME_PREFIX = "java-sdk-test-ab-";
+    protected static final String BUCKET_SPACE_NAME_PREFIX = "java-sdk-test-bs-";
 
-    protected static String agenticBucketNamePrefix;
+    /** The tail the service appends to an agentic bucket name. */
+    protected static final String AGENTIC_BUCKET_SUFFIX = "ab-apsr";
+
+    /** The tail the service appends to a bucket space name. */
+    protected static final String BUCKET_SPACE_SUFFIX = "bs-apsr";
+
+    private static final String LETTERS = "abcdefghijklmnopqrstuvwxyz";
+    private static final int RANDOM_NAME_LENGTH = 6;
+    protected static final int LIST_RETRY_TIMES = 10;
+    protected static final int LIST_RETRY_INTERVAL_SECONDS = 3;
+
     protected static String agenticBucketName;
     protected static OSSAgenticBucketClient agenticClient;
 
     @BeforeClass
     public static void oneTimeSetUp() {
-        agenticBucketNamePrefix = genAgenticBucketNamePrefix();
         agenticBucketName = genAgenticBucketName();
         agenticClient = newAgenticClient();
         createAgenticBucket(agenticClient, agenticBucketName);
@@ -27,16 +62,50 @@ public class TestBaseAgentic extends TestBase {
 
     @AfterClass
     public static void oneTimeSetDown() {
-        cleanAgenticBuckets(agenticBucketNamePrefix);
+        // A bucket left Enabled can never be reclaimed, so disable this run's bucket even when the
+        // scenario failed. Only then reap the backlog of the previous runs.
+        disableAgenticBucketQuietly(agenticBucketName);
+        reapDisabledAgenticBuckets();
     }
 
-    public static String genAgenticBucketNamePrefix() {
-        long val = new Random().nextInt(500);
-        return AGENTIC_BUCKET_NAME_PREFIX + val;
-    }
-
+    /**
+     * Fixed-length random suffix: names must not be prefixes of one another, otherwise the reaper
+     * would also match the bucket of a concurrently running job.
+     */
     public static String genAgenticBucketName() {
-        return agenticBucketNamePrefix;
+        return AGENTIC_BUCKET_NAME_PREFIX + randStr(RANDOM_NAME_LENGTH);
+    }
+
+    public static String genBucketSpaceName() {
+        return BUCKET_SPACE_NAME_PREFIX + randStr(RANDOM_NAME_LENGTH);
+    }
+
+    private static String randStr(int length) {
+        Random random = new Random();
+        StringBuilder builder = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            builder.append(LETTERS.charAt(random.nextInt(LETTERS.length())));
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Resolves a short name to the server side full name {bucket}-{accountId}-{region}-{suffix}.
+     */
+    public static String buildFullName(String bucket, String suffix) {
+        return bucket + "-" + accountId() + "-" + region() + "-" + suffix;
+    }
+
+    /**
+     * Strips the resolved tail so a listed physical name can be handed back to a client that
+     * re-expands short names.
+     */
+    public static String toShortName(String fullName, String suffix) {
+        String tail = "-" + accountId() + "-" + region() + "-" + suffix;
+        if (fullName.endsWith(tail)) {
+            return fullName.substring(0, fullName.length() - tail.length());
+        }
+        return fullName;
     }
 
     public static OSSAgenticBucketClient newAgenticClient() {
@@ -112,9 +181,96 @@ public class TestBaseAgentic extends TestBase {
         waitForCacheExpiration(1);
     }
 
-    // Best-effort cleanup: remove attached properties before deleting the bucket.
-    public static void cleanAgenticBucket(String bucket) {
-        OSSAgenticBucketClient client = newAgenticClient();
+    /**
+     * A newly created agentic bucket only shows up in ListAgenticBuckets after a while, so poll.
+     * Returns false when it is still missing; the caller skips instead of failing, the existence of
+     * the bucket is already asserted by GetAgenticBucket.
+     */
+    public static boolean waitForAgenticBucketListed(OSSAgenticBucketClient client, String bucket) {
+        for (int i = 0; i < LIST_RETRY_TIMES; i++) {
+            ListAgenticBucketsIterable iterable = client.listAgenticBucketsPaginator(
+                    ListAgenticBucketsRequest.newBuilder().build());
+            for (ListAgenticBucketsResult page : iterable) {
+                Assert.assertEquals(200, page.statusCode());
+                if (page.agenticBuckets() == null) {
+                    continue;
+                }
+                for (AgenticBucketSummary summary : page.agenticBuckets()) {
+                    if (summary.name() != null && summary.name().contains(bucket)) {
+                        return true;
+                    }
+                }
+            }
+            waitForCacheExpiration(LIST_RETRY_INTERVAL_SECONDS);
+        }
+        return false;
+    }
+
+    /** Best-effort: the bucket of the current run must not be left Enabled. */
+    public static void disableAgenticBucketQuietly(String bucket) {
+        if (bucket == null) {
+            return;
+        }
+        try {
+            newAgenticClient().putAgenticBucketStatus(PutAgenticBucketStatusRequest.newBuilder()
+                    .bucket(bucket)
+                    .agenticBucketStatus(AgenticBucketStatus.newBuilder()
+                            .status("Disabled")
+                            .build())
+                    .build());
+        } catch (Exception ignore) {
+        }
+    }
+
+    /**
+     * Reclaims the agentic buckets left behind by the previous runs: only the ones already Disabled
+     * are touched, an Enabled one may belong to a concurrently running job. Best-effort, every
+     * error is swallowed so that teardown never fails.
+     */
+    public static void reapDisabledAgenticBuckets() {
+        try {
+            OSSAgenticBucketClient client = newAgenticClient();
+            ListAgenticBucketsIterable iterable = client.listAgenticBucketsPaginator(
+                    ListAgenticBucketsRequest.newBuilder().build());
+            for (ListAgenticBucketsResult result : iterable) {
+                if (result.agenticBuckets() == null) {
+                    continue;
+                }
+                for (AgenticBucketSummary bucket : result.agenticBuckets()) {
+                    if (bucket.name() == null || !bucket.name().startsWith(AGENTIC_BUCKET_NAME_PREFIX)) {
+                        continue;
+                    }
+                    reapDisabledAgenticBucket(client, toShortName(bucket.name(), AGENTIC_BUCKET_SUFFIX));
+                }
+            }
+        } catch (Exception ignore) {
+        }
+    }
+
+    private static void reapDisabledAgenticBucket(OSSAgenticBucketClient client, String bucket) {
+        // The list summary carries no status, so fetch it: anything not Disabled is off limits.
+        String status = null;
+        try {
+            GetAgenticBucketResult result = client.getAgenticBucket(
+                    GetAgenticBucketRequest.newBuilder().bucket(bucket).build());
+            if (result.agenticBucketInfo() != null) {
+                status = result.agenticBucketInfo().status();
+            }
+        } catch (Exception ignore) {
+        }
+        if (!"Disabled".equals(status)) {
+            return;
+        }
+        detachAgenticBucketProperties(client, bucket);
+        reapBucketSpaces(client, bucket);
+        // Answers 409 AgenticBucketNotReady until the readiness window has elapsed.
+        try {
+            client.deleteAgenticBucket(DeleteAgenticBucketRequest.newBuilder().bucket(bucket).build());
+        } catch (Exception ignore) {
+        }
+    }
+
+    private static void detachAgenticBucketProperties(OSSAgenticBucketClient client, String bucket) {
         try {
             client.deleteAgenticBucketPolicy(DeleteAgenticBucketPolicyRequest.newBuilder()
                     .bucket(bucket).build());
@@ -130,49 +286,61 @@ public class TestBaseAgentic extends TestBase {
                     .bucket(bucket).build());
         } catch (Exception ignore) {
         }
-        // Disable the bucket before deletion (required: 409 AgenticBucketNotDisabled)
+    }
+
+    /** Empties and deletes every bucket space of a Disabled agentic bucket. Best-effort. */
+    private static void reapBucketSpaces(OSSAgenticBucketClient client, String bucket) {
         try {
-            client.putAgenticBucketStatus(PutAgenticBucketStatusRequest.newBuilder()
-                    .bucket(bucket)
-                    .agenticBucketStatus(AgenticBucketStatus.newBuilder()
-                            .status("Disabled")
-                            .build())
-                    .build());
-        } catch (Exception ignore) {
-        }
-        try {
-            client.deleteAgenticBucket(DeleteAgenticBucketRequest.newBuilder()
-                    .bucket(bucket).build());
+            ListBucketSpacesIterable iterable = client.listBucketSpacesPaginator(
+                    ListBucketSpacesRequest.newBuilder().bucket(bucket).build());
+            for (ListBucketSpacesResult result : iterable) {
+                if (result.bucketSpaces() == null) {
+                    continue;
+                }
+                for (BucketSpaceSummary space : result.bucketSpaces()) {
+                    if (space.name() == null) {
+                        continue;
+                    }
+                    // A non-empty bucket space cannot be deleted, and an agentic bucket that still
+                    // owns a bucket space cannot be deleted either.
+                    cleanBucketSpaceObjects(space.name());
+                    deleteBucketSpaceQuietly(space.name());
+                }
+            }
         } catch (Exception ignore) {
         }
     }
 
-    /**
-     * Extract user-specified prefix from a full agentic bucket name.
-     * AgenticProvider appends '-{accountId}-{region}-ab-apsr' to the prefix.
-     * Strip that suffix to recover the original prefix for API calls.
-     */
-    public static String extractPrefix(String fullName) {
-        String suffix = "-" + accountId() + "-" + region() + "-ab-apsr";
-        if (fullName.endsWith(suffix)) {
-            return fullName.substring(0, fullName.length() - suffix.length());
-        }
-        return fullName;
-    }
-
-    public static void cleanAgenticBuckets(String prefix) {
-        OSSAgenticBucketClient client = newAgenticClient();
-        ListAgenticBucketsIterable iterable = client.listAgenticBucketsPaginator(
-                ListAgenticBucketsRequest.newBuilder().build());
-        for (ListAgenticBucketsResult result : iterable) {
-            if (result.agenticBuckets() != null) {
-                for (AgenticBucketSummary bucket : result.agenticBuckets()) {
-                    if (bucket.name() != null && bucket.name().startsWith(prefix)) {
-                        String bucketPrefix = extractPrefix(bucket.name());
-                        cleanAgenticBucket(bucketPrefix);
+    /** Empties a bucket space, a non-empty one cannot be deleted. Best-effort. */
+    public static void cleanBucketSpaceObjects(String spaceFullName) {
+        try {
+            OSSClient client = getDefaultClient();
+            ListObjectsV2Iterable iterable = client.listObjectsV2Paginator(
+                    ListObjectsV2Request.newBuilder().bucket(spaceFullName).build());
+            for (ListObjectsV2Result result : iterable) {
+                if (result.contents() == null) {
+                    continue;
+                }
+                for (ObjectSummary object : result.contents()) {
+                    try {
+                        client.deleteObject(DeleteObjectRequest.newBuilder()
+                                .bucket(spaceFullName)
+                                .key(object.key())
+                                .build());
+                    } catch (Exception ignore) {
                     }
                 }
             }
+        } catch (Exception ignore) {
+        }
+    }
+
+    /** Deletes a bucket space by its full name. Best-effort. */
+    public static void deleteBucketSpaceQuietly(String spaceFullName) {
+        try {
+            getDefaultClient().deleteBucket(DeleteBucketRequest.newBuilder()
+                    .bucket(spaceFullName).build());
+        } catch (Exception ignore) {
         }
     }
 

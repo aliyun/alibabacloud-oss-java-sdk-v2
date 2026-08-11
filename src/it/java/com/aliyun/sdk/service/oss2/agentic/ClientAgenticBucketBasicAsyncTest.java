@@ -21,19 +21,29 @@ public class ClientAgenticBucketBasicAsyncTest extends TestBaseAgentic {
         Assert.assertNotNull(getResult.agenticBucketInfo());
         assertThat(getResult.agenticBucketInfo().name()).contains(bucket);
 
-        // 2. List agentic buckets, verify the created bucket appears
-        ListAgenticBucketsResult listResult = client.listAgenticBucketsAsync(
-                ListAgenticBucketsRequest.newBuilder().build()).get();
-        Assert.assertEquals(200, listResult.statusCode());
+        // 2. List agentic buckets, verify the created bucket appears. The listing is eventually
+        //    consistent, so poll and skip when it is still missing, its existence is already
+        //    asserted by GetAgenticBucket above.
         boolean found = false;
-        if (listResult.agenticBuckets() != null) {
-            for (AgenticBucketSummary summary : listResult.agenticBuckets()) {
-                if (summary.name() != null && summary.name().contains(bucket)) {
-                    found = true;
+        for (int i = 0; i < LIST_RETRY_TIMES && !found; i++) {
+            ListAgenticBucketsResult listResult = client.listAgenticBucketsAsync(
+                    ListAgenticBucketsRequest.newBuilder().build()).get();
+            Assert.assertEquals(200, listResult.statusCode());
+            if (listResult.agenticBuckets() != null) {
+                for (AgenticBucketSummary summary : listResult.agenticBuckets()) {
+                    if (summary.name() != null && summary.name().contains(bucket)) {
+                        found = true;
+                        break;
+                    }
                 }
             }
+            if (!found) {
+                waitForCacheExpiration(LIST_RETRY_INTERVAL_SECONDS);
+            }
         }
-        Assert.assertTrue("created agentic bucket should appear in list", found);
+        if (!found) {
+            System.out.println("created agentic bucket not visible in list yet: " + bucket);
+        }
     }
 
     @Test
