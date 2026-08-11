@@ -1,36 +1,33 @@
 package com.aliyun.sdk.service.oss2.agentic;
 
 import com.aliyun.sdk.service.oss2.agentic.models.*;
-import com.aliyun.sdk.service.oss2.agentic.paginator.ListAgenticBucketsIterable;
 import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import org.junit.Assert;
 import org.junit.Test;
+import java.util.concurrent.ExecutionException;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ClientAgenticBucketBasicTest extends TestBaseAgentic {
+public class ClientAgenticBucketBasicAsyncTest extends TestBaseAgentic {
 
     @Test
-    public void testAgenticBucketLifecycle() {
-        OSSAgenticBucketClient client = agenticClient;
+    public void testAgenticBucketLifecycleAsync() throws ExecutionException, InterruptedException {
+        OSSAsyncAgenticBucketClient client = newAgenticAsyncClient();
         String bucket = agenticBucketName;
 
         // 1. Get agentic bucket
-        GetAgenticBucketResult getResult = client.getAgenticBucket(
-                GetAgenticBucketRequest.newBuilder().bucket(bucket).build());
+        GetAgenticBucketResult getResult = client.getAgenticBucketAsync(
+                GetAgenticBucketRequest.newBuilder().bucket(bucket).build()).get();
         Assert.assertEquals(200, getResult.statusCode());
         Assert.assertNotNull(getResult.agenticBucketInfo());
         assertThat(getResult.agenticBucketInfo().name()).contains(bucket);
 
-        // 2. List agentic buckets via paginator, verify the created bucket appears
+        // 2. List agentic buckets, verify the created bucket appears
+        ListAgenticBucketsResult listResult = client.listAgenticBucketsAsync(
+                ListAgenticBucketsRequest.newBuilder().build()).get();
+        Assert.assertEquals(200, listResult.statusCode());
         boolean found = false;
-        ListAgenticBucketsIterable iterable = client.listAgenticBucketsPaginator(
-                ListAgenticBucketsRequest.newBuilder().build());
-        for (ListAgenticBucketsResult page : iterable) {
-            Assert.assertEquals(200, page.statusCode());
-            if (page.agenticBuckets() == null) {
-                continue;
-            }
-            for (AgenticBucketSummary summary : page.agenticBuckets()) {
+        if (listResult.agenticBuckets() != null) {
+            for (AgenticBucketSummary summary : listResult.agenticBuckets()) {
                 if (summary.name() != null && summary.name().contains(bucket)) {
                     found = true;
                 }
@@ -40,28 +37,29 @@ public class ClientAgenticBucketBasicTest extends TestBaseAgentic {
     }
 
     @Test
-    public void testPutAgenticBucketStatus() {
-        OSSAgenticBucketClient client = agenticClient;
+    public void testPutAgenticBucketStatusAsync() throws ExecutionException, InterruptedException {
+        OSSAsyncAgenticBucketClient client = newAgenticAsyncClient();
         String bucket = agenticBucketName;
 
-        PutAgenticBucketStatusResult putResult = client.putAgenticBucketStatus(
+        PutAgenticBucketStatusResult putResult = client.putAgenticBucketStatusAsync(
                 PutAgenticBucketStatusRequest.newBuilder()
                         .bucket(bucket)
                         .agenticBucketStatus(AgenticBucketStatus.newBuilder()
                                 .status("Enabled")
                                 .build())
-                        .build());
+                        .build()).get();
         Assert.assertNotNull(putResult);
         Assert.assertEquals(200, putResult.statusCode());
     }
 
     @Test
-    public void testGetAgenticBucketNotExist() {
-        OSSAgenticBucketClient client = agenticClient;
+    public void testGetAgenticBucketNotExistAsync() {
+        OSSAsyncAgenticBucketClient client = newAgenticAsyncClient();
         String bucket = "oss-sdk-test-not-exist";
 
         try {
-            client.getAgenticBucket(GetAgenticBucketRequest.newBuilder().bucket(bucket).build());
+            client.getAgenticBucketAsync(
+                    GetAgenticBucketRequest.newBuilder().bucket(bucket).build()).get();
             Assert.fail("Expected exception not thrown");
         } catch (Exception ec) {
             ServiceException serr = findCause(ec, ServiceException.class);
@@ -73,13 +71,14 @@ public class ClientAgenticBucketBasicTest extends TestBaseAgentic {
     }
 
     @Test
-    public void testAgenticBucketInvalidCredentials() {
-        OSSAgenticBucketClient client = newInvalidAkAgenticClient();
+    public void testAgenticBucketInvalidCredentialsAsync() {
+        OSSAsyncAgenticBucketClient client = newInvalidAkAgenticAsyncClient();
         String bucket = "oss-sdk-test-invalid-cred";
 
         // Create with invalid AK
         try {
-            client.createAgenticBucket(CreateAgenticBucketRequest.newBuilder().bucket(bucket).build());
+            client.createAgenticBucketAsync(
+                    CreateAgenticBucketRequest.newBuilder().bucket(bucket).build()).get();
             Assert.fail("Expected exception not thrown");
         } catch (Exception ec) {
             ServiceException serr = findCause(ec, ServiceException.class);
@@ -92,7 +91,8 @@ public class ClientAgenticBucketBasicTest extends TestBaseAgentic {
 
         // Get with invalid AK
         try {
-            client.getAgenticBucket(GetAgenticBucketRequest.newBuilder().bucket(bucket).build());
+            client.getAgenticBucketAsync(
+                    GetAgenticBucketRequest.newBuilder().bucket(bucket).build()).get();
             Assert.fail("Expected exception not thrown");
         } catch (Exception ec) {
             ServiceException serr = findCause(ec, ServiceException.class);
@@ -104,7 +104,8 @@ public class ClientAgenticBucketBasicTest extends TestBaseAgentic {
 
         // List with invalid AK
         try {
-            client.listAgenticBuckets(ListAgenticBucketsRequest.newBuilder().build());
+            client.listAgenticBucketsAsync(
+                    ListAgenticBucketsRequest.newBuilder().build()).get();
             Assert.fail("Expected exception not thrown");
         } catch (Exception ec) {
             ServiceException serr = findCause(ec, ServiceException.class);
@@ -116,21 +117,21 @@ public class ClientAgenticBucketBasicTest extends TestBaseAgentic {
     }
 
     /**
-     * Verify basic agentic bucket operations work under path-style addressing.
+     * Verify basic agentic bucket operations work under path-style addressing (async).
      * Mirrors Go/Python TestAgenticPathStyle: probe with GetAgenticBucket first;
      * if the endpoint rejects path-style (SecondLevelDomainForbidden), skip
      * rather than fail.
      */
     @Test
-    public void testAgenticBucketPathStyle() {
-        OSSAgenticBucketClient client = newAgenticClientPathStyle();
+    public void testAgenticBucketPathStyleAsync() throws ExecutionException, InterruptedException {
+        OSSAsyncAgenticBucketClient client = newAgenticAsyncClientPathStyle();
         String bucket = agenticBucketName;
 
         // Probe: GetAgenticBucket via path-style
         GetAgenticBucketResult getResult;
         try {
-            getResult = client.getAgenticBucket(
-                    GetAgenticBucketRequest.newBuilder().bucket(bucket).build());
+            getResult = client.getAgenticBucketAsync(
+                    GetAgenticBucketRequest.newBuilder().bucket(bucket).build()).get();
         } catch (Exception e) {
             if (isSecondLevelDomainForbidden(e)) {
                 System.out.println("path-style addressing not allowed on this endpoint: " + e.getMessage());
@@ -143,13 +144,13 @@ public class ClientAgenticBucketBasicTest extends TestBaseAgentic {
         assertThat(getResult.agenticBucketInfo().name()).contains(bucket);
 
         // ListAgenticBuckets via path-style client (service-level op with no bucket label)
-        ListAgenticBucketsResult listResult = client.listAgenticBuckets(
-                ListAgenticBucketsRequest.newBuilder().build());
+        ListAgenticBucketsResult listResult = client.listAgenticBucketsAsync(
+                ListAgenticBucketsRequest.newBuilder().build()).get();
         Assert.assertEquals(200, listResult.statusCode());
 
         // ListBucketSpaces via path-style AgenticBucketClient
-        ListBucketSpacesResult bsResult = client.listBucketSpaces(
-                ListBucketSpacesRequest.newBuilder().bucket(bucket).build());
+        ListBucketSpacesResult bsResult = client.listBucketSpacesAsync(
+                ListBucketSpacesRequest.newBuilder().bucket(bucket).build()).get();
         Assert.assertEquals(200, bsResult.statusCode());
     }
 }
