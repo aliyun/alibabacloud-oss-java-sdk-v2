@@ -364,4 +364,31 @@ public class PutCnameRequestTest {
         assertThat(xmlContent).contains("</Cname>");
         assertThat(xmlContent).contains("</BucketCnameConfiguration>");
     }
+
+    @Test
+    public void xmlBuilderWithWildCard() {
+        Cname cname = Cname.newBuilder()
+                .domain("example.com")
+                .isWildCard(true)
+                .build();
+
+        BucketCnameConfiguration bucketCnameConfiguration = BucketCnameConfiguration.newBuilder()
+                .cname(cname)
+                .build();
+
+        PutCnameRequest request = PutCnameRequest.newBuilder()
+                .bucket("examplebucket")
+                .bucketCnameConfiguration(bucketCnameConfiguration)
+                .build();
+
+        assertThat(request.bucketCnameConfiguration().cname().isWildCard()).isTrue();
+
+        OperationInput input = SerdeBucketCname.fromPutCname(request);
+
+        BinaryData body = input.body().get();
+        String xmlContent = new String(body.toBytes(), StandardCharsets.UTF_8);
+        assertThat(xmlContent).isEqualTo(
+                "<BucketCnameConfiguration><Cname><Domain>example.com</Domain>" +
+                        "<IsWildCard>true</IsWildCard></Cname></BucketCnameConfiguration>");
+    }
 }

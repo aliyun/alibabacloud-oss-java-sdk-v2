@@ -105,6 +105,12 @@ public class ListCnameResultTest {
                 "    <LastModified>2021-09-15T02:50:34.000Z</LastModified>\n" +
                 "    <Status>Enabled</Status>\n" +
                 "  </Cname>\n" +
+                "  <Cname>\n" +
+                "    <Domain>example.net</Domain>\n" +
+                "    <LastModified>2021-09-15T02:50:34.000Z</LastModified>\n" +
+                "    <Status>Enabled</Status>\n" +
+                "    <IsWildCard>true</IsWildCard>\n" +
+                "  </Cname>\n" +
                 "</ListCnameResult>";
 
         OperationOutput output = OperationOutput.newBuilder()
@@ -114,7 +120,7 @@ public class ListCnameResultTest {
 
         assertThat(result.bucket()).isEqualTo("targetbucket");
         assertThat(result.owner()).isEqualTo("testowner");
-        assertThat(result.cnames()).hasSize(3);
+        assertThat(result.cnames()).hasSize(4);
 
         CnameInfo firstCname = result.cnames().get(0);
         assertThat(firstCname.domain()).isEqualTo("example.com");
@@ -142,5 +148,12 @@ public class ListCnameResultTest {
         assertThat(thirdCname.lastModified()).isEqualTo("2021-09-15T02:50:34.000Z");
         assertThat(thirdCname.status()).isEqualTo("Enabled");
         assertThat(thirdCname.certificate()).isNull();
+        assertThat(thirdCname.isWildCard()).isNull();
+
+        CnameInfo fourthCname = result.cnames().get(3);
+        assertThat(fourthCname.domain()).isEqualTo("example.net");
+        assertThat(fourthCname.lastModified()).isEqualTo("2021-09-15T02:50:34.000Z");
+        assertThat(fourthCname.status()).isEqualTo("Enabled");
+        assertThat(fourthCname.isWildCard()).isTrue();
     }
 }

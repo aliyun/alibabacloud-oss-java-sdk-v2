@@ -19,6 +19,7 @@ public class GetCnameTokenRequestTest {
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
         assertThat(request.cname()).isNull();
+        assertThat(request.wildcard()).isNull();
     }
 
     @Test
@@ -95,5 +96,21 @@ public class GetCnameTokenRequestTest {
         assertThat(input.parameters().get("cname")).isEqualTo("example.com");
         assertThat(input.parameters().get("comp")).isEqualTo("token");
         assertThat(input.method()).isEqualTo("GET");
+    }
+
+    @Test
+    public void xmlBuilderWithWildcard() {
+        GetCnameTokenRequest request = GetCnameTokenRequest.newBuilder()
+                .bucket("examplebucket")
+                .cname("example.com")
+                .wildcard(false)
+                .build();
+
+        assertThat(request.wildcard()).isFalse();
+
+        OperationInput input = SerdeBucketCname.fromGetCnameToken(request);
+
+        assertThat(input.parameters().get("cname")).isEqualTo("example.com");
+        assertThat(input.parameters().get("wildcard")).isEqualTo("false");
     }
 }
