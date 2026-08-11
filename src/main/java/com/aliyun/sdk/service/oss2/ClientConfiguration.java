@@ -26,6 +26,7 @@ public final class ClientConfiguration {
     private final Boolean useAccelerateEndpoint;
     private final Boolean useCName;
     private final Boolean usePathStyle;
+    private final Boolean useVirtualHostedAlias;
     private final HttpClient httpClient;
     private final List<String> additionalHeaders;
     private final String userAgent;
@@ -53,6 +54,7 @@ public final class ClientConfiguration {
         this.useAccelerateEndpoint = builder.useAccelerateEndpoint;
         this.useCName = builder.useCName;
         this.usePathStyle = builder.usePathStyle;
+        this.useVirtualHostedAlias = builder.useVirtualHostedAlias;
         this.httpClient = builder.httpClient;
         this.additionalHeaders = builder.additionalHeaders;
         this.userAgent = builder.userAgent;
@@ -125,6 +127,10 @@ public final class ClientConfiguration {
 
     public Optional<Boolean> usePathStyle() {
         return Optional.ofNullable(usePathStyle);
+    }
+
+    public Optional<Boolean> useVirtualHostedAlias() {
+        return Optional.ofNullable(useVirtualHostedAlias);
     }
 
     public Optional<HttpClient> httpClient() {
@@ -202,6 +208,7 @@ public final class ClientConfiguration {
         private Boolean useAccelerateEndpoint;
         private Boolean useCName;
         private Boolean usePathStyle;
+        private Boolean useVirtualHostedAlias;
         private HttpClient httpClient;
         private List<String> additionalHeaders;
         private String userAgent;
@@ -231,6 +238,7 @@ public final class ClientConfiguration {
             this.useAccelerateEndpoint = from.useAccelerateEndpoint;
             this.useCName = from.useCName;
             this.usePathStyle = from.usePathStyle;
+            this.useVirtualHostedAlias = from.useVirtualHostedAlias;
             this.httpClient = from.httpClient;
             this.additionalHeaders = from.additionalHeaders;
             this.userAgent = from.userAgent;
@@ -319,6 +327,12 @@ public final class ClientConfiguration {
         public Builder usePathStyle(Boolean value) {
             requireNonNull(value);
             this.usePathStyle = value;
+            return this;
+        }
+
+        public Builder useVirtualHostedAlias(Boolean value) {
+            requireNonNull(value);
+            this.useVirtualHostedAlias = value;
             return this;
         }
 

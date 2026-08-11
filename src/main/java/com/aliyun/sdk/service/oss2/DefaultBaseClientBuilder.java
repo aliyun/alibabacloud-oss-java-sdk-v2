@@ -98,6 +98,11 @@ public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>
         return (B) this;
     }
 
+    public B useVirtualHostedAlias(Boolean value) {
+        cfgBuilder.useVirtualHostedAlias(value);
+        return (B) this;
+    }
+
     public B httpClient(HttpClient value) {
         cfgBuilder.httpClient(value);
         this.httpClient = value;

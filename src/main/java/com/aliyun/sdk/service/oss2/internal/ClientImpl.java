@@ -500,6 +500,8 @@ public class ClientImpl implements AutoCloseable {
             style = AddressStyleType.CName;
         } else if (config.usePathStyle().orElse(false)) {
             style = AddressStyleType.Path;
+        } else if (config.useVirtualHostedAlias().orElse(false)) {
+            style = AddressStyleType.VirtualHostedAlias;
         } else {
             style = AddressStyleType.VirtualHosted;
         }

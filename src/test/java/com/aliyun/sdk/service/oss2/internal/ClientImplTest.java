@@ -228,6 +228,31 @@ public class ClientImplTest {
             assertEquals(AddressStyleType.Path, client.options.addressStyle());
         }
 
+        // virtual-hosted-alias
+        config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .useVirtualHostedAlias(true)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            assertFalse(config.endpoint().isPresent());
+            assertNotNull(client.options.endpoint());
+            assertEquals(AddressStyleType.VirtualHostedAlias, client.options.addressStyle());
+        }
+
+        // path-style takes precedence over virtual-hosted-alias
+        config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .usePathStyle(true)
+                .useVirtualHostedAlias(true)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            assertEquals(AddressStyleType.Path, client.options.addressStyle());
+        }
+
         // ip endpoint
         config = ClientConfiguration.defaultBuilder()
                 .region("cn-hangzhou")

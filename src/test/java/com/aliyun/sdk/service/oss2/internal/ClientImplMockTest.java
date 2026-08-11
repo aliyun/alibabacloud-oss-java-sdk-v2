@@ -1590,6 +1590,44 @@ public class ClientImplMockTest {
     }
 
     @Test
+    public void useVirtualHostedAliasAddressingMode() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .useVirtualHostedAlias(true)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> parameters = MapUtils.caseSensitiveMap();
+            parameters.put("key", "value");
+
+            mockHandler.clear();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("InvokeOperation")
+                    .method("PUT")
+                    .parameters(parameters)
+                    .bucket("my-bucket")
+                    .key("my-key")
+                    .build();
+
+            // The alias style is agentic-only, the plain client falls back to virtual-hosted
+            OperationOutput output = client.execute(input, OperationOptions.defaults());
+            assertThat(mockHandler.requests).hasSize(1);
+            assertThat(mockHandler.lastRequest.uri().toString()).isEqualTo("https://my-bucket.oss-cn-hangzhou.aliyuncs.com/my-key?key=value");
+            assertThat(output.statusCode()).isEqualTo(200);
+        }
+    }
+
+    @Test
     public void useCNameAddressingMode() throws Exception {
         MockHttpClient mockHandler = new MockHttpClient();
 

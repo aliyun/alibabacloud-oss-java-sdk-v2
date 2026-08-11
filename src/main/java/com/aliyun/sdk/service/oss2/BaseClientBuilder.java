@@ -215,6 +215,16 @@ public interface BaseClientBuilder<B extends BaseClientBuilder<B, T>, T> {
     B usePathStyle(Boolean value);
 
     /**
+     * Sets whether the endpoint is a short-alias host.
+     * <p>
+     * Default: {@code false}
+     *
+     * @param value {@code true} if the endpoint is a short-alias host
+     * @return this builder for method chaining
+     */
+    B useVirtualHostedAlias(Boolean value);
+
+    /**
      * Sets a custom HTTP client for sending requests.
      * <p>
      * By default, the SDK creates an HTTP client internally (Apache HttpClient 5 for synchronous,
