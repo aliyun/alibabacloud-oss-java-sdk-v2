@@ -99,6 +99,15 @@ public class ClientAgenticBucketAttributeAsyncTest extends TestBaseAgentic {
                 "\"Action\":[\"oss:GetObject\"],\"Principal\":[\"" + accountId() + "\"]," +
                 "\"Resource\":[\"acs:oss:*:" + accountId() + ":*\"]}]}";
 
+        // The service refuses a policy while public access is blocked, and the sibling
+        // PublicAccessBlock scenario may have run first: JUnit orders methods by name hash.
+        client.putAgenticBucketPublicAccessBlockAsync(PutAgenticBucketPublicAccessBlockRequest.newBuilder()
+                .bucket(bucket)
+                .publicAccessBlockConfiguration(PublicAccessBlockConfiguration.newBuilder()
+                        .blockPublicAccess(false)
+                        .build())
+                .build()).get();
+
         // Put policy
         PutAgenticBucketPolicyResult putResult = client.putAgenticBucketPolicyAsync(
                 PutAgenticBucketPolicyRequest.newBuilder()
