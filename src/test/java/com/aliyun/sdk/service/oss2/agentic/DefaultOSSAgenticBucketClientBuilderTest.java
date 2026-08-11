@@ -275,6 +275,83 @@ public class DefaultOSSAgenticBucketClientBuilderTest {
                 .isEqualTo("https://oss-cn-hangzhou.aliyuncs.com/" + longName + suffixPart + "/");
     }
 
+    @Test
+    public void testAgenticProviderBuildURLAliasStyle() {
+        AgenticProvider provider =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHostedAlias);
+
+        // The short alias label replaces the full name in the host.
+        assertThat(provider.buildURL(OperationInput.newBuilder().bucket("my-bucket").build()))
+                .isEqualTo("https://my-bucket-alias-ab-apsr.oss-cn-hangzhou.aliyuncs.com/");
+        assertThat(provider.buildURL(OperationInput.newBuilder().bucket("my-bucket").key("my-key").build()))
+                .isEqualTo("https://my-bucket-alias-ab-apsr.oss-cn-hangzhou.aliyuncs.com/my-key");
+        // A region-level op (no bucket) still routes to the bare endpoint.
+        assertThat(provider.buildURL(OperationInput.newBuilder().build()))
+                .isEqualTo("https://oss-cn-hangzhou.aliyuncs.com/");
+
+        // Bucket space suffix
+        AgenticProvider bs =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "1234567890", "cn-hangzhou", "bs-apsr", AddressStyleType.VirtualHostedAlias);
+        assertThat(bs.buildURL(OperationInput.newBuilder().bucket("my-space").key("test.txt").build()))
+                .isEqualTo("https://my-space-alias-bs-apsr.oss-cn-hangzhou.aliyuncs.com/test.txt");
+    }
+
+    @Test
+    public void testAliasStyleSignsWithFullName() {
+        OperationInput input = OperationInput.newBuilder().bucket("my-bucket").build();
+        AgenticProvider provider =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHostedAlias);
+
+        // The short label only shows up in the host, signing keeps the full name.
+        assertThat(provider.buildBucketName(input)).isEqualTo("my-bucket-1234567890-cn-hangzhou-ab-apsr");
+
+        // So accountId / region stay required.
+        AgenticProvider noAccount =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHostedAlias);
+        assertThatThrownBy(() -> noAccount.buildBucketName(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("AccountId");
+
+        AgenticProvider noRegion =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "1234567890", "", "ab-apsr", AddressStyleType.VirtualHostedAlias);
+        assertThatThrownBy(() -> noRegion.buildBucketName(input))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Region");
+    }
+
+    @Test
+    public void testAliasHostLabelTooLong() {
+        // alias label = "{bucket}-alias-ab-apsr" -> len(bucket) + 14
+        String suffixPart = "-alias-ab-apsr";
+        AgenticProvider provider =
+                new AgenticProvider(
+                        URI.create("https://oss-cn-hangzhou.aliyuncs.com"),
+                        "1234567890", "cn-hangzhou", "ab-apsr", AddressStyleType.VirtualHostedAlias);
+
+        // Boundary: label == 63 (bucket 49) is allowed, far more room than the full name has
+        String okName = repeat('a', 49);
+        assertThat((okName + suffixPart).length()).isEqualTo(63);
+        assertThat(provider.buildURL(OperationInput.newBuilder().bucket(okName).build()))
+                .isEqualTo("https://" + okName + suffixPart + ".oss-cn-hangzhou.aliyuncs.com/");
+
+        // Over limit: label == 64 (bucket 50) is rejected
+        String longName = repeat('a', 50);
+        assertThat((longName + suffixPart).length()).isEqualTo(64);
+        assertThatThrownBy(() -> provider.buildURL(OperationInput.newBuilder().bucket(longName).build()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("exceeds the maximum length of 63 characters");
+    }
+
     private static String repeat(char c, int n) {
         StringBuilder sb = new StringBuilder(n);
         for (int i = 0; i < n; i++) {

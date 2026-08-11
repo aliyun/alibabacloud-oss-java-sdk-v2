@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2.internal;
 import com.aliyun.sdk.service.oss2.ClientConfiguration;
 import com.aliyun.sdk.service.oss2.ClientOptions;
 import com.aliyun.sdk.service.oss2.Defaults;
+import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.credentials.AnonymousCredentialsProvider;
 import com.aliyun.sdk.service.oss2.retry.NopRetryer;
 import com.aliyun.sdk.service.oss2.retry.StandardRetryer;
@@ -241,6 +242,24 @@ public class ClientImplTest {
             assertEquals("127.0.0.1", client.options.endpoint().getHost());
             assertEquals("http", client.options.endpoint().getScheme());
         }
+    }
+
+    @Test
+    public void buildHostPathAddressStyles() {
+        OperationInput input = OperationInput.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        assertEquals("bucket.oss-cn-hangzhou.aliyuncs.com/key",
+                OssUtils.buildHostPath(input, "oss-cn-hangzhou.aliyuncs.com", AddressStyleType.VirtualHosted));
+        assertEquals("oss-cn-hangzhou.aliyuncs.com/bucket/key",
+                OssUtils.buildHostPath(input, "oss-cn-hangzhou.aliyuncs.com", AddressStyleType.Path));
+        assertEquals("oss-cn-hangzhou.aliyuncs.com/key",
+                OssUtils.buildHostPath(input, "oss-cn-hangzhou.aliyuncs.com", AddressStyleType.CName));
+        // VirtualHostedAlias is agentic-only, the plain client falls back to virtual-hosted
+        assertEquals("bucket.oss-cn-hangzhou.aliyuncs.com/key",
+                OssUtils.buildHostPath(input, "oss-cn-hangzhou.aliyuncs.com", AddressStyleType.VirtualHostedAlias));
     }
 
     @Test

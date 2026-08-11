@@ -17,8 +17,16 @@ import java.util.List;
  * {@code ab-apsr} for agentic buckets or {@code bs-apsr} for bucket spaces. A single
  * instance is wired as both the {@link BucketNameResolver} (used for signing) and the
  * {@link EndpointProvider} (used for the request host).
+ * <p>
+ * Under {@link AddressStyleType#VirtualHostedAlias} the host carries the short label
+ * {@code {bucket}-alias-{suffix}} instead, while signing keeps the physical name.
  */
 class AgenticProvider implements EndpointProvider, BucketNameResolver {
+    /**
+     * The literal segment that replaces {@code {accountId}-{region}} in the short host label.
+     */
+    private static final String ALIAS_TOKEN = "alias";
+
     private final URI endpoint;
     private final String accountId;
     private final String region;
@@ -57,6 +65,14 @@ class AgenticProvider implements EndpointProvider, BucketNameResolver {
                     if (!input.key().isPresent()) {
                         paths.add("");
                     }
+                    break;
+                case VirtualHostedAlias:
+                    String label = String.format("%s-%s-%s", input.bucket().get(), ALIAS_TOKEN, suffix);
+                    if (label.length() > 63) {
+                        throw new IllegalArgumentException(String.format(
+                                "the host label \"%s\" exceeds the maximum length of 63 characters", label));
+                    }
+                    host = String.format("%s.%s", label, endpoint.getAuthority());
                     break;
                 default:
                     String fullName = buildBucketName(input);
