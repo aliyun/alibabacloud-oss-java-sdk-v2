@@ -83,7 +83,7 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
      * (an OSSAgenticBucketClient-only operation) is NOT available through it.
      */
     @Test
-    public void testBucketSpaceClientIndependent() {
+    public void testBucketSpaceClientIndependent() throws Exception {
         String bsPrefix = genBucketSpaceName();
         String expectedFullName = buildFullName(bsPrefix, BUCKET_SPACE_SUFFIX);
         String bsFullAgenticBucket = getFullAgenticBucketName();
@@ -95,48 +95,49 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
                 .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
                 .build();
 
-        OSSClient bsClient = BucketSpaceClient.create(config);
-        try {
-            // 1. PutBucket (reused) - BucketSpaceClient auto-expands prefix to full name
-            PutBucketResult putResult = bsClient.putBucket(PutBucketRequest.newBuilder()
-                    .bucket(bsPrefix)
-                    .agenticBucket(bsFullAgenticBucket)
-                    .build());
-            Assert.assertNotNull(putResult);
-            Assert.assertEquals(200, putResult.statusCode());
-            waitForCacheExpiration(1);
+        try (OSSClient bsClient = BucketSpaceClient.create(config)) {
+            try {
+                // 1. PutBucket (reused) - BucketSpaceClient auto-expands prefix to full name
+                PutBucketResult putResult = bsClient.putBucket(PutBucketRequest.newBuilder()
+                        .bucket(bsPrefix)
+                        .agenticBucket(bsFullAgenticBucket)
+                        .build());
+                Assert.assertNotNull(putResult);
+                Assert.assertEquals(200, putResult.statusCode());
+                waitForCacheExpiration(1);
 
-            // 2. GetBucketInfo (reused) - verify via BucketSpaceClient
-            GetBucketInfoResult infoResult = bsClient.getBucketInfo(
-                    GetBucketInfoRequest.newBuilder().bucket(bsPrefix).build());
-            Assert.assertNotNull(infoResult);
-            Assert.assertEquals(200, infoResult.statusCode());
-            Assert.assertEquals("AgenticBucketSpace", infoResult.bucketInfo().bucketResourceType());
-            Assert.assertNotNull(infoResult.bucketInfo().agenticBucketName());
+                // 2. GetBucketInfo (reused) - verify via BucketSpaceClient
+                GetBucketInfoResult infoResult = bsClient.getBucketInfo(
+                        GetBucketInfoRequest.newBuilder().bucket(bsPrefix).build());
+                Assert.assertNotNull(infoResult);
+                Assert.assertEquals(200, infoResult.statusCode());
+                Assert.assertEquals("AgenticBucketSpace", infoResult.bucketInfo().bucketResourceType());
+                Assert.assertNotNull(infoResult.bucketInfo().agenticBucketName());
 
-            // 3. ListBucketSpaces - cross-verify the created BucketSpace via agenticClient
-            ListBucketSpacesResult listResult = agenticClient.listBucketSpaces(
-                    ListBucketSpacesRequest.newBuilder().bucket(agenticBucketName).prefix(bsPrefix).build());
-            Assert.assertNotNull(listResult);
-            Assert.assertEquals(200, listResult.statusCode());
-            boolean found = false;
-            if (listResult.bucketSpaces() != null) {
-                for (BucketSpaceSummary bs : listResult.bucketSpaces()) {
-                    if (expectedFullName.equals(bs.name())) {
-                        found = true;
-                        break;
+                // 3. ListBucketSpaces - cross-verify the created BucketSpace via agenticClient
+                ListBucketSpacesResult listResult = agenticClient.listBucketSpaces(
+                        ListBucketSpacesRequest.newBuilder().bucket(agenticBucketName).prefix(bsPrefix).build());
+                Assert.assertNotNull(listResult);
+                Assert.assertEquals(200, listResult.statusCode());
+                boolean found = false;
+                if (listResult.bucketSpaces() != null) {
+                    for (BucketSpaceSummary bs : listResult.bucketSpaces()) {
+                        if (expectedFullName.equals(bs.name())) {
+                            found = true;
+                            break;
+                        }
                     }
                 }
-            }
-            Assert.assertTrue("BucketSpaceClient-created BucketSpace should appear in list", found);
+                Assert.assertTrue("BucketSpaceClient-created BucketSpace should appear in list", found);
 
-        } finally {
-            // 4. DeleteBucket (reused) - cleanup via BucketSpaceClient
-            cleanBucketSpaceObjects(expectedFullName);
-            try {
-                bsClient.deleteBucket(DeleteBucketRequest.newBuilder()
-                        .bucket(bsPrefix).build());
-            } catch (Exception ignore) {
+            } finally {
+                // 4. DeleteBucket (reused) - cleanup via BucketSpaceClient
+                cleanBucketSpaceObjects(expectedFullName);
+                try {
+                    bsClient.deleteBucket(DeleteBucketRequest.newBuilder()
+                            .bucket(bsPrefix).build());
+                } catch (Exception ignore) {
+                }
             }
         }
     }
@@ -148,7 +149,7 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
      * test_bucket_space_object_operations_path_style.
      */
     @Test
-    public void testBucketSpaceObjectOperationsPathStyle() {
+    public void testBucketSpaceObjectOperationsPathStyle() throws Exception {
         String bsPrefix = genBucketSpaceName();
         String bsFullName = buildFullName(bsPrefix, BUCKET_SPACE_SUFFIX);
         String bsFullAgenticBucket = getFullAgenticBucketName();
@@ -160,91 +161,92 @@ public class ClientAgenticBucketSpaceTest extends TestBaseAgentic {
                 .accountId(accountId())
                 .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
                 .build();
-        OSSClient stdClient = BucketSpaceClient.create(stdConfig);
-        PutBucketResult putResult = stdClient.putBucket(PutBucketRequest.newBuilder()
-                .bucket(bsPrefix)
-                .agenticBucket(bsFullAgenticBucket)
-                .build());
-        Assert.assertEquals(200, putResult.statusCode());
-        waitForCacheExpiration(1);
+        try (OSSClient stdClient = BucketSpaceClient.create(stdConfig)) {
+            PutBucketResult putResult = stdClient.putBucket(PutBucketRequest.newBuilder()
+                    .bucket(bsPrefix)
+                    .agenticBucket(bsFullAgenticBucket)
+                    .build());
+            Assert.assertEquals(200, putResult.statusCode());
+            waitForCacheExpiration(1);
 
-        try {
-            // Use path-style client for object operations
-            ClientConfiguration pathConfig = ClientConfiguration.newBuilder()
-                    .region(region())
-                    .endpoint(endpoint())
-                    .accountId(accountId())
-                    .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
-                    .usePathStyle(true)
-                    .build();
-            OSSClient pathClient = BucketSpaceClient.create(pathConfig);
-            String key = "path-style-test.txt";
-
-            // put_object via path-style
             try {
-                PutObjectResult putObjResult = pathClient.putObject(PutObjectRequest.newBuilder()
-                        .bucket(bsPrefix)
-                        .key(key)
-                        .body(BinaryData.fromString("hello path style"))
-                        .build());
-                Assert.assertEquals(200, putObjResult.statusCode());
-            } catch (Exception e) {
-                if (!isSecondLevelDomainForbidden(e)) {
-                    throw e;
+                // Use path-style client for object operations
+                ClientConfiguration pathConfig = ClientConfiguration.newBuilder()
+                        .region(region())
+                        .endpoint(endpoint())
+                        .accountId(accountId())
+                        .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
+                        .usePathStyle(true)
+                        .build();
+                try (OSSClient pathClient = BucketSpaceClient.create(pathConfig)) {
+                    String key = "path-style-test.txt";
+
+                    // put_object via path-style
+                    try {
+                        PutObjectResult putObjResult = pathClient.putObject(PutObjectRequest.newBuilder()
+                                .bucket(bsPrefix)
+                                .key(key)
+                                .body(BinaryData.fromString("hello path style"))
+                                .build());
+                        Assert.assertEquals(200, putObjResult.statusCode());
+                    } catch (Exception e) {
+                        if (!isSecondLevelDomainForbidden(e)) {
+                            throw e;
+                        }
+                        System.out.println("put_object path-style not supported: " + e.getMessage());
+                    }
+
+                    // get_object via path-style
+                    try {
+                        GetObjectResult getObjResult = pathClient.getObject(GetObjectRequest.newBuilder()
+                                .bucket(bsPrefix)
+                                .key(key)
+                                .build());
+                        Assert.assertEquals(200, getObjResult.statusCode());
+                    } catch (Exception e) {
+                        if (!isSecondLevelDomainForbidden(e)) {
+                            throw e;
+                        }
+                        System.out.println("get_object path-style not supported: " + e.getMessage());
+                    }
+
+                    // delete_object via path-style
+                    try {
+                        DeleteObjectResult delObjResult = pathClient.deleteObject(DeleteObjectRequest.newBuilder()
+                                .bucket(bsPrefix)
+                                .key(key)
+                                .build());
+                        Assert.assertEquals(204, delObjResult.statusCode());
+                    } catch (Exception e) {
+                        if (!isSecondLevelDomainForbidden(e)) {
+                            throw e;
+                        }
+                        System.out.println("delete_object path-style not supported: " + e.getMessage());
+                    }
+
+                    // get_bucket_acl via path-style
+                    try {
+                        GetBucketAclResult aclResult = pathClient.getBucketAcl(GetBucketAclRequest.newBuilder()
+                                .bucket(bsPrefix)
+                                .build());
+                        Assert.assertEquals(200, aclResult.statusCode());
+                        Assert.assertNotNull(aclResult.accessControlPolicy());
+                    } catch (Exception e) {
+                        if (!isSecondLevelDomainForbidden(e)) {
+                            throw e;
+                        }
+                        System.out.println("get_bucket_acl path-style not supported: " + e.getMessage());
+                    }
                 }
-                System.out.println("put_object path-style not supported: " + e.getMessage());
-            }
-
-            // get_object via path-style
-            try {
-                GetObjectResult getObjResult = pathClient.getObject(GetObjectRequest.newBuilder()
-                        .bucket(bsPrefix)
-                        .key(key)
-                        .build());
-                Assert.assertEquals(200, getObjResult.statusCode());
-            } catch (Exception e) {
-                if (!isSecondLevelDomainForbidden(e)) {
-                    throw e;
+            } finally {
+                // Cleanup BucketSpace: drain first, the object deleted above may still be there when
+                // the path-style delete was refused by the endpoint.
+                cleanBucketSpaceObjects(bsFullName);
+                try {
+                    stdClient.deleteBucket(DeleteBucketRequest.newBuilder()
+                            .bucket(bsPrefix).build());
+                } catch (Exception ignore) {
                 }
-                System.out.println("get_object path-style not supported: " + e.getMessage());
-            }
-
-            // delete_object via path-style
-            try {
-                DeleteObjectResult delObjResult = pathClient.deleteObject(DeleteObjectRequest.newBuilder()
-                        .bucket(bsPrefix)
-                        .key(key)
-                        .build());
-                Assert.assertEquals(204, delObjResult.statusCode());
-            } catch (Exception e) {
-                if (!isSecondLevelDomainForbidden(e)) {
-                    throw e;
-                }
-                System.out.println("delete_object path-style not supported: " + e.getMessage());
-            }
-
-            // get_bucket_acl via path-style
-            try {
-                GetBucketAclResult aclResult = pathClient.getBucketAcl(GetBucketAclRequest.newBuilder()
-                        .bucket(bsPrefix)
-                        .build());
-                Assert.assertEquals(200, aclResult.statusCode());
-                Assert.assertNotNull(aclResult.accessControlPolicy());
-            } catch (Exception e) {
-                if (!isSecondLevelDomainForbidden(e)) {
-                    throw e;
-                }
-                System.out.println("get_bucket_acl path-style not supported: " + e.getMessage());
-            }
-
-        } finally {
-            // Cleanup BucketSpace: drain first, the object deleted above may still be there when
-            // the path-style delete was refused by the endpoint.
-            cleanBucketSpaceObjects(bsFullName);
-            try {
-                stdClient.deleteBucket(DeleteBucketRequest.newBuilder()
-                        .bucket(bsPrefix).build());
-            } catch (Exception ignore) {
             }
         }
     }

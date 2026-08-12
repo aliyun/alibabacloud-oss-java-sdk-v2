@@ -160,32 +160,33 @@ public class ClientAgenticBucketAttributeTest extends TestBaseAgentic {
      * (SecondLevelDomainForbidden), skip rather than fail.
      */
     @Test
-    public void testAgenticBucketAclPathStyle() {
-        OSSAgenticBucketClient client = newAgenticClientPathStyle();
-        String bucket = agenticBucketName;
+    public void testAgenticBucketAclPathStyle() throws Exception {
+        try (OSSAgenticBucketClient client = newAgenticClientPathStyle()) {
+            String bucket = agenticBucketName;
 
-        // Probe: Put ACL via path-style client
-        PutAgenticBucketAclResult putResult;
-        try {
-            putResult = client.putAgenticBucketAcl(
-                    PutAgenticBucketAclRequest.newBuilder()
-                            .bucket(bucket)
-                            .acl("private")
-                            .build());
-        } catch (Exception e) {
-            if (isSecondLevelDomainForbidden(e)) {
-                System.out.println("path-style addressing not allowed on this endpoint: " + e.getMessage());
-                return;
+            // Probe: Put ACL via path-style client
+            PutAgenticBucketAclResult putResult;
+            try {
+                putResult = client.putAgenticBucketAcl(
+                        PutAgenticBucketAclRequest.newBuilder()
+                                .bucket(bucket)
+                                .acl("private")
+                                .build());
+            } catch (Exception e) {
+                if (isSecondLevelDomainForbidden(e)) {
+                    System.out.println("path-style addressing not allowed on this endpoint: " + e.getMessage());
+                    return;
+                }
+                throw e;
             }
-            throw e;
-        }
-        Assert.assertEquals(200, putResult.statusCode());
+            Assert.assertEquals(200, putResult.statusCode());
 
-        // Get ACL via path-style client
-        GetAgenticBucketAclResult getResult = client.getAgenticBucketAcl(
-                GetAgenticBucketAclRequest.newBuilder().bucket(bucket).build());
-        Assert.assertEquals(200, getResult.statusCode());
-        Assert.assertNotNull(getResult.accessControlPolicy());
-        assertThat(getResult.accessControlPolicy().accessControlList().grant()).isEqualTo("private");
+            // Get ACL via path-style client
+            GetAgenticBucketAclResult getResult = client.getAgenticBucketAcl(
+                    GetAgenticBucketAclRequest.newBuilder().bucket(bucket).build());
+            Assert.assertEquals(200, getResult.statusCode());
+            Assert.assertNotNull(getResult.accessControlPolicy());
+            assertThat(getResult.accessControlPolicy().accessControlList().grant()).isEqualTo("private");
+        }
     }
 }

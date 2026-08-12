@@ -66,6 +66,12 @@ public class TestBaseAgentic extends TestBase {
         // scenario failed. Only then reap the backlog of the previous runs.
         disableAgenticBucketQuietly(agenticBucketName);
         reapDisabledAgenticBuckets();
+        if (agenticClient != null) {
+            try {
+                agenticClient.close();
+            } catch (Exception ignore) {
+            }
+        }
     }
 
     /**
@@ -211,8 +217,8 @@ public class TestBaseAgentic extends TestBase {
         if (bucket == null) {
             return;
         }
-        try {
-            newAgenticClient().putAgenticBucketStatus(PutAgenticBucketStatusRequest.newBuilder()
+        try (OSSAgenticBucketClient client = newAgenticClient()) {
+            client.putAgenticBucketStatus(PutAgenticBucketStatusRequest.newBuilder()
                     .bucket(bucket)
                     .agenticBucketStatus(AgenticBucketStatus.newBuilder()
                             .status("Disabled")
@@ -228,8 +234,7 @@ public class TestBaseAgentic extends TestBase {
      * error is swallowed so that teardown never fails.
      */
     public static void reapDisabledAgenticBuckets() {
-        try {
-            OSSAgenticBucketClient client = newAgenticClient();
+        try (OSSAgenticBucketClient client = newAgenticClient()) {
             ListAgenticBucketsIterable iterable = client.listAgenticBucketsPaginator(
                     ListAgenticBucketsRequest.newBuilder().build());
             for (ListAgenticBucketsResult result : iterable) {
