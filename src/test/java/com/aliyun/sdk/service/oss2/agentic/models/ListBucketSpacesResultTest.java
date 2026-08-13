@@ -22,7 +22,7 @@ public class ListBucketSpacesResultTest {
     @Test
     public void testXmlDeserialization() {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<ListBucketSpaceResult>\n" +
+                "<ListBucketSpacesResult>\n" +
                 "  <Owner>\n" +
                 "    <ID>1234567890</ID>\n" +
                 "    <DisplayName>owner-name</DisplayName>\n" +
@@ -47,7 +47,7 @@ public class ListBucketSpacesResultTest {
                 "      <StorageClass>IA</StorageClass>\n" +
                 "    </BucketSpace>\n" +
                 "  </BucketSpaces>\n" +
-                "</ListBucketSpaceResult>";
+                "</ListBucketSpacesResult>";
 
         OperationOutput output = OperationOutput.newBuilder()
                 .body(BinaryData.fromString(xml))
