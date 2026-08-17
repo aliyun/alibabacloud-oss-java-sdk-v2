@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
- * Label item for InsightsConfig (DatasetConfig.Insights.Video.Label.UserDefined/Highlight).
+ * Label item for InsightsConfig (DatasetConfig.Insights.Video.Label and Insights.Image.Label).
  * Contains Name and Description.
  */
 public final class InsightsLabelItem {

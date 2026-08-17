@@ -7,7 +7,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.util.List;
 
 /**
- * UserDefined label configuration within Insights.Video.Label.
+ * UserDefined label configuration for Insights.Video.Label and Insights.Image.Label.
+ * Contains Enable, Mode, and Labels fields.
  */
 public final class InsightsLabelUserDefinedConfig {
 
