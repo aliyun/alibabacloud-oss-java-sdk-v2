@@ -13,11 +13,28 @@ import static org.junit.Assert.*;
 public class DefaultOSSVectorsClientBuilderTest {
 
     @Test
+    public void invalidAccountIdDeferredToOperation() throws Exception {
+        // Building the client with an invalid account id must NOT throw
+        try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .accountId("abc")
+                .build()) {
+            assertNotNull(client);
+            // The error is surfaced when an operation is invoked
+            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                    () -> client.listVectorBuckets(
+                            com.aliyun.sdk.service.oss2.vectors.models.ListVectorBucketsRequest.newBuilder().build()));
+            assertTrue(ex.getMessage().contains("invalid account id"));
+        }
+    }
+
+    @Test
     public void defaultConfiguration() throws Exception {
         try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .accountId("test-user-id")
+                .accountId("1234567890")
                 .build()) {
 
             assertNotNull(client);
@@ -26,7 +43,7 @@ public class DefaultOSSVectorsClientBuilderTest {
             DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider =
                     new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
                             URI.create("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com"),
-                            "test-user-id");
+                            "1234567890");
 
             OperationInput input = OperationInput.newBuilder().build();
             String url = provider.buildURL(input);
@@ -43,7 +60,7 @@ public class DefaultOSSVectorsClientBuilderTest {
         try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .accountId("test-user-id")
+                .accountId("1234567890")
                 .build()) {
 
             assertNotNull(client);
@@ -52,7 +69,7 @@ public class DefaultOSSVectorsClientBuilderTest {
             DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider =
                     new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
                             URI.create("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com"),
-                            "test-user-id");
+                            "1234567890");
 
             OperationInput input = OperationInput.newBuilder().build();
             String url = provider.buildURL(input);
@@ -66,7 +83,7 @@ public class DefaultOSSVectorsClientBuilderTest {
                 .region("cn-shanghai")
                 .credentialsProvider(new AnonymousCredentialsProvider())
                 .useInternalEndpoint(true)
-                .accountId("test-user-id")
+                .accountId("1234567890")
                 .build()) {
 
             assertNotNull(client);
@@ -75,7 +92,7 @@ public class DefaultOSSVectorsClientBuilderTest {
             DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider =
                     new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
                             URI.create("https://oss-cn-shanghai-internal.oss-vectors.aliyuncs.com"),
-                            "test-user-id");
+                            "1234567890");
 
             OperationInput input = OperationInput.newBuilder().build();
             String url = provider.buildURL(input);
@@ -89,7 +106,7 @@ public class DefaultOSSVectorsClientBuilderTest {
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
                 .endpoint("http://oss-cn-shenzhen.aliyuncs.com")
-                .accountId("test-user-id")
+                .accountId("1234567890")
                 .build()) {
 
             assertNotNull(client);
@@ -98,7 +115,7 @@ public class DefaultOSSVectorsClientBuilderTest {
             DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider =
                     new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
                             URI.create("http://oss-cn-shenzhen.aliyuncs.com"),
-                            "test-user-id");
+                            "1234567890");
 
             OperationInput input = OperationInput.newBuilder().build();
             String url = provider.buildURL(input);
@@ -114,7 +131,7 @@ public class DefaultOSSVectorsClientBuilderTest {
         try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .accountId("test-user-id")
+                .accountId("1234567890")
                 .build()) {
 
             assertNotNull(client);
@@ -134,7 +151,7 @@ public class DefaultOSSVectorsClientBuilderTest {
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
                 .userAgent("my-agent")
-                .accountId("test-user-id")
+                .accountId("1234567890")
                 .build()) {
 
             assertNotNull(client);
@@ -157,7 +174,7 @@ public class DefaultOSSVectorsClientBuilderTest {
         try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .accountId("test-user-id")
+                .accountId("1234567890")
                 .build()) {
 
             // We can't easily access the private fields via reflection, so we'll test by making an actual call
@@ -171,7 +188,7 @@ public class DefaultOSSVectorsClientBuilderTest {
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
                 .useApacheHttpClient4(true)
-                .accountId("test-user-id")
+                .accountId("1234567890")
                 .build()) {
 
             // We can't easily access the private fields via reflection, so we'll test by making an actual call
@@ -186,7 +203,7 @@ public class DefaultOSSVectorsClientBuilderTest {
         try (OSSVectorsClient client = OSSVectorsClient.newBuilder()
                 .region("cn-hangzhou")
                 .credentialsProvider(new AnonymousCredentialsProvider())
-                .accountId("test-user-id")
+                .accountId("1234567890")
                 .build()) {
 
             assertNotNull(client);
@@ -207,7 +224,7 @@ public class DefaultOSSVectorsClientBuilderTest {
         // Test with bucket and key
         DefaultOSSVectorsClientBuilder.VectorsEndpointProvider provider = new DefaultOSSVectorsClientBuilder.VectorsEndpointProvider(
                 URI.create("https://oss-cn-hangzhou.oss-vectors.aliyuncs.com"),
-                "test-account-id");
+                "9876543210");
 
         OperationInput input = OperationInput.newBuilder()
                 .bucket("test-bucket")
@@ -215,7 +232,7 @@ public class DefaultOSSVectorsClientBuilderTest {
                 .build();
 
         String url = provider.buildURL(input);
-        assertEquals("https://test-bucket-test-account-id.oss-cn-hangzhou.oss-vectors.aliyuncs.com/test-key", url);
+        assertEquals("https://test-bucket-9876543210.oss-cn-hangzhou.oss-vectors.aliyuncs.com/test-key", url);
 
         // Test with bucket only
         input = OperationInput.newBuilder()
@@ -223,7 +240,7 @@ public class DefaultOSSVectorsClientBuilderTest {
                 .build();
 
         url = provider.buildURL(input);
-        assertEquals("https://test-bucket-test-account-id.oss-cn-hangzhou.oss-vectors.aliyuncs.com/", url);
+        assertEquals("https://test-bucket-9876543210.oss-cn-hangzhou.oss-vectors.aliyuncs.com/", url);
 
         // Test with key only
         input = OperationInput.newBuilder()
@@ -247,7 +264,7 @@ public class DefaultOSSVectorsClientBuilderTest {
                 .build();
 
         url = provider.buildURL(input);
-        assertEquals("https://test-bucket-test-account-id.oss-cn-hangzhou.oss-vectors.aliyuncs.com/test%20key", url);
+        assertEquals("https://test-bucket-9876543210.oss-cn-hangzhou.oss-vectors.aliyuncs.com/test%20key", url);
     }
 
     @Test

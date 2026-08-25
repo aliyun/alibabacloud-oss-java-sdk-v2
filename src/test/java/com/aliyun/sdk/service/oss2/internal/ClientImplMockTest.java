@@ -1590,6 +1590,44 @@ public class ClientImplMockTest {
     }
 
     @Test
+    public void useVirtualHostedAliasAddressingMode() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .useVirtualHostedAlias(true)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> parameters = MapUtils.caseSensitiveMap();
+            parameters.put("key", "value");
+
+            mockHandler.clear();
+            mockHandler.responses = new ArrayList<>();
+            mockHandler.responses.add(ResponseMessage.newBuilder()
+                    .statusCode(200)
+                    .body(new StringBinaryData(""))
+                    .build());
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("InvokeOperation")
+                    .method("PUT")
+                    .parameters(parameters)
+                    .bucket("my-bucket")
+                    .key("my-key")
+                    .build();
+
+            // The alias style is agentic-only, the plain client falls back to virtual-hosted
+            OperationOutput output = client.execute(input, OperationOptions.defaults());
+            assertThat(mockHandler.requests).hasSize(1);
+            assertThat(mockHandler.lastRequest.uri().toString()).isEqualTo("https://my-bucket.oss-cn-hangzhou.aliyuncs.com/my-key?key=value");
+            assertThat(output.statusCode()).isEqualTo(200);
+        }
+    }
+
+    @Test
     public void useCNameAddressingMode() throws Exception {
         MockHttpClient mockHandler = new MockHttpClient();
 
@@ -4218,6 +4256,69 @@ public class ClientImplMockTest {
                 assertThat(serr.requestId()).isEqualTo("5C3D9175B6FC201293AD****");
                 assertThat(serr.ec()).isEqualTo("");
                 assertThat(serr.timestamp()).isEqualTo(Instant.ofEpochSecond(1487906140));
+            }
+        }
+    }
+
+    @Test
+    public void invokeOperationInvalidAccountId() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .accountId("abc")
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("ListBuckets")
+                    .method("GET")
+                    .build();
+
+            try {
+                client.execute(input, OperationOptions.defaults());
+                Assert.fail("should not here");
+            } catch (IllegalArgumentException e) {
+                assertThat(e.getMessage()).contains("invalid account id");
+                // The error must short-circuit before any request reaches the transport
+                assertThat(mockHandler.requests).isNull();
+            }
+        }
+    }
+
+    @Test
+    public void invokeOperationAsyncInvalidAccountId() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .accountId("abc")
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("ListBuckets")
+                    .method("GET")
+                    .build();
+
+            try {
+                CompletableFuture<OperationOutput> futureOutput = client.executeAsync(input, OperationOptions.defaults());
+                futureOutput.get();
+                Assert.fail("should not here");
+            } catch (Exception e) {
+                assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+                assertThat(e.getCause().getMessage()).contains("invalid account id");
+                assertThat(mockHandler.requests).isNull();
             }
         }
     }

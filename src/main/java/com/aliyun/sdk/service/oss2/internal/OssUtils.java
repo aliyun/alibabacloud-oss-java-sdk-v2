@@ -64,7 +64,8 @@ final class OssUtils {
      *
      * @param input   Operation input containing bucket and object key information
      * @param baseUrl Base domain or host name
-     * @param style   Address style type (VirtualHosted / Path / CName)
+     * @param style   Address style type (VirtualHosted / Path / CName), any other
+     *                style falls back to VirtualHosted
      * @return Constructed host/path string based on the input and address style
      */
     public static String buildHostPath(OperationInput input, String baseUrl, AddressStyleType style) {
@@ -81,7 +82,7 @@ final class OssUtils {
                     break;
                 case CName:
                     break;
-                case VirtualHosted:
+                default:
                     host = String.format("%s.%s", input.bucket().get(), host);
                     break;
             }

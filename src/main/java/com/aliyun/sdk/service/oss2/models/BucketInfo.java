@@ -67,6 +67,12 @@ public final class BucketInfo {
     @JacksonXmlProperty(localName = "Owner")
     private Owner owner;
 
+    @JacksonXmlProperty(localName = "BucketResourceType")
+    private String bucketResourceType;
+
+    @JacksonXmlProperty(localName = "AgenticBucketName")
+    private String agenticBucketName;
+
     public BucketInfo() {
     }
 
@@ -89,6 +95,8 @@ public final class BucketInfo {
         this.accessControlList = builder.accessControlList;
         this.dataRedundancyType = builder.dataRedundancyType;
         this.owner = builder.owner;
+        this.bucketResourceType = builder.bucketResourceType;
+        this.agenticBucketName = builder.agenticBucketName;
     }
 
     public static Builder newBuilder() {
@@ -221,6 +229,14 @@ public final class BucketInfo {
         return this.owner;
     }
 
+    public String bucketResourceType() {
+        return this.bucketResourceType;
+    }
+
+    public String agenticBucketName() {
+        return this.agenticBucketName;
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }
@@ -244,6 +260,8 @@ public final class BucketInfo {
         private AccessControlList accessControlList;
         private String dataRedundancyType;
         private Owner owner;
+        private String bucketResourceType;
+        private String agenticBucketName;
 
         private Builder() {
             super();
@@ -268,6 +286,8 @@ public final class BucketInfo {
             this.accessControlList = from.accessControlList;
             this.dataRedundancyType = from.dataRedundancyType;
             this.owner = from.owner;
+            this.bucketResourceType = from.bucketResourceType;
+            this.agenticBucketName = from.agenticBucketName;
         }
 
         /**
@@ -429,6 +449,18 @@ public final class BucketInfo {
         public Builder owner(Owner value) {
             requireNonNull(value);
             this.owner = value;
+            return this;
+        }
+
+        public Builder bucketResourceType(String value) {
+            requireNonNull(value);
+            this.bucketResourceType = value;
+            return this;
+        }
+
+        public Builder agenticBucketName(String value) {
+            requireNonNull(value);
+            this.agenticBucketName = value;
             return this;
         }
 

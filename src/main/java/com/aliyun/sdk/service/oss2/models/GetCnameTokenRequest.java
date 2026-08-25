@@ -1,5 +1,7 @@
 package com.aliyun.sdk.service.oss2.models;
 
+import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -27,7 +29,15 @@ public final class GetCnameTokenRequest extends RequestModel {
         String value = parameters.get("cname");
         return value;
     }
-    
+
+    /**
+     * Specifies whether the CNAME record is a wildcard domain name.
+     */
+    public Boolean wildcard() {
+        String value = parameters.get("wildcard");
+        return ConvertUtils.toBoolOrNull(value);
+    }
+
 
     public static Builder newBuilder() {
         return new Builder();
@@ -55,10 +65,19 @@ public final class GetCnameTokenRequest extends RequestModel {
         public Builder cname(String value) {
             requireNonNull(value);
             this.parameters.put("cname", value);
-            return this;        
+            return this;
         }
-    
-        
+
+        /**
+        * Specifies whether the CNAME record is a wildcard domain name.
+        */
+        public Builder wildcard(Boolean value) {
+            requireNonNull(value);
+            this.parameters.put("wildcard", value.toString());
+            return this;
+        }
+
+
         public GetCnameTokenRequest build() {
             return new GetCnameTokenRequest(this);
         }

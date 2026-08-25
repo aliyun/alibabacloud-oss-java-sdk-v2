@@ -45,7 +45,8 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java,com/aliyun/sdk/service/oss2/dataprocess/Client*Test.java,com/aliyun/sdk/service/oss2/tables/Client*Test.java,com/aliyun/sdk/service/oss2/encryption/Client*Test.java"
+          EXCLUDES=$(find src/it/java -name 'Client*Test.java' -exec dirname {} \; | sort -u | sed -e 's#^src/it/java/##' -e 's#$#/Client*Test.java#' | paste -sd, -)
+          mvn -B clean test -Dsurefire.excludes="$EXCLUDES"
 
   linux-test:
     name: Java ${{ matrix.java-version }} Maven Test on ubuntu
@@ -67,7 +68,8 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java,com/aliyun/sdk/service/oss2/dataprocess/Client*Test.java,com/aliyun/sdk/service/oss2/tables/Client*Test.java,com/aliyun/sdk/service/oss2/encryption/Client*Test.java"
+          EXCLUDES=$(find src/it/java -name 'Client*Test.java' -exec dirname {} \; | sort -u | sed -e 's#^src/it/java/##' -e 's#$#/Client*Test.java#' | paste -sd, -)
+          mvn -B clean test -Dsurefire.excludes="$EXCLUDES"
 
   test-graalvm:
     name: GraalVM Maven Test
@@ -82,4 +84,5 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn -B clean test -Dsurefire.excludes="com/aliyun/sdk/service/oss2/Client*Test.java,com/aliyun/sdk/service/oss2/vectors/Client*Test.java,com/aliyun/sdk/service/oss2/dataprocess/Client*Test.java,com/aliyun/sdk/service/oss2/tables/Client*Test.java,com/aliyun/sdk/service/oss2/encryption/Client*Test.java"
+          EXCLUDES=$(find src/it/java -name 'Client*Test.java' -exec dirname {} \; | sort -u | sed -e 's#^src/it/java/##' -e 's#$#/Client*Test.java#' | paste -sd, -)
+          mvn -B clean test -Dsurefire.excludes="$EXCLUDES"

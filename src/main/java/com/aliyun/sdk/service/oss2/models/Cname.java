@@ -1,5 +1,6 @@
 package com.aliyun.sdk.service.oss2.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import static java.util.Objects.requireNonNull;
@@ -15,11 +16,15 @@ public final class Cname {
     @JacksonXmlProperty(localName = "CertificateConfiguration")
     private CertificateConfiguration certificateConfiguration;
 
+    @JacksonXmlProperty(localName = "IsWildCard")
+    private Boolean isWildCard;
+
     public Cname() {}
 
-    private Cname(Builder builder) { 
-        this.domain = builder.domain; 
-        this.certificateConfiguration = builder.certificateConfiguration; 
+    private Cname(Builder builder) {
+        this.domain = builder.domain;
+        this.certificateConfiguration = builder.certificateConfiguration;
+        this.isWildCard = builder.isWildCard;
     }
 
     /**
@@ -36,6 +41,14 @@ public final class Cname {
         return this.certificateConfiguration;
     }
 
+    /**
+    * Specifies whether the custom domain name is a wildcard domain name.
+    */
+    @JsonIgnore
+    public Boolean isWildCard() {
+        return this.isWildCard;
+    }
+
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -44,10 +57,11 @@ public final class Cname {
         return new Builder(this);
     }
 
-    public static class Builder { 
+    public static class Builder {
         private String domain;
         private CertificateConfiguration certificateConfiguration;
-        
+        private Boolean isWildCard;
+
         /**
         * The custom domain name.
         */
@@ -65,15 +79,25 @@ public final class Cname {
             this.certificateConfiguration = value;
             return this;
         }
-        
+
+        /**
+        * Specifies whether the custom domain name is a wildcard domain name.
+        */
+        public Builder isWildCard(Boolean value) {
+            requireNonNull(value);
+            this.isWildCard = value;
+            return this;
+        }
+
 
         private Builder() {
             super();
         }
 
-        private Builder(Cname from) { 
-            this.domain = from.domain; 
-            this.certificateConfiguration = from.certificateConfiguration; 
+        private Builder(Cname from) {
+            this.domain = from.domain;
+            this.certificateConfiguration = from.certificateConfiguration;
+            this.isWildCard = from.isWildCard;
         }
 
         public Cname build() {

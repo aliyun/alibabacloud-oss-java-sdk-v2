@@ -131,6 +131,7 @@ public class DeleteCnameRequestTest {
         DeleteCnameRequest request = DeleteCnameRequest.newBuilder()
                 .bucket("examplebucket")
                 .bucketCnameConfiguration(bucketCnameConfiguration)
+                .parameter("wildcard", "true")
                 .build();
 
         OperationInput input = SerdeBucketCname.fromDeleteCname(request);
@@ -138,6 +139,7 @@ public class DeleteCnameRequestTest {
         assertThat(input.bucket().get()).isEqualTo("examplebucket");
         assertThat(input.parameters().get("cname")).isEqualTo("");
         assertThat(input.parameters().get("comp")).isEqualTo("delete");
+        assertThat(input.parameters().get("wildcard")).isEqualTo("true");
         assertThat(input.headers().get("Content-Type")).isEqualTo("application/xml");
 
         // Verify the XML body content
