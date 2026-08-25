@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2.internal;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class EnsureTest {
@@ -58,6 +59,41 @@ public class EnsureTest {
         assertThatThrownBy(() -> Ensure.assertValidateArnBucket(bucketArn))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("input.bucket does not contain account id");
+    }
+
+    @Test
+    public void assertValidateArnBucket_InvalidArn_NonDigitAccountId_ShouldThrow() {
+        String bucketArn = "acs:oss:cn-hangzhou:abc123:bucket:my-bucket";
+
+        assertThatThrownBy(() -> Ensure.assertValidateArnBucket(bucketArn))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("input.bucket contains invalid account id");
+    }
+
+    @Test
+    public void assertValidateArnBucket_InvalidArn_AccountIdWithSpecialChars_ShouldThrow() {
+        String bucketArn = "acs:oss:cn-hangzhou:123-456:bucket:my-bucket";
+
+        assertThatThrownBy(() -> Ensure.assertValidateArnBucket(bucketArn))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("input.bucket contains invalid account id");
+    }
+
+    @Test
+    public void isValidAccountId_PureDigits_ShouldReturnTrue() {
+        assertThat(Ensure.isValidAccountId("1234567890123456")).isTrue();
+        assertThat(Ensure.isValidAccountId("0")).isTrue();
+        assertThat(Ensure.isValidAccountId("9999")).isTrue();
+    }
+
+    @Test
+    public void isValidAccountId_NonDigitsOrEmpty_ShouldReturnFalse() {
+        assertThat(Ensure.isValidAccountId(null)).isFalse();
+        assertThat(Ensure.isValidAccountId("")).isFalse();
+        assertThat(Ensure.isValidAccountId("abc")).isFalse();
+        assertThat(Ensure.isValidAccountId("1234abc")).isFalse();
+        assertThat(Ensure.isValidAccountId("123-456")).isFalse();
+        assertThat(Ensure.isValidAccountId(" 123")).isFalse();
     }
 
     @Test

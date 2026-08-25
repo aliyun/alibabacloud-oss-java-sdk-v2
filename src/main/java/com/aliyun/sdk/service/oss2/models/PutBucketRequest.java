@@ -53,6 +53,10 @@ public final class PutBucketRequest extends RequestModel {
     /**
      * The container that stores the request body.
      */
+    public String agenticBucket() {
+        return headers.get("x-oss-agentic-bucket");
+    }
+
     public CreateBucketConfiguration createBucketConfiguration() {
         return createBucketConfiguration;
     }
@@ -114,6 +118,12 @@ public final class PutBucketRequest extends RequestModel {
         /**
          * The container that stores the request body.
          */
+        public Builder agenticBucket(String value) {
+            requireNonNull(value);
+            this.headers.put("x-oss-agentic-bucket", value);
+            return this;
+        }
+
         public Builder createBucketConfiguration(CreateBucketConfiguration value) {
             requireNonNull(value);
             this.createBucketConfiguration = value;

@@ -35,6 +35,25 @@ public final class Ensure {
     }
 
     /**
+     * Checks whether the given string is a valid account id (non-empty pure digits)
+     *
+     * @param value The account id to validate
+     * @return true if the string is non-empty and contains only digits, false otherwise
+     */
+    public static boolean isValidAccountId(String value) {
+        if (value == null || value.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Validates whether the given string is a properly formatted bucket name
      *
      * @param value The bucket name to validate
@@ -64,8 +83,14 @@ public final class Ensure {
         Arn arn = Arn.fromString(bucket);
 
         // must have account id
-        if (StringUtils.isNullOrEmpty(arn.accountId().orElse(null))) {
+        String accountId = arn.accountId().orElse(null);
+        if (StringUtils.isNullOrEmpty(accountId)) {
             throw new IllegalArgumentException("input.bucket does not contain account id");
+        }
+
+        // account id must be valid (pure digits)
+        if (!isValidAccountId(accountId)) {
+            throw new IllegalArgumentException("input.bucket contains invalid account id: " + accountId);
         }
 
         // must have bucket resource

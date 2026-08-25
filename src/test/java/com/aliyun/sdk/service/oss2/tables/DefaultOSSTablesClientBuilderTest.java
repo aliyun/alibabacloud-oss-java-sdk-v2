@@ -15,6 +15,23 @@ import static org.junit.Assert.*;
 public class DefaultOSSTablesClientBuilderTest {
 
     @Test
+    public void invalidAccountIdDeferredToOperation() throws Exception {
+        // Building the client with an invalid account id must NOT throw
+        try (OSSTablesClient client = OSSTablesClient.newBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new AnonymousCredentialsProvider())
+                .accountId("abc")
+                .build()) {
+            assertNotNull(client);
+            // The error is surfaced when an operation is invoked
+            IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                    () -> client.listTableBuckets(
+                            com.aliyun.sdk.service.oss2.tables.models.ListTableBucketsRequest.newBuilder().build()));
+            assertTrue(ex.getMessage().contains("invalid account id"));
+        }
+    }
+
+    @Test
     public void defaultConfiguration() throws Exception {
         try (OSSTablesClient client = OSSTablesClient.newBuilder()
                 .region("cn-hangzhou")

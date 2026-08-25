@@ -128,6 +128,7 @@ public class CreateCnameTokenRequestTest {
         CreateCnameTokenRequest request = CreateCnameTokenRequest.newBuilder()
                 .bucket("examplebucket")
                 .bucketCnameConfiguration(bucketCnameConfiguration)
+                .parameter("wildcard", "true")
                 .build();
 
         OperationInput input = SerdeBucketCname.fromCreateCnameToken(request);
@@ -135,6 +136,7 @@ public class CreateCnameTokenRequestTest {
         assertThat(input.bucket().get()).isEqualTo("examplebucket");
         assertThat(input.parameters().get("cname")).isEqualTo("");
         assertThat(input.parameters().get("comp")).isEqualTo("token");
+        assertThat(input.parameters().get("wildcard")).isEqualTo("true");
         assertThat(input.headers().get("Content-Type")).isEqualTo("application/xml");
 
         // Verify the XML body content
