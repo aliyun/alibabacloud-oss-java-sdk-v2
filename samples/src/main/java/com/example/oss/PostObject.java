@@ -1,7 +1,5 @@
 package com.example.oss;
 
-import com.aliyun.sdk.service.oss2.OSSClient;
-import com.aliyun.sdk.service.oss2.OSSClientBuilder;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.utils.Base64Utils;
@@ -33,15 +31,8 @@ public class PostObject implements Example {
             String localFilePath) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
-        OSSClientBuilder clientBuilder = OSSClient.newBuilder()
-                .credentialsProvider(provider)
-                .region(region);
 
-        if (endpoint != null) {
-            clientBuilder.endpoint(endpoint);
-        }
-
-        try (OSSClient client = clientBuilder.build()) {
+        try {
             // If you use credentials, please refer to the relevant documentation. (https://help.aliyun.com/zh/oss/developer-reference/oss-sdk-for-java-2-0/?spm=a2c4g.11186623.help-menu-31815.d_1_1_0.24f3438bN44J4S#2b547730183mr)
             String accessKeyId = provider.getCredentials().accessKeyId();
             String accessKeySecret = provider.getCredentials().accessKeySecret();
