@@ -42,6 +42,7 @@ public class PostObject implements Example {
         }
 
         try (OSSClient client = clientBuilder.build()) {
+            // If you use credentials, please refer to the relevant documentation. (https://help.aliyun.com/zh/oss/developer-reference/oss-sdk-for-java-2-0/?spm=a2c4g.11186623.help-menu-31815.d_1_1_0.24f3438bN44J4S#2b547730183mr)
             String accessKeyId = provider.getCredentials().accessKeyId();
             String accessKeySecret = provider.getCredentials().accessKeySecret();
 
@@ -74,13 +75,20 @@ public class PostObject implements Example {
             dateCondition.put("x-oss-date", dateTime);
             conditions.add(dateCondition);
 
-
             conditions.add(Arrays.asList("content-length-range", 0, 104857600));
 
             // conditions.add(Arrays.asList("eq", "success_action_status", "201"));
             // conditions.add(Arrays.asList("starts-with", "$key", "user/eric/"));
             // conditions.add(Arrays.asList("in", "$content-type", Arrays.asList("image/jpg", "image/png")));
             // conditions.add(Arrays.asList("not-in", "$cache-control", Arrays.asList("no-cache")));
+
+            // use sts token
+            /*String securityToken = "yourSecurityToken";
+            if (securityToken != null && !securityToken.isEmpty()) {
+                Map<String, String> securityTokenCondition = new LinkedHashMap<>();
+                securityTokenCondition.put("x-oss-security-token", securityToken);
+                conditions.add(securityTokenCondition);
+            }*/
 
             policyMap.put("conditions", conditions);
 
@@ -93,6 +101,11 @@ public class PostObject implements Example {
             formFields.put("x-oss-signature-version", "OSS4-HMAC-SHA256");
             formFields.put("x-oss-credential", accessKeyId + "/" + date + "/" + region + "/oss/aliyun_v4_request");
             formFields.put("x-oss-date", dateTime);
+
+            // use sts token
+            /*if (securityToken != null && !securityToken.isEmpty()) {
+                formFields.put("x-oss-security-token", securityToken);
+            }*/
 
             String signature = calculateSignature(accessKeySecret, date, region, encodePolicy);
             formFields.put("x-oss-signature", signature);
