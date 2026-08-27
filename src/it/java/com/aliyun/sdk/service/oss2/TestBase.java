@@ -8,6 +8,7 @@ import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.paginator.ListBucketsIterable;
 import com.aliyun.sdk.service.oss2.paginator.ListObjectVersionsIterable;
 import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClient;
+import com.aliyun.sdk.service.oss2.vectors.OSSVectorsClientBuilder;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -284,12 +285,15 @@ public class TestBase {
 
     public static OSSVectorsClient getVectorsClient() {
         CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
-        return OSSVectorsClient.newBuilder()
+        OSSVectorsClientBuilder builder = OSSVectorsClient.newBuilder()
                 .region(region())
-                .endpoint(vectorEndpoint())
                 .accountId(accountId())
-                .credentialsProvider(provider)
-                .build();
+                .credentialsProvider(provider);
+        String endpoint = vectorEndpoint();
+        if (endpoint != null && !endpoint.isEmpty()) {
+            builder.endpoint(endpoint);
+        }
+        return builder.build();
     }
 
     public static OSSDataProcessClient getDataClient() {
