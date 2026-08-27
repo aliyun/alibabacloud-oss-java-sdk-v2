@@ -40,11 +40,14 @@ public class TestBaseTables extends TestBase {
 
     public static OSSTablesClient newTablesClient() {
         CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
-        return OSSTablesClient.newBuilder()
+        OSSTablesClientBuilder builder = OSSTablesClient.newBuilder()
                 .region(region())
-                .endpoint(tablesEndpoint())
-                .credentialsProvider(provider)
-                .build();
+                .credentialsProvider(provider);
+        String endpoint = tablesEndpoint();
+        if (endpoint != null && !endpoint.isEmpty()) {
+            builder.endpoint(endpoint);
+        }
+        return builder.build();
     }
 
     public static void createTableBucket(String name) {

@@ -389,12 +389,15 @@ public class ClientTableTest extends TestBaseTables {
     @Test
     public void testCreateTableUsePathStyle() {
         CredentialsProvider provider = new StaticCredentialsProvider(accessKeyId(), accessKeySecret());
-        OSSTablesClient client = OSSTablesClient.newBuilder()
+        OSSTablesClientBuilder builder = OSSTablesClient.newBuilder()
                 .region(region())
                 .usePathStyle(true)
-                .endpoint(tablesEndpoint())
-                .credentialsProvider(provider)
-                .build();
+                .credentialsProvider(provider);
+        String endpoint = tablesEndpoint();
+        if (endpoint != null && !endpoint.isEmpty()) {
+            builder.endpoint(endpoint);
+        }
+        OSSTablesClient client = builder.build();
 
         String namespaceName = "test_namespace_" + System.currentTimeMillis();
         String tableName = "test1_table_" + System.currentTimeMillis();
