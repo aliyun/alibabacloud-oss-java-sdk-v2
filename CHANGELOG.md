@@ -1,5 +1,10 @@
 # ChangeLog - Alibaba Cloud OSS SDK For Java V2
 
+## 版本号：0.6.0 日期：2026-08-27
+### 变更内容
+- Feature：Add agentic bucket
+- Update：Extend InsightsImage configuration in dataprocess client
+
 ## 版本号：0.5.1 日期：2026-07-24
 ### 变更内容
 - Feature：Add bucketArn field to IndexSummary in vectors client
