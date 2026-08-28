@@ -25,6 +25,44 @@ public class SemanticQueryResultTest {
     }
 
     @Test
+    public void testXmlBuilderWithMultilingualContent() throws JsonProcessingException {
+        String xml = "<SemanticQueryResponse>"
+                + "<Files><File><Insights>"
+                + "<Video><Caption>English video caption</Caption>"
+                + "<MultilingualContent>"
+                + "<Content><Language>en</Language><Caption>English video caption</Caption><Description>English video description</Description></Content>"
+                + "<Content><Language>zh-Hans</Language><Caption>中文视频标题</Caption><Description>中文视频描述</Description></Content>"
+                + "</MultilingualContent></Video>"
+                + "<Image><Caption>English image caption</Caption>"
+                + "<MultilingualContent>"
+                + "<Content><Language>en</Language><Caption>English image caption</Caption><Description>English image description</Description></Content>"
+                + "<Content><Language>ja</Language><Caption>日本語の画像タイトル</Caption><Description>日本語の画像説明</Description></Content>"
+                + "</MultilingualContent></Image>"
+                + "</Insights></File></Files>"
+                + "</SemanticQueryResponse>";
+
+        OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(xml))
+                .build();
+        SemanticQueryResult result = SerdeDatasetBasic.toSemanticQuery(output);
+
+        assertThat(result.files()).hasSize(1);
+        VideoInsight video = result.files().get(0).insights().video();
+        assertThat(video.multilingualContent()).hasSize(2);
+        assertThat(video.multilingualContent().get(0).language()).isEqualTo("en");
+        assertThat(video.multilingualContent().get(0).caption()).isEqualTo("English video caption");
+        assertThat(video.multilingualContent().get(1).language()).isEqualTo("zh-Hans");
+        assertThat(video.multilingualContent().get(1).description()).isEqualTo("中文视频描述");
+
+        ImageInsight image = result.files().get(0).insights().image();
+        assertThat(image.multilingualContent()).hasSize(2);
+        assertThat(image.multilingualContent().get(0).language()).isEqualTo("en");
+        assertThat(image.multilingualContent().get(0).description()).isEqualTo("English image description");
+        assertThat(image.multilingualContent().get(1).language()).isEqualTo("ja");
+        assertThat(image.multilingualContent().get(1).caption()).isEqualTo("日本語の画像タイトル");
+    }
+
+    @Test
     public void testFullBuilder() {
         AudioStream audioStream = AudioStream.newBuilder()
                 .index(1L)
