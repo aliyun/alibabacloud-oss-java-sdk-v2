@@ -11,6 +11,7 @@ import com.aliyun.sdk.service.oss2.types.EndpointProvider;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 public class ClientOptions {
     private final String product;
@@ -23,6 +24,7 @@ public class ClientOptions {
     private final AuthMethodType authMethod;
     private final HttpClient httpClient;
     private final List<String> additionalHeaders;
+    private final Map<String, String> defaultRequestHeaders;
     private final int featureFlags;
     private final EndpointProvider endpointProvider;
     private final BucketNameResolver bucketNameResolver;
@@ -39,6 +41,7 @@ public class ClientOptions {
         this.authMethod = builder.authMethod;
         this.httpClient = builder.httpClient;
         this.additionalHeaders = builder.additionalHeaders;
+        this.defaultRequestHeaders = builder.defaultRequestHeaders;
         this.featureFlags = builder.featureFlags;
         this.endpointProvider = builder.endpointProvider;
         this.bucketNameResolver = builder.bucketNameResolver;
@@ -85,6 +88,10 @@ public class ClientOptions {
         return additionalHeaders;
     }
 
+    public Map<String, String> defaultRequestHeaders() {
+        return defaultRequestHeaders;
+    }
+
     public int featureFlags() {
         return featureFlags;
     }
@@ -113,6 +120,7 @@ public class ClientOptions {
                 .authMethod(this.authMethod)
                 .httpClient(this.httpClient)
                 .additionalHeaders(this.additionalHeaders)
+                .defaultRequestHeaders(this.defaultRequestHeaders)
                 .featureFlags(this.featureFlags)
                 .endpointProvider(this.endpointProvider)
                 .bucketNameResolver(this.bucketNameResolver)
@@ -130,6 +138,7 @@ public class ClientOptions {
         private AuthMethodType authMethod;
         private HttpClient httpClient;
         private List<String> additionalHeaders;
+        private Map<String, String> defaultRequestHeaders;
         private int featureFlags;
         private EndpointProvider endpointProvider;
         private BucketNameResolver bucketNameResolver;
@@ -182,6 +191,11 @@ public class ClientOptions {
 
         public Builder additionalHeaders(List<String> additionalHeaders) {
             this.additionalHeaders = additionalHeaders;
+            return this;
+        }
+
+        public Builder defaultRequestHeaders(Map<String, String> value) {
+            this.defaultRequestHeaders = value;
             return this;
         }
 

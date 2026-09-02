@@ -7,6 +7,7 @@ import com.aliyun.sdk.service.oss2.transport.HttpClient;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -29,6 +30,7 @@ public final class ClientConfiguration {
     private final Boolean useVirtualHostedAlias;
     private final HttpClient httpClient;
     private final List<String> additionalHeaders;
+    private final Map<String, String> defaultRequestHeaders;
     private final String userAgent;
     private final Duration connectTimeout;
     private final Duration readWriteTimeout;
@@ -57,6 +59,7 @@ public final class ClientConfiguration {
         this.useVirtualHostedAlias = builder.useVirtualHostedAlias;
         this.httpClient = builder.httpClient;
         this.additionalHeaders = builder.additionalHeaders;
+        this.defaultRequestHeaders = builder.defaultRequestHeaders;
         this.userAgent = builder.userAgent;
         this.connectTimeout = builder.connectTimeout;
         this.readWriteTimeout = builder.readWriteTimeout;
@@ -141,6 +144,10 @@ public final class ClientConfiguration {
         return Optional.ofNullable(additionalHeaders);
     }
 
+    public Optional<Map<String, String>> defaultRequestHeaders() {
+        return Optional.ofNullable(defaultRequestHeaders);
+    }
+
     public Optional<String> userAgent() {
         return Optional.ofNullable(userAgent);
     }
@@ -211,6 +218,7 @@ public final class ClientConfiguration {
         private Boolean useVirtualHostedAlias;
         private HttpClient httpClient;
         private List<String> additionalHeaders;
+        private Map<String, String> defaultRequestHeaders;
         private String userAgent;
         private Duration connectTimeout;
         private Duration readWriteTimeout;
@@ -241,6 +249,7 @@ public final class ClientConfiguration {
             this.useVirtualHostedAlias = from.useVirtualHostedAlias;
             this.httpClient = from.httpClient;
             this.additionalHeaders = from.additionalHeaders;
+            this.defaultRequestHeaders = from.defaultRequestHeaders;
             this.userAgent = from.userAgent;
             this.connectTimeout = from.connectTimeout;
             this.readWriteTimeout = from.readWriteTimeout;
@@ -345,6 +354,12 @@ public final class ClientConfiguration {
         public Builder additionalHeaders(List<String> value) {
             requireNonNull(value);
             this.additionalHeaders = value;
+            return this;
+        }
+
+        public Builder defaultRequestHeaders(Map<String, String> value) {
+            requireNonNull(value);
+            this.defaultRequestHeaders = value;
             return this;
         }
 
