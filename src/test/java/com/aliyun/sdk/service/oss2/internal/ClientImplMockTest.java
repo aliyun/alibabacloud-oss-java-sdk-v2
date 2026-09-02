@@ -4323,6 +4323,305 @@ public class ClientImplMockTest {
         }
     }
 
+    @Test
+    public void defaultRequestHeadersAppliedToEveryRequest() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        Map<String, String> defaultHeaders = new HashMap<>();
+        defaultHeaders.put("x-my-trace-id", "abc123");
+        defaultHeaders.put("x-oss-request-payer", "requester");
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .defaultRequestHeaders(defaultHeaders)
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(200).body(new StringBinaryData("")).build());
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(200).body(new StringBinaryData("")).build());
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            OperationInput putInput = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new StringBinaryData("hi"))
+                    .build();
+            client.execute(putInput, OperationOptions.defaults());
+
+            OperationInput listInput = OperationInput.newBuilder()
+                    .opName("ListObjectsV2")
+                    .method("GET")
+                    .bucket("bucket")
+                    .build();
+            client.execute(listInput, OperationOptions.defaults());
+
+            assertThat(mockHandler.requests).hasSize(2);
+            for (RequestMessage request : mockHandler.requests) {
+                assertThat(request.headers().get("x-my-trace-id")).isEqualTo("abc123");
+                assertThat(request.headers().get("x-oss-request-payer")).isEqualTo("requester");
+            }
+        }
+    }
+
+    @Test
+    public void defaultRequestHeadersRequestWinsOnConflict() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        // "content-type" differs in case from the canonical "Content-Type" the
+        // operation sets, to cover case-insensitive conflict detection
+        Map<String, String> defaultHeaders = new HashMap<>();
+        defaultHeaders.put("content-type", "application/from-default");
+        defaultHeaders.put("x-oss-storage-class", "ColdArchive");
+        defaultHeaders.put("x-my-trace-id", "abc123");
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .defaultRequestHeaders(defaultHeaders)
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(200).body(new StringBinaryData("")).build());
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            Map<String, String> headers = MapUtils.caseInsensitiveMap();
+            headers.put("Content-Type", "application/from-request");
+            headers.put("x-oss-storage-class", "Standard");
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .bucket("bucket")
+                    .key("key")
+                    .headers(headers)
+                    .body(new StringBinaryData("hi"))
+                    .build();
+            client.execute(input, OperationOptions.defaults());
+
+            RequestMessage request = mockHandler.lastRequest;
+            assertThat(request.headers().get("Content-Type")).isEqualTo("application/from-request");
+            assertThat(request.headers().get("x-oss-storage-class")).isEqualTo("Standard");
+            // the non-conflicting one still gets through
+            assertThat(request.headers().get("x-my-trace-id")).isEqualTo("abc123");
+        }
+    }
+
+    @Test
+    public void defaultRequestHeadersCanNotOverrideUserAgent() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        Map<String, String> defaultHeaders = new HashMap<>();
+        defaultHeaders.put("User-Agent", "evil-ua");
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .defaultRequestHeaders(defaultHeaders)
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(200).body(new StringBinaryData("")).build());
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("ListObjectsV2")
+                    .method("GET")
+                    .bucket("bucket")
+                    .build();
+            client.execute(input, OperationOptions.defaults());
+
+            String ua = mockHandler.lastRequest.headers().get("User-Agent");
+            assertThat(ua).isNotEqualTo("evil-ua");
+            assertThat(ua).startsWith("alibabacloud-java-sdk-v2/");
+        }
+    }
+
+    @Test
+    public void defaultRequestHeadersContentLengthIgnored() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        Map<String, String> defaultHeaders = new HashMap<>();
+        defaultHeaders.put("Content-Length", "999");
+        defaultHeaders.put("x-my-trace-id", "abc123");
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .defaultRequestHeaders(defaultHeaders)
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(200).body(new StringBinaryData("")).build());
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            // content-length is managed by the http stack, dropped at resolve time
+            assertThat(client.options.defaultRequestHeaders()).hasSize(1);
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("PutObject")
+                    .method("PUT")
+                    .bucket("bucket")
+                    .key("key")
+                    .body(new StringBinaryData("hello"))
+                    .build();
+            client.execute(input, OperationOptions.defaults());
+
+            RequestMessage request = mockHandler.lastRequest;
+            assertThat(request.headers().get("Content-Length")).isNull();
+            assertThat(request.headers().get("x-my-trace-id")).isEqualTo("abc123");
+        }
+    }
+
+    @Test
+    public void defaultRequestHeadersEmptyKeyOrValueIgnored() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        Map<String, String> defaultHeaders = new HashMap<>();
+        defaultHeaders.put("", "no-name");
+        defaultHeaders.put("x-my-empty", "");
+        defaultHeaders.put("x-my-trace-id", "abc123");
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .defaultRequestHeaders(defaultHeaders)
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(200).body(new StringBinaryData("")).build());
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            assertThat(client.options.defaultRequestHeaders()).hasSize(1);
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("ListObjectsV2")
+                    .method("GET")
+                    .bucket("bucket")
+                    .build();
+            client.execute(input, OperationOptions.defaults());
+
+            RequestMessage request = mockHandler.lastRequest;
+            assertThat(request.headers().get("x-my-empty")).isNull();
+            assertThat(request.headers().get("x-my-trace-id")).isEqualTo("abc123");
+        }
+    }
+
+    @Test
+    public void defaultRequestHeadersConfigMapMutationAfterBuild() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        Map<String, String> defaultHeaders = new HashMap<>();
+        defaultHeaders.put("x-my-trace-id", "abc123");
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .defaultRequestHeaders(defaultHeaders)
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(200).body(new StringBinaryData("")).build());
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            // mutating the config's map after the client is built must have no effect
+            defaultHeaders.put("x-my-trace-id", "mutated");
+            defaultHeaders.put("x-my-added", "added");
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("ListObjectsV2")
+                    .method("GET")
+                    .bucket("bucket")
+                    .build();
+            client.execute(input, OperationOptions.defaults());
+
+            RequestMessage request = mockHandler.lastRequest;
+            assertThat(request.headers().get("x-my-trace-id")).isEqualTo("abc123");
+            assertThat(request.headers().get("x-my-added")).isNull();
+        }
+    }
+
+    @Test
+    public void defaultRequestHeadersNotSetByDefault() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .httpClient(mockHandler)
+                .build();
+
+        mockHandler.clear();
+        mockHandler.responses = new ArrayList<>();
+        mockHandler.responses.add(ResponseMessage.newBuilder()
+                .statusCode(200).body(new StringBinaryData("")).build());
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            assertThat(client.options.defaultRequestHeaders()).isEmpty();
+
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("ListObjectsV2")
+                    .method("GET")
+                    .bucket("bucket")
+                    .build();
+            client.execute(input, OperationOptions.defaults());
+
+            assertThat(mockHandler.lastRequest.headers().get("x-my-trace-id")).isNull();
+        }
+    }
+
+    @Test
+    public void defaultRequestHeadersTakePartInPresign() throws Exception {
+        MockHttpClient mockHandler = new MockHttpClient();
+
+        Map<String, String> defaultHeaders = new HashMap<>();
+        defaultHeaders.put("x-oss-request-payer", "requester");
+
+        ClientConfiguration config = ClientConfiguration.defaultBuilder()
+                .region("cn-hangzhou")
+                .credentialsProvider(new StaticCredentialsProvider("ak", "sk"))
+                .defaultRequestHeaders(defaultHeaders)
+                .httpClient(mockHandler)
+                .build();
+
+        try (ClientImpl client = new ClientImpl(config)) {
+            OperationInput input = OperationInput.newBuilder()
+                    .opName("GetObject")
+                    .method("GET")
+                    .bucket("bucket")
+                    .key("key")
+                    .build();
+            input.opMetadata().put(AttributeKey.EXPIRATION_TIME, Instant.now().plusSeconds(60 * 60));
+
+            ClientImpl.PresignInnerResult result = client.presignInner(input, null);
+            assertThat(result).isNotNull();
+            assertThat(result.url).contains("x-oss-signature=");
+            // the signable default header is reported back, so the caller can replay it
+            assertThat(result.signedHeaders.get("x-oss-request-payer")).isEqualTo("requester");
+        }
+    }
+
     static class MockHttpClient implements HttpClient {
 
         public RequestMessage lastRequest;

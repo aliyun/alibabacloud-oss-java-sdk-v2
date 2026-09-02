@@ -391,6 +391,9 @@ public class ClientImpl implements AutoCloseable {
         Map<String, String> headers = input.headers();
         headers.put("User-Agent", innerOptions.getUserAgent());
 
+        // default headers, only fill in what the operation and the SDK left unset
+        applyDefaultRequestHeaders(headers);
+
         // request::body
         BinaryData body = input.body().orElse(new ByteArrayBinaryData(new byte[0]));
 
@@ -402,6 +405,32 @@ public class ClientImpl implements AutoCloseable {
                 .build();
 
         return new Pair<>(request, context);
+    }
+
+    /**
+     * Adds the client-level default request headers to the request, without overriding
+     * the headers the operation or the SDK already set. The comparison is case-insensitive.
+     *
+     * @param headers The request headers to fill in
+     */
+    private void applyDefaultRequestHeaders(Map<String, String> headers) {
+        Map<String, String> defaults = this.options.defaultRequestHeaders();
+        if (defaults == null || defaults.isEmpty()) {
+            return;
+        }
+
+        for (Map.Entry<String, String> entry : defaults.entrySet()) {
+            boolean present = false;
+            for (String key : headers.keySet()) {
+                if (key.equalsIgnoreCase(entry.getKey())) {
+                    present = true;
+                    break;
+                }
+            }
+            if (!present) {
+                headers.put(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     /**
@@ -443,6 +472,7 @@ public class ClientImpl implements AutoCloseable {
                 .addressStyle(resolveAddressStyle(config, endpoint))
                 .authMethod(AuthMethodType.Header)
                 .additionalHeaders(config.additionalHeaders().orElse(Collections.emptyList()))
+                .defaultRequestHeaders(resolveDefaultRequestHeaders(config))
                 .featureFlags(resolveFeatureFlags(config))
                 .build();
     }
@@ -607,6 +637,38 @@ public class ClientImpl implements AutoCloseable {
             flags = ~FeatureFlagsType.ENABLE_CRC64_CHECK_UPLOAD.getValue() & flags;
         }
         return flags;
+    }
+
+    /**
+     * Resolves the client-level default request headers.
+     * <p>
+     * The map is copied so that mutating the config's map after the client is built can
+     * not race with the requests reading it. Entries with an empty key or value and the
+     * headers managed by the http stack itself are dropped.
+     *
+     * @param config Base client configuration
+     * @return The resolved default request headers, never null
+     */
+    private Map<String, String> resolveDefaultRequestHeaders(ClientConfiguration config) {
+        if (!config.defaultRequestHeaders().isPresent() ||
+                config.defaultRequestHeaders().get().isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        for (Map.Entry<String, String> entry : config.defaultRequestHeaders().get().entrySet()) {
+            if (StringUtils.isNullOrEmpty(entry.getKey()) ||
+                    StringUtils.isNullOrEmpty(entry.getValue())) {
+                continue;
+            }
+            // managed by the http stack, must not be set by hand
+            String key = entry.getKey().toLowerCase();
+            if (key.equals("host") || key.equals("content-length") || key.equals("transfer-encoding")) {
+                continue;
+            }
+            headers.put(entry.getKey(), entry.getValue());
+        }
+        return headers;
     }
 
     public static class InnerOptions {
