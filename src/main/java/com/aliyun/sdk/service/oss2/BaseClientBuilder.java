@@ -7,6 +7,7 @@ import com.aliyun.sdk.service.oss2.transport.HttpClient;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
 
@@ -250,6 +251,20 @@ public interface BaseClientBuilder<B extends BaseClientBuilder<B, T>, T> {
      * @return this builder for method chaining
      */
     B additionalHeaders(List<String> value);
+
+    /**
+     * Sets the default HTTP headers to be automatically added to every request
+     * sent by this client.
+     * <p>
+     * A header set by the request itself takes precedence over the default one.
+     * The {@code User-Agent} header can not be changed this way, use {@link #userAgent(String)} instead.
+     * <p>
+     * Example: {@code Map.of("x-oss-request-payer", "requester")}
+     *
+     * @param value a map of default header names to values
+     * @return this builder for method chaining
+     */
+    B defaultRequestHeaders(Map<String, String> value);
 
     /**
      * Sets a custom user agent string appended to the default SDK user agent.

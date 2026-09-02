@@ -488,4 +488,118 @@ public class ClientMiscTest extends TestBase {
         }
     }
 
+    @Test
+    public void testDefaultRequestHeaders() throws Exception {
+        String objectName = OJBJECT_NAME_PREFIX + "default-headers";
+
+        // normal case, a signable x-oss-* default header must take part in the
+        // signature and reach the server
+        Map<String, String> defaultHeaders = MapUtils.of(
+                "x-oss-meta-app", "sdk-default-headers",
+                "x-my-trace-id", "trace-default-headers");
+
+        try (OSSClient client = OSSClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
+                .defaultRequestHeaders(defaultHeaders)
+                .build()) {
+
+            PutObjectResult putResult = client.putObject(PutObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(objectName)
+                    .body(BinaryData.fromString("hello default headers"))
+                    .build());
+            assertEquals(200, putResult.statusCode());
+
+            HeadObjectResult headResult = client.headObject(HeadObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(objectName)
+                    .build());
+            assertEquals(200, headResult.statusCode());
+            assertEquals("sdk-default-headers", headResult.metadata().get("app"));
+
+            try (GetObjectResult getResult = client.getObject(GetObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(objectName)
+                    .build())) {
+                assertEquals(200, getResult.statusCode());
+                assertThat(IOUtils.toByteArray(getResult.body()))
+                        .isEqualTo("hello default headers".getBytes());
+                assertEquals("sdk-default-headers", getResult.metadata().get("app"));
+            }
+
+            // the request wins over the default on conflict
+            String objectNameOverride = objectName + "-override";
+            putResult = client.putObject(PutObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(objectNameOverride)
+                    .metadata(MapUtils.of("app", "from-request"))
+                    .body(BinaryData.fromString("hi"))
+                    .build());
+            assertEquals(200, putResult.statusCode());
+
+            headResult = client.headObject(HeadObjectRequest.newBuilder()
+                    .bucket(bucketName)
+                    .key(objectNameOverride)
+                    .build());
+            assertEquals("from-request", headResult.metadata().get("app"));
+
+            // a default header rejected by the server surfaces as a service error
+            try (OSSClient forbidClient = OSSClient.newBuilder()
+                    .region(region())
+                    .endpoint(endpoint())
+                    .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()))
+                    .defaultRequestHeaders(MapUtils.of("x-oss-forbid-overwrite", "true"))
+                    .build()) {
+                try {
+                    forbidClient.putObject(PutObjectRequest.newBuilder()
+                            .bucket(bucketName)
+                            .key(objectName)
+                            .body(BinaryData.fromString("overwrite me"))
+                            .build());
+                    fail("should not here");
+                } catch (Exception e) {
+                    ServiceException serr = ServiceException.asCause(e);
+                    assertThat(serr.statusCode()).isEqualTo(409);
+                    assertThat(serr.errorCode()).isEqualTo("FileAlreadyExists");
+                    assertThat(serr.requestId()).isNotEmpty();
+                }
+            }
+
+            // default headers do not disturb the not-found path
+            try {
+                client.getObject(GetObjectRequest.newBuilder()
+                        .bucket(bucketName)
+                        .key(objectName + "-not-exist")
+                        .build());
+                fail("should not here");
+            } catch (Exception e) {
+                ServiceException serr = ServiceException.asCause(e);
+                assertThat(serr.statusCode()).isEqualTo(404);
+                assertThat(serr.errorCode()).isEqualTo("NoSuchKey");
+            }
+        }
+
+        // nor the invalid credentials path
+        try (OSSClient noPermClient = OSSClient.newBuilder()
+                .region(region())
+                .endpoint(endpoint())
+                .credentialsProvider(new StaticCredentialsProvider("invalid-ak", "invalid-sk"))
+                .defaultRequestHeaders(MapUtils.of("x-oss-meta-app", "sdk-default-headers"))
+                .build()) {
+            try {
+                noPermClient.getObject(GetObjectRequest.newBuilder()
+                        .bucket(bucketName)
+                        .key(objectName)
+                        .build());
+                fail("should not here");
+            } catch (Exception e) {
+                ServiceException serr = ServiceException.asCause(e);
+                assertThat(serr.errorCode()).isEqualTo("InvalidAccessKeyId");
+                assertThat(serr.requestId()).isNotEmpty();
+            }
+        }
+    }
+
 }

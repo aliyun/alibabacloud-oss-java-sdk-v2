@@ -8,6 +8,7 @@ import com.aliyun.sdk.service.oss2.transport.HttpClientOptions;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -111,6 +112,11 @@ public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>
 
     public B additionalHeaders(List<String> value) {
         cfgBuilder.additionalHeaders(value);
+        return (B) this;
+    }
+
+    public B defaultRequestHeaders(Map<String, String> value) {
+        cfgBuilder.defaultRequestHeaders(value);
         return (B) this;
     }
 
