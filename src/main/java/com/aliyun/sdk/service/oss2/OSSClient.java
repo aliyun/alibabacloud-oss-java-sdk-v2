@@ -3731,4 +3731,123 @@ public interface OSSClient extends AutoCloseable, Presignable {
     }
 
     //-----------------------------------------------------------------------
+
+    // batch operations api
+
+    /**
+     * Creates a batch operation job to perform specified operations on a large number of objects.
+     *
+     * @param request A {@link CreateJobRequest} for CreateJob operation.
+     * @return A {@link CreateJobResult} for CreateJob operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateJobResult createJob(CreateJobRequest request) {
+        return createJob(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a batch operation job to perform specified operations on a large number of objects.
+     *
+     * @param request A {@link CreateJobRequest} for CreateJob operation.
+     * @param options The operation options.
+     * @return A {@link CreateJobResult} for CreateJob operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateJobResult createJob(CreateJobRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the details and status of a batch operation job.
+     *
+     * @param request A {@link DescribeJobRequest} for DescribeJob operation.
+     * @return A {@link DescribeJobResult} for DescribeJob operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DescribeJobResult describeJob(DescribeJobRequest request) {
+        return describeJob(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the details and status of a batch operation job.
+     *
+     * @param request A {@link DescribeJobRequest} for DescribeJob operation.
+     * @param options The operation options.
+     * @return A {@link DescribeJobResult} for DescribeJob operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DescribeJobResult describeJob(DescribeJobRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the list of batch operation jobs.
+     *
+     * @param request A {@link ListJobsRequest} for ListJobs operation.
+     * @return A {@link ListJobsResult} for ListJobs operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListJobsResult listJobs(ListJobsRequest request) {
+        return listJobs(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the list of batch operation jobs.
+     *
+     * @param request A {@link ListJobsRequest} for ListJobs operation.
+     * @param options The operation options.
+     * @return A {@link ListJobsResult} for ListJobs operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default ListJobsResult listJobs(ListJobsRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Updates the priority of a batch operation job.
+     *
+     * @param request A {@link UpdateJobPriorityRequest} for UpdateJobPriority operation.
+     * @return A {@link UpdateJobPriorityResult} for UpdateJobPriority operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default UpdateJobPriorityResult updateJobPriority(UpdateJobPriorityRequest request) {
+        return updateJobPriority(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Updates the priority of a batch operation job.
+     *
+     * @param request A {@link UpdateJobPriorityRequest} for UpdateJobPriority operation.
+     * @param options The operation options.
+     * @return A {@link UpdateJobPriorityResult} for UpdateJobPriority operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default UpdateJobPriorityResult updateJobPriority(UpdateJobPriorityRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Updates the status of a batch operation job.
+     *
+     * @param request A {@link UpdateJobStatusRequest} for UpdateJobStatus operation.
+     * @return A {@link UpdateJobStatusResult} for UpdateJobStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default UpdateJobStatusResult updateJobStatus(UpdateJobStatusRequest request) {
+        return updateJobStatus(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Updates the status of a batch operation job.
+     *
+     * @param request A {@link UpdateJobStatusRequest} for UpdateJobStatus operation.
+     * @param options The operation options.
+     * @return A {@link UpdateJobStatusResult} for UpdateJobStatus operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default UpdateJobStatusResult updateJobStatus(UpdateJobStatusRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    //-----------------------------------------------------------------------
 }

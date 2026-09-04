@@ -776,4 +776,29 @@ public class DefaultOSSClient implements OSSClient {
     public GetBucketHttpsConfigResult getBucketHttpsConfig(GetBucketHttpsConfigRequest request, OperationOptions options) {
         return BucketHttpsConfig.getBucketHttpsConfig(this.clientImpl, request, options);
     }
+
+    @Override
+    public CreateJobResult createJob(CreateJobRequest request, OperationOptions options) {
+        return BatchOperations.createJob(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DescribeJobResult describeJob(DescribeJobRequest request, OperationOptions options) {
+        return BatchOperations.describeJob(this.clientImpl, request, options);
+    }
+
+    @Override
+    public ListJobsResult listJobs(ListJobsRequest request, OperationOptions options) {
+        return BatchOperations.listJobs(this.clientImpl, request, options);
+    }
+
+    @Override
+    public UpdateJobPriorityResult updateJobPriority(UpdateJobPriorityRequest request, OperationOptions options) {
+        return BatchOperations.updateJobPriority(this.clientImpl, request, options);
+    }
+
+    @Override
+    public UpdateJobStatusResult updateJobStatus(UpdateJobStatusRequest request, OperationOptions options) {
+        return BatchOperations.updateJobStatus(this.clientImpl, request, options);
+    }
 }
