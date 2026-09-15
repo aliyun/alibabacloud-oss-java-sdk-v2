@@ -100,6 +100,16 @@ public class DefaultOSSVectorsClient implements OSSVectorsClient {
         return VectorsBasic.queryVectors(this.clientImpl, request, options);
     }
 
+    @Override
+    public PutVectorIndexFusionResult putVectorIndexFusion(PutVectorIndexFusionRequest request, OperationOptions options) {
+        return VectorIndexBasic.putVectorIndexFusion(this.clientImpl, request, options);
+    }
+
+    @Override
+    public QueryVectorsFusionResult queryVectorsFusion(QueryVectorsFusionRequest request, OperationOptions options) {
+        return VectorsBasic.queryVectorsFusion(this.clientImpl, request, options);
+    }
+
 
     @Override
     public void close() throws Exception {
