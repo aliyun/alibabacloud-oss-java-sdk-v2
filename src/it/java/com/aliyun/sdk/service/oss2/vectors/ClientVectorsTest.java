@@ -12,6 +12,10 @@ public class ClientVectorsTest extends TestBaseVectors {
     private static final String TEST_DISTANCE_METRIC = "euclidean";
     private static final String TEST_DATA_TYPE = "float32";
 
+    private static final String TEST_FUSION_INDEX_NAME = "testVectorsFusionIndex";
+    private static final String TEST_FUSION_VECTOR_FIELD = "vectorField";
+    private static final String TEST_FUSION_PARTITION_FIELD = "userId";
+
     @Test
     public void testPutAndGetVectors() {
         OSSVectorsClient vectorsClient = getVectorClient();
@@ -183,6 +187,78 @@ public class ClientVectorsTest extends TestBaseVectors {
         }
     }
 
+    @Test
+    public void testQueryVectorsFusion() {
+        OSSVectorsClient vectorsClient = getVectorClient();
+        String bucketName = genVectorBucketName();
+
+        // 1. Create bucket for testing
+        PutVectorBucketResult createBucketResult = vectorsClient.putVectorBucket(
+                PutVectorBucketRequest.newBuilder()
+                        .bucket(bucketName)
+                        .build());
+        Assert.assertNotNull(createBucketResult);
+        Assert.assertEquals(200, createBucketResult.statusCode());
+
+        try {
+            // 2. Create a fusion vector index with the user defined vector field
+            createTestFusionVectorIndex(vectorsClient, bucketName);
+
+            // 3. Put (Insert) vectors, the data uses the user defined vector field name
+            PutVectorsResult putVectorsResult = vectorsClient.putVectors(
+                    PutVectorsRequest.newBuilder()
+                            .bucket(bucketName)
+                            .indexName(TEST_FUSION_INDEX_NAME)
+                            .vectors(createSampleFusionVectors())
+                            .build());
+
+            Assert.assertNotNull(putVectorsResult);
+            Assert.assertEquals(200, putVectorsResult.statusCode());
+
+            // 4. Query vectors in the fusion index with the knn query
+            Knn knn = Knn.newBuilder()
+                    .field(TEST_FUSION_VECTOR_FIELD)
+                    .queryVector(Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f))
+                    .topK(10)
+                    .build();
+
+            QueryVectorsFusionResult queryResult = vectorsClient.queryVectorsFusion(
+                    QueryVectorsFusionRequest.newBuilder()
+                            .bucket(bucketName)
+                            .indexName(TEST_FUSION_INDEX_NAME)
+                            .knn(Arrays.asList(knn))
+                            .limit(10)
+                            .returnMetadata(true)
+                            .partitionKeys(Arrays.asList("user-1"))
+                            .build());
+
+            Assert.assertNotNull(queryResult);
+            Assert.assertEquals(200, queryResult.statusCode());
+            Assert.assertNotNull(queryResult.vectors());
+
+            // 5. Query vectors in the fusion index with the retriever
+            Retriever retriever = Retriever.newBuilder()
+                    .knn(Knn.newBuilder()
+                            .field(TEST_FUSION_VECTOR_FIELD)
+                            .queryVector(Arrays.asList(0.5f, 0.6f, 0.7f, 0.8f))
+                            .build())
+                    .build();
+
+            QueryVectorsFusionResult retrieverResult = vectorsClient.queryVectorsFusion(
+                    QueryVectorsFusionRequest.newBuilder()
+                            .bucket(bucketName)
+                            .indexName(TEST_FUSION_INDEX_NAME)
+                            .retriever(retriever)
+                            .limit(10)
+                            .build());
+
+            Assert.assertNotNull(retrieverResult);
+            Assert.assertEquals(200, retrieverResult.statusCode());
+        } finally {
+            cleanupTestResources(vectorsClient, bucketName, TEST_FUSION_INDEX_NAME);
+        }
+    }
+
     private void createTestVectorIndex(OSSVectorsClient client, String bucketName, String indexName) {
         PutVectorIndexResult putIndexResult = client.putVectorIndex(
                 PutVectorIndexRequest.newBuilder()
@@ -191,6 +267,36 @@ public class ClientVectorsTest extends TestBaseVectors {
                         .dimension(TEST_DIMENSION)
                         .distanceMetric(TEST_DISTANCE_METRIC)
                         .indexName(indexName)
+                        .build());
+        Assert.assertNotNull(putIndexResult);
+        Assert.assertEquals(200, putIndexResult.statusCode());
+    }
+
+    private void createTestFusionVectorIndex(OSSVectorsClient client, String bucketName) {
+        List<FieldSchema> fields = Arrays.asList(
+                FieldSchema.newBuilder()
+                        .name(TEST_FUSION_VECTOR_FIELD)
+                        .type("vector")
+                        .dataType(TEST_DATA_TYPE)
+                        .dimension(TEST_DIMENSION)
+                        .distanceMetric(TEST_DISTANCE_METRIC)
+                        .build(),
+                FieldSchema.newBuilder()
+                        .name(TEST_FUSION_PARTITION_FIELD)
+                        .type("string")
+                        .isPartitionKey(true)
+                        .build(),
+                FieldSchema.newBuilder()
+                        .name("category")
+                        .type("string")
+                        .exactMatch(true)
+                        .build());
+
+        PutVectorIndexFusionResult putIndexResult = client.putVectorIndexFusion(
+                PutVectorIndexFusionRequest.newBuilder()
+                        .bucket(bucketName)
+                        .indexName(TEST_FUSION_INDEX_NAME)
+                        .schemaConfiguration(SchemaConfiguration.newBuilder().fields(fields).build())
                         .build());
         Assert.assertNotNull(putIndexResult);
         Assert.assertEquals(200, putIndexResult.statusCode());
@@ -249,6 +355,39 @@ public class ClientVectorsTest extends TestBaseVectors {
         Map<String, Object> vector2 = new HashMap<>();
         vector2.put("data", vectorData2);
         vector2.put("key", "vector-key-2");
+        vector2.put("metadata", metadata2);
+        vectors.add(vector2);
+
+        return vectors;
+    }
+
+    private List<Map<String, Object>> createSampleFusionVectors() {
+        List<Map<String, Object>> vectors = new ArrayList<>();
+
+        // The data of the fusion index uses the user defined vector field name
+        Map<String, Object> vectorData1 = new HashMap<>();
+        vectorData1.put(TEST_FUSION_VECTOR_FIELD, Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f));
+
+        Map<String, Object> metadata1 = new HashMap<>();
+        metadata1.put(TEST_FUSION_PARTITION_FIELD, "user-1");
+        metadata1.put("category", "A");
+
+        Map<String, Object> vector1 = new HashMap<>();
+        vector1.put("data", vectorData1);
+        vector1.put("key", "fusion-vector-key-1");
+        vector1.put("metadata", metadata1);
+        vectors.add(vector1);
+
+        Map<String, Object> vectorData2 = new HashMap<>();
+        vectorData2.put(TEST_FUSION_VECTOR_FIELD, Arrays.asList(0.5f, 0.6f, 0.7f, 0.8f));
+
+        Map<String, Object> metadata2 = new HashMap<>();
+        metadata2.put(TEST_FUSION_PARTITION_FIELD, "user-2");
+        metadata2.put("category", "B");
+
+        Map<String, Object> vector2 = new HashMap<>();
+        vector2.put("data", vectorData2);
+        vector2.put("key", "fusion-vector-key-2");
         vector2.put("metadata", metadata2);
         vectors.add(vector2);
 

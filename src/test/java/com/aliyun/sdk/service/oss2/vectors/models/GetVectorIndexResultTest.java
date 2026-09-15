@@ -86,7 +86,8 @@ public class GetVectorIndexResultTest {
                 "      \"nonFilterableMetadataKeys\": [\"key1\", \"key2\"]\n" +
                 "    },\n" +
                 "    \"status\": \"Active\",\n" +
-                "    \"bucketArn\": \"acs:oss:::test-bucket\"\n" +
+                "    \"bucketArn\": \"acs:oss:::test-bucket\",\n" +
+                "    \"mode\": \"standard\"\n" +
                 "  }\n" +
                 "}";
 
@@ -112,6 +113,8 @@ public class GetVectorIndexResultTest {
         assertThat(result.index().indexName()).isEqualTo("test-index");
         assertThat(result.index().status()).isEqualTo("Active");
         assertThat(result.index().bucketArn()).isEqualTo("acs:oss:::test-bucket");
+        assertThat(result.index().mode()).isEqualTo("standard");
+        assertThat(result.index().schemaConfiguration()).isNull();
         assertThat(result.status()).isEqualTo("OK");
         assertThat(result.statusCode()).isEqualTo(200);
         assertThat(result.requestId()).isEqualTo("req-xml-builder-test");
@@ -141,7 +144,8 @@ public class GetVectorIndexResultTest {
                 "      \"nonFilterableMetadataKeys\": [\"key1\", \"key2\"]\n" +
                 "    },\n" +
                 "    \"status\": \"Active\",\n" +
-                "    \"bucketArn\": \"acs:oss:::test-bucket\"\n" +
+                "    \"bucketArn\": \"acs:oss:::test-bucket\",\n" +
+                "    \"mode\": \"standard\"\n" +
                 "  }\n" +
                 "}";
 
@@ -166,6 +170,8 @@ public class GetVectorIndexResultTest {
         assertThat(indexSummary.indexName()).isEqualTo("test-index");
         assertThat(indexSummary.status()).isEqualTo("Active");
         assertThat(indexSummary.bucketArn()).isEqualTo("acs:oss:::test-bucket");
+        assertThat(indexSummary.mode()).isEqualTo("standard");
+        assertThat(indexSummary.schemaConfiguration()).isNull();
 
         assertThat(indexSummary.metadata()).isNotNull();
         Object nonFilterableKeysObj = indexSummary.metadata().get("nonFilterableMetadataKeys");
@@ -225,6 +231,137 @@ public class GetVectorIndexResultTest {
         assertThat(result.index().bucketArn()).isEqualTo("acs:oss:::test-bucket");
     }
 
+    @Test
+    public void testFusionIndexWithSchemaConfiguration() {
+        String jsonData = "{\n" +
+                "  \"index\": {\n" +
+                "    \"createTime\": \"2023-12-17T00:20:57.000Z\",\n" +
+                "    \"indexName\": \"fusion-index\",\n" +
+                "    \"status\": \"Active\",\n" +
+                "    \"mode\": \"fusion\",\n" +
+                "    \"bucketArn\": \"acs:oss:::test-bucket\",\n" +
+                "    \"schemaConfiguration\": {\n" +
+                "      \"fields\": [\n" +
+                "        {\n" +
+                "          \"name\": \"vector_1\",\n" +
+                "          \"type\": \"vector\",\n" +
+                "          \"dataType\": \"float32\",\n" +
+                "          \"dimension\": 1024,\n" +
+                "          \"distanceMetric\": \"euclidean\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"name\": \"timestamps\",\n" +
+                "          \"type\": \"long\",\n" +
+                "          \"isArray\": true\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"name\": \"user_id\",\n" +
+                "          \"type\": \"string\",\n" +
+                "          \"isPartitionKey\": true\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"name\": \"title_1\",\n" +
+                "          \"type\": \"string\",\n" +
+                "          \"exactMatch\": true,\n" +
+                "          \"text\": {\n" +
+                "            \"enabled\": true,\n" +
+                "            \"analyzer\": \"standard\",\n" +
+                "            \"analyzerParameters\": {\n" +
+                "              \"caseSensitive\": true,\n" +
+                "              \"delimitWord\": false,\n" +
+                "              \"delimiter\": \",\"\n" +
+                "            }\n" +
+                "          }\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+        OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(jsonData))
+                .headers(MapUtils.of("x-oss-request-id", "req-fusion-test"))
+                .status("OK")
+                .statusCode(200)
+                .build();
+
+        GetVectorIndexResult result = SerdeVectorIndexBasic.toGetVectorIndex(output);
+        IndexSummary indexSummary = result.index();
+
+        assertThat(indexSummary).isNotNull();
+        assertThat(indexSummary.indexName()).isEqualTo("fusion-index");
+        assertThat(indexSummary.mode()).isEqualTo("fusion");
+        assertThat(indexSummary.schemaConfiguration()).isNotNull();
+        assertThat(indexSummary.schemaConfiguration().fields()).hasSize(4);
+
+        FieldSchema vectorField = indexSummary.schemaConfiguration().fields().get(0);
+        assertThat(vectorField.name()).isEqualTo("vector_1");
+        assertThat(vectorField.type()).isEqualTo("vector");
+        assertThat(vectorField.dataType()).isEqualTo("float32");
+        assertThat(vectorField.dimension()).isEqualTo(1024);
+        assertThat(vectorField.distanceMetric()).isEqualTo("euclidean");
+
+        FieldSchema arrayField = indexSummary.schemaConfiguration().fields().get(1);
+        assertThat(arrayField.name()).isEqualTo("timestamps");
+        assertThat(arrayField.type()).isEqualTo("long");
+        assertThat(arrayField.isArray()).isTrue();
+
+        FieldSchema partitionField = indexSummary.schemaConfiguration().fields().get(2);
+        assertThat(partitionField.name()).isEqualTo("user_id");
+        assertThat(partitionField.isPartitionKey()).isTrue();
+
+        FieldSchema textField = indexSummary.schemaConfiguration().fields().get(3);
+        assertThat(textField.name()).isEqualTo("title_1");
+        assertThat(textField.exactMatch()).isTrue();
+        assertThat(textField.text()).isNotNull();
+        assertThat(textField.text().enabled()).isTrue();
+        assertThat(textField.text().analyzer()).isEqualTo("standard");
+        assertThat(textField.text().analyzerParameters()).isNotNull();
+        assertThat(textField.text().analyzerParameters().caseSensitive()).isTrue();
+        assertThat(textField.text().analyzerParameters().delimitWord()).isFalse();
+        assertThat(textField.text().analyzerParameters().delimiter()).isEqualTo(",");
+    }
+
+    @Test
+    public void testIndexSummaryToBuilderPreserveMode() {
+        SchemaConfiguration schemaConfiguration = SchemaConfiguration.newBuilder()
+                .fields(Arrays.asList(FieldSchema.newBuilder().name("vector_1").type("vector").build()))
+                .build();
+
+        IndexSummary original = IndexSummary.newBuilder()
+                .indexName("fusion-index")
+                .mode("fusion")
+                .schemaConfiguration(schemaConfiguration)
+                .build();
+
+        IndexSummary copy = original.toBuilder().build();
+
+        assertThat(copy.indexName()).isEqualTo("fusion-index");
+        assertThat(copy.mode()).isEqualTo("fusion");
+        assertThat(copy.schemaConfiguration()).isSameAs(schemaConfiguration);
+    }
+
+    @Test
+    public void testIndexSummaryEnumOverloads() {
+        IndexSummary summary = IndexSummary.newBuilder()
+                .indexName("fusion-index")
+                .mode(IndexModeType.FUSION)
+                .dataType(VectorDataType.FLOAT32)
+                .distanceMetric(DistanceMetricType.COSINE)
+                .build();
+
+        // the enum overloads store the serialized string value, getters still return String
+        assertThat(summary.mode()).isEqualTo("fusion");
+        assertThat(summary.dataType()).isEqualTo("float32");
+        assertThat(summary.distanceMetric()).isEqualTo("cosine");
+
+        // toBuilder preserves the values set via the enum overloads
+        IndexSummary copy = summary.toBuilder().build();
+        assertThat(copy.mode()).isEqualTo("fusion");
+        assertThat(copy.dataType()).isEqualTo("float32");
+        assertThat(copy.distanceMetric()).isEqualTo("cosine");
+    }
+
     private GetVectorIndexResultJson createTestGetVectorIndexBodyJson() {
 
         IndexSummary.Builder builder = IndexSummary.newBuilder();
@@ -243,6 +380,7 @@ public class GetVectorIndexResultTest {
 
         builder.status("Active");
         builder.bucketArn("acs:oss:::test-bucket");
+        builder.mode("standard");
 
         GetVectorIndexResultJson bodyJson = new GetVectorIndexResultJson();
         bodyJson.index = builder.build();

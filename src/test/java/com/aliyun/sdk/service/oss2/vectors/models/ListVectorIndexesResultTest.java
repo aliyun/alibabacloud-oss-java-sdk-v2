@@ -92,7 +92,8 @@ public class ListVectorIndexesResultTest {
                 "        \"nonFilterableMetadataKeys\": [\"key1\", \"key2\"]\n" +
                 "      },\n" +
                 "      \"bucketArn\": \"acs:oss:::test-bucket\",\n" +
-                "      \"status\": \"Active\"\n" +
+                "      \"status\": \"Active\",\n" +
+                "      \"mode\": \"standard\"\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  \"nextToken\": \"next-token\"\n" +
@@ -124,6 +125,8 @@ public class ListVectorIndexesResultTest {
         assertThat(index.distanceMetric()).isEqualTo("cosine");
         assertThat(index.bucketArn()).isEqualTo("acs:oss:::test-bucket");
         assertThat(index.status()).isEqualTo("Active");
+        assertThat(index.mode()).isEqualTo("standard");
+        assertThat(index.schemaConfiguration()).isNull();
 
         Map<String, Object> metadata = index.metadata();
         assertThat(metadata).isNotNull();
@@ -191,6 +194,65 @@ public class ListVectorIndexesResultTest {
         assertThat(index.bucketArn()).isEqualTo("acs:oss:::test-bucket");
     }
 
+    @Test
+    public void testFusionIndexWithSchemaConfiguration() {
+        String jsonData = "{\n" +
+                "  \"indexes\": [\n" +
+                "    {\n" +
+                "      \"indexName\": \"fusion-index1\",\n" +
+                "      \"status\": \"Active\",\n" +
+                "      \"mode\": \"fusion\",\n" +
+                "      \"bucketArn\": \"acs:oss:::test-bucket\",\n" +
+                "      \"schemaConfiguration\": {\n" +
+                "        \"fields\": [\n" +
+                "          {\n" +
+                "            \"name\": \"vector_1\",\n" +
+                "            \"type\": \"vector\",\n" +
+                "            \"dataType\": \"float32\",\n" +
+                "            \"dimension\": 1024,\n" +
+                "            \"distanceMetric\": \"euclidean\"\n" +
+                "          },\n" +
+                "          {\n" +
+                "            \"name\": \"user_id\",\n" +
+                "            \"type\": \"string\",\n" +
+                "            \"isPartitionKey\": true\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+
+        OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(jsonData))
+                .headers(MapUtils.of("x-oss-request-id", "req-fusion-test"))
+                .status("OK")
+                .statusCode(200)
+                .build();
+
+        ListVectorIndexesResult result = SerdeVectorIndexBasic.toListVectorIndexes(output);
+
+        assertThat(result.indexes()).hasSize(1);
+        IndexSummary index = result.indexes().get(0);
+        assertThat(index.indexName()).isEqualTo("fusion-index1");
+        assertThat(index.mode()).isEqualTo("fusion");
+        assertThat(index.schemaConfiguration()).isNotNull();
+        assertThat(index.schemaConfiguration().fields()).hasSize(2);
+
+        FieldSchema vectorField = index.schemaConfiguration().fields().get(0);
+        assertThat(vectorField.name()).isEqualTo("vector_1");
+        assertThat(vectorField.type()).isEqualTo("vector");
+        assertThat(vectorField.dataType()).isEqualTo("float32");
+        assertThat(vectorField.dimension()).isEqualTo(1024);
+        assertThat(vectorField.distanceMetric()).isEqualTo("euclidean");
+
+        FieldSchema partitionField = index.schemaConfiguration().fields().get(1);
+        assertThat(partitionField.name()).isEqualTo("user_id");
+        assertThat(partitionField.type()).isEqualTo("string");
+        assertThat(partitionField.isPartitionKey()).isTrue();
+        assertThat(partitionField.isArray()).isNull();
+    }
+
     private ListVectorIndexesResultJson createTestListResult() {
         ListVectorIndexesResultJson listResult = new ListVectorIndexesResultJson();
         listResult.nextToken = "next-token";
@@ -203,6 +265,7 @@ public class ListVectorIndexesResultTest {
                 .distanceMetric("EUCLIDEAN")
                 .bucketArn("acs:oss:::test-bucket")
                 .status("Active")
+                .mode("standard")
                 .build();
 
         Map<String, Object> metadata = new HashMap<>();
