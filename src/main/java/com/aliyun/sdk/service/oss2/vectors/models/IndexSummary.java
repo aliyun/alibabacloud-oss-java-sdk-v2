@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * The summary of a vector index.
  */
@@ -26,6 +28,10 @@ public class IndexSummary {
     private String bucketArn;
     @JsonProperty("status")
     private String status;
+    @JsonProperty("mode")
+    private String mode;
+    @JsonProperty("schemaConfiguration")
+    private SchemaConfiguration schemaConfiguration;
 
     public IndexSummary() {
     }
@@ -40,6 +46,8 @@ public class IndexSummary {
         this.vectorBucketName = builder.vectorBucketName;
         this.bucketArn = builder.bucketArn;
         this.status = builder.status;
+        this.mode = builder.mode;
+        this.schemaConfiguration = builder.schemaConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -86,6 +94,20 @@ public class IndexSummary {
         return status;
     }
 
+    /**
+     * The mode of the index. Valid values: standard and fusion.
+     */
+    public String mode() {
+        return mode;
+    }
+
+    /**
+     * The schema configuration of the index. It is returned for the fusion index only.
+     */
+    public SchemaConfiguration schemaConfiguration() {
+        return schemaConfiguration;
+    }
+
     public Builder toBuilder() {
         return new Builder(this);
     }
@@ -100,6 +122,8 @@ public class IndexSummary {
         private String vectorBucketName;
         private String bucketArn;
         private String status;
+        private String mode;
+        private SchemaConfiguration schemaConfiguration;
 
         private Builder() {
         }
@@ -114,6 +138,8 @@ public class IndexSummary {
             this.vectorBucketName = from.vectorBucketName;
             this.bucketArn = from.bucketArn;
             this.status = from.status;
+            this.mode = from.mode;
+            this.schemaConfiguration = from.schemaConfiguration;
         }
 
         public Builder createTime(String createTime) {
@@ -131,6 +157,15 @@ public class IndexSummary {
             return this;
         }
 
+        /**
+         * Set the data type of the vector using VectorDataType enum.
+         */
+        public Builder dataType(VectorDataType dataType) {
+            requireNonNull(dataType);
+            this.dataType = dataType.toString();
+            return this;
+        }
+
         public Builder dimension(Integer dimension) {
             this.dimension = dimension;
             return this;
@@ -138,6 +173,15 @@ public class IndexSummary {
 
         public Builder distanceMetric(String distanceMetric) {
             this.distanceMetric = distanceMetric;
+            return this;
+        }
+
+        /**
+         * Set the distance metric of the vector using DistanceMetricType enum.
+         */
+        public Builder distanceMetric(DistanceMetricType distanceMetric) {
+            requireNonNull(distanceMetric);
+            this.distanceMetric = distanceMetric.toString();
             return this;
         }
 
@@ -162,6 +206,31 @@ public class IndexSummary {
 
         public Builder status(String status) {
             this.status = status;
+            return this;
+        }
+
+        /**
+         * The mode of the index. Valid values: standard and fusion.
+         */
+        public Builder mode(String mode) {
+            this.mode = mode;
+            return this;
+        }
+
+        /**
+         * Set the mode of the index using IndexModeType enum.
+         */
+        public Builder mode(IndexModeType mode) {
+            requireNonNull(mode);
+            this.mode = mode.toString();
+            return this;
+        }
+
+        /**
+         * The schema configuration of the index. It is returned for the fusion index only.
+         */
+        public Builder schemaConfiguration(SchemaConfiguration schemaConfiguration) {
+            this.schemaConfiguration = schemaConfiguration;
             return this;
         }
 
