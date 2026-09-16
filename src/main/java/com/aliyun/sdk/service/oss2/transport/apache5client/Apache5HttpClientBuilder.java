@@ -1,12 +1,18 @@
 package com.aliyun.sdk.service.oss2.transport.apache5client;
 
 import com.aliyun.sdk.service.oss2.transport.HttpClientOptions;
+import com.aliyun.sdk.service.oss2.transport.ProxyUtils;
 import org.apache.hc.client5.http.ConnectionKeepAliveStrategy;
 import org.apache.hc.client5.http.DnsResolver;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.routing.SystemDefaultRoutePlanner;
+import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
@@ -254,7 +260,48 @@ public class Apache5HttpClientBuilder {
                     connectionManager, this.idleConnectionTime);
         }
 
+        applyProxy(builder);
+
         return new Apache5HttpClient(builder.build(), connectionManager, requestConfig);
+    }
+
+    private void applyProxy(HttpClientBuilder builder) {
+        ProxyUtils.ProxyInfo info = ProxyUtils.parse(this.options.proxyHost());
+        if (info != null) {
+            builder.setProxy(new HttpHost(info.scheme, info.host, info.port));
+            if (info.hasCredentials()) {
+                builder.setDefaultCredentialsProvider(credentialsProvider(info));
+            }
+            return;
+        }
+        if (this.options.proxyFromEnvironment()) {
+            builder.setRoutePlanner(new SystemDefaultRoutePlanner(ProxyUtils.environmentProxySelector()));
+            BasicCredentialsProvider cp = null;
+            for (String url : new String[]{ProxyUtils.httpsProxyEnv(), ProxyUtils.httpProxyEnv()}) {
+                ProxyUtils.ProxyInfo envInfo = ProxyUtils.parse(url);
+                if (envInfo != null && envInfo.hasCredentials()) {
+                    if (cp == null) {
+                        cp = new BasicCredentialsProvider();
+                    }
+                    addCredentials(cp, envInfo);
+                }
+            }
+            if (cp != null) {
+                builder.setDefaultCredentialsProvider(cp);
+            }
+        }
+    }
+
+    private static BasicCredentialsProvider credentialsProvider(ProxyUtils.ProxyInfo info) {
+        BasicCredentialsProvider cp = new BasicCredentialsProvider();
+        addCredentials(cp, info);
+        return cp;
+    }
+
+    private static void addCredentials(BasicCredentialsProvider cp, ProxyUtils.ProxyInfo info) {
+        char[] password = info.password == null ? new char[0] : info.password.toCharArray();
+        cp.setCredentials(new AuthScope(info.host, info.port),
+                new UsernamePasswordCredentials(info.username, password));
     }
 
     private ConnectionKeepAliveStrategy createKeepAliveStrategy() {

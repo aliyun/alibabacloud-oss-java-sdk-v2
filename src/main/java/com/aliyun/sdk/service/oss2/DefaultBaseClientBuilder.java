@@ -144,6 +144,11 @@ public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>
         return (B) this;
     }
 
+    public B proxyFromEnvironment(boolean value) {
+        cfgBuilder.proxyFromEnvironment(value);
+        return (B) this;
+    }
+
     public B disableUploadCRC64Check(boolean value) {
         cfgBuilder.disableUploadCRC64Check(value);
         return (B) this;
@@ -191,6 +196,10 @@ public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>
 
         if (cfg.proxyHost().isPresent()) {
             b.proxyHost(cfg.proxyHost().get());
+        }
+
+        if (cfg.proxyFromEnvironment().isPresent()) {
+            b.proxyFromEnvironment(cfg.proxyFromEnvironment().get());
         }
 
         return b.build();
