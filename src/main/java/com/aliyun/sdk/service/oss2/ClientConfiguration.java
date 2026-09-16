@@ -35,6 +35,7 @@ public final class ClientConfiguration {
     private final Boolean insecureSkipVerify;
     private final Boolean enabledRedirect;
     private final String proxyHost;
+    private final Boolean proxyFromEnvironment;
     private final Boolean disableUploadCRC64Check;
     private final String accountId;
     private final ScheduledExecutorService scheduledExecutorService;
@@ -63,6 +64,7 @@ public final class ClientConfiguration {
         this.insecureSkipVerify = builder.insecureSkipVerify;
         this.enabledRedirect = builder.enabledRedirect;
         this.proxyHost = builder.proxyHost;
+        this.proxyFromEnvironment = builder.proxyFromEnvironment;
         this.disableUploadCRC64Check = builder.disableUploadCRC64Check;
         this.accountId = builder.accountId;
         this.scheduledExecutorService = builder.scheduledExecutorService;
@@ -165,6 +167,10 @@ public final class ClientConfiguration {
         return Optional.ofNullable(proxyHost);
     }
 
+    public Optional<Boolean> proxyFromEnvironment() {
+        return Optional.ofNullable(proxyFromEnvironment);
+    }
+
     public Optional<Boolean> DisableUploadCRC64Check() {
         return Optional.ofNullable(disableUploadCRC64Check);
     }
@@ -217,6 +223,7 @@ public final class ClientConfiguration {
         private Boolean insecureSkipVerify;
         private Boolean enabledRedirect;
         private String proxyHost;
+        private Boolean proxyFromEnvironment;
         private Boolean disableUploadCRC64Check;
         private String accountId;
         private ScheduledExecutorService scheduledExecutorService;
@@ -247,6 +254,7 @@ public final class ClientConfiguration {
             this.insecureSkipVerify = from.insecureSkipVerify;
             this.enabledRedirect = from.enabledRedirect;
             this.proxyHost = from.proxyHost;
+            this.proxyFromEnvironment = from.proxyFromEnvironment;
             this.disableUploadCRC64Check = from.disableUploadCRC64Check;
             this.accountId = from.accountId;
             this.scheduledExecutorService = from.scheduledExecutorService;
@@ -381,6 +389,11 @@ public final class ClientConfiguration {
         public Builder proxyHost(String value) {
             requireNonNull(value);
             this.proxyHost = value;
+            return this;
+        }
+
+        public Builder proxyFromEnvironment(boolean value) {
+            this.proxyFromEnvironment = value;
             return this;
         }
 

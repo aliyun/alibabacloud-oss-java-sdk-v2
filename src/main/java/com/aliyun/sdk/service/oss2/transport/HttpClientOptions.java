@@ -12,6 +12,7 @@ public class HttpClientOptions {
     private static final int DEFAULT_MAX_CONNECTIONS = 1024;
 
     private final String proxyHost;
+    private final boolean proxyFromEnvironment;
     private final boolean redirectsEnabled;
     private final Duration connectTimeout;
     private final Duration readWriteTimeout;
@@ -21,6 +22,7 @@ public class HttpClientOptions {
 
     HttpClientOptions(Builder builder) {
         this.proxyHost = builder.proxyHost;
+        this.proxyFromEnvironment = builder.proxyFromEnvironment;
         this.redirectsEnabled = builder.redirectsEnabled;
         this.insecureSkipVerify = builder.insecureSkipVerify;
         this.connectTimeout = builder.connectTimeout;
@@ -38,6 +40,13 @@ public class HttpClientOptions {
      */
     public String proxyHost() {
         return this.proxyHost;
+    }
+
+    /**
+     * @see Builder#proxyFromEnvironment(boolean)
+     */
+    public boolean proxyFromEnvironment() {
+        return this.proxyFromEnvironment;
     }
 
     /**
@@ -81,6 +90,7 @@ public class HttpClientOptions {
 
     public static class Builder {
         private String proxyHost;
+        private boolean proxyFromEnvironment;
         private boolean redirectsEnabled;
         private boolean insecureSkipVerify;
         private Duration connectTimeout;
@@ -104,6 +114,18 @@ public class HttpClientOptions {
          */
         public Builder proxyHost(final String value) {
             this.proxyHost = value;
+            return this;
+        }
+
+        /**
+         * When enabled, resolves the HTTP proxy from the {@code HTTPS_PROXY},
+         * {@code HTTP_PROXY} and {@code NO_PROXY} environment variables.
+         * A proxy set via {@link #proxyHost(String)} takes precedence.
+         *
+         * @return this instance.
+         */
+        public Builder proxyFromEnvironment(final boolean value) {
+            this.proxyFromEnvironment = value;
             return this;
         }
 

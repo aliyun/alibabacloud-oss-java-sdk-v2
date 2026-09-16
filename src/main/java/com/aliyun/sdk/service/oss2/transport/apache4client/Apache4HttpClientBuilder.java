@@ -1,6 +1,10 @@
 package com.aliyun.sdk.service.oss2.transport.apache4client;
 
 import com.aliyun.sdk.service.oss2.transport.HttpClientOptions;
+import com.aliyun.sdk.service.oss2.transport.ProxyUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -12,9 +16,11 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 
 import javax.net.ssl.*;
 import java.security.KeyStore;
@@ -70,28 +76,6 @@ public class Apache4HttpClientBuilder {
 
     public static Apache4HttpClientBuilder create() {
         return new Apache4HttpClientBuilder();
-    }
-
-    protected static String resolveStringValue(String value, String key, boolean flag) {
-        if (value == null && flag) {
-            try {
-                return System.getProperty(key);
-            } catch (Exception ignore) {
-            }
-            return null;
-        }
-        return value;
-    }
-
-    protected static int resolveIntValue(int value, String key, boolean flag) {
-        if (value == -1 && flag) {
-            try {
-                return Integer.parseInt(System.getProperty(key));
-            } catch (Exception ignore) {
-            }
-            return -1;
-        }
-        return value;
     }
 
     /**
@@ -262,7 +246,48 @@ public class Apache4HttpClientBuilder {
                     connectionManager, this.idleConnectionTime);
         }
 
+        applyProxy(builder);
+
         return new Apache4HttpClient(builder.build(), connectionManager, requestConfig);
+    }
+
+    private void applyProxy(HttpClientBuilder builder) {
+        ProxyUtils.ProxyInfo info = ProxyUtils.parse(this.options.proxyHost());
+        if (info != null) {
+            builder.setProxy(new HttpHost(info.host, info.port, info.scheme));
+            if (info.hasCredentials()) {
+                builder.setDefaultCredentialsProvider(credentialsProvider(info));
+            }
+            return;
+        }
+        if (this.options.proxyFromEnvironment()) {
+            builder.setRoutePlanner(new SystemDefaultRoutePlanner(ProxyUtils.environmentProxySelector()));
+            BasicCredentialsProvider cp = null;
+            for (String url : new String[]{ProxyUtils.httpsProxyEnv(), ProxyUtils.httpProxyEnv()}) {
+                ProxyUtils.ProxyInfo envInfo = ProxyUtils.parse(url);
+                if (envInfo != null && envInfo.hasCredentials()) {
+                    if (cp == null) {
+                        cp = new BasicCredentialsProvider();
+                    }
+                    addCredentials(cp, envInfo);
+                }
+            }
+            if (cp != null) {
+                builder.setDefaultCredentialsProvider(cp);
+            }
+        }
+    }
+
+    private static BasicCredentialsProvider credentialsProvider(ProxyUtils.ProxyInfo info) {
+        BasicCredentialsProvider cp = new BasicCredentialsProvider();
+        addCredentials(cp, info);
+        return cp;
+    }
+
+    private static void addCredentials(BasicCredentialsProvider cp, ProxyUtils.ProxyInfo info) {
+        String password = info.password == null ? "" : info.password;
+        cp.setCredentials(new AuthScope(info.host, info.port),
+                new UsernamePasswordCredentials(info.username, password));
     }
 
     protected RequestConfig createRequestConfig() {
@@ -272,29 +297,6 @@ public class Apache4HttpClientBuilder {
         builder.setConnectionRequestTimeout(this.connectionRequestTimeout);
         builder.setRedirectsEnabled(this.options.redirectsEnabled());
 
-        /*
-        //TODO HTTP proxy
-        String proxyHost = resolveStringValue(config.getProxyHost(), "http.proxyHost", config.isUseSystemPropertyValues());
-        int proxyPort = resolveIntValue(config.getProxyPort(), "http.proxyPort", config.isUseSystemPropertyValues());
-
-        if (proxyHost != null && proxyPort > 0) {
-            this.proxyHttpHost = new HttpHost(proxyHost, proxyPort);
-            builder.setProxy(proxyHttpHost);
-
-            String proxyUsername = resolveStringValue(config.getProxyUsername(),"http.proxyUser", config.isUseSystemPropertyValues());
-            String proxyPassword = resolveStringValue(config.getProxyPassword(),"http.proxyPassword", config.isUseSystemPropertyValues());
-            String proxyDomain = config.getProxyDomain();
-            String proxyWorkstation = config.getProxyWorkstation();
-            if (proxyUsername != null && proxyPassword != null) {
-                this.credentialsProvider = new BasicCredentialsProvider();
-                this.credentialsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
-                        new NTCredentials(proxyUsername, proxyPassword, proxyWorkstation, proxyDomain));
-
-                this.authCache = new BasicAuthCache();
-                authCache.put(this.proxyHttpHost, new BasicScheme());
-            }
-        }
-         */
         //Compatible with HttpClient 4.5.9 or later
         builder.setNormalizeUri(false);
 
