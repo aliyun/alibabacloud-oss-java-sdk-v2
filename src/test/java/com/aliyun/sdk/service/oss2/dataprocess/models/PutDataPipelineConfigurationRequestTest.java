@@ -261,4 +261,223 @@ public class PutDataPipelineConfigurationRequestTest {
 
         assertThat(xmlContent).isEqualTo(expectedXml);
     }
+
+    @Test
+    public void xmlBuilderV2DocumentExample() throws JsonProcessingException {
+        PutDataPipelineConfigurationRequest request = PutDataPipelineConfigurationRequest.newBuilder()
+                .dataPipelineName("media-pipeline")
+                .role("acs:ram::1234567890123456:role/AliyunOSSDataPipelineRole")
+                .putDataPipelineConfigurationConfiguration(v2Configuration())
+                .build();
+
+        OperationInput input = SerdeDataPipelineBasic.fromPutDataPipelineConfiguration(request);
+        String xml = new String(input.body().get().toBytes(), StandardCharsets.UTF_8);
+
+        assertThat(input.method()).isEqualTo("POST");
+        assertThat(input.headers().get("Content-Type")).isEqualTo("application/xml");
+        assertThat(input.parameters().get("dataPipeline")).isEmpty();
+        assertThat(input.parameters().get("dataPipelineName")).isEqualTo("media-pipeline");
+        assertThat(input.parameters().get("role")).isEqualTo("acs:ram::1234567890123456:role/AliyunOSSDataPipelineRole");
+        assertThat(input.parameters().get("action")).isEqualTo("putDataPipelineConfiguration");
+        assertThat(xml).isEqualTo(canonicalizePutXml(v2RequestExampleXml()));
+        assertThat(xml).doesNotContain("<IgnoreDelete>");
+        assertThat(xml).doesNotContain("<DataPipelineEmbeddingConfiguration>");
+    }
+
+    @Test
+    public void xmlBuilderV2DhashSnapshotAndOptionalFields() throws JsonProcessingException {
+        DataPipelineInsightsSnapshot snapshot = DataPipelineInsightsSnapshot.newBuilder()
+                .mode("dhash")
+                .number(20)
+                .build();
+        PutDataPipelineConfigurationConfiguration configuration =
+                PutDataPipelineConfigurationConfiguration.newBuilder()
+                        .sources(Collections.singletonList(DataPipelineSource.newBuilder()
+                                .inputBucket("source-bucket")
+                                .filterConfiguration(DataPipelineSourceFilterConfiguration.newBuilder()
+                                        .objectMediaTypes(Collections.singletonList("video"))
+                                        .build())
+                                .build()))
+                        .dataPipelineDataProcessConfiguration(DataPipelineDataProcessConfiguration.newBuilder()
+                                .searchMode("fast")
+                                .insights(DataPipelineInsights.newBuilder()
+                                        .video(DataPipelineInsightsVideo.newBuilder()
+                                                .frameEmbedding(DataPipelineInsightsFrameEmbedding.newBuilder()
+                                                        .snapshot(snapshot)
+                                                        .build())
+                                                .build())
+                                        .build())
+                                .build())
+                        .destination(DataPipelineDestination.newBuilder()
+                                .videoFrameEmbedding(DataPipelineDestinationVideoFrameEmbedding.newBuilder()
+                                        .bucket("vector-bucket")
+                                        .indexName("video-frame")
+                                        .build())
+                                .build())
+                        .build();
+        PutDataPipelineConfigurationRequest request = PutDataPipelineConfigurationRequest.newBuilder()
+                .dataPipelineName("fast-video-pipeline")
+                .role("acs:ram::1234567890123456:role/AliyunOSSDataPipelineRole")
+                .putDataPipelineConfigurationConfiguration(configuration)
+                .build();
+
+        OperationInput input = SerdeDataPipelineBasic.fromPutDataPipelineConfiguration(request);
+        String xml = new String(input.body().get().toBytes(), StandardCharsets.UTF_8);
+
+        assertThat(xml).isEqualTo(canonicalizePutXml(dhashRequestExampleXml()));
+        assertThat(xml).contains("<SearchMode>fast</SearchMode>");
+        assertThat(xml).contains("<Snapshot><Mode>dhash</Mode><Number>20</Number></Snapshot>");
+        assertThat(xml).doesNotContain("<Interval>", "<Prefix>", "<ModelTier>", "<Caption>");
+    }
+
+    @Test
+    public void testV2ModelsToBuilderPreserveState() {
+        PutDataPipelineConfigurationConfiguration copy = v2Configuration().toBuilder().build();
+
+        assertThat(copy.modelTier()).isEqualTo("standard");
+        assertThat(copy.dataPipelineDataProcessConfiguration().searchMode()).isEqualTo("balanced");
+        assertThat(copy.dataPipelineDataProcessConfiguration().insights().image())
+                .isInstanceOf(DataPipelineInsightsImage.class);
+        assertThat(copy.dataPipelineDataProcessConfiguration().insights().image()
+                .caption()).isInstanceOf(DataPipelineInsightsCaption.class);
+        assertThat(copy.dataPipelineDataProcessConfiguration().insights().image()
+                .caption().prompt()).isEqualTo("Describe the image.");
+        assertThat(copy.dataPipelineDataProcessConfiguration().insights().video()
+                .caption().prompt()).isEqualTo("Describe each video scene.");
+        assertThat(copy.dataPipelineDataProcessConfiguration().insights().video())
+                .isInstanceOf(DataPipelineInsightsVideo.class);
+        assertThat(copy.dataPipelineDataProcessConfiguration().insights().video()
+                .frameEmbedding()).isInstanceOf(DataPipelineInsightsFrameEmbedding.class);
+        assertThat(copy.dataPipelineDataProcessConfiguration().insights().video()
+                .frameEmbedding().snapshot()).isInstanceOf(DataPipelineInsightsSnapshot.class);
+        assertThat(copy.dataPipelineDataProcessConfiguration().insights().video()
+                .frameEmbedding().snapshot().interval()).isEqualTo(1.0d);
+        assertThat(copy.destination().imageEmbedding())
+                .isInstanceOf(DataPipelineDestinationImageEmbedding.class);
+        assertThat(copy.destination().imageTextEmbedding())
+                .isInstanceOf(DataPipelineDestinationImageTextEmbedding.class);
+        assertThat(copy.destination().videoFrameEmbedding())
+                .isInstanceOf(DataPipelineDestinationVideoFrameEmbedding.class);
+        assertThat(copy.destination().videoTextEmbedding())
+                .isInstanceOf(DataPipelineDestinationVideoTextEmbedding.class);
+        assertThat(copy.destination().documentChunkEmbedding())
+                .isInstanceOf(DataPipelineDestinationDocumentChunkEmbedding.class);
+        assertThat(copy.destination().videoTextEmbedding().indexName()).isEqualTo("video-text");
+        assertThat(copy.sources().get(0).ignoreDelete()).isNull();
+
+        DataPipelineSource source = copy.sources().get(0).toBuilder().ignoreDelete(false).build();
+        assertThat(source.ignoreDelete()).isFalse();
+
+        DataPipelineInsightsSnapshot dhash = DataPipelineInsightsSnapshot.newBuilder()
+                .mode("dhash")
+                .number(20)
+                .build()
+                .toBuilder()
+                .build();
+        assertThat(dhash.mode()).isEqualTo("dhash");
+        assertThat(dhash.number()).isEqualTo(20);
+        assertThat(dhash.interval()).isNull();
+    }
+
+    private static PutDataPipelineConfigurationConfiguration v2Configuration() {
+        DataPipelineInsights insights = DataPipelineInsights.newBuilder()
+                .image(DataPipelineInsightsImage.newBuilder()
+                        .caption(DataPipelineInsightsCaption.newBuilder()
+                                .prompt("Describe the image.")
+                                .build())
+                        .build())
+                .video(DataPipelineInsightsVideo.newBuilder()
+                        .caption(DataPipelineInsightsCaption.newBuilder()
+                                .prompt("Describe each video scene.")
+                                .build())
+                        .frameEmbedding(DataPipelineInsightsFrameEmbedding.newBuilder()
+                                .snapshot(DataPipelineInsightsSnapshot.newBuilder()
+                                        .mode("interval")
+                                        .interval(1.0d)
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+        DataPipelineSource source = DataPipelineSource.newBuilder()
+                .inputBucket("source-bucket")
+                .inputDataScope("All")
+                .filterConfiguration(DataPipelineSourceFilterConfiguration.newBuilder()
+                        .prefixSet(Collections.singletonList("media/"))
+                        .objectMediaTypes(Arrays.asList("image", "video", "text"))
+                        .build())
+                .build();
+
+        return PutDataPipelineConfigurationConfiguration.newBuilder()
+                .dataPipelineDescription("多媒体语义向量")
+                .sources(Collections.singletonList(source))
+                .modelTier("standard")
+                .dataPipelineDataProcessConfiguration(DataPipelineDataProcessConfiguration.newBuilder()
+                        .searchMode("balanced")
+                        .insights(insights)
+                        .build())
+                .destination(DataPipelineDestination.newBuilder()
+                        .imageEmbedding(DataPipelineDestinationImageEmbedding.newBuilder()
+                                .bucket("vector-bucket").indexName("image").prefix("v2").build())
+                        .imageTextEmbedding(DataPipelineDestinationImageTextEmbedding.newBuilder()
+                                .bucket("vector-bucket").indexName("image-text").prefix("v2").build())
+                        .videoFrameEmbedding(DataPipelineDestinationVideoFrameEmbedding.newBuilder()
+                                .bucket("vector-bucket").indexName("video-frame").prefix("v2").build())
+                        .videoTextEmbedding(DataPipelineDestinationVideoTextEmbedding.newBuilder()
+                                .bucket("vector-bucket").indexName("video-text").prefix("v2").build())
+                        .documentChunkEmbedding(DataPipelineDestinationDocumentChunkEmbedding.newBuilder()
+                                .bucket("vector-bucket").indexName("document").prefix("v2").build())
+                        .objectTagToMetadata(Collections.singletonList("category"))
+                        .usermetaToMetadata(Collections.singletonList("x-oss-meta-source"))
+                        .build())
+                .dataPipelineError(DataPipelineError.newBuilder()
+                        .errorMode("ignoreAndRecord")
+                        .errorBucket("error-bucket")
+                        .errorPrefix("v2/")
+                        .build())
+                .build();
+    }
+
+    private static String canonicalizePutXml(String xml) throws JsonProcessingException {
+        XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        PutDataPipelineConfigurationConfiguration configuration =
+                xmlMapper.readValue(xml, PutDataPipelineConfigurationConfiguration.class);
+        return xmlMapper.writeValueAsString(configuration);
+    }
+
+    private static String v2RequestExampleXml() {
+        return "<DataPipelineConfiguration>"
+                + "<DataPipelineDescription>多媒体语义向量</DataPipelineDescription>"
+                + "<Sources><InputBucket>source-bucket</InputBucket><InputDataScope>All</InputDataScope>"
+                + "<FilterConfiguration><PrefixSet>media/</PrefixSet>"
+                + "<ObjectMediaTypes>image</ObjectMediaTypes><ObjectMediaTypes>video</ObjectMediaTypes>"
+                + "<ObjectMediaTypes>text</ObjectMediaTypes></FilterConfiguration></Sources>"
+                + "<ModelTier>standard</ModelTier>"
+                + "<DataPipelineDataProcessConfiguration><SearchMode>balanced</SearchMode><Insights>"
+                + "<Image><Caption><Prompt>Describe the image.</Prompt></Caption></Image>"
+                + "<Video><Caption><Prompt>Describe each video scene.</Prompt></Caption>"
+                + "<FrameEmbedding><Snapshot><Mode>interval</Mode><Interval>1.0</Interval></Snapshot>"
+                + "</FrameEmbedding></Video></Insights></DataPipelineDataProcessConfiguration>"
+                + "<Destination>"
+                + "<ImageEmbedding><Bucket>vector-bucket</Bucket><IndexName>image</IndexName><Prefix>v2</Prefix></ImageEmbedding>"
+                + "<ImageTextEmbedding><Bucket>vector-bucket</Bucket><IndexName>image-text</IndexName><Prefix>v2</Prefix></ImageTextEmbedding>"
+                + "<VideoFrameEmbedding><Bucket>vector-bucket</Bucket><IndexName>video-frame</IndexName><Prefix>v2</Prefix></VideoFrameEmbedding>"
+                + "<VideoTextEmbedding><Bucket>vector-bucket</Bucket><IndexName>video-text</IndexName><Prefix>v2</Prefix></VideoTextEmbedding>"
+                + "<DocumentChunkEmbedding><Bucket>vector-bucket</Bucket><IndexName>document</IndexName><Prefix>v2</Prefix></DocumentChunkEmbedding>"
+                + "<ObjectTagToMetadata>category</ObjectTagToMetadata>"
+                + "<UsermetaToMetadata>x-oss-meta-source</UsermetaToMetadata></Destination>"
+                + "<DataPipelineError><ErrorMode>ignoreAndRecord</ErrorMode><ErrorBucket>error-bucket</ErrorBucket>"
+                + "<ErrorPrefix>v2/</ErrorPrefix></DataPipelineError>"
+                + "</DataPipelineConfiguration>";
+    }
+
+    private static String dhashRequestExampleXml() {
+        return "<DataPipelineConfiguration><Sources><InputBucket>source-bucket</InputBucket>"
+                + "<FilterConfiguration><ObjectMediaTypes>video</ObjectMediaTypes></FilterConfiguration></Sources>"
+                + "<DataPipelineDataProcessConfiguration><SearchMode>fast</SearchMode><Insights><Video>"
+                + "<FrameEmbedding><Snapshot><Mode>dhash</Mode><Number>20</Number></Snapshot></FrameEmbedding>"
+                + "</Video></Insights></DataPipelineDataProcessConfiguration><Destination>"
+                + "<VideoFrameEmbedding><Bucket>vector-bucket</Bucket><IndexName>video-frame</IndexName>"
+                + "</VideoFrameEmbedding></Destination></DataPipelineConfiguration>";
+    }
 }

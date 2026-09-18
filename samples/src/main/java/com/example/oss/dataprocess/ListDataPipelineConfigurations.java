@@ -17,6 +17,7 @@ public class ListDataPipelineConfigurations implements Example {
             String endpoint,
             String region,
             String prefix,
+            String inputBucket,
             Integer maxResults) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
@@ -38,6 +39,9 @@ public class ListDataPipelineConfigurations implements Example {
                         ListDataPipelineConfigurationsRequest.newBuilder();
                 if (prefix != null) {
                     reqBuilder.prefix(prefix);
+                }
+                if (inputBucket != null) {
+                    reqBuilder.inputBucket(inputBucket);
                 }
                 if (maxResults != null) {
                     reqBuilder.maxResults(maxResults);
@@ -74,6 +78,7 @@ public class ListDataPipelineConfigurations implements Example {
         opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS.").hasArg().get());
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("prefix").desc("Optional prefix filter for pipeline name.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("inputBucket").desc("Optional exact source bucket filter.").hasArg().get());
         opts.addOption(Option.builder().longOpt("maxResults").desc("Optional max results per page.").hasArg().get());
         return opts;
     }
@@ -83,8 +88,9 @@ public class ListDataPipelineConfigurations implements Example {
         String endpoint = cmd.getParsedOptionValue("endpoint");
         String region = cmd.getParsedOptionValue("region");
         String prefix = cmd.getParsedOptionValue("prefix");
+        String inputBucket = cmd.getParsedOptionValue("inputBucket");
         String maxResultsStr = cmd.getParsedOptionValue("maxResults");
         Integer maxResults = (maxResultsStr != null) ? Integer.valueOf(maxResultsStr) : null;
-        execute(endpoint, region, prefix, maxResults);
+        execute(endpoint, region, prefix, inputBucket, maxResults);
     }
 }

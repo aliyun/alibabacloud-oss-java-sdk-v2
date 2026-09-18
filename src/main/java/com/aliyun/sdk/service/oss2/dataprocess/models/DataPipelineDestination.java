@@ -28,6 +28,21 @@ public final class DataPipelineDestination {
     @JacksonXmlProperty(localName = "UsermetaToMetadata")
     private List<String> usermetaToMetadata;
 
+    @JacksonXmlProperty(localName = "ImageEmbedding")
+    private DataPipelineDestinationImageEmbedding imageEmbedding;
+
+    @JacksonXmlProperty(localName = "ImageTextEmbedding")
+    private DataPipelineDestinationImageTextEmbedding imageTextEmbedding;
+
+    @JacksonXmlProperty(localName = "VideoFrameEmbedding")
+    private DataPipelineDestinationVideoFrameEmbedding videoFrameEmbedding;
+
+    @JacksonXmlProperty(localName = "VideoTextEmbedding")
+    private DataPipelineDestinationVideoTextEmbedding videoTextEmbedding;
+
+    @JacksonXmlProperty(localName = "DocumentChunkEmbedding")
+    private DataPipelineDestinationDocumentChunkEmbedding documentChunkEmbedding;
+
     public DataPipelineDestination() {
     }
 
@@ -37,6 +52,11 @@ public final class DataPipelineDestination {
         this.vectorIndexNames = builder.vectorIndexNames;
         this.objectTagToMetadata = builder.objectTagToMetadata;
         this.usermetaToMetadata = builder.usermetaToMetadata;
+        this.imageEmbedding = builder.imageEmbedding;
+        this.imageTextEmbedding = builder.imageTextEmbedding;
+        this.videoFrameEmbedding = builder.videoFrameEmbedding;
+        this.videoTextEmbedding = builder.videoTextEmbedding;
+        this.documentChunkEmbedding = builder.documentChunkEmbedding;
     }
 
     public String vectorBucketName() {
@@ -59,6 +79,26 @@ public final class DataPipelineDestination {
         return usermetaToMetadata;
     }
 
+    public DataPipelineDestinationImageEmbedding imageEmbedding() {
+        return imageEmbedding;
+    }
+
+    public DataPipelineDestinationImageTextEmbedding imageTextEmbedding() {
+        return imageTextEmbedding;
+    }
+
+    public DataPipelineDestinationVideoFrameEmbedding videoFrameEmbedding() {
+        return videoFrameEmbedding;
+    }
+
+    public DataPipelineDestinationVideoTextEmbedding videoTextEmbedding() {
+        return videoTextEmbedding;
+    }
+
+    public DataPipelineDestinationDocumentChunkEmbedding documentChunkEmbedding() {
+        return documentChunkEmbedding;
+    }
+
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -73,6 +113,11 @@ public final class DataPipelineDestination {
         private List<String> vectorIndexNames;
         private List<String> objectTagToMetadata;
         private List<String> usermetaToMetadata;
+        private DataPipelineDestinationImageEmbedding imageEmbedding;
+        private DataPipelineDestinationImageTextEmbedding imageTextEmbedding;
+        private DataPipelineDestinationVideoFrameEmbedding videoFrameEmbedding;
+        private DataPipelineDestinationVideoTextEmbedding videoTextEmbedding;
+        private DataPipelineDestinationDocumentChunkEmbedding documentChunkEmbedding;
 
         public Builder vectorBucketName(String value) {
             this.vectorBucketName = value;
@@ -99,6 +144,31 @@ public final class DataPipelineDestination {
             return this;
         }
 
+        public Builder imageEmbedding(DataPipelineDestinationImageEmbedding value) {
+            this.imageEmbedding = value;
+            return this;
+        }
+
+        public Builder imageTextEmbedding(DataPipelineDestinationImageTextEmbedding value) {
+            this.imageTextEmbedding = value;
+            return this;
+        }
+
+        public Builder videoFrameEmbedding(DataPipelineDestinationVideoFrameEmbedding value) {
+            this.videoFrameEmbedding = value;
+            return this;
+        }
+
+        public Builder videoTextEmbedding(DataPipelineDestinationVideoTextEmbedding value) {
+            this.videoTextEmbedding = value;
+            return this;
+        }
+
+        public Builder documentChunkEmbedding(DataPipelineDestinationDocumentChunkEmbedding value) {
+            this.documentChunkEmbedding = value;
+            return this;
+        }
+
         private Builder() {
             super();
         }
@@ -109,6 +179,11 @@ public final class DataPipelineDestination {
             this.vectorIndexNames = from.vectorIndexNames;
             this.objectTagToMetadata = from.objectTagToMetadata;
             this.usermetaToMetadata = from.usermetaToMetadata;
+            this.imageEmbedding = from.imageEmbedding;
+            this.imageTextEmbedding = from.imageTextEmbedding;
+            this.videoFrameEmbedding = from.videoFrameEmbedding;
+            this.videoTextEmbedding = from.videoTextEmbedding;
+            this.documentChunkEmbedding = from.documentChunkEmbedding;
         }
 
         public DataPipelineDestination build() {

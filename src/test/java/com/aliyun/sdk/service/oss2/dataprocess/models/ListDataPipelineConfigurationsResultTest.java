@@ -156,4 +156,60 @@ public class ListDataPipelineConfigurationsResultTest {
         assertThat(result.dataPipelineConfigurations().get(0).dataPipelineError().errorPrefix()).isEqualTo("error-output/");
         assertThat(result.nextToken()).isEqualTo("xxx");
     }
+
+    @Test
+    public void xmlBuilderV2FastResponseFields() {
+        String xml = "<ListDataPipelineConfigurationsResult><DataPipelineConfigurations>"
+                + "<DataPipelineConfiguration><DataPipelineName>media-pipeline</DataPipelineName>"
+                + "<DataPipelineRole>acs:ram::1234567890123456:role/AliyunOSSDataPipelineRole</DataPipelineRole>"
+                + "<Status>Running</Status><Phase>IncrementalScanning</Phase>"
+                + "<Sources><InputBucket>source-bucket</InputBucket><IgnoreDelete>false</IgnoreDelete>"
+                + "<FilterConfiguration><ObjectMediaTypes>image</ObjectMediaTypes></FilterConfiguration></Sources>"
+                + "<ModelTier>standard</ModelTier>"
+                + "<DataPipelineDataProcessConfiguration><SearchMode>fast</SearchMode><Insights>"
+                + "<Image><Caption><Prompt>Describe the image.</Prompt></Caption></Image>"
+                + "</Insights></DataPipelineDataProcessConfiguration>"
+                + "<Destination><ImageEmbedding><Bucket>vector-bucket</Bucket><IndexName>image</IndexName>"
+                + "<Prefix>v2</Prefix></ImageEmbedding></Destination>"
+                + "<CreateTime>2026-08-12T08:00:00Z</CreateTime>"
+                + "</DataPipelineConfiguration></DataPipelineConfigurations><NextToken>next</NextToken>"
+                + "</ListDataPipelineConfigurationsResult>";
+        OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(xml))
+                .status("HTTP/1.1 200 OK")
+                .statusCode(200)
+                .build();
+
+        ListDataPipelineConfigurationsResult result =
+                SerdeDataPipelineBasic.toListDataPipelineConfigurations(output);
+
+        assertThat(result.nextToken()).isEqualTo("next");
+        assertThat(result.dataPipelineConfigurations()).hasSize(1);
+        DataPipelineConfiguration configuration = result.dataPipelineConfigurations().get(0);
+        assertThat(configuration.dataPipelineRole())
+                .isEqualTo("acs:ram::1234567890123456:role/AliyunOSSDataPipelineRole");
+        assertThat(configuration.status()).isEqualTo("Running");
+        assertThat(configuration.phase()).isEqualTo("IncrementalScanning");
+        assertThat(configuration.createTime()).isEqualTo("2026-08-12T08:00:00Z");
+        assertThat(configuration.modelTier()).isEqualTo("standard");
+        assertThat(configuration.dataPipelineDataProcessConfiguration().searchMode()).isEqualTo("fast");
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image())
+                .isInstanceOf(DataPipelineInsightsImage.class);
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image().caption())
+                .isInstanceOf(DataPipelineInsightsCaption.class);
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image()
+                .caption().prompt()).isEqualTo("Describe the image.");
+        assertThat(configuration.sources().get(0).ignoreDelete()).isFalse();
+        assertThat(configuration.sources().get(0).filterConfiguration().objectMediaTypes())
+                .containsExactly("image");
+        assertThat(configuration.destination().imageEmbedding())
+                .isInstanceOf(DataPipelineDestinationImageEmbedding.class);
+        assertThat(configuration.destination().imageEmbedding().bucket()).isEqualTo("vector-bucket");
+        assertThat(configuration.destination().imageEmbedding().indexName()).isEqualTo("image");
+        assertThat(configuration.destination().imageEmbedding().prefix()).isEqualTo("v2");
+        assertThat(configuration.destination().imageTextEmbedding()).isNull();
+        assertThat(configuration.destination().videoFrameEmbedding()).isNull();
+        assertThat(configuration.destination().videoTextEmbedding()).isNull();
+        assertThat(configuration.destination().documentChunkEmbedding()).isNull();
+    }
 }
