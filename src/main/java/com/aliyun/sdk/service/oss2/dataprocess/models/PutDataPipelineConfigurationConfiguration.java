@@ -23,6 +23,12 @@ public final class PutDataPipelineConfigurationConfiguration {
     @JacksonXmlProperty(localName = "DataPipelineEmbeddingConfiguration")
     private DataPipelineEmbeddingConfiguration dataPipelineEmbeddingConfiguration;
 
+    @JacksonXmlProperty(localName = "ModelTier")
+    private String modelTier;
+
+    @JacksonXmlProperty(localName = "DataPipelineDataProcessConfiguration")
+    private DataPipelineDataProcessConfiguration dataPipelineDataProcessConfiguration;
+
     @JacksonXmlProperty(localName = "Destination")
     private DataPipelineDestination destination;
 
@@ -36,6 +42,8 @@ public final class PutDataPipelineConfigurationConfiguration {
         this.dataPipelineDescription = builder.dataPipelineDescription;
         this.sources = builder.sources;
         this.dataPipelineEmbeddingConfiguration = builder.dataPipelineEmbeddingConfiguration;
+        this.modelTier = builder.modelTier;
+        this.dataPipelineDataProcessConfiguration = builder.dataPipelineDataProcessConfiguration;
         this.destination = builder.destination;
         this.dataPipelineError = builder.dataPipelineError;
     }
@@ -59,6 +67,14 @@ public final class PutDataPipelineConfigurationConfiguration {
      */
     public DataPipelineEmbeddingConfiguration dataPipelineEmbeddingConfiguration() {
         return dataPipelineEmbeddingConfiguration;
+    }
+
+    public String modelTier() {
+        return modelTier;
+    }
+
+    public DataPipelineDataProcessConfiguration dataPipelineDataProcessConfiguration() {
+        return dataPipelineDataProcessConfiguration;
     }
 
     /**
@@ -87,6 +103,8 @@ public final class PutDataPipelineConfigurationConfiguration {
         private String dataPipelineDescription;
         private List<DataPipelineSource> sources;
         private DataPipelineEmbeddingConfiguration dataPipelineEmbeddingConfiguration;
+        private String modelTier;
+        private DataPipelineDataProcessConfiguration dataPipelineDataProcessConfiguration;
         private DataPipelineDestination destination;
         private DataPipelineError dataPipelineError;
 
@@ -114,6 +132,16 @@ public final class PutDataPipelineConfigurationConfiguration {
             return this;
         }
 
+        public Builder modelTier(String value) {
+            this.modelTier = value;
+            return this;
+        }
+
+        public Builder dataPipelineDataProcessConfiguration(DataPipelineDataProcessConfiguration value) {
+            this.dataPipelineDataProcessConfiguration = value;
+            return this;
+        }
+
         /**
          * Destination configuration
          */
@@ -138,6 +166,8 @@ public final class PutDataPipelineConfigurationConfiguration {
             this.dataPipelineDescription = from.dataPipelineDescription;
             this.sources = from.sources;
             this.dataPipelineEmbeddingConfiguration = from.dataPipelineEmbeddingConfiguration;
+            this.modelTier = from.modelTier;
+            this.dataPipelineDataProcessConfiguration = from.dataPipelineDataProcessConfiguration;
             this.destination = from.destination;
             this.dataPipelineError = from.dataPipelineError;
         }

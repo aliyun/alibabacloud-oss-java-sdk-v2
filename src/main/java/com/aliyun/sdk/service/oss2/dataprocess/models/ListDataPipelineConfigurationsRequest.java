@@ -25,6 +25,10 @@ public final class ListDataPipelineConfigurationsRequest extends RequestModel {
         return parameters.get("prefix");
     }
 
+    public String inputBucket() {
+        return parameters.get("inputBucket");
+    }
+
     public String nextToken() {
         return parameters.get("nextToken");
     }
@@ -50,6 +54,11 @@ public final class ListDataPipelineConfigurationsRequest extends RequestModel {
 
         public Builder prefix(String value) {
             this.parameters.put("prefix", value);
+            return this;
+        }
+
+        public Builder inputBucket(String value) {
+            this.parameters.put("inputBucket", value);
             return this;
         }
 

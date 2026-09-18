@@ -151,4 +151,141 @@ public class GetDataPipelineConfigurationResultTest {
         assertThat(result.dataPipelineConfiguration().dataPipelineError().errorBucket()).isEqualTo("my-error-bucket");
         assertThat(result.dataPipelineConfiguration().dataPipelineError().errorPrefix()).isEqualTo("error-output/");
     }
+
+    @Test
+    public void xmlBuilderV2DocumentExample() {
+        OperationOutput output = OperationOutput.newBuilder()
+                .body(BinaryData.fromString(v2ResponseExampleXml()))
+                .headers(MapUtils.of(
+                        "x-oss-request-id", "req-v2",
+                        "Content-Type", "application/xml"
+                ))
+                .status("HTTP/1.1 200 OK")
+                .statusCode(200)
+                .build();
+
+        GetDataPipelineConfigurationResult result =
+                SerdeDataPipelineBasic.toGetDataPipelineConfiguration(output);
+
+        assertThat(result.statusCode()).isEqualTo(200);
+        assertThat(result.requestId()).isEqualTo("req-v2");
+        assertV2Configuration(result.dataPipelineConfiguration());
+    }
+
+    private static String v2ResponseExampleXml() {
+        return "<DataPipelineConfiguration>"
+                + "<DataPipelineName>media-pipeline</DataPipelineName>"
+                + "<DataPipelineDescription>多媒体语义向量</DataPipelineDescription>"
+                + "<DataPipelineRole>acs:ram::1234567890123456:role/AliyunOSSDataPipelineRole</DataPipelineRole>"
+                + "<Status>Running</Status><Phase>IncrementalScanning</Phase>"
+                + "<Sources><InputBucket>source-bucket</InputBucket><InputDataScope>All</InputDataScope>"
+                + "<IgnoreDelete>false</IgnoreDelete><FilterConfiguration><PrefixSet>media/</PrefixSet>"
+                + "<ObjectMediaTypes>image</ObjectMediaTypes><ObjectMediaTypes>video</ObjectMediaTypes>"
+                + "<ObjectMediaTypes>text</ObjectMediaTypes></FilterConfiguration></Sources>"
+                + "<ModelTier>standard</ModelTier>"
+                + "<DataPipelineDataProcessConfiguration><SearchMode>balanced</SearchMode><Insights>"
+                + "<Image><Caption><Prompt>Describe the image.</Prompt></Caption></Image>"
+                + "<Video><Caption><Prompt>Describe each video scene.</Prompt></Caption>"
+                + "<FrameEmbedding><Snapshot><Mode>interval</Mode><Interval>1.0</Interval></Snapshot>"
+                + "</FrameEmbedding></Video></Insights></DataPipelineDataProcessConfiguration>"
+                + "<Destination>"
+                + "<ImageEmbedding><Bucket>vector-bucket</Bucket><IndexName>image</IndexName><Prefix>v2</Prefix></ImageEmbedding>"
+                + "<ImageTextEmbedding><Bucket>vector-bucket</Bucket><IndexName>image-text</IndexName><Prefix>v2</Prefix></ImageTextEmbedding>"
+                + "<VideoFrameEmbedding><Bucket>vector-bucket</Bucket><IndexName>video-frame</IndexName><Prefix>v2</Prefix></VideoFrameEmbedding>"
+                + "<VideoTextEmbedding><Bucket>vector-bucket</Bucket><IndexName>video-text</IndexName><Prefix>v2</Prefix></VideoTextEmbedding>"
+                + "<DocumentChunkEmbedding><Bucket>vector-bucket</Bucket><IndexName>document</IndexName><Prefix>v2</Prefix></DocumentChunkEmbedding>"
+                + "<ObjectTagToMetadata>category</ObjectTagToMetadata>"
+                + "<UsermetaToMetadata>x-oss-meta-source</UsermetaToMetadata></Destination>"
+                + "<DataPipelineError><ErrorMode>ignoreAndRecord</ErrorMode><ErrorBucket>error-bucket</ErrorBucket>"
+                + "<ErrorPrefix>v2/</ErrorPrefix></DataPipelineError>"
+                + "<CreateTime>2026-08-12T08:00:00Z</CreateTime>"
+                + "</DataPipelineConfiguration>";
+    }
+
+    private static void assertV2Configuration(DataPipelineConfiguration configuration) {
+        assertThat(configuration.dataPipelineName()).isEqualTo("media-pipeline");
+        assertThat(configuration.dataPipelineDescription()).isEqualTo("多媒体语义向量");
+        assertThat(configuration.dataPipelineRole())
+                .isEqualTo("acs:ram::1234567890123456:role/AliyunOSSDataPipelineRole");
+        assertThat(configuration.status()).isEqualTo("Running");
+        assertThat(configuration.phase()).isEqualTo("IncrementalScanning");
+        assertThat(configuration.createTime()).isEqualTo("2026-08-12T08:00:00Z");
+        assertThat(configuration.modelTier()).isEqualTo("standard");
+        assertThat(configuration.sources()).hasSize(1);
+        assertThat(configuration.sources().get(0).inputBucket()).isEqualTo("source-bucket");
+        assertThat(configuration.sources().get(0).inputDataScope()).isEqualTo("All");
+        assertThat(configuration.sources().get(0).ignoreDelete()).isFalse();
+        assertThat(configuration.sources().get(0).filterConfiguration().prefixSet()).containsExactly("media/");
+        assertThat(configuration.sources().get(0).filterConfiguration().objectMediaTypes())
+                .containsExactly("image", "video", "text");
+        assertThat(configuration.dataPipelineDataProcessConfiguration().searchMode()).isEqualTo("balanced");
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image())
+                .isInstanceOf(DataPipelineInsightsImage.class);
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image().caption())
+                .isInstanceOf(DataPipelineInsightsCaption.class);
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image()
+                .caption().prompt()).isEqualTo("Describe the image.");
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video())
+                .isInstanceOf(DataPipelineInsightsVideo.class);
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video()
+                .caption().prompt()).isEqualTo("Describe each video scene.");
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video().frameEmbedding())
+                .isInstanceOf(DataPipelineInsightsFrameEmbedding.class);
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video()
+                .frameEmbedding().snapshot()).isInstanceOf(DataPipelineInsightsSnapshot.class);
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video()
+                .frameEmbedding().snapshot().mode()).isEqualTo("interval");
+        assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video()
+                .frameEmbedding().snapshot().interval()).isEqualTo(1.0d);
+        assertThat(configuration.destination().imageEmbedding())
+                .isInstanceOf(DataPipelineDestinationImageEmbedding.class);
+        assertThat(configuration.destination().imageTextEmbedding())
+                .isInstanceOf(DataPipelineDestinationImageTextEmbedding.class);
+        assertThat(configuration.destination().videoFrameEmbedding())
+                .isInstanceOf(DataPipelineDestinationVideoFrameEmbedding.class);
+        assertThat(configuration.destination().videoTextEmbedding())
+                .isInstanceOf(DataPipelineDestinationVideoTextEmbedding.class);
+        assertThat(configuration.destination().documentChunkEmbedding())
+                .isInstanceOf(DataPipelineDestinationDocumentChunkEmbedding.class);
+        assertVectorDestination(
+                configuration.destination().imageEmbedding().bucket(),
+                configuration.destination().imageEmbedding().indexName(),
+                configuration.destination().imageEmbedding().prefix(),
+                "image");
+        assertVectorDestination(
+                configuration.destination().imageTextEmbedding().bucket(),
+                configuration.destination().imageTextEmbedding().indexName(),
+                configuration.destination().imageTextEmbedding().prefix(),
+                "image-text");
+        assertVectorDestination(
+                configuration.destination().videoFrameEmbedding().bucket(),
+                configuration.destination().videoFrameEmbedding().indexName(),
+                configuration.destination().videoFrameEmbedding().prefix(),
+                "video-frame");
+        assertVectorDestination(
+                configuration.destination().videoTextEmbedding().bucket(),
+                configuration.destination().videoTextEmbedding().indexName(),
+                configuration.destination().videoTextEmbedding().prefix(),
+                "video-text");
+        assertVectorDestination(
+                configuration.destination().documentChunkEmbedding().bucket(),
+                configuration.destination().documentChunkEmbedding().indexName(),
+                configuration.destination().documentChunkEmbedding().prefix(),
+                "document");
+        assertThat(configuration.destination().objectTagToMetadata()).containsExactly("category");
+        assertThat(configuration.destination().usermetaToMetadata()).containsExactly("x-oss-meta-source");
+        assertThat(configuration.dataPipelineError().errorMode()).isEqualTo("ignoreAndRecord");
+        assertThat(configuration.dataPipelineError().errorBucket()).isEqualTo("error-bucket");
+        assertThat(configuration.dataPipelineError().errorPrefix()).isEqualTo("v2/");
+    }
+
+    private static void assertVectorDestination(
+            String bucket,
+            String actualIndexName,
+            String prefix,
+            String expectedIndexName) {
+        assertThat(bucket).isEqualTo("vector-bucket");
+        assertThat(actualIndexName).isEqualTo(expectedIndexName);
+        assertThat(prefix).isEqualTo("v2");
+    }
 }

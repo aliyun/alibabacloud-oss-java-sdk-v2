@@ -1,8 +1,12 @@
 package com.aliyun.sdk.service.oss2.dataprocess;
 
 import com.aliyun.sdk.service.oss2.OSSClient;
+import com.aliyun.sdk.service.oss2.OperationInput;
+import com.aliyun.sdk.service.oss2.OperationOptions;
+import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.TestBase;
 import com.aliyun.sdk.service.oss2.dataprocess.models.*;
+import com.aliyun.sdk.service.oss2.dataprocess.transform.SerdeDataPipelineBasic;
 import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.CreateBucketConfiguration;
 import com.aliyun.sdk.service.oss2.models.DeleteBucketRequest;
@@ -139,16 +143,30 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
             Assert.assertNotNull(getResult);
             Assert.assertEquals(200, getResult.statusCode());
             Assert.assertNotNull(getResult.dataPipelineConfiguration());
+            Assert.assertNotNull(getResult.dataPipelineConfiguration().status());
+            Assert.assertNotNull(getResult.dataPipelineConfiguration().phase());
+            Assert.assertEquals(Boolean.TRUE,
+                    getResult.dataPipelineConfiguration().sources().get(0).ignoreDelete());
 
             // 3. List Data Pipeline Configurations
             ListDataPipelineConfigurationsResult listResult = client.listDataPipelineConfigurations(
                     ListDataPipelineConfigurationsRequest.newBuilder()
+                            .maxResults(0)
+                            .prefix(pipelineName)
+                            .inputBucket(bucketName)
                             .build());
 
             Assert.assertNotNull(listResult);
             Assert.assertEquals(200, listResult.statusCode());
             Assert.assertNotNull(listResult.dataPipelineConfigurations());
-            Assert.assertNotNull(listResult.dataPipelineConfigurations());
+            DataPipelineConfiguration listedConfiguration = listResult.dataPipelineConfigurations().stream()
+                    .filter(item -> pipelineName.equals(item.dataPipelineName()))
+                    .findFirst()
+                    .orElse(null);
+            Assert.assertNotNull(listedConfiguration);
+            Assert.assertNotNull(listedConfiguration.status());
+            Assert.assertNotNull(listedConfiguration.phase());
+            Assert.assertEquals(Boolean.TRUE, listedConfiguration.sources().get(0).ignoreDelete());
 
             // 4. Pause Data Pipeline
             PauseDataPipelineResult pauseResult = client.pauseDataPipeline(
@@ -215,6 +233,196 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
         }
     }
 
+
+    @Test
+    public void testV2DataPipelineLifecycleAndValidation() {
+        OSSDataProcessClient client = getDataClient();
+        OSSVectorsClient vectorsClient = getVectorsClient();
+        String suffix = String.valueOf(System.currentTimeMillis());
+        String pipelineName = "test-v2-" + suffix;
+        String invalidPipelineName = "test-v2-invalid-" + suffix;
+        String vectorBucketName = "test-v2-vector-" + suffix + "-" + (int) (Math.random() * 10000);
+        String indexName = "video-frame-" + suffix;
+
+        vectorsClient.putVectorBucket(PutVectorBucketRequest.newBuilder()
+                .bucket(vectorBucketName)
+                .build());
+        vectorsClient.putVectorIndex(PutVectorIndexRequest.newBuilder()
+                .bucket(vectorBucketName)
+                .indexName(indexName)
+                .dataType("float32")
+                .dimension(768)
+                .distanceMetric("cosine")
+                .metadata(Collections.singletonMap(
+                        "nonFilterableMetadataKeys", Collections.singletonList("VideoStreams")))
+                .build());
+
+        DataPipelineSource source = DataPipelineSource.newBuilder()
+                .inputBucket(bucketName)
+                .inputDataScope("All")
+                .filterConfiguration(DataPipelineSourceFilterConfiguration.newBuilder()
+                        .objectMediaTypes(Collections.singletonList("video"))
+                        .build())
+                .build();
+        DataPipelineInsights insights = DataPipelineInsights.newBuilder()
+                .video(DataPipelineInsightsVideo.newBuilder()
+                        .frameEmbedding(DataPipelineInsightsFrameEmbedding.newBuilder()
+                                .snapshot(DataPipelineInsightsSnapshot.newBuilder()
+                                        .mode("interval")
+                                        .interval(1.0d)
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+        DataPipelineDestination destination = DataPipelineDestination.newBuilder()
+                .videoFrameEmbedding(DataPipelineDestinationVideoFrameEmbedding.newBuilder()
+                        .bucket(vectorBucketName)
+                        .indexName(indexName)
+                        .prefix("v2")
+                        .build())
+                .build();
+        DataPipelineDataProcessConfiguration processConfiguration =
+                DataPipelineDataProcessConfiguration.newBuilder()
+                        .searchMode("fast")
+                        .insights(insights)
+                        .build();
+        PutDataPipelineConfigurationConfiguration configuration =
+                PutDataPipelineConfigurationConfiguration.newBuilder()
+                        .dataPipelineDescription("V2 fast video pipeline")
+                        .sources(Collections.singletonList(source))
+                        .modelTier("standard")
+                        .dataPipelineDataProcessConfiguration(processConfiguration)
+                        .destination(destination)
+                        .build();
+
+        try {
+            PutDataPipelineConfigurationConfiguration multipleSources = configuration.toBuilder()
+                    .sources(Arrays.asList(source, source))
+                    .build();
+            try {
+                client.putDataPipelineConfiguration(PutDataPipelineConfigurationRequest.newBuilder()
+                        .dataPipelineName(invalidPipelineName)
+                        .role(ramRoleArn())
+                        .putDataPipelineConfigurationConfiguration(multipleSources)
+                        .build());
+                Assert.fail("Expected multiple Sources to be rejected");
+            } catch (Exception e) {
+                ServiceException serviceException = findCause(e, ServiceException.class);
+                Assert.assertNotNull("Expected ServiceException", serviceException);
+                Assert.assertEquals(400, serviceException.statusCode());
+            }
+
+            PutDataPipelineConfigurationResult putResult = client.putDataPipelineConfiguration(
+                    PutDataPipelineConfigurationRequest.newBuilder()
+                            .dataPipelineName(pipelineName)
+                            .role(ramRoleArn())
+                            .putDataPipelineConfigurationConfiguration(configuration)
+                            .build());
+            Assert.assertEquals(200, putResult.statusCode());
+
+            GetDataPipelineConfigurationRequest getRequest = GetDataPipelineConfigurationRequest.newBuilder()
+                    .dataPipelineName(pipelineName)
+                    .build();
+            GetDataPipelineConfigurationResult getResult = client.getDataPipelineConfiguration(getRequest);
+            Assert.assertEquals(200, getResult.statusCode());
+            assertV2Configuration(getResult.dataPipelineConfiguration(), pipelineName, vectorBucketName, indexName);
+
+            OperationInput getInput = SerdeDataPipelineBasic.fromGetDataPipelineConfiguration(getRequest)
+                    .toBuilder()
+                    .method("GET")
+                    .build();
+            OperationOutput getOutput = client.invokeOperation(getInput, OperationOptions.defaults());
+            GetDataPipelineConfigurationResult getByGetMethod =
+                    SerdeDataPipelineBasic.toGetDataPipelineConfiguration(getOutput);
+            Assert.assertEquals(200, getByGetMethod.statusCode());
+            assertV2Configuration(
+                    getByGetMethod.dataPipelineConfiguration(), pipelineName, vectorBucketName, indexName);
+
+            ListDataPipelineConfigurationsRequest listRequest =
+                    ListDataPipelineConfigurationsRequest.newBuilder()
+                            .maxResults(0)
+                            .prefix(pipelineName)
+                            .inputBucket(bucketName)
+                            .build();
+            ListDataPipelineConfigurationsResult listResult =
+                    client.listDataPipelineConfigurations(listRequest);
+            Assert.assertEquals(200, listResult.statusCode());
+            assertV2ListResult(listResult, pipelineName, vectorBucketName, indexName);
+
+            OperationInput listInput = SerdeDataPipelineBasic.fromListDataPipelineConfigurations(listRequest)
+                    .toBuilder()
+                    .method("GET")
+                    .build();
+            OperationOutput listOutput = client.invokeOperation(listInput, OperationOptions.defaults());
+            ListDataPipelineConfigurationsResult listByGetMethod =
+                    SerdeDataPipelineBasic.toListDataPipelineConfigurations(listOutput);
+            Assert.assertEquals(200, listByGetMethod.statusCode());
+            assertV2ListResult(listByGetMethod, pipelineName, vectorBucketName, indexName);
+        } finally {
+            for (String name : Arrays.asList(pipelineName, invalidPipelineName)) {
+                try {
+                    client.deleteDataPipelineConfiguration(DeleteDataPipelineConfigurationRequest.newBuilder()
+                            .dataPipelineName(name)
+                            .build());
+                } catch (Exception ignored) {
+                }
+            }
+            try {
+                vectorsClient.deleteVectorIndex(DeleteVectorIndexRequest.newBuilder()
+                        .bucket(vectorBucketName)
+                        .indexName(indexName)
+                        .build());
+            } catch (Exception ignored) {
+            }
+            try {
+                vectorsClient.deleteVectorBucket(DeleteVectorBucketRequest.newBuilder()
+                        .bucket(vectorBucketName)
+                        .build());
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private static void assertV2ListResult(
+            ListDataPipelineConfigurationsResult result,
+            String pipelineName,
+            String vectorBucketName,
+            String indexName) {
+        Assert.assertNotNull(result.dataPipelineConfigurations());
+        DataPipelineConfiguration configuration = result.dataPipelineConfigurations().stream()
+                .filter(item -> pipelineName.equals(item.dataPipelineName()))
+                .findFirst()
+                .orElse(null);
+        Assert.assertNotNull(configuration);
+        assertV2Configuration(configuration, pipelineName, vectorBucketName, indexName);
+    }
+
+    private static void assertV2Configuration(
+            DataPipelineConfiguration configuration,
+            String pipelineName,
+            String vectorBucketName,
+            String indexName) {
+        Assert.assertNotNull(configuration);
+        Assert.assertEquals(pipelineName, configuration.dataPipelineName());
+        Assert.assertEquals("standard", configuration.modelTier());
+        Assert.assertNotNull(configuration.status());
+        Assert.assertNotNull(configuration.phase());
+        Assert.assertEquals(1, configuration.sources().size());
+        Assert.assertEquals(Boolean.FALSE, configuration.sources().get(0).ignoreDelete());
+        Assert.assertEquals("fast", configuration.dataPipelineDataProcessConfiguration().searchMode());
+        DataPipelineInsightsSnapshot snapshot = configuration.dataPipelineDataProcessConfiguration()
+                .insights().video().frameEmbedding().snapshot();
+        Assert.assertEquals("interval", snapshot.mode());
+        Assert.assertEquals(Double.valueOf(1.0d), snapshot.interval());
+        DataPipelineDestinationVideoFrameEmbedding videoFrame = configuration.destination().videoFrameEmbedding();
+        Assert.assertEquals(vectorBucketName, videoFrame.bucket());
+        Assert.assertEquals(indexName, videoFrame.indexName());
+        Assert.assertEquals("v2", videoFrame.prefix());
+        Assert.assertNull(configuration.destination().imageEmbedding());
+        Assert.assertNull(configuration.destination().imageTextEmbedding());
+        Assert.assertNull(configuration.destination().videoTextEmbedding());
+        Assert.assertNull(configuration.destination().documentChunkEmbedding());
+    }
 
     @Test
     public void testGetNonExistentPipelineConfiguration() {
