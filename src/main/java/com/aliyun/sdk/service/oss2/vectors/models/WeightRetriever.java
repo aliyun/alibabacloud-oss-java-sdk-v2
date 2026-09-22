@@ -10,7 +10,7 @@ public class WeightRetriever {
     @JsonProperty("windowSize")
     private Integer windowSize;
     @JsonProperty("retrievers")
-    private List<RetrieverComponent> retrievers;
+    private List<WeightRetrieverComponent> retrievers;
 
     public WeightRetriever() {
     }
@@ -34,7 +34,7 @@ public class WeightRetriever {
     /**
      * The sub retrievers. It contains 1 to 3 elements.
      */
-    public List<RetrieverComponent> retrievers() {
+    public List<WeightRetrieverComponent> retrievers() {
         return retrievers;
     }
 
@@ -44,7 +44,7 @@ public class WeightRetriever {
 
     public static class Builder {
         private Integer windowSize;
-        private List<RetrieverComponent> retrievers;
+        private List<WeightRetrieverComponent> retrievers;
 
         private Builder() {
         }
@@ -65,7 +65,7 @@ public class WeightRetriever {
         /**
          * The sub retrievers. It contains 1 to 3 elements.
          */
-        public Builder retrievers(List<RetrieverComponent> retrievers) {
+        public Builder retrievers(List<WeightRetrieverComponent> retrievers) {
             this.retrievers = retrievers;
             return this;
         }

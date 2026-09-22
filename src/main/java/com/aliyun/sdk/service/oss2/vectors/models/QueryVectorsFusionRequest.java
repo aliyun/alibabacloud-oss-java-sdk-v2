@@ -1,5 +1,6 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -137,6 +138,16 @@ public final class QueryVectorsFusionRequest extends VectorRequestModel {
         public Builder knn(List<Knn> value) {
             requireNonNull(value);
             this.bodyFields.put("knn", value);
+            return this;
+        }
+
+        /**
+         * The single knn vector query. It is a convenience overload that wraps the given knn
+         * into a one-element list internally.
+         */
+        public Builder knn(Knn value) {
+            requireNonNull(value);
+            this.bodyFields.put("knn", Arrays.asList(value));
             return this;
         }
 

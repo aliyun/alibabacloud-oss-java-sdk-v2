@@ -1,6 +1,7 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 
 /**
  * The knn vector query of the QueryVectorsFusion operation.
@@ -9,7 +10,7 @@ public class Knn {
     @JsonProperty("field")
     private String field;
     @JsonProperty("queryVector")
-    private Object queryVector;
+    private List<? extends Number> queryVector;
     @JsonProperty("topK")
     private Integer topK;
     @JsonProperty("filter")
@@ -45,7 +46,7 @@ public class Knn {
     /**
      * The query vector.
      */
-    public Object queryVector() {
+    public List<? extends Number> queryVector() {
         return queryVector;
     }
 
@@ -84,7 +85,7 @@ public class Knn {
 
     public static class Builder {
         private String field;
-        private Object queryVector;
+        private List<? extends Number> queryVector;
         private Integer topK;
         private Object filter;
         private Integer numCandidates;
@@ -113,7 +114,7 @@ public class Knn {
         /**
          * The query vector.
          */
-        public Builder queryVector(Object queryVector) {
+        public Builder queryVector(List<? extends Number> queryVector) {
             this.queryVector = queryVector;
             return this;
         }

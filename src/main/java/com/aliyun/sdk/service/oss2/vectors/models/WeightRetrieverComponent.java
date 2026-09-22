@@ -5,20 +5,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import static java.util.Objects.requireNonNull;
 
 /**
- * The component of a compound retriever. It wraps a retriever with the fusion parameters.
+ * The component of the weight compound retriever. It wraps a retriever with the fusion
+ * weight and the score normalizer.
  */
-public class RetrieverComponent {
+public class WeightRetrieverComponent {
     @JsonProperty("retriever")
-    private SubRetriever retriever;
+    private Retriever retriever;
     @JsonProperty("weight")
     private Float weight;
     @JsonProperty("normalizer")
     private String normalizer;
 
-    public RetrieverComponent() {
+    public WeightRetrieverComponent() {
     }
 
-    private RetrieverComponent(Builder builder) {
+    private WeightRetrieverComponent(Builder builder) {
         this.retriever = builder.retriever;
         this.weight = builder.weight;
         this.normalizer = builder.normalizer;
@@ -29,9 +30,10 @@ public class RetrieverComponent {
     }
 
     /**
-     * The retriever of this component.
+     * The retriever of this component. It reuses the top level Retriever, so it can be a
+     * leaf retriever (knn/simple) or a nested compound retriever.
      */
-    public SubRetriever retriever() {
+    public Retriever retriever() {
         return retriever;
     }
 
@@ -44,7 +46,6 @@ public class RetrieverComponent {
 
     /**
      * The normalizer of the score. Valid values: none, minMax and l2.
-     * It is supported by the weight retriever only.
      */
     public String normalizer() {
         return normalizer;
@@ -55,23 +56,24 @@ public class RetrieverComponent {
     }
 
     public static class Builder {
-        private SubRetriever retriever;
+        private Retriever retriever;
         private Float weight;
         private String normalizer;
 
         private Builder() {
         }
 
-        private Builder(RetrieverComponent from) {
+        private Builder(WeightRetrieverComponent from) {
             this.retriever = from.retriever;
             this.weight = from.weight;
             this.normalizer = from.normalizer;
         }
 
         /**
-         * The retriever of this component.
+         * The retriever of this component. It reuses the top level Retriever, so it can be a
+         * leaf retriever (knn/simple) or a nested compound retriever.
          */
-        public Builder retriever(SubRetriever retriever) {
+        public Builder retriever(Retriever retriever) {
             this.retriever = retriever;
             return this;
         }
@@ -86,7 +88,6 @@ public class RetrieverComponent {
 
         /**
          * The normalizer of the score. Valid values: none, minMax and l2.
-         * It is supported by the weight retriever only.
          */
         public Builder normalizer(String normalizer) {
             this.normalizer = normalizer;
@@ -102,8 +103,8 @@ public class RetrieverComponent {
             return this;
         }
 
-        public RetrieverComponent build() {
-            return new RetrieverComponent(this);
+        public WeightRetrieverComponent build() {
+            return new WeightRetrieverComponent(this);
         }
     }
 }

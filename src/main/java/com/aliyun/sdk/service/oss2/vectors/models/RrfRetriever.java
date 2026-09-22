@@ -13,7 +13,7 @@ public class RrfRetriever {
     @JsonProperty("windowSize")
     private Integer windowSize;
     @JsonProperty("retrievers")
-    private List<RetrieverComponent> retrievers;
+    private List<RrfRetrieverComponent> retrievers;
 
     public RrfRetriever() {
     }
@@ -46,7 +46,7 @@ public class RrfRetriever {
     /**
      * The sub retrievers. It contains 1 to 3 elements.
      */
-    public List<RetrieverComponent> retrievers() {
+    public List<RrfRetrieverComponent> retrievers() {
         return retrievers;
     }
 
@@ -57,7 +57,7 @@ public class RrfRetriever {
     public static class Builder {
         private Integer k;
         private Integer windowSize;
-        private List<RetrieverComponent> retrievers;
+        private List<RrfRetrieverComponent> retrievers;
 
         private Builder() {
         }
@@ -88,7 +88,7 @@ public class RrfRetriever {
         /**
          * The sub retrievers. It contains 1 to 3 elements.
          */
-        public Builder retrievers(List<RetrieverComponent> retrievers) {
+        public Builder retrievers(List<RrfRetrieverComponent> retrievers) {
             this.retrievers = retrievers;
             return this;
         }

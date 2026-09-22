@@ -424,12 +424,11 @@ public class QueryVectorsFusionRequestTest {
                         .k(50)
                         .windowSize(200)
                         .retrievers(Arrays.asList(
-                                createSimpleComponent(
+                                createRrfSimpleComponent(
                                         createTextMatchQuery("title", "hello world", null),
-                                        1.0f,
-                                        null),
-                                RetrieverComponent.newBuilder()
-                                        .retriever(SubRetriever.newBuilder().weight(nestedWeight).build())
+                                        1.0f),
+                                RrfRetrieverComponent.newBuilder()
+                                        .retriever(Retriever.newBuilder().weight(nestedWeight).build())
                                         .weight(1.2f)
                                         .build()))
                         .build())
@@ -474,16 +473,16 @@ public class QueryVectorsFusionRequestTest {
     }
 
     @Test
-    public void testRetrieverComponentNormalizerEnum() throws Exception {
-        RetrieverComponent minMaxComponent = RetrieverComponent.newBuilder()
-                .retriever(SubRetriever.newBuilder()
+    public void testWeightRetrieverComponentNormalizerEnum() throws Exception {
+        WeightRetrieverComponent minMaxComponent = WeightRetrieverComponent.newBuilder()
+                .retriever(Retriever.newBuilder()
                         .knn(Knn.newBuilder().field("text_vector").queryVector(Arrays.asList(10, 22, 77)).build())
                         .build())
                 .weight(0.7f)
                 .normalizer(NormalizerType.MIN_MAX)
                 .build();
-        RetrieverComponent l2Component = RetrieverComponent.newBuilder()
-                .retriever(SubRetriever.newBuilder()
+        WeightRetrieverComponent l2Component = WeightRetrieverComponent.newBuilder()
+                .retriever(Retriever.newBuilder()
                         .knn(Knn.newBuilder().field("image_vector").queryVector(Arrays.asList(21, 35, 66)).build())
                         .build())
                 .weight(0.3f)
@@ -535,10 +534,10 @@ public class QueryVectorsFusionRequestTest {
         return query;
     }
 
-    private RetrieverComponent createKnnComponent(
+    private WeightRetrieverComponent createKnnComponent(
             String field, List<Integer> queryVector, Float weight, String normalizer) {
-        RetrieverComponent.Builder builder = RetrieverComponent.newBuilder()
-                .retriever(SubRetriever.newBuilder()
+        WeightRetrieverComponent.Builder builder = WeightRetrieverComponent.newBuilder()
+                .retriever(Retriever.newBuilder()
                         .knn(Knn.newBuilder().field(field).queryVector(queryVector).build())
                         .build())
                 .weight(weight);
@@ -548,10 +547,10 @@ public class QueryVectorsFusionRequestTest {
         return builder.build();
     }
 
-    private RetrieverComponent createSimpleComponent(
+    private WeightRetrieverComponent createSimpleComponent(
             Map<String, Object> query, Float weight, String normalizer) {
-        RetrieverComponent.Builder builder = RetrieverComponent.newBuilder()
-                .retriever(SubRetriever.newBuilder()
+        WeightRetrieverComponent.Builder builder = WeightRetrieverComponent.newBuilder()
+                .retriever(Retriever.newBuilder()
                         .simple(SimpleRetriever.newBuilder().query(query).build())
                         .build())
                 .weight(weight);
@@ -559,6 +558,26 @@ public class QueryVectorsFusionRequestTest {
             builder.normalizer(normalizer);
         }
         return builder.build();
+    }
+
+    private RrfRetrieverComponent createRrfKnnComponent(
+            String field, List<Integer> queryVector, Float weight) {
+        return RrfRetrieverComponent.newBuilder()
+                .retriever(Retriever.newBuilder()
+                        .knn(Knn.newBuilder().field(field).queryVector(queryVector).build())
+                        .build())
+                .weight(weight)
+                .build();
+    }
+
+    private RrfRetrieverComponent createRrfSimpleComponent(
+            Map<String, Object> query, Float weight) {
+        return RrfRetrieverComponent.newBuilder()
+                .retriever(Retriever.newBuilder()
+                        .simple(SimpleRetriever.newBuilder().query(query).build())
+                        .build())
+                .weight(weight)
+                .build();
     }
 
     private Retriever createTestRetriever() {
@@ -575,21 +594,8 @@ public class QueryVectorsFusionRequestTest {
                         .k(50)
                         .windowSize(100)
                         .retrievers(Arrays.asList(
-                                RetrieverComponent.newBuilder()
-                                        .retriever(SubRetriever.newBuilder()
-                                                .knn(Knn.newBuilder()
-                                                        .field("vector")
-                                                        .queryVector(Arrays.asList(10, 22, 77))
-                                                        .build())
-                                                .build())
-                                        .weight(1.0f)
-                                        .build(),
-                                RetrieverComponent.newBuilder()
-                                        .retriever(SubRetriever.newBuilder()
-                                                .simple(SimpleRetriever.newBuilder().query(query).build())
-                                                .build())
-                                        .weight(2.0f)
-                                        .build()))
+                                createRrfKnnComponent("vector", Arrays.asList(10, 22, 77), 1.0f),
+                                createRrfSimpleComponent(query, 2.0f)))
                         .build())
                 .build();
     }

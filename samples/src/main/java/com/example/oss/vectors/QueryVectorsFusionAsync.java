@@ -5,9 +5,16 @@ import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsPro
 import com.aliyun.sdk.service.oss2.vectors.OSSAsyncVectorsClient;
 import com.aliyun.sdk.service.oss2.vectors.OSSAsyncVectorsClientBuilder;
 import com.aliyun.sdk.service.oss2.vectors.models.Knn;
+import com.aliyun.sdk.service.oss2.vectors.models.NormalizerType;
 import com.aliyun.sdk.service.oss2.vectors.models.QueryVectorsFusionRequest;
 import com.aliyun.sdk.service.oss2.vectors.models.QueryVectorsFusionResult;
 import com.aliyun.sdk.service.oss2.vectors.models.QueryVectorsFusionSummary;
+import com.aliyun.sdk.service.oss2.vectors.models.Retriever;
+import com.aliyun.sdk.service.oss2.vectors.models.RrfRetriever;
+import com.aliyun.sdk.service.oss2.vectors.models.RrfRetrieverComponent;
+import com.aliyun.sdk.service.oss2.vectors.models.SimpleRetriever;
+import com.aliyun.sdk.service.oss2.vectors.models.WeightRetriever;
+import com.aliyun.sdk.service.oss2.vectors.models.WeightRetrieverComponent;
 import com.example.oss.Example;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -15,7 +22,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class QueryVectorsFusionAsync implements Example {
@@ -25,6 +34,7 @@ public class QueryVectorsFusionAsync implements Example {
             String region,
             String bucket,
             String indexName,
+            String mode,
             String vectorField,
             String queryVector,
             Integer topK,
@@ -48,44 +58,79 @@ public class QueryVectorsFusionAsync implements Example {
 
         try (OSSAsyncVectorsClient client = clientBuilder.build()) {
 
-            // The knn query of the user defined vector field.
+            // The knn vector query of the user defined vector field. It is used by the knn
+            // mode and reused as a leaf retriever by the rrf/weight modes below.
             Knn knn = Knn.newBuilder()
                     .field(vectorField)
                     .queryVector(parseVector(queryVector))
                     .topK(topK)
                     .build();
 
-            // Besides the knn query, a fusion query can also carry a multi-way hybrid
-            // retriever. The RetrieverComponent.normalizer field provides a String overload
-            // and a type-safe NormalizerType enum overload (none/minMax/l2). The enum is
-            // serialized to the same value, for example NormalizerType.MIN_MAX -> "minMax".
-            // An enum based weight retriever example (uncomment and add the imports for
-            // Retriever/WeightRetriever/RetrieverComponent/SubRetriever/NormalizerType):
-            //
-            // Retriever retriever = Retriever.newBuilder()
-            //         .weight(WeightRetriever.newBuilder()
-            //                 .windowSize(100)
-            //                 .retrievers(Arrays.asList(
-            //                         RetrieverComponent.newBuilder()
-            //                                 .retriever(SubRetriever.newBuilder()
-            //                                         .knn(knn)
-            //                                         .build())
-            //                                 .weight(0.7f)
-            //                                 .normalizer(NormalizerType.MIN_MAX)
-            //                                 .build()))
-            //                 .build())
-            //         .build();
-            // Then set it on the request builder: requestBuilder.retriever(retriever);
+            // The scalar / full text query condition, reused by the query/rrf/weight modes.
+            Map<String, Object> query = createTextMatchQuery("title_field", "hello world", 2.0f);
 
             QueryVectorsFusionRequest.Builder requestBuilder = QueryVectorsFusionRequest.newBuilder()
                     .bucket(bucket)
                     .indexName(indexName)
-                    .knn(Arrays.asList(knn))
                     .limit(limit)
                     .returnMetadata(returnMetadata);
 
             if (partitionKeys != null) {
                 requestBuilder.partitionKeys(Arrays.asList(partitionKeys.split(",")));
+            }
+
+            if ("query".equals(mode)) {
+                // Example 2: query by the scalar / full text conditions only.
+                requestBuilder.query(query);
+            } else if ("rrf".equals(mode)) {
+                // Example 3: the rrf compound retriever. Each RrfRetrieverComponent wraps a
+                // nested Retriever with a weight. The rrf component has no normalizer.
+                Retriever retriever = Retriever.newBuilder()
+                        .rrf(RrfRetriever.newBuilder()
+                                .k(50)
+                                .windowSize(100)
+                                .retrievers(Arrays.asList(
+                                        RrfRetrieverComponent.newBuilder()
+                                                .retriever(Retriever.newBuilder().knn(knn).build())
+                                                .weight(1.0f)
+                                                .build(),
+                                        RrfRetrieverComponent.newBuilder()
+                                                .retriever(Retriever.newBuilder()
+                                                        .simple(SimpleRetriever.newBuilder().query(query).build())
+                                                        .build())
+                                                .weight(2.0f)
+                                                .build()))
+                                .build())
+                        .build();
+                requestBuilder.retriever(retriever);
+            } else if ("weight".equals(mode)) {
+                // Example 4: the weight compound retriever. Each WeightRetrieverComponent wraps
+                // a nested Retriever with a weight and a normalizer. The normalizer field
+                // provides a String overload and a type-safe NormalizerType enum overload
+                // (none/minMax/l2), for example NormalizerType.MIN_MAX -> "minMax".
+                Retriever retriever = Retriever.newBuilder()
+                        .weight(WeightRetriever.newBuilder()
+                                .windowSize(100)
+                                .retrievers(Arrays.asList(
+                                        WeightRetrieverComponent.newBuilder()
+                                                .retriever(Retriever.newBuilder().knn(knn).build())
+                                                .weight(0.7f)
+                                                .normalizer(NormalizerType.MIN_MAX)
+                                                .build(),
+                                        WeightRetrieverComponent.newBuilder()
+                                                .retriever(Retriever.newBuilder()
+                                                        .simple(SimpleRetriever.newBuilder().query(query).build())
+                                                        .build())
+                                                .weight(0.3f)
+                                                .normalizer(NormalizerType.MIN_MAX)
+                                                .build()))
+                                .build())
+                        .build();
+                requestBuilder.retriever(retriever);
+            } else {
+                // Example 1 (default): the single knn query. The knn(Knn) overload wraps the
+                // single knn into a one-element list internally.
+                requestBuilder.knn(knn);
             }
 
             QueryVectorsFusionRequest request = requestBuilder.build();
@@ -138,6 +183,19 @@ public class QueryVectorsFusionAsync implements Example {
         return vector;
     }
 
+    private static Map<String, Object> createTextMatchQuery(String field, String value, Float boost) {
+        Map<String, Object> textMatch = new HashMap<>();
+        textMatch.put("value", value);
+        if (boost != null) {
+            textMatch.put("boost", boost);
+        }
+        Map<String, Object> condition = new HashMap<>();
+        condition.put("$textMatch", textMatch);
+        Map<String, Object> query = new HashMap<>();
+        query.put(field, condition);
+        return query;
+    }
+
     @Override
     public Options getOptions() {
         Options opts = new Options();
@@ -145,6 +203,7 @@ public class QueryVectorsFusionAsync implements Example {
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("indexName").desc("The name of the index.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("mode").desc("The query mode: knn (default), query, rrf or weight.").hasArg().get());
         opts.addOption(Option.builder().longOpt("vectorField").desc("The name of the vector field to query.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("queryVector").desc("The query vector as comma-separated values (e.g., '1.0,2.0,3.0').").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("topK").desc("The number of top K vectors to return.").hasArg().type(Number.class).get());
@@ -161,6 +220,10 @@ public class QueryVectorsFusionAsync implements Example {
         String region = cmd.getParsedOptionValue("region");
         String bucket = cmd.getParsedOptionValue("bucket");
         String indexName = cmd.getParsedOptionValue("indexName");
+        String mode = cmd.getParsedOptionValue("mode");
+        if (mode == null) {
+            mode = "knn";
+        }
         String vectorField = cmd.getParsedOptionValue("vectorField");
         String queryVector = cmd.getParsedOptionValue("queryVector");
         Integer topK = null;
@@ -177,7 +240,7 @@ public class QueryVectorsFusionAsync implements Example {
         }
         String partitionKeys = cmd.getParsedOptionValue("partitionKeys");
         String accountId = cmd.getParsedOptionValue("accountId");
-        execute(endpoint, region, bucket, indexName, vectorField, queryVector, topK, limit,
+        execute(endpoint, region, bucket, indexName, mode, vectorField, queryVector, topK, limit,
                 returnMetadata, partitionKeys, accountId);
     }
 }
