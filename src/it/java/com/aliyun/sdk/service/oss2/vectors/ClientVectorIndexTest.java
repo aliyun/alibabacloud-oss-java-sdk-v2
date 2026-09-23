@@ -217,6 +217,87 @@ public class ClientVectorIndexTest extends TestBaseVectors {
         }
     }
 
+    @Test
+    public void testFusionVectorIndexWithRawJsonSchema() {
+        OSSVectorsClient vectorsClient = getVectorClient();
+        String bucketName = genVectorBucketName();
+
+        // 1. Create bucket for testing
+        PutVectorBucketResult createBucketResult = vectorsClient.putVectorBucket(
+                PutVectorBucketRequest.newBuilder()
+                        .bucket(bucketName)
+                        .build());
+        Assert.assertNotNull(createBucketResult);
+        Assert.assertEquals(200, createBucketResult.statusCode());
+
+        String indexName = TEST_FUSION_INDEX_NAME + "Raw";
+        try {
+            // 2. Create a fusion vector index using the raw JSON schema overload
+            String schemaJson = "{\"indexName\":\"" + indexName + "\",\"mode\":\"fusion\",\"schemaConfiguration\":{\"fields\":["
+                    + "{\"name\":\"" + TEST_FUSION_VECTOR_FIELD + "\",\"type\":\"vector\",\"dataType\":\"" + TEST_FUSION_DATA_TYPE + "\",\"dimension\":" + TEST_FUSION_DIMENSION + ",\"distanceMetric\":\"" + TEST_FUSION_DISTANCE_METRIC + "\"},"
+                    + "{\"name\":\"" + TEST_FUSION_PARTITION_FIELD + "\",\"type\":\"string\",\"isPartitionKey\":true}"
+                    + "]}}";
+
+            PutVectorIndexFusionResult putResult = vectorsClient.putVectorIndexFusion(
+                    PutVectorIndexFusionRequest.newBuilder()
+                            .bucket(bucketName)
+                            .schemaConfiguration(schemaJson)
+                            .build());
+
+            Assert.assertNotNull(putResult);
+            Assert.assertEquals(200, putResult.statusCode());
+
+            // 3. Get the created index and verify the raw schema was accepted
+            GetVectorIndexResult getResult = vectorsClient.getVectorIndex(
+                    GetVectorIndexRequest.newBuilder()
+                            .bucket(bucketName)
+                            .indexName(indexName)
+                            .build());
+
+            Assert.assertNotNull(getResult);
+            Assert.assertEquals(200, getResult.statusCode());
+            Assert.assertNotNull(getResult.index());
+            Assert.assertEquals(indexName, getResult.index().indexName());
+            Assert.assertEquals("fusion", getResult.index().mode());
+
+            SchemaConfiguration returnedSchema = getResult.index().schemaConfiguration();
+            Assert.assertNotNull(returnedSchema);
+            Assert.assertNotNull(returnedSchema.fields());
+            Assert.assertEquals(2, returnedSchema.fields().size());
+
+            // 4. Delete the fusion vector index
+            DeleteVectorIndexResult deleteResult = vectorsClient.deleteVectorIndex(
+                    DeleteVectorIndexRequest.newBuilder()
+                            .bucket(bucketName)
+                            .indexName(indexName)
+                            .build());
+
+            Assert.assertNotNull(deleteResult);
+            Assert.assertEquals(204, deleteResult.statusCode());
+
+        } finally {
+            // 5. Cleanup: Delete the test bucket
+            try {
+                vectorsClient.deleteVectorIndex(
+                        DeleteVectorIndexRequest.newBuilder()
+                                .bucket(bucketName)
+                                .indexName(indexName)
+                                .build());
+            } catch (Exception e) {
+                // Ignore exceptions during cleanup
+            }
+
+            try {
+                vectorsClient.deleteVectorBucket(
+                        DeleteVectorBucketRequest.newBuilder()
+                                .bucket(bucketName)
+                                .build());
+            } catch (Exception e) {
+                // Ignore exceptions during cleanup
+            }
+        }
+    }
+
     private void cleanupFusionTestResources(OSSVectorsClient client, String bucketName) {
         try {
             client.deleteVectorIndex(

@@ -67,7 +67,7 @@ public class QueryVectorsFusionAsync implements Example {
                     .build();
 
             // The scalar / full text query condition, reused by the query/rrf/weight modes.
-            Map<String, Object> query = createTextMatchQuery("title_field", "hello world", 2.0f);
+            Map<String, Object> query = createTextMatchQuery("title", "hello world", 2.0f);
 
             QueryVectorsFusionRequest.Builder requestBuilder = QueryVectorsFusionRequest.newBuilder()
                     .bucket(bucket)
@@ -127,6 +127,17 @@ public class QueryVectorsFusionAsync implements Example {
                                 .build())
                         .build();
                 requestBuilder.retriever(retriever);
+            } else if ("retrieverJson".equals(mode)) {
+                // Example 5: build the whole retriever from a raw JSON string. This overload passes
+                // the nested structure through as-is, so it stays flexible when the server adds new
+                // fields, similar to passing a dict/JSON directly in other language SDKs.
+                String knnJson = "{\"field\":\"" + vectorField + "\",\"queryVector\":[" + queryVector + "]"
+                        + (topK != null ? ",\"topK\":" + topK : "") + "}";
+                String retrieverJson = "{\"rrf\":{\"k\":50,\"windowSize\":100,\"retrievers\":["
+                        + "{\"retriever\":{\"knn\":" + knnJson + "},\"weight\":1.0},"
+                        + "{\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":"
+                        + "{\"value\":\"hello world\",\"boost\":2.0}}}}},\"weight\":2.0}]}}";
+                requestBuilder.retriever(retrieverJson);
             } else {
                 // Example 1 (default): the single knn query. The knn(Knn) overload wraps the
                 // single knn into a one-element list internally.
@@ -203,7 +214,7 @@ public class QueryVectorsFusionAsync implements Example {
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("indexName").desc("The name of the index.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("mode").desc("The query mode: knn (default), query, rrf or weight.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("mode").desc("The query mode: knn (default), query, rrf, weight or retrieverJson.").hasArg().get());
         opts.addOption(Option.builder().longOpt("vectorField").desc("The name of the vector field to query.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("queryVector").desc("The query vector as comma-separated values (e.g., '1.0,2.0,3.0').").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("topK").desc("The number of top K vectors to return.").hasArg().type(Number.class).get());

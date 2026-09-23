@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class QueryVectorsFusionRequestTest {
 
@@ -512,6 +513,476 @@ public class QueryVectorsFusionRequestTest {
                 + "{\"retriever\":{\"knn\":{\"field\":\"image_vector\",\"queryVector\":[21,35,66]}},"
                 + "\"weight\":0.3,\"normalizer\":\"l2\"}]}}}";
         assertRequestJson(request, jsonStr);
+    }
+
+    @Test
+    public void testRetrieverFromJsonString() throws Exception {
+        // The whole nested retriever is provided as a raw JSON string and passed through as-is.
+        String retrieverJson = "{\"rrf\":{\"k\":50,\"windowSize\":100,\"retrievers\":["
+                + "{\"retriever\":{\"knn\":{\"field\":\"vector\",\"queryVector\":[10,22,77]}},\"weight\":1.0},"
+                + "{\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":{\"value\":\"hello world\",\"boost\":2.0}}}}},\"weight\":2.0}]}}";
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .retriever(retrieverJson)
+                .limit(10)
+                .build();
+
+        // the raw JSON retriever is not a typed Retriever, so the typed getter returns null
+        assertThat(request.retriever()).isNull();
+
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":" + retrieverJson + ",\"limit\":10}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    @Test
+    public void testRetrieverFromJsonStringPreservesUnknownFields() throws Exception {
+        // Fields that have no strongly-typed model yet are still serialized verbatim, which keeps
+        // the request forward-compatible when the server side adds new parameters.
+        String retrieverJson = "{\"rrf\":{\"k\":50,\"futureParam\":\"x\",\"retrievers\":["
+                + "{\"retriever\":{\"knn\":{\"field\":\"vector\",\"queryVector\":[1.0,2.0]}},\"weight\":1.0,"
+                + "\"futureWeightParam\":42}]}}";
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .retriever(retrieverJson)
+                .build();
+
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":" + retrieverJson + "}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    @Test
+    public void testKnnFromJsonString() throws Exception {
+        String knnJson = "[{\"field\":\"vector\",\"queryVector\":[0.1,0.2,0.3],\"topK\":10}]";
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .knn(knnJson)
+                .build();
+
+        // the raw JSON knn is not a typed list, so the typed getter returns null
+        assertThat(request.knn()).isNull();
+
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"knn\":" + knnJson + "}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    @Test
+    public void testRetrieverFromInvalidJsonString() {
+        assertThatThrownBy(() -> QueryVectorsFusionRequest.newBuilder().retriever("{invalid json"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
+     * B2 from the doc: single vector search with a pre-filter composed of $in, $range and $eq.
+     */
+    @Test
+    public void testKnnWithPreFilterFromDoc() throws Exception {
+        Map<String, Object> brandIn = new HashMap<>();
+        brandIn.put("value", Arrays.asList("AliBrand", "NovaBrand"));
+        Map<String, Object> brandCondition = new HashMap<>();
+        brandCondition.put("$in", brandIn);
+        Map<String, Object> brandClause = new HashMap<>();
+        brandClause.put("brand", brandCondition);
+
+        Map<String, Object> priceRange = new HashMap<>();
+        priceRange.put("gte", 100);
+        priceRange.put("lt", 999);
+        Map<String, Object> priceCondition = new HashMap<>();
+        priceCondition.put("$range", priceRange);
+        Map<String, Object> priceClause = new HashMap<>();
+        priceClause.put("price", priceCondition);
+
+        Map<String, Object> onSaleEq = new HashMap<>();
+        onSaleEq.put("$eq", true);
+        Map<String, Object> onSaleClause = new HashMap<>();
+        onSaleClause.put("on_sale", onSaleEq);
+
+        Map<String, Object> andNode = new HashMap<>();
+        andNode.put("clauses", Arrays.asList(brandClause, priceClause, onSaleClause));
+        Map<String, Object> filter = new HashMap<>();
+        filter.put("$and", andNode);
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("productindex")
+                .knn(Knn.newBuilder()
+                        .field("text_vector")
+                        .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f, 0.91f))
+                        .topK(100)
+                        .numCandidates(200)
+                        .filter(filter)
+                        .build())
+                .limit(20)
+                .returnMetadata(true)
+                .returnMetadataFields(Arrays.asList("title", "brand", "price"))
+                .build();
+
+        String jsonStr = "{\"indexName\":\"productindex\",\"knn\":[{\"field\":\"text_vector\",\"queryVector\":[0.12,0.53,0.08,0.91],"
+                + "\"topK\":100,\"numCandidates\":200,\"filter\":{\"$and\":{\"clauses\":["
+                + "{\"brand\":{\"$in\":{\"value\":[\"AliBrand\",\"NovaBrand\"]}}},"
+                + "{\"price\":{\"$range\":{\"gte\":100,\"lt\":999}}},"
+                + "{\"on_sale\":{\"$eq\":true}}"
+                + "]}}}],\"limit\":20,\"returnMetadata\":true,\"returnMetadataFields\":[\"title\",\"brand\",\"price\"]}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    /**
+     * B3 from the doc: multi-way vector search over text_vector and image_vector with per-road
+     * boost and an explicit _score sort.
+     */
+    @Test
+    public void testMultiWayKnnFromDoc() throws Exception {
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("multimodalindex")
+                .knn(Arrays.asList(
+                        Knn.newBuilder()
+                                .field("text_vector")
+                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                                .topK(100)
+                                .boost(1.5f)
+                                .build(),
+                        Knn.newBuilder()
+                                .field("image_vector")
+                                .queryVector(Arrays.asList(0.44f, 0.21f, 0.77f))
+                                .topK(100)
+                                .boost(1.0f)
+                                .build()))
+                .sort(Arrays.asList(new HashMap<String, Object>() {{
+                    put("_score", new HashMap<String, Object>() {{ put("order", "desc"); }});
+                }}))
+                .limit(10)
+                .returnMetadata(true)
+                .returnMetadataFields(Arrays.asList("title", "duration"))
+                .build();
+
+        String jsonStr = "{\"indexName\":\"multimodalindex\",\"knn\":["
+                + "{\"field\":\"text_vector\",\"queryVector\":[0.12,0.53,0.08],\"topK\":100,\"boost\":1.5},"
+                + "{\"field\":\"image_vector\",\"queryVector\":[0.44,0.21,0.77],\"topK\":100,\"boost\":1.0}],"
+                + "\"sort\":[{\"_score\":{\"order\":\"desc\"}}],\"limit\":10,\"returnMetadata\":true,\"returnMetadataFields\":[\"title\",\"duration\"]}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    /**
+     * B4 from the doc: pure scalar search without vectors, using $and/$in/$range/$gt and a custom
+     * price sort.
+     */
+    @Test
+    public void testPureScalarQueryFromDoc() throws Exception {
+        Map<String, Object> categoryIn = new HashMap<>();
+        categoryIn.put("value", Arrays.asList("phone", "tablet"));
+        Map<String, Object> categoryCondition = new HashMap<>();
+        categoryCondition.put("$in", categoryIn);
+        Map<String, Object> categoryClause = new HashMap<>();
+        categoryClause.put("category", categoryCondition);
+
+        Map<String, Object> priceRange = new HashMap<>();
+        priceRange.put("gte", 1000);
+        priceRange.put("lte", 5000);
+        Map<String, Object> priceCondition = new HashMap<>();
+        priceCondition.put("$range", priceRange);
+        Map<String, Object> priceClause = new HashMap<>();
+        priceClause.put("price", priceCondition);
+
+        Map<String, Object> stockGt = new HashMap<>();
+        stockGt.put("$gt", 0);
+        Map<String, Object> stockClause = new HashMap<>();
+        stockClause.put("stock", stockGt);
+
+        Map<String, Object> andNode = new HashMap<>();
+        andNode.put("clauses", Arrays.asList(categoryClause, priceClause, stockClause));
+        Map<String, Object> query = new HashMap<>();
+        query.put("$and", andNode);
+
+        Map<String, Object> sortItem = new HashMap<>();
+        sortItem.put("price", new HashMap<String, Object>() {{ put("order", "asc"); }});
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("productindex")
+                .query(query)
+                .sort(Arrays.asList(sortItem))
+                .limit(20)
+                .returnMetadata(true)
+                .returnMetadataFields(Arrays.asList("title", "brand", "price", "stock"))
+                .build();
+
+        String jsonStr = "{\"indexName\":\"productindex\",\"query\":{\"$and\":{\"clauses\":["
+                + "{\"category\":{\"$in\":{\"value\":[\"phone\",\"tablet\"]}}},"
+                + "{\"price\":{\"$range\":{\"gte\":1000,\"lte\":5000}}},"
+                + "{\"stock\":{\"$gt\":0}}"
+                + "]}},\"sort\":[{\"price\":{\"order\":\"asc\"}}],\"limit\":20,\"returnMetadata\":true,\"returnMetadataFields\":[\"title\",\"brand\",\"price\",\"stock\"]}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    /**
+     * B5 from the doc: full-text search with $textMatch, including operator, minShouldMatch and
+     * boost.
+     */
+    @Test
+    public void testTextMatchQueryFromDoc() throws Exception {
+        Map<String, Object> textMatch = new HashMap<>();
+        textMatch.put("value", "无线 降噪 耳机");
+        textMatch.put("operator", "or");
+        textMatch.put("minShouldMatch", "2");
+        textMatch.put("boost", 1.0f);
+        Map<String, Object> bodyCondition = new HashMap<>();
+        bodyCondition.put("$textMatch", textMatch);
+        Map<String, Object> query = new HashMap<>();
+        query.put("body", bodyCondition);
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("kbindex")
+                .query(query)
+                .limit(10)
+                .returnMetadata(true)
+                .returnMetadataFields(Arrays.asList("title", "doc_id"))
+                .build();
+
+        String jsonStr = "{\"indexName\":\"kbindex\",\"query\":{\"body\":{\"$textMatch\":{\"value\":\"无线 降噪 耳机\",\"operator\":\"or\",\"minShouldMatch\":\"2\",\"boost\":1.0}}},"
+                + "\"limit\":10,\"returnMetadata\":true,\"returnMetadataFields\":[\"title\",\"doc_id\"]}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    /**
+     * B16 from the doc: RRF fusion of a knn leaf retriever and a simple text-match leaf retriever.
+     */
+    @Test
+    public void testRrfRetrieverFromDoc() throws Exception {
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("productindex")
+                .retriever(Retriever.newBuilder()
+                        .rrf(RrfRetriever.newBuilder()
+                                .k(50)
+                                .windowSize(100)
+                                .retrievers(Arrays.asList(
+                                        RrfRetrieverComponent.newBuilder()
+                                                .retriever(Retriever.newBuilder()
+                                                        .knn(Knn.newBuilder()
+                                                                .field("text_vector")
+                                                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                                                                .topK(100)
+                                                                .build())
+                                                        .build())
+                                                .weight(2.0f)
+                                                .build(),
+                                        createRrfSimpleComponent(
+                                                createTextMatchQuery("title", "无线 耳机", null),
+                                                0.5f)))
+                                .build())
+                .build())
+                .limit(10)
+                .returnMetadata(true)
+                .returnMetadataFields(Arrays.asList("title", "brand"))
+                .build();
+
+        String jsonStr = "{\"indexName\":\"productindex\",\"retriever\":{\"rrf\":{\"k\":50,\"windowSize\":100,\"retrievers\":["
+                + "{\"retriever\":{\"knn\":{\"field\":\"text_vector\",\"queryVector\":[0.12,0.53,0.08],\"topK\":100}},\"weight\":2.0},"
+                + "{\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":{\"value\":\"无线 耳机\"}}}}},\"weight\":0.5}]}}"
+                + ",\"limit\":10,\"returnMetadata\":true,\"returnMetadataFields\":[\"title\",\"brand\"]}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    /**
+     * B17 from the doc: Weight fusion with minMax normalizer over a knn leaf and a simple
+     * text-match leaf.
+     */
+    @Test
+    public void testWeightRetrieverFromDoc() throws Exception {
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("productindex")
+                .retriever(Retriever.newBuilder()
+                        .weight(WeightRetriever.newBuilder()
+                                .windowSize(100)
+                                .retrievers(Arrays.asList(
+                                        WeightRetrieverComponent.newBuilder()
+                                                .retriever(Retriever.newBuilder()
+                                                        .knn(Knn.newBuilder()
+                                                                .field("text_vector")
+                                                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                                                                .topK(100)
+                                                                .build())
+                                                        .build())
+                                                .weight(0.7f)
+                                                .normalizer("minMax")
+                                                .build(),
+                                        createSimpleComponent(
+                                                createTextMatchQuery("title", "无线 耳机", null),
+                                                0.3f,
+                                                "minMax")))
+                                .build())
+                .build())
+                .limit(10)
+                .returnMetadata(true)
+                .returnMetadataFields(Arrays.asList("title", "brand"))
+                .build();
+
+        String jsonStr = "{\"indexName\":\"productindex\",\"retriever\":{\"weight\":{\"windowSize\":100,\"retrievers\":["
+                + "{\"retriever\":{\"knn\":{\"field\":\"text_vector\",\"queryVector\":[0.12,0.53,0.08],\"topK\":100}},\"weight\":0.7,\"normalizer\":\"minMax\"},"
+                + "{\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":{\"value\":\"无线 耳机\"}}}}},\"weight\":0.3,\"normalizer\":\"minMax\"}]}}"
+                + ",\"limit\":10,\"returnMetadata\":true,\"returnMetadataFields\":[\"title\",\"brand\"]}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    /**
+     * B18 from the doc: three-way weight fusion over text_vector, image_vector and a title
+     * text-match, using different normalizers per road.
+     */
+    @Test
+    public void testThreeWayWeightRetrieverFromDoc() throws Exception {
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("multimodalindex")
+                .retriever(Retriever.newBuilder()
+                        .weight(WeightRetriever.newBuilder()
+                                .windowSize(200)
+                                .retrievers(Arrays.asList(
+                                        WeightRetrieverComponent.newBuilder()
+                                                .retriever(Retriever.newBuilder()
+                                                        .knn(Knn.newBuilder()
+                                                                .field("text_vector")
+                                                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                                                                .topK(200)
+                                                                .build())
+                                                        .build())
+                                                .weight(0.5f)
+                                                .normalizer("l2")
+                                                .build(),
+                                        WeightRetrieverComponent.newBuilder()
+                                                .retriever(Retriever.newBuilder()
+                                                        .knn(Knn.newBuilder()
+                                                                .field("image_vector")
+                                                                .queryVector(Arrays.asList(0.44f, 0.21f, 0.77f))
+                                                                .topK(200)
+                                                                .build())
+                                                        .build())
+                                                .weight(0.3f)
+                                                .normalizer("l2")
+                                                .build(),
+                                        createSimpleComponent(
+                                                createTextMatchQuery("title", "红色 跑车", null),
+                                                0.2f,
+                                                "minMax")))
+                                .build())
+                .build())
+                .limit(10)
+                .returnMetadata(true)
+                .returnMetadataFields(Arrays.asList("title", "duration"))
+                .build();
+
+        String jsonStr = "{\"indexName\":\"multimodalindex\",\"retriever\":{\"weight\":{\"windowSize\":200,\"retrievers\":["
+                + "{\"retriever\":{\"knn\":{\"field\":\"text_vector\",\"queryVector\":[0.12,0.53,0.08],\"topK\":200}},\"weight\":0.5,\"normalizer\":\"l2\"},"
+                + "{\"retriever\":{\"knn\":{\"field\":\"image_vector\",\"queryVector\":[0.44,0.21,0.77],\"topK\":200}},\"weight\":0.3,\"normalizer\":\"l2\"},"
+                + "{\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":{\"value\":\"红色 跑车\"}}}}},\"weight\":0.2,\"normalizer\":\"minMax\"}]}}"
+                + ",\"limit\":10,\"returnMetadata\":true,\"returnMetadataFields\":[\"title\",\"duration\"]}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    /**
+     * B19 from the doc: knn and query coexist; vector scores and query scores are added directly.
+     */
+    @Test
+    public void testKnnAndQueryCoexistFromDoc() throws Exception {
+        Map<String, Object> brandIn = new HashMap<>();
+        brandIn.put("value", Arrays.asList("AliBrand"));
+        brandIn.put("boost", 1.0f);
+        Map<String, Object> brandCondition = new HashMap<>();
+        brandCondition.put("$in", brandIn);
+        Map<String, Object> brandClause = new HashMap<>();
+        brandClause.put("brand", brandCondition);
+
+        Map<String, Object> titleTextMatch = new HashMap<>();
+        titleTextMatch.put("value", "耳机");
+        titleTextMatch.put("boost", 4.0f);
+        Map<String, Object> titleCondition = new HashMap<>();
+        titleCondition.put("$textMatch", titleTextMatch);
+        Map<String, Object> titleClause = new HashMap<>();
+        titleClause.put("title", titleCondition);
+
+        Map<String, Object> orNode = new HashMap<>();
+        orNode.put("clauses", Arrays.asList(brandClause, titleClause));
+        Map<String, Object> query = new HashMap<>();
+        query.put("$or", orNode);
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("productindex")
+                .knn(Arrays.asList(
+                        Knn.newBuilder()
+                                .field("text_vector")
+                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                                .topK(100)
+                                .boost(2.0f)
+                                .build(),
+                        Knn.newBuilder()
+                                .field("image_vector")
+                                .queryVector(Arrays.asList(0.44f, 0.21f, 0.77f))
+                                .topK(100)
+                                .boost(0.5f)
+                                .build()))
+                .query(query)
+                .sort(Arrays.asList(new HashMap<String, Object>() {{
+                    put("_score", new HashMap<String, Object>() {{ put("order", "desc"); }});
+                }}))
+                .limit(20)
+                .returnMetadata(true)
+                .returnMetadataFields(Arrays.asList("title", "brand", "price"))
+                .build();
+
+        String jsonStr = "{\"indexName\":\"productindex\",\"knn\":["
+                + "{\"field\":\"text_vector\",\"queryVector\":[0.12,0.53,0.08],\"topK\":100,\"boost\":2.0},"
+                + "{\"field\":\"image_vector\",\"queryVector\":[0.44,0.21,0.77],\"topK\":100,\"boost\":0.5}],"
+                + "\"query\":{\"$or\":{\"clauses\":["
+                + "{\"brand\":{\"$in\":{\"value\":[\"AliBrand\"],\"boost\":1.0}}},"
+                + "{\"title\":{\"$textMatch\":{\"value\":\"耳机\",\"boost\":4.0}}}"
+                + "]}},\"sort\":[{\"_score\":{\"order\":\"desc\"}}],\"limit\":20,\"returnMetadata\":true,\"returnMetadataFields\":[\"title\",\"brand\",\"price\"]}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    /**
+     * B20 from the doc: single leaf retriever used directly as the top-level retriever.
+     */
+    @Test
+    public void testSingleLeafRetrieverFromDoc() throws Exception {
+        // simple leaf
+        QueryVectorsFusionRequest simpleRequest = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("kbindex")
+                .retriever(Retriever.newBuilder()
+                        .simple(SimpleRetriever.newBuilder()
+                                .query(createTextMatchQuery("title", "hello world", 2.0f))
+                                .build())
+                .build())
+                .limit(10)
+                .build();
+
+        String simpleJson = "{\"indexName\":\"kbindex\",\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":{\"value\":\"hello world\",\"boost\":2.0}}}}},\"limit\":10}";
+        assertRequestJson(simpleRequest, simpleJson);
+
+        // knn leaf
+        QueryVectorsFusionRequest knnRequest = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("kbindex")
+                .retriever(Retriever.newBuilder()
+                        .knn(Knn.newBuilder()
+                                .field("chunk_vector")
+                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                                .topK(100)
+                                .build())
+                .build())
+                .limit(10)
+                .build();
+
+        String knnJson = "{\"indexName\":\"kbindex\",\"retriever\":{\"knn\":{\"field\":\"chunk_vector\",\"queryVector\":[0.12,0.53,0.08],\"topK\":100}},\"limit\":10}";
+        assertRequestJson(knnRequest, knnJson);
     }
 
     private void assertRequestJson(QueryVectorsFusionRequest request, String jsonStr) throws Exception {
