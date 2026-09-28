@@ -141,17 +141,31 @@ public class ClientDataPipelineAsyncTest extends TestBaseDataProcess {
             Assert.assertNotNull(getResult);
             Assert.assertEquals(200, getResult.statusCode());
             Assert.assertNotNull(getResult.dataPipelineConfiguration());
+            Assert.assertNotNull(getResult.dataPipelineConfiguration().status());
+            Assert.assertNotNull(getResult.dataPipelineConfiguration().phase());
+            Assert.assertEquals(Boolean.TRUE,
+                    getResult.dataPipelineConfiguration().sources().get(0).ignoreDelete());
 
             // 3. List Data Pipeline Configurations
             CompletableFuture<ListDataPipelineConfigurationsResult> listFuture = client.listDataPipelineConfigurationsAsync(
                     ListDataPipelineConfigurationsRequest.newBuilder()
+                            .maxResults(0)
+                            .prefix(pipelineName)
+                            .inputBucket(bucketName)
                             .build());
 
             ListDataPipelineConfigurationsResult listResult = listFuture.get(120, TimeUnit.SECONDS);
             Assert.assertNotNull(listResult);
             Assert.assertEquals(200, listResult.statusCode());
             Assert.assertNotNull(listResult.dataPipelineConfigurations());
-            Assert.assertFalse(listResult.dataPipelineConfigurations().isEmpty());
+            DataPipelineConfiguration listedConfiguration = listResult.dataPipelineConfigurations().stream()
+                    .filter(item -> pipelineName.equals(item.dataPipelineName()))
+                    .findFirst()
+                    .orElse(null);
+            Assert.assertNotNull(listedConfiguration);
+            Assert.assertNotNull(listedConfiguration.status());
+            Assert.assertNotNull(listedConfiguration.phase());
+            Assert.assertEquals(Boolean.TRUE, listedConfiguration.sources().get(0).ignoreDelete());
 
             // 4. Pause Data Pipeline
             CompletableFuture<PauseDataPipelineResult> pauseFuture = client.pauseDataPipelineAsync(

@@ -118,6 +118,8 @@ public class GetDataPipelineConfigurationRequestTest {
 
         OperationInput input = SerdeDataPipelineBasic.fromGetDataPipelineConfiguration(request);
 
+        assertThat(input.method()).isEqualTo("POST");
+        assertThat(input.parameters().get("dataPipeline")).isEmpty();
         assertThat(input.parameters().get("dataPipelineName")).isEqualTo("my-data-pipeline");
         assertThat(input.parameters().get("action")).isEqualTo("getDataPipelineConfiguration");
         assertThat(input.body().isPresent()).isFalse();

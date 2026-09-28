@@ -19,6 +19,7 @@ public class ListDataPipelineConfigurationsRequestTest {
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.maxResults()).isNull();
         assertThat(request.prefix()).isNull();
+        assertThat(request.inputBucket()).isNull();
         assertThat(request.nextToken()).isNull();
     }
 
@@ -27,6 +28,7 @@ public class ListDataPipelineConfigurationsRequestTest {
         ListDataPipelineConfigurationsRequest request = ListDataPipelineConfigurationsRequest.newBuilder()
                 .maxResults(50)
                 .prefix("test-prefix")
+                .inputBucket("source-bucket")
                 .nextToken("test-token")
                 .header("x-header-value", "value1")
                 .header("x-header-value", "value2")
@@ -37,6 +39,7 @@ public class ListDataPipelineConfigurationsRequestTest {
 
         assertThat(request.maxResults()).isEqualTo("50");
         assertThat(request.prefix()).isEqualTo("test-prefix");
+        assertThat(request.inputBucket()).isEqualTo("source-bucket");
         assertThat(request.nextToken()).isEqualTo("test-token");
         assertThat(request.headers()).contains(
                 new AbstractMap.SimpleEntry<>("x-header-value", "value2"));
@@ -49,6 +52,7 @@ public class ListDataPipelineConfigurationsRequestTest {
         ListDataPipelineConfigurationsRequest copy = request.toBuilder().build();
         assertThat(copy.maxResults()).isEqualTo("50");
         assertThat(copy.prefix()).isEqualTo("test-prefix");
+        assertThat(copy.inputBucket()).isEqualTo("source-bucket");
         assertThat(copy.nextToken()).isEqualTo("test-token");
         assertThat(copy.headers()).contains(
                 new AbstractMap.SimpleEntry<>("x-header-value", "value2"));
@@ -63,6 +67,7 @@ public class ListDataPipelineConfigurationsRequestTest {
         ListDataPipelineConfigurationsRequest original = ListDataPipelineConfigurationsRequest.newBuilder()
                 .maxResults(100)
                 .prefix("original-prefix")
+                .inputBucket("original-bucket")
                 .nextToken("original-token")
                 .build();
 
@@ -70,6 +75,7 @@ public class ListDataPipelineConfigurationsRequestTest {
 
         assertThat(copy.maxResults()).isEqualTo("100");
         assertThat(copy.prefix()).isEqualTo("original-prefix");
+        assertThat(copy.inputBucket()).isEqualTo("original-bucket");
         assertThat(copy.nextToken()).isEqualTo("original-token");
     }
 
@@ -78,11 +84,13 @@ public class ListDataPipelineConfigurationsRequestTest {
         ListDataPipelineConfigurationsRequest request = ListDataPipelineConfigurationsRequest.newBuilder()
                 .maxResults(25)
                 .prefix("header-prefix")
+                .inputBucket("header-bucket")
                 .nextToken("header-token")
                 .build();
 
         assertThat(request.maxResults()).isEqualTo("25");
         assertThat(request.prefix()).isEqualTo("header-prefix");
+        assertThat(request.inputBucket()).isEqualTo("header-bucket");
         assertThat(request.nextToken()).isEqualTo("header-token");
     }
 
@@ -91,15 +99,31 @@ public class ListDataPipelineConfigurationsRequestTest {
         ListDataPipelineConfigurationsRequest request = ListDataPipelineConfigurationsRequest.newBuilder()
                 .maxResults(50)
                 .prefix("xml-prefix")
+                .inputBucket("source-bucket")
                 .nextToken("xml-token")
                 .build();
 
         OperationInput input = SerdeDataPipelineBasic.fromListDataPipelineConfigurations(request);
 
+        assertThat(input.method()).isEqualTo("POST");
+        assertThat(input.parameters().get("dataPipeline")).isEmpty();
         assertThat(input.parameters().get("maxResults")).isEqualTo("50");
         assertThat(input.parameters().get("prefix")).isEqualTo("xml-prefix");
+        assertThat(input.parameters().get("inputBucket")).isEqualTo("source-bucket");
         assertThat(input.parameters().get("nextToken")).isEqualTo("xml-token");
         assertThat(input.parameters().get("action")).isEqualTo("listDataPipelineConfigurations");
         assertThat(input.body().isPresent()).isFalse();
+    }
+
+    @Test
+    public void testMaxResultsZeroIsSerialized() {
+        ListDataPipelineConfigurationsRequest request = ListDataPipelineConfigurationsRequest.newBuilder()
+                .maxResults(0)
+                .build();
+
+        OperationInput input = SerdeDataPipelineBasic.fromListDataPipelineConfigurations(request);
+
+        assertThat(request.maxResults()).isEqualTo("0");
+        assertThat(input.parameters()).containsEntry("maxResults", "0");
     }
 }
