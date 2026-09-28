@@ -158,7 +158,13 @@ public class Apache5AsyncHttpClient implements HttpClient, AutoCloseable {
             if (body instanceof ByteArrayBinaryData) {
                 entityProducer = new BasicAsyncEntityProducer(body.toBytes(), null);
             } else if (body instanceof StringBinaryData) {
-                entityProducer = new StringAsyncEntityProducer(body.toString(), null);
+                if (Apache5Utils.STRING_ENTITY_UTF8_BY_DEFAULT) {
+                    entityProducer = new StringAsyncEntityProducer(body.toString(), null);
+                } else {
+                    // HttpCore5 < 5.3 encodes the String with its own default charset; send
+                    // UTF-8 bytes so the body stays the same across versions.
+                    entityProducer = new BasicAsyncEntityProducer(body.toBytes(), null);
+                }
             } else if (body instanceof InputStreamBinaryData) {
                 entityProducer = new ByteChannelAsyncEntityProducer(Channels.newChannel(body.toStream()), body.getLength());
             } else if (body instanceof ByteChannelBinaryData) {

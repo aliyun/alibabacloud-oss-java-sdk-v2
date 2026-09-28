@@ -11,7 +11,6 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 
@@ -211,7 +210,9 @@ public class Apache4HttpClient implements HttpClient, AutoCloseable {
     private HttpEntity toHttpEntity(BinaryData body) {
         if (body != null) {
             if (body instanceof StringBinaryData) {
-                return new StringEntity(body.toString(), (ContentType) null);
+                // HttpCore4 has no UTF-8 default; send UTF-8 bytes so the body stays the same
+                // across versions.
+                return new ByteArrayEntity(body.toBytes(), (ContentType) null);
             } else if (body instanceof ByteArrayBinaryData ||
                     body instanceof ByteBufferBinaryData) {
                 return new ByteArrayEntity(body.toBytes(), (ContentType) null);
