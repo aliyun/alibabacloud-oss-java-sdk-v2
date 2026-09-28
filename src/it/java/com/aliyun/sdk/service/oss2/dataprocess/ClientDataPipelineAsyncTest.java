@@ -54,7 +54,7 @@ public class ClientDataPipelineAsyncTest extends TestBaseDataProcess {
                 .fps(1.0f)
                 .build();
 
-        String vectorBucketName = "test-async-" + System.currentTimeMillis() + "-" +
+        String vectorBucketName = "sdk-oss-java-test-" + System.currentTimeMillis() + "-" +
                 (int) (Math.random() * 10000);
 
         // Put vector bucket

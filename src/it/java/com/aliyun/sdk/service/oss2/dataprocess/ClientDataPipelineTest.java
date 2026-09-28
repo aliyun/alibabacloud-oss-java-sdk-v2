@@ -48,7 +48,7 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
 
 
         OSSVectorsClient vectorsClient = getVectorsClient();
-        String vectorBucketName = "test-vector-" + System.currentTimeMillis() + "-" +
+        String vectorBucketName = "sdk-oss-java-test-" + System.currentTimeMillis() + "-" +
                 (int) (Math.random() * 10000);
 
 
