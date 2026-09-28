@@ -47,8 +47,8 @@ public class PutDataPipelineV2Configuration implements Example {
                     DataPipelineDataProcessConfiguration.newBuilder()
                             .searchMode("fast")
                             .insights(DataPipelineInsights.newBuilder()
-                                    .image(DataPipelineInsightsImage.newBuilder()
-                                            .caption(DataPipelineInsightsCaption.newBuilder()
+                                    .image(InsightsImage.newBuilder()
+                                            .caption(InsightsCaption.newBuilder()
                                                     .prompt("Describe the image.")
                                                     .build())
                                             .build())
@@ -56,7 +56,7 @@ public class PutDataPipelineV2Configuration implements Example {
                             .build();
 
             DataPipelineDestination destination = DataPipelineDestination.newBuilder()
-                    .imageEmbedding(DataPipelineDestinationImageEmbedding.newBuilder()
+                    .imageEmbedding(ImageEmbedding.newBuilder()
                             .bucket(vectorBucketName)
                             .indexName(imageIndexName)
                             .prefix("v2")

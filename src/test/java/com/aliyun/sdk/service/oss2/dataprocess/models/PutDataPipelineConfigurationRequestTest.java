@@ -286,7 +286,7 @@ public class PutDataPipelineConfigurationRequestTest {
 
     @Test
     public void xmlBuilderV2DhashSnapshotAndOptionalFields() throws JsonProcessingException {
-        DataPipelineInsightsSnapshot snapshot = DataPipelineInsightsSnapshot.newBuilder()
+        InsightsSnapshot snapshot = InsightsSnapshot.newBuilder()
                 .mode("dhash")
                 .number(20)
                 .build();
@@ -301,15 +301,15 @@ public class PutDataPipelineConfigurationRequestTest {
                         .dataPipelineDataProcessConfiguration(DataPipelineDataProcessConfiguration.newBuilder()
                                 .searchMode("fast")
                                 .insights(DataPipelineInsights.newBuilder()
-                                        .video(DataPipelineInsightsVideo.newBuilder()
-                                                .frameEmbedding(DataPipelineInsightsFrameEmbedding.newBuilder()
+                                        .video(InsightsVideo.newBuilder()
+                                                .frameEmbedding(InsightsFrameEmbedding.newBuilder()
                                                         .snapshot(snapshot)
                                                         .build())
                                                 .build())
                                         .build())
                                 .build())
                         .destination(DataPipelineDestination.newBuilder()
-                                .videoFrameEmbedding(DataPipelineDestinationVideoFrameEmbedding.newBuilder()
+                                .videoFrameEmbedding(VideoFrameEmbedding.newBuilder()
                                         .bucket("vector-bucket")
                                         .indexName("video-frame")
                                         .build())
@@ -337,38 +337,38 @@ public class PutDataPipelineConfigurationRequestTest {
         assertThat(copy.modelTier()).isEqualTo("standard");
         assertThat(copy.dataPipelineDataProcessConfiguration().searchMode()).isEqualTo("balanced");
         assertThat(copy.dataPipelineDataProcessConfiguration().insights().image())
-                .isInstanceOf(DataPipelineInsightsImage.class);
+                .isInstanceOf(InsightsImage.class);
         assertThat(copy.dataPipelineDataProcessConfiguration().insights().image()
-                .caption()).isInstanceOf(DataPipelineInsightsCaption.class);
+                .caption()).isInstanceOf(InsightsCaption.class);
         assertThat(copy.dataPipelineDataProcessConfiguration().insights().image()
                 .caption().prompt()).isEqualTo("Describe the image.");
         assertThat(copy.dataPipelineDataProcessConfiguration().insights().video()
                 .caption().prompt()).isEqualTo("Describe each video scene.");
         assertThat(copy.dataPipelineDataProcessConfiguration().insights().video())
-                .isInstanceOf(DataPipelineInsightsVideo.class);
+                .isInstanceOf(InsightsVideo.class);
         assertThat(copy.dataPipelineDataProcessConfiguration().insights().video()
-                .frameEmbedding()).isInstanceOf(DataPipelineInsightsFrameEmbedding.class);
+                .frameEmbedding()).isInstanceOf(InsightsFrameEmbedding.class);
         assertThat(copy.dataPipelineDataProcessConfiguration().insights().video()
-                .frameEmbedding().snapshot()).isInstanceOf(DataPipelineInsightsSnapshot.class);
+                .frameEmbedding().snapshot()).isInstanceOf(InsightsSnapshot.class);
         assertThat(copy.dataPipelineDataProcessConfiguration().insights().video()
                 .frameEmbedding().snapshot().interval()).isEqualTo(1.0d);
         assertThat(copy.destination().imageEmbedding())
-                .isInstanceOf(DataPipelineDestinationImageEmbedding.class);
+                .isInstanceOf(ImageEmbedding.class);
         assertThat(copy.destination().imageTextEmbedding())
-                .isInstanceOf(DataPipelineDestinationImageTextEmbedding.class);
+                .isInstanceOf(ImageTextEmbedding.class);
         assertThat(copy.destination().videoFrameEmbedding())
-                .isInstanceOf(DataPipelineDestinationVideoFrameEmbedding.class);
+                .isInstanceOf(VideoFrameEmbedding.class);
         assertThat(copy.destination().videoTextEmbedding())
-                .isInstanceOf(DataPipelineDestinationVideoTextEmbedding.class);
+                .isInstanceOf(VideoTextEmbedding.class);
         assertThat(copy.destination().documentChunkEmbedding())
-                .isInstanceOf(DataPipelineDestinationDocumentChunkEmbedding.class);
+                .isInstanceOf(DocumentChunkEmbedding.class);
         assertThat(copy.destination().videoTextEmbedding().indexName()).isEqualTo("video-text");
         assertThat(copy.sources().get(0).ignoreDelete()).isNull();
 
         DataPipelineSource source = copy.sources().get(0).toBuilder().ignoreDelete(false).build();
         assertThat(source.ignoreDelete()).isFalse();
 
-        DataPipelineInsightsSnapshot dhash = DataPipelineInsightsSnapshot.newBuilder()
+        InsightsSnapshot dhash = InsightsSnapshot.newBuilder()
                 .mode("dhash")
                 .number(20)
                 .build()
@@ -381,17 +381,17 @@ public class PutDataPipelineConfigurationRequestTest {
 
     private static PutDataPipelineConfigurationConfiguration v2Configuration() {
         DataPipelineInsights insights = DataPipelineInsights.newBuilder()
-                .image(DataPipelineInsightsImage.newBuilder()
-                        .caption(DataPipelineInsightsCaption.newBuilder()
+                .image(InsightsImage.newBuilder()
+                        .caption(InsightsCaption.newBuilder()
                                 .prompt("Describe the image.")
                                 .build())
                         .build())
-                .video(DataPipelineInsightsVideo.newBuilder()
-                        .caption(DataPipelineInsightsCaption.newBuilder()
+                .video(InsightsVideo.newBuilder()
+                        .caption(InsightsCaption.newBuilder()
                                 .prompt("Describe each video scene.")
                                 .build())
-                        .frameEmbedding(DataPipelineInsightsFrameEmbedding.newBuilder()
-                                .snapshot(DataPipelineInsightsSnapshot.newBuilder()
+                        .frameEmbedding(InsightsFrameEmbedding.newBuilder()
+                                .snapshot(InsightsSnapshot.newBuilder()
                                         .mode("interval")
                                         .interval(1.0d)
                                         .build())
@@ -416,15 +416,15 @@ public class PutDataPipelineConfigurationRequestTest {
                         .insights(insights)
                         .build())
                 .destination(DataPipelineDestination.newBuilder()
-                        .imageEmbedding(DataPipelineDestinationImageEmbedding.newBuilder()
+                        .imageEmbedding(ImageEmbedding.newBuilder()
                                 .bucket("vector-bucket").indexName("image").prefix("v2").build())
-                        .imageTextEmbedding(DataPipelineDestinationImageTextEmbedding.newBuilder()
+                        .imageTextEmbedding(ImageTextEmbedding.newBuilder()
                                 .bucket("vector-bucket").indexName("image-text").prefix("v2").build())
-                        .videoFrameEmbedding(DataPipelineDestinationVideoFrameEmbedding.newBuilder()
+                        .videoFrameEmbedding(VideoFrameEmbedding.newBuilder()
                                 .bucket("vector-bucket").indexName("video-frame").prefix("v2").build())
-                        .videoTextEmbedding(DataPipelineDestinationVideoTextEmbedding.newBuilder()
+                        .videoTextEmbedding(VideoTextEmbedding.newBuilder()
                                 .bucket("vector-bucket").indexName("video-text").prefix("v2").build())
-                        .documentChunkEmbedding(DataPipelineDestinationDocumentChunkEmbedding.newBuilder()
+                        .documentChunkEmbedding(DocumentChunkEmbedding.newBuilder()
                                 .bucket("vector-bucket").indexName("document").prefix("v2").build())
                         .objectTagToMetadata(Collections.singletonList("category"))
                         .usermetaToMetadata(Collections.singletonList("x-oss-meta-source"))

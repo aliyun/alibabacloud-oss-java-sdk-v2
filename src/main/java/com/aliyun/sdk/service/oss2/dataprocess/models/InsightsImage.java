@@ -7,18 +7,18 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  * Image settings for data pipeline insights.
  */
 @JacksonXmlRootElement(localName = "Image")
-public final class DataPipelineInsightsImage {
+public final class InsightsImage {
     @JacksonXmlProperty(localName = "Caption")
-    private DataPipelineInsightsCaption caption;
+    private InsightsCaption caption;
 
-    public DataPipelineInsightsImage() {
+    public InsightsImage() {
     }
 
-    private DataPipelineInsightsImage(Builder builder) {
+    private InsightsImage(Builder builder) {
         this.caption = builder.caption;
     }
 
-    public DataPipelineInsightsCaption caption() {
+    public InsightsCaption caption() {
         return caption;
     }
 
@@ -31,9 +31,9 @@ public final class DataPipelineInsightsImage {
     }
 
     public static class Builder {
-        private DataPipelineInsightsCaption caption;
+        private InsightsCaption caption;
 
-        public Builder caption(DataPipelineInsightsCaption value) {
+        public Builder caption(InsightsCaption value) {
             this.caption = value;
             return this;
         }
@@ -41,12 +41,12 @@ public final class DataPipelineInsightsImage {
         private Builder() {
         }
 
-        private Builder(DataPipelineInsightsImage from) {
+        private Builder(InsightsImage from) {
             this.caption = from.caption;
         }
 
-        public DataPipelineInsightsImage build() {
-            return new DataPipelineInsightsImage(this);
+        public InsightsImage build() {
+            return new InsightsImage(this);
         }
     }
 }

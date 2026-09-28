@@ -7,18 +7,18 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  * Frame embedding settings for data pipeline insights.
  */
 @JacksonXmlRootElement(localName = "FrameEmbedding")
-public final class DataPipelineInsightsFrameEmbedding {
+public final class InsightsFrameEmbedding {
     @JacksonXmlProperty(localName = "Snapshot")
-    private DataPipelineInsightsSnapshot snapshot;
+    private InsightsSnapshot snapshot;
 
-    public DataPipelineInsightsFrameEmbedding() {
+    public InsightsFrameEmbedding() {
     }
 
-    private DataPipelineInsightsFrameEmbedding(Builder builder) {
+    private InsightsFrameEmbedding(Builder builder) {
         this.snapshot = builder.snapshot;
     }
 
-    public DataPipelineInsightsSnapshot snapshot() {
+    public InsightsSnapshot snapshot() {
         return snapshot;
     }
 
@@ -31,9 +31,9 @@ public final class DataPipelineInsightsFrameEmbedding {
     }
 
     public static class Builder {
-        private DataPipelineInsightsSnapshot snapshot;
+        private InsightsSnapshot snapshot;
 
-        public Builder snapshot(DataPipelineInsightsSnapshot value) {
+        public Builder snapshot(InsightsSnapshot value) {
             this.snapshot = value;
             return this;
         }
@@ -41,12 +41,12 @@ public final class DataPipelineInsightsFrameEmbedding {
         private Builder() {
         }
 
-        private Builder(DataPipelineInsightsFrameEmbedding from) {
+        private Builder(InsightsFrameEmbedding from) {
             this.snapshot = from.snapshot;
         }
 
-        public DataPipelineInsightsFrameEmbedding build() {
-            return new DataPipelineInsightsFrameEmbedding(this);
+        public InsightsFrameEmbedding build() {
+            return new InsightsFrameEmbedding(this);
         }
     }
 }

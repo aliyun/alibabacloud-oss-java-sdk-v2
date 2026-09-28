@@ -7,26 +7,26 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  * Video settings for data pipeline insights.
  */
 @JacksonXmlRootElement(localName = "Video")
-public final class DataPipelineInsightsVideo {
+public final class InsightsVideo {
     @JacksonXmlProperty(localName = "Caption")
-    private DataPipelineInsightsCaption caption;
+    private InsightsCaption caption;
 
     @JacksonXmlProperty(localName = "FrameEmbedding")
-    private DataPipelineInsightsFrameEmbedding frameEmbedding;
+    private InsightsFrameEmbedding frameEmbedding;
 
-    public DataPipelineInsightsVideo() {
+    public InsightsVideo() {
     }
 
-    private DataPipelineInsightsVideo(Builder builder) {
+    private InsightsVideo(Builder builder) {
         this.caption = builder.caption;
         this.frameEmbedding = builder.frameEmbedding;
     }
 
-    public DataPipelineInsightsCaption caption() {
+    public InsightsCaption caption() {
         return caption;
     }
 
-    public DataPipelineInsightsFrameEmbedding frameEmbedding() {
+    public InsightsFrameEmbedding frameEmbedding() {
         return frameEmbedding;
     }
 
@@ -39,15 +39,15 @@ public final class DataPipelineInsightsVideo {
     }
 
     public static class Builder {
-        private DataPipelineInsightsCaption caption;
-        private DataPipelineInsightsFrameEmbedding frameEmbedding;
+        private InsightsCaption caption;
+        private InsightsFrameEmbedding frameEmbedding;
 
-        public Builder caption(DataPipelineInsightsCaption value) {
+        public Builder caption(InsightsCaption value) {
             this.caption = value;
             return this;
         }
 
-        public Builder frameEmbedding(DataPipelineInsightsFrameEmbedding value) {
+        public Builder frameEmbedding(InsightsFrameEmbedding value) {
             this.frameEmbedding = value;
             return this;
         }
@@ -55,13 +55,13 @@ public final class DataPipelineInsightsVideo {
         private Builder() {
         }
 
-        private Builder(DataPipelineInsightsVideo from) {
+        private Builder(InsightsVideo from) {
             this.caption = from.caption;
             this.frameEmbedding = from.frameEmbedding;
         }
 
-        public DataPipelineInsightsVideo build() {
-            return new DataPipelineInsightsVideo(this);
+        public InsightsVideo build() {
+            return new InsightsVideo(this);
         }
     }
 }

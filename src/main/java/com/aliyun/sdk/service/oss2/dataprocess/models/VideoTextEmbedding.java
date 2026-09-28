@@ -4,10 +4,10 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * Vector destination for document chunk embeddings.
+ * Vector destination for video text embeddings.
  */
-@JacksonXmlRootElement(localName = "DocumentChunkEmbedding")
-public final class DataPipelineDestinationDocumentChunkEmbedding {
+@JacksonXmlRootElement(localName = "VideoTextEmbedding")
+public final class VideoTextEmbedding {
     @JacksonXmlProperty(localName = "Bucket")
     private String bucket;
 
@@ -17,10 +17,10 @@ public final class DataPipelineDestinationDocumentChunkEmbedding {
     @JacksonXmlProperty(localName = "Prefix")
     private String prefix;
 
-    public DataPipelineDestinationDocumentChunkEmbedding() {
+    public VideoTextEmbedding() {
     }
 
-    private DataPipelineDestinationDocumentChunkEmbedding(Builder builder) {
+    private VideoTextEmbedding(Builder builder) {
         this.bucket = builder.bucket;
         this.indexName = builder.indexName;
         this.prefix = builder.prefix;
@@ -69,14 +69,14 @@ public final class DataPipelineDestinationDocumentChunkEmbedding {
         private Builder() {
         }
 
-        private Builder(DataPipelineDestinationDocumentChunkEmbedding from) {
+        private Builder(VideoTextEmbedding from) {
             this.bucket = from.bucket;
             this.indexName = from.indexName;
             this.prefix = from.prefix;
         }
 
-        public DataPipelineDestinationDocumentChunkEmbedding build() {
-            return new DataPipelineDestinationDocumentChunkEmbedding(this);
+        public VideoTextEmbedding build() {
+            return new VideoTextEmbedding(this);
         }
     }
 }

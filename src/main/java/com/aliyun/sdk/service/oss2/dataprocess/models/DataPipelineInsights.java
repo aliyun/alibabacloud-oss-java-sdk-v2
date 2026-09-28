@@ -9,10 +9,10 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JacksonXmlRootElement(localName = "Insights")
 public final class DataPipelineInsights {
     @JacksonXmlProperty(localName = "Image")
-    private DataPipelineInsightsImage image;
+    private InsightsImage image;
 
     @JacksonXmlProperty(localName = "Video")
-    private DataPipelineInsightsVideo video;
+    private InsightsVideo video;
 
     public DataPipelineInsights() {
     }
@@ -22,11 +22,11 @@ public final class DataPipelineInsights {
         this.video = builder.video;
     }
 
-    public DataPipelineInsightsImage image() {
+    public InsightsImage image() {
         return image;
     }
 
-    public DataPipelineInsightsVideo video() {
+    public InsightsVideo video() {
         return video;
     }
 
@@ -39,15 +39,15 @@ public final class DataPipelineInsights {
     }
 
     public static class Builder {
-        private DataPipelineInsightsImage image;
-        private DataPipelineInsightsVideo video;
+        private InsightsImage image;
+        private InsightsVideo video;
 
-        public Builder image(DataPipelineInsightsImage value) {
+        public Builder image(InsightsImage value) {
             this.image = value;
             return this;
         }
 
-        public Builder video(DataPipelineInsightsVideo value) {
+        public Builder video(InsightsVideo value) {
             this.video = value;
             return this;
         }

@@ -220,33 +220,33 @@ public class GetDataPipelineConfigurationResultTest {
                 .containsExactly("image", "video", "text");
         assertThat(configuration.dataPipelineDataProcessConfiguration().searchMode()).isEqualTo("balanced");
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image())
-                .isInstanceOf(DataPipelineInsightsImage.class);
+                .isInstanceOf(InsightsImage.class);
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image().caption())
-                .isInstanceOf(DataPipelineInsightsCaption.class);
+                .isInstanceOf(InsightsCaption.class);
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image()
                 .caption().prompt()).isEqualTo("Describe the image.");
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video())
-                .isInstanceOf(DataPipelineInsightsVideo.class);
+                .isInstanceOf(InsightsVideo.class);
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video()
                 .caption().prompt()).isEqualTo("Describe each video scene.");
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video().frameEmbedding())
-                .isInstanceOf(DataPipelineInsightsFrameEmbedding.class);
+                .isInstanceOf(InsightsFrameEmbedding.class);
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video()
-                .frameEmbedding().snapshot()).isInstanceOf(DataPipelineInsightsSnapshot.class);
+                .frameEmbedding().snapshot()).isInstanceOf(InsightsSnapshot.class);
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video()
                 .frameEmbedding().snapshot().mode()).isEqualTo("interval");
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().video()
                 .frameEmbedding().snapshot().interval()).isEqualTo(1.0d);
         assertThat(configuration.destination().imageEmbedding())
-                .isInstanceOf(DataPipelineDestinationImageEmbedding.class);
+                .isInstanceOf(ImageEmbedding.class);
         assertThat(configuration.destination().imageTextEmbedding())
-                .isInstanceOf(DataPipelineDestinationImageTextEmbedding.class);
+                .isInstanceOf(ImageTextEmbedding.class);
         assertThat(configuration.destination().videoFrameEmbedding())
-                .isInstanceOf(DataPipelineDestinationVideoFrameEmbedding.class);
+                .isInstanceOf(VideoFrameEmbedding.class);
         assertThat(configuration.destination().videoTextEmbedding())
-                .isInstanceOf(DataPipelineDestinationVideoTextEmbedding.class);
+                .isInstanceOf(VideoTextEmbedding.class);
         assertThat(configuration.destination().documentChunkEmbedding())
-                .isInstanceOf(DataPipelineDestinationDocumentChunkEmbedding.class);
+                .isInstanceOf(DocumentChunkEmbedding.class);
         assertVectorDestination(
                 configuration.destination().imageEmbedding().bucket(),
                 configuration.destination().imageEmbedding().indexName(),

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  * Snapshot settings for data pipeline insights.
  */
 @JacksonXmlRootElement(localName = "Snapshot")
-public final class DataPipelineInsightsSnapshot {
+public final class InsightsSnapshot {
     @JacksonXmlProperty(localName = "Mode")
     private String mode;
 
@@ -17,10 +17,10 @@ public final class DataPipelineInsightsSnapshot {
     @JacksonXmlProperty(localName = "Number")
     private Integer number;
 
-    public DataPipelineInsightsSnapshot() {
+    public InsightsSnapshot() {
     }
 
-    private DataPipelineInsightsSnapshot(Builder builder) {
+    private InsightsSnapshot(Builder builder) {
         this.mode = builder.mode;
         this.interval = builder.interval;
         this.number = builder.number;
@@ -69,14 +69,14 @@ public final class DataPipelineInsightsSnapshot {
         private Builder() {
         }
 
-        private Builder(DataPipelineInsightsSnapshot from) {
+        private Builder(InsightsSnapshot from) {
             this.mode = from.mode;
             this.interval = from.interval;
             this.number = from.number;
         }
 
-        public DataPipelineInsightsSnapshot build() {
-            return new DataPipelineInsightsSnapshot(this);
+        public InsightsSnapshot build() {
+            return new InsightsSnapshot(this);
         }
     }
 }

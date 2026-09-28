@@ -29,19 +29,19 @@ public final class DataPipelineDestination {
     private List<String> usermetaToMetadata;
 
     @JacksonXmlProperty(localName = "ImageEmbedding")
-    private DataPipelineDestinationImageEmbedding imageEmbedding;
+    private ImageEmbedding imageEmbedding;
 
     @JacksonXmlProperty(localName = "ImageTextEmbedding")
-    private DataPipelineDestinationImageTextEmbedding imageTextEmbedding;
+    private ImageTextEmbedding imageTextEmbedding;
 
     @JacksonXmlProperty(localName = "VideoFrameEmbedding")
-    private DataPipelineDestinationVideoFrameEmbedding videoFrameEmbedding;
+    private VideoFrameEmbedding videoFrameEmbedding;
 
     @JacksonXmlProperty(localName = "VideoTextEmbedding")
-    private DataPipelineDestinationVideoTextEmbedding videoTextEmbedding;
+    private VideoTextEmbedding videoTextEmbedding;
 
     @JacksonXmlProperty(localName = "DocumentChunkEmbedding")
-    private DataPipelineDestinationDocumentChunkEmbedding documentChunkEmbedding;
+    private DocumentChunkEmbedding documentChunkEmbedding;
 
     public DataPipelineDestination() {
     }
@@ -79,23 +79,23 @@ public final class DataPipelineDestination {
         return usermetaToMetadata;
     }
 
-    public DataPipelineDestinationImageEmbedding imageEmbedding() {
+    public ImageEmbedding imageEmbedding() {
         return imageEmbedding;
     }
 
-    public DataPipelineDestinationImageTextEmbedding imageTextEmbedding() {
+    public ImageTextEmbedding imageTextEmbedding() {
         return imageTextEmbedding;
     }
 
-    public DataPipelineDestinationVideoFrameEmbedding videoFrameEmbedding() {
+    public VideoFrameEmbedding videoFrameEmbedding() {
         return videoFrameEmbedding;
     }
 
-    public DataPipelineDestinationVideoTextEmbedding videoTextEmbedding() {
+    public VideoTextEmbedding videoTextEmbedding() {
         return videoTextEmbedding;
     }
 
-    public DataPipelineDestinationDocumentChunkEmbedding documentChunkEmbedding() {
+    public DocumentChunkEmbedding documentChunkEmbedding() {
         return documentChunkEmbedding;
     }
 
@@ -113,11 +113,11 @@ public final class DataPipelineDestination {
         private List<String> vectorIndexNames;
         private List<String> objectTagToMetadata;
         private List<String> usermetaToMetadata;
-        private DataPipelineDestinationImageEmbedding imageEmbedding;
-        private DataPipelineDestinationImageTextEmbedding imageTextEmbedding;
-        private DataPipelineDestinationVideoFrameEmbedding videoFrameEmbedding;
-        private DataPipelineDestinationVideoTextEmbedding videoTextEmbedding;
-        private DataPipelineDestinationDocumentChunkEmbedding documentChunkEmbedding;
+        private ImageEmbedding imageEmbedding;
+        private ImageTextEmbedding imageTextEmbedding;
+        private VideoFrameEmbedding videoFrameEmbedding;
+        private VideoTextEmbedding videoTextEmbedding;
+        private DocumentChunkEmbedding documentChunkEmbedding;
 
         public Builder vectorBucketName(String value) {
             this.vectorBucketName = value;
@@ -144,27 +144,27 @@ public final class DataPipelineDestination {
             return this;
         }
 
-        public Builder imageEmbedding(DataPipelineDestinationImageEmbedding value) {
+        public Builder imageEmbedding(ImageEmbedding value) {
             this.imageEmbedding = value;
             return this;
         }
 
-        public Builder imageTextEmbedding(DataPipelineDestinationImageTextEmbedding value) {
+        public Builder imageTextEmbedding(ImageTextEmbedding value) {
             this.imageTextEmbedding = value;
             return this;
         }
 
-        public Builder videoFrameEmbedding(DataPipelineDestinationVideoFrameEmbedding value) {
+        public Builder videoFrameEmbedding(VideoFrameEmbedding value) {
             this.videoFrameEmbedding = value;
             return this;
         }
 
-        public Builder videoTextEmbedding(DataPipelineDestinationVideoTextEmbedding value) {
+        public Builder videoTextEmbedding(VideoTextEmbedding value) {
             this.videoTextEmbedding = value;
             return this;
         }
 
-        public Builder documentChunkEmbedding(DataPipelineDestinationDocumentChunkEmbedding value) {
+        public Builder documentChunkEmbedding(DocumentChunkEmbedding value) {
             this.documentChunkEmbedding = value;
             return this;
         }

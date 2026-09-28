@@ -265,9 +265,9 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
                         .build())
                 .build();
         DataPipelineInsights insights = DataPipelineInsights.newBuilder()
-                .video(DataPipelineInsightsVideo.newBuilder()
-                        .frameEmbedding(DataPipelineInsightsFrameEmbedding.newBuilder()
-                                .snapshot(DataPipelineInsightsSnapshot.newBuilder()
+                .video(InsightsVideo.newBuilder()
+                        .frameEmbedding(InsightsFrameEmbedding.newBuilder()
+                                .snapshot(InsightsSnapshot.newBuilder()
                                         .mode("interval")
                                         .interval(1.0d)
                                         .build())
@@ -275,7 +275,7 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
                         .build())
                 .build();
         DataPipelineDestination destination = DataPipelineDestination.newBuilder()
-                .videoFrameEmbedding(DataPipelineDestinationVideoFrameEmbedding.newBuilder()
+                .videoFrameEmbedding(VideoFrameEmbedding.newBuilder()
                         .bucket(vectorBucketName)
                         .indexName(indexName)
                         .prefix("v2")
@@ -410,11 +410,11 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
         Assert.assertEquals(1, configuration.sources().size());
         Assert.assertEquals(Boolean.FALSE, configuration.sources().get(0).ignoreDelete());
         Assert.assertEquals("fast", configuration.dataPipelineDataProcessConfiguration().searchMode());
-        DataPipelineInsightsSnapshot snapshot = configuration.dataPipelineDataProcessConfiguration()
+        InsightsSnapshot snapshot = configuration.dataPipelineDataProcessConfiguration()
                 .insights().video().frameEmbedding().snapshot();
         Assert.assertEquals("interval", snapshot.mode());
         Assert.assertEquals(Double.valueOf(1.0d), snapshot.interval());
-        DataPipelineDestinationVideoFrameEmbedding videoFrame = configuration.destination().videoFrameEmbedding();
+        VideoFrameEmbedding videoFrame = configuration.destination().videoFrameEmbedding();
         Assert.assertEquals(vectorBucketName, videoFrame.bucket());
         Assert.assertEquals(indexName, videoFrame.indexName());
         Assert.assertEquals("v2", videoFrame.prefix());

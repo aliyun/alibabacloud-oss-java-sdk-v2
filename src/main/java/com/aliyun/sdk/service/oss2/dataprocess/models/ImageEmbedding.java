@@ -4,10 +4,10 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * Vector destination for image text embeddings.
+ * Vector destination for image embeddings.
  */
-@JacksonXmlRootElement(localName = "ImageTextEmbedding")
-public final class DataPipelineDestinationImageTextEmbedding {
+@JacksonXmlRootElement(localName = "ImageEmbedding")
+public final class ImageEmbedding {
     @JacksonXmlProperty(localName = "Bucket")
     private String bucket;
 
@@ -17,10 +17,10 @@ public final class DataPipelineDestinationImageTextEmbedding {
     @JacksonXmlProperty(localName = "Prefix")
     private String prefix;
 
-    public DataPipelineDestinationImageTextEmbedding() {
+    public ImageEmbedding() {
     }
 
-    private DataPipelineDestinationImageTextEmbedding(Builder builder) {
+    private ImageEmbedding(Builder builder) {
         this.bucket = builder.bucket;
         this.indexName = builder.indexName;
         this.prefix = builder.prefix;
@@ -69,14 +69,14 @@ public final class DataPipelineDestinationImageTextEmbedding {
         private Builder() {
         }
 
-        private Builder(DataPipelineDestinationImageTextEmbedding from) {
+        private Builder(ImageEmbedding from) {
             this.bucket = from.bucket;
             this.indexName = from.indexName;
             this.prefix = from.prefix;
         }
 
-        public DataPipelineDestinationImageTextEmbedding build() {
-            return new DataPipelineDestinationImageTextEmbedding(this);
+        public ImageEmbedding build() {
+            return new ImageEmbedding(this);
         }
     }
 }

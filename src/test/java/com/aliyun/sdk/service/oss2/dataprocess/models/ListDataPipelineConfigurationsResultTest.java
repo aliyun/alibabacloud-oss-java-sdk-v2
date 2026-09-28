@@ -194,16 +194,16 @@ public class ListDataPipelineConfigurationsResultTest {
         assertThat(configuration.modelTier()).isEqualTo("standard");
         assertThat(configuration.dataPipelineDataProcessConfiguration().searchMode()).isEqualTo("fast");
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image())
-                .isInstanceOf(DataPipelineInsightsImage.class);
+                .isInstanceOf(InsightsImage.class);
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image().caption())
-                .isInstanceOf(DataPipelineInsightsCaption.class);
+                .isInstanceOf(InsightsCaption.class);
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image()
                 .caption().prompt()).isEqualTo("Describe the image.");
         assertThat(configuration.sources().get(0).ignoreDelete()).isFalse();
         assertThat(configuration.sources().get(0).filterConfiguration().objectMediaTypes())
                 .containsExactly("image");
         assertThat(configuration.destination().imageEmbedding())
-                .isInstanceOf(DataPipelineDestinationImageEmbedding.class);
+                .isInstanceOf(ImageEmbedding.class);
         assertThat(configuration.destination().imageEmbedding().bucket()).isEqualTo("vector-bucket");
         assertThat(configuration.destination().imageEmbedding().indexName()).isEqualTo("image");
         assertThat(configuration.destination().imageEmbedding().prefix()).isEqualTo("v2");

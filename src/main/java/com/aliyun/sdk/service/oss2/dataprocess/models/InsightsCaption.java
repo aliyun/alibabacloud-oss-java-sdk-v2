@@ -7,14 +7,14 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
  * Caption settings for data pipeline insights.
  */
 @JacksonXmlRootElement(localName = "Caption")
-public final class DataPipelineInsightsCaption {
+public final class InsightsCaption {
     @JacksonXmlProperty(localName = "Prompt")
     private String prompt;
 
-    public DataPipelineInsightsCaption() {
+    public InsightsCaption() {
     }
 
-    private DataPipelineInsightsCaption(Builder builder) {
+    private InsightsCaption(Builder builder) {
         this.prompt = builder.prompt;
     }
 
@@ -41,12 +41,12 @@ public final class DataPipelineInsightsCaption {
         private Builder() {
         }
 
-        private Builder(DataPipelineInsightsCaption from) {
+        private Builder(InsightsCaption from) {
             this.prompt = from.prompt;
         }
 
-        public DataPipelineInsightsCaption build() {
-            return new DataPipelineInsightsCaption(this);
+        public InsightsCaption build() {
+            return new InsightsCaption(this);
         }
     }
 }
