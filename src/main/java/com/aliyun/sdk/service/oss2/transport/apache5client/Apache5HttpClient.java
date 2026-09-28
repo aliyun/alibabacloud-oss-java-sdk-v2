@@ -181,7 +181,12 @@ public class Apache5HttpClient implements HttpClient, AutoCloseable {
         }
 
         if (body instanceof StringBinaryData) {
-            return new StringEntity(body.toString(), (ContentType)null);
+            if (Apache5Utils.STRING_ENTITY_UTF8_BY_DEFAULT) {
+                return new StringEntity(body.toString(), (ContentType) null);
+            }
+            // HttpCore5 < 5.3 encodes the String with its own default charset; send UTF-8 bytes
+            // so the body stays the same across versions.
+            return new ByteArrayEntity(body.toBytes(), (ContentType) null);
         } else if (body instanceof ByteArrayBinaryData ||
                 body instanceof ByteBufferBinaryData) {
             return new ByteArrayEntity(body.toBytes(), null);
