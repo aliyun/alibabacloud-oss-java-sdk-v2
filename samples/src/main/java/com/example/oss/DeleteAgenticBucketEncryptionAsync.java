@@ -1,4 +1,4 @@
-package com.example.oss;
+package com.example.oss.agentic;
 
 import com.aliyun.sdk.service.oss2.agentic.OSSAsyncAgenticBucketClient;
 import com.aliyun.sdk.service.oss2.agentic.OSSAsyncAgenticBucketClientBuilder;

@@ -2357,7 +2357,78 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
-  
+    
+    // bucket storage quota api
+    /**
+     * Configures the storage quota for a bucket.
+     *
+     * @param request A {@link PutBucketStorageQuotaRequest} for PutBucketStorageQuota operation.
+     * @return A {@link PutBucketStorageQuotaResult} for PutBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketStorageQuotaResult putBucketStorageQuota(PutBucketStorageQuotaRequest request) {
+        return putBucketStorageQuota(request, OperationOptions.defaults());
+    }
+    
+    /**
+     * Configures the storage quota for a bucket.
+     *
+     * @param request A {@link PutBucketStorageQuotaRequest} for PutBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A {@link PutBucketStorageQuotaResult} for PutBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutBucketStorageQuotaResult putBucketStorageQuota(PutBucketStorageQuotaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * Queries the storage quota configured for a bucket.
+     *
+     * @param request A {@link GetBucketStorageQuotaRequest} for GetBucketStorageQuota operation.
+     * @return A {@link GetBucketStorageQuotaResult} for GetBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketStorageQuotaResult getBucketStorageQuota(GetBucketStorageQuotaRequest request) {
+        return getBucketStorageQuota(request, OperationOptions.defaults());
+    }
+    
+    /**
+     * Queries the storage quota configured for a bucket.
+     *
+     * @param request A {@link GetBucketStorageQuotaRequest} for GetBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A {@link GetBucketStorageQuotaResult} for GetBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetBucketStorageQuotaResult getBucketStorageQuota(GetBucketStorageQuotaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * Deletes the storage quota configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketStorageQuotaRequest} for DeleteBucketStorageQuota operation.
+     * @return A {@link DeleteBucketStorageQuotaResult} for DeleteBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketStorageQuotaResult deleteBucketStorageQuota(DeleteBucketStorageQuotaRequest request) {
+        return deleteBucketStorageQuota(request, OperationOptions.defaults());
+    }
+    
+    /**
+     * Deletes the storage quota configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketStorageQuotaRequest} for DeleteBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A {@link DeleteBucketStorageQuotaResult} for DeleteBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteBucketStorageQuotaResult deleteBucketStorageQuota(DeleteBucketStorageQuotaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+    
     // bucket lifecycle api
     /**
      * Configures the lifecycle rules for a bucket.

@@ -159,6 +159,77 @@ public interface OSSAgenticBucketClient extends AutoCloseable {
         throw new UnsupportedOperationException();
     }
 
+    // Storage Quota
+
+    /**
+     * Configures the default storage quota for bucket spaces created in an agentic bucket.
+     *
+     * @param request A {@link PutAgenticBucketStorageQuotaRequest} for PutAgenticBucketStorageQuota operation.
+     * @return A {@link PutAgenticBucketStorageQuotaResult} for PutAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutAgenticBucketStorageQuotaResult putAgenticBucketStorageQuota(PutAgenticBucketStorageQuotaRequest request) {
+        return putAgenticBucketStorageQuota(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the default storage quota for bucket spaces created in an agentic bucket.
+     *
+     * @param request A {@link PutAgenticBucketStorageQuotaRequest} for PutAgenticBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A {@link PutAgenticBucketStorageQuotaResult} for PutAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutAgenticBucketStorageQuotaResult putAgenticBucketStorageQuota(PutAgenticBucketStorageQuotaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the default storage quota of an agentic bucket.
+     *
+     * @param request A {@link GetAgenticBucketStorageQuotaRequest} for GetAgenticBucketStorageQuota operation.
+     * @return A {@link GetAgenticBucketStorageQuotaResult} for GetAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAgenticBucketStorageQuotaResult getAgenticBucketStorageQuota(GetAgenticBucketStorageQuotaRequest request) {
+        return getAgenticBucketStorageQuota(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the default storage quota of an agentic bucket.
+     *
+     * @param request A {@link GetAgenticBucketStorageQuotaRequest} for GetAgenticBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A {@link GetAgenticBucketStorageQuotaResult} for GetAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default GetAgenticBucketStorageQuotaResult getAgenticBucketStorageQuota(GetAgenticBucketStorageQuotaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the default storage quota of an agentic bucket.
+     *
+     * @param request A {@link DeleteAgenticBucketStorageQuotaRequest} for DeleteAgenticBucketStorageQuota operation.
+     * @return A {@link DeleteAgenticBucketStorageQuotaResult} for DeleteAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAgenticBucketStorageQuotaResult deleteAgenticBucketStorageQuota(DeleteAgenticBucketStorageQuotaRequest request) {
+        return deleteAgenticBucketStorageQuota(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the default storage quota of an agentic bucket.
+     *
+     * @param request A {@link DeleteAgenticBucketStorageQuotaRequest} for DeleteAgenticBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A {@link DeleteAgenticBucketStorageQuotaResult} for DeleteAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default DeleteAgenticBucketStorageQuotaResult deleteAgenticBucketStorageQuota(DeleteAgenticBucketStorageQuotaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Lists the bucket spaces of an agentic bucket.
      *

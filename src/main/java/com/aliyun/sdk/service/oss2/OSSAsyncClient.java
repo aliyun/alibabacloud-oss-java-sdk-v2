@@ -2224,6 +2224,77 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket storage quota api
+    /**
+     * Configures the storage quota for a bucket.
+     *
+     * @param request A {@link PutBucketStorageQuotaRequest} for PutBucketStorageQuota operation.
+     * @return A Java Future containing the {@link PutBucketStorageQuotaResult} for PutBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketStorageQuotaResult> putBucketStorageQuotaAsync(PutBucketStorageQuotaRequest request) {
+        return putBucketStorageQuotaAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Configures the storage quota for a bucket.
+     *
+     * @param request A {@link PutBucketStorageQuotaRequest} for PutBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutBucketStorageQuotaResult} for PutBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutBucketStorageQuotaResult> putBucketStorageQuotaAsync(PutBucketStorageQuotaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries the storage quota configured for a bucket.
+     *
+     * @param request A {@link GetBucketStorageQuotaRequest} for GetBucketStorageQuota operation.
+     * @return A Java Future containing the {@link GetBucketStorageQuotaResult} for GetBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketStorageQuotaResult> getBucketStorageQuotaAsync(GetBucketStorageQuotaRequest request) {
+        return getBucketStorageQuotaAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries the storage quota configured for a bucket.
+     *
+     * @param request A {@link GetBucketStorageQuotaRequest} for GetBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link GetBucketStorageQuotaResult} for GetBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetBucketStorageQuotaResult> getBucketStorageQuotaAsync(GetBucketStorageQuotaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the storage quota configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketStorageQuotaRequest} for DeleteBucketStorageQuota operation.
+     * @return A Java Future containing the {@link DeleteBucketStorageQuotaResult} for DeleteBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketStorageQuotaResult> deleteBucketStorageQuotaAsync(DeleteBucketStorageQuotaRequest request) {
+        return deleteBucketStorageQuotaAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Deletes the storage quota configured for a bucket.
+     *
+     * @param request A {@link DeleteBucketStorageQuotaRequest} for DeleteBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link DeleteBucketStorageQuotaResult} for DeleteBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteBucketStorageQuotaResult> deleteBucketStorageQuotaAsync(DeleteBucketStorageQuotaRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
     // bucket lifecycle api
     /**
      * Configures the lifecycle rules for a bucket.

@@ -488,6 +488,21 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public PutBucketStorageQuotaResult putBucketStorageQuota(PutBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.putBucketStorageQuota(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketStorageQuotaResult getBucketStorageQuota(GetBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.getBucketStorageQuota(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketStorageQuotaResult deleteBucketStorageQuota(DeleteBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.deleteBucketStorageQuota(this.clientImpl, request, options);
+    }
+
+    @Override
     public PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request, OperationOptions options) {
         return BucketLifecycle.putBucketLifecycle(this.clientImpl, request, options);
     }

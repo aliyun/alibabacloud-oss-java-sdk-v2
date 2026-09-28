@@ -452,6 +452,21 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     }
 
     @Override
+    public CompletableFuture<PutBucketStorageQuotaResult> putBucketStorageQuotaAsync(PutBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.putBucketStorageQuotaAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketStorageQuotaResult> getBucketStorageQuotaAsync(GetBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.getBucketStorageQuotaAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketStorageQuotaResult> deleteBucketStorageQuotaAsync(DeleteBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.deleteBucketStorageQuotaAsync(this.clientImpl, request, options);
+    }
+
+    @Override
     public CompletableFuture<PutBucketLifecycleResult> putBucketLifecycleAsync(PutBucketLifecycleRequest request, OperationOptions options) {
         return BucketLifecycle.putBucketLifecycleAsync(this.clientImpl, request, options);
     }
