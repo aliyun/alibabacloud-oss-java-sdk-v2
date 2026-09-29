@@ -294,23 +294,23 @@ public class GetVectorIndexResultTest {
         assertThat(indexSummary.schemaConfiguration()).isNotNull();
         assertThat(indexSummary.schemaConfiguration().fields()).hasSize(4);
 
-        FieldSchema vectorField = indexSummary.schemaConfiguration().fields().get(0);
+        FieldSchema vectorField = indexSummary.schemaConfiguration().fieldSchemas().get(0);
         assertThat(vectorField.name()).isEqualTo("vector_1");
         assertThat(vectorField.type()).isEqualTo("vector");
         assertThat(vectorField.dataType()).isEqualTo("float32");
         assertThat(vectorField.dimension()).isEqualTo(1024);
         assertThat(vectorField.distanceMetric()).isEqualTo("euclidean");
 
-        FieldSchema arrayField = indexSummary.schemaConfiguration().fields().get(1);
+        FieldSchema arrayField = indexSummary.schemaConfiguration().fieldSchemas().get(1);
         assertThat(arrayField.name()).isEqualTo("timestamps");
         assertThat(arrayField.type()).isEqualTo("long");
         assertThat(arrayField.isArray()).isTrue();
 
-        FieldSchema partitionField = indexSummary.schemaConfiguration().fields().get(2);
+        FieldSchema partitionField = indexSummary.schemaConfiguration().fieldSchemas().get(2);
         assertThat(partitionField.name()).isEqualTo("user_id");
         assertThat(partitionField.isPartitionKey()).isTrue();
 
-        FieldSchema textField = indexSummary.schemaConfiguration().fields().get(3);
+        FieldSchema textField = indexSummary.schemaConfiguration().fieldSchemas().get(3);
         assertThat(textField.name()).isEqualTo("title_1");
         assertThat(textField.exactMatch()).isTrue();
         assertThat(textField.text()).isNotNull();

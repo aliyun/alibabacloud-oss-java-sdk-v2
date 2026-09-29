@@ -2,6 +2,9 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -47,6 +50,24 @@ public class TextSchema {
      */
     public AnalyzerParameters analyzerParameters() {
         return analyzerParameters;
+    }
+
+    /**
+     * Converts this configuration to the raw JSON object used on the wire, omitting the attributes
+     * that were not set.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (enabled != null) {
+            map.put("enabled", enabled);
+        }
+        if (analyzer != null) {
+            map.put("analyzer", analyzer);
+        }
+        if (analyzerParameters != null) {
+            map.put("analyzerParameters", analyzerParameters.toMap());
+        }
+        return map;
     }
 
     public Builder toBuilder() {

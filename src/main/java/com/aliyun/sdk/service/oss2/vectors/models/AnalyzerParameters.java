@@ -2,6 +2,9 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * The parameters of the text analyzer.
  */
@@ -45,6 +48,24 @@ public class AnalyzerParameters {
      */
     public String delimiter() {
         return delimiter;
+    }
+
+    /**
+     * Converts these parameters to the raw JSON object used on the wire, omitting the attributes
+     * that were not set.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (caseSensitive != null) {
+            map.put("caseSensitive", caseSensitive);
+        }
+        if (delimitWord != null) {
+            map.put("delimitWord", delimitWord);
+        }
+        if (delimiter != null) {
+            map.put("delimiter", delimiter);
+        }
+        return map;
     }
 
     public Builder toBuilder() {

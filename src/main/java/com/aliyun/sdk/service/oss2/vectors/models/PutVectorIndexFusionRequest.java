@@ -1,6 +1,6 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static java.util.Objects.requireNonNull;
@@ -10,7 +10,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class PutVectorIndexFusionRequest extends VectorRequestModel {
 
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private final String bucket;
 
@@ -45,8 +46,8 @@ public final class PutVectorIndexFusionRequest extends VectorRequestModel {
     }
 
     /**
-     * The schema configuration of the index. It returns {@code null} when the schema was set from
-     * a raw JSON string via {@link Builder#schemaConfiguration(String)}.
+     * The schema configuration of the index. It returns {@code null} only when no schema was set,
+     * whichever way it was provided.
      */
     public SchemaConfiguration schemaConfiguration() {
         Object value = this.bodyFields.get("schemaConfiguration");
@@ -54,15 +55,15 @@ public final class PutVectorIndexFusionRequest extends VectorRequestModel {
     }
 
     /**
-     * Parses a raw JSON string into a Jackson tree so that it is serialized as a nested JSON
-     * structure (instead of an escaped string literal), preserving any current or future fields
-     * verbatim.
+     * Parses a raw JSON string into a {@link SchemaConfiguration}. The schema keeps the field
+     * definitions as the raw JSON structure, so any current or future attribute is preserved
+     * verbatim without a matching strongly-typed model.
      */
-    private static JsonNode parseJson(String json) {
+    private static SchemaConfiguration parseSchema(String json) {
         try {
-            return JSON_MAPPER.readTree(json);
+            return JSON_MAPPER.readValue(json, SchemaConfiguration.class);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse the JSON string", e);
+            throw new IllegalArgumentException("Failed to parse the schemaConfiguration JSON string", e);
         }
     }
 
@@ -129,17 +130,18 @@ public final class PutVectorIndexFusionRequest extends VectorRequestModel {
 
         /**
          * Sets the schema configuration of the index from a raw JSON string. This is a flexible
-         * overload for the nested schema structure: the JSON is passed through as-is, so any
-         * current or future field parameters are supported without a matching strongly-typed
-         * model. Use {@link #schemaConfiguration(SchemaConfiguration)} when you prefer the
-         * compile-time-safe, strongly-typed builder.
+         * overload for the nested schema structure: the JSON is parsed into a
+         * {@link SchemaConfiguration}, which keeps the field definitions as the raw JSON structure,
+         * so any current or future field parameters are supported without a matching
+         * strongly-typed model. Use {@link #schemaConfiguration(SchemaConfiguration)} when you
+         * prefer the compile-time-safe, strongly-typed builder.
          *
          * @param value the schemaConfiguration JSON string, for example
          *              {@code {"fields":[{"name":"embedding","type":"vector","dataType":"float32","dimension":4,"distanceMetric":"cosine"}]}}
          */
         public Builder schemaConfiguration(String value) {
             requireNonNull(value);
-            this.bodyFields.put("schemaConfiguration", parseJson(value));
+            this.bodyFields.put("schemaConfiguration", parseSchema(value));
             return this;
         }
 

@@ -2,6 +2,9 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -111,6 +114,45 @@ public class FieldSchema {
      */
     public TextSchema text() {
         return text;
+    }
+
+    /**
+     * Converts this field to the raw JSON object used on the wire, omitting the attributes that
+     * were not set.
+     * <p>
+     * Use it with {@link SchemaConfiguration.Builder#fields(java.util.List)}, which takes the raw
+     * representation. The result serializes to the same JSON as this object does.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (name != null) {
+            map.put("name", name);
+        }
+        if (type != null) {
+            map.put("type", type);
+        }
+        if (dataType != null) {
+            map.put("dataType", dataType);
+        }
+        if (dimension != null) {
+            map.put("dimension", dimension);
+        }
+        if (distanceMetric != null) {
+            map.put("distanceMetric", distanceMetric);
+        }
+        if (isArray != null) {
+            map.put("isArray", isArray);
+        }
+        if (isPartitionKey != null) {
+            map.put("isPartitionKey", isPartitionKey);
+        }
+        if (exactMatch != null) {
+            map.put("exactMatch", exactMatch);
+        }
+        if (text != null) {
+            map.put("text", text.toMap());
+        }
+        return map;
     }
 
     public Builder toBuilder() {

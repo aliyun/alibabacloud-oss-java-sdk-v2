@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -47,20 +48,20 @@ public class PutVectorIndexFusionRequestTest {
         assertThat(request.indexName()).isEqualTo("fusion-index");
         assertThat(request.mode()).isEqualTo("fusion");
         assertThat(request.schemaConfiguration()).isNotNull();
-        assertThat(request.schemaConfiguration().fields()).hasSize(4);
-        assertThat(request.schemaConfiguration().fields().get(0).name()).isEqualTo("vector_1");
-        assertThat(request.schemaConfiguration().fields().get(0).type()).isEqualTo("vector");
-        assertThat(request.schemaConfiguration().fields().get(0).dataType()).isEqualTo("float32");
-        assertThat(request.schemaConfiguration().fields().get(0).dimension()).isEqualTo(1024);
-        assertThat(request.schemaConfiguration().fields().get(0).distanceMetric()).isEqualTo("euclidean");
-        assertThat(request.schemaConfiguration().fields().get(1).isArray()).isTrue();
-        assertThat(request.schemaConfiguration().fields().get(2).isPartitionKey()).isTrue();
-        assertThat(request.schemaConfiguration().fields().get(3).exactMatch()).isTrue();
-        assertThat(request.schemaConfiguration().fields().get(3).text()).isNotNull();
-        assertThat(request.schemaConfiguration().fields().get(3).text().enabled()).isTrue();
-        assertThat(request.schemaConfiguration().fields().get(3).text().analyzer()).isEqualTo("standard");
-        assertThat(request.schemaConfiguration().fields().get(3).text().analyzerParameters().caseSensitive()).isTrue();
-        assertThat(request.schemaConfiguration().fields().get(3).text().analyzerParameters().delimitWord()).isFalse();
+        assertThat(request.schemaConfiguration().fieldSchemas()).hasSize(4);
+        assertThat(request.schemaConfiguration().fieldSchemas().get(0).name()).isEqualTo("vector_1");
+        assertThat(request.schemaConfiguration().fieldSchemas().get(0).type()).isEqualTo("vector");
+        assertThat(request.schemaConfiguration().fieldSchemas().get(0).dataType()).isEqualTo("float32");
+        assertThat(request.schemaConfiguration().fieldSchemas().get(0).dimension()).isEqualTo(1024);
+        assertThat(request.schemaConfiguration().fieldSchemas().get(0).distanceMetric()).isEqualTo("euclidean");
+        assertThat(request.schemaConfiguration().fieldSchemas().get(1).isArray()).isTrue();
+        assertThat(request.schemaConfiguration().fieldSchemas().get(2).isPartitionKey()).isTrue();
+        assertThat(request.schemaConfiguration().fieldSchemas().get(3).exactMatch()).isTrue();
+        assertThat(request.schemaConfiguration().fieldSchemas().get(3).text()).isNotNull();
+        assertThat(request.schemaConfiguration().fieldSchemas().get(3).text().enabled()).isTrue();
+        assertThat(request.schemaConfiguration().fieldSchemas().get(3).text().analyzer()).isEqualTo("standard");
+        assertThat(request.schemaConfiguration().fieldSchemas().get(3).text().analyzerParameters().caseSensitive()).isTrue();
+        assertThat(request.schemaConfiguration().fieldSchemas().get(3).text().analyzerParameters().delimitWord()).isFalse();
 
         assertThat(request.headers()).contains(
                 new AbstractMap.SimpleEntry<>("x-oss-header1", "header-value1"),
@@ -90,7 +91,7 @@ public class PutVectorIndexFusionRequestTest {
         assertThat(copy.indexName()).isEqualTo("original-index");
         assertThat(copy.mode()).isEqualTo("fusion");
         assertThat(copy.schemaConfiguration()).isNotNull();
-        assertThat(copy.schemaConfiguration().fields()).hasSize(4);
+        assertThat(copy.schemaConfiguration().fieldSchemas()).hasSize(4);
 
         assertThat(copy.headers().get("x-oss-original")).isEqualTo("original-header");
         assertThat(copy.parameters().get("original-param")).isEqualTo("original-value");
@@ -166,8 +167,9 @@ public class PutVectorIndexFusionRequestTest {
 
     @Test
     public void testSchemaConfigurationFromJsonString() throws JsonProcessingException {
-        // The nested schema is provided as a raw JSON string and passed through as-is. Fields that
-        // have no strongly-typed model yet (futureParam) are still serialized verbatim.
+        // The nested schema is provided as a raw JSON string; it is parsed into a SchemaConfiguration
+        // whose fields stay raw, so attributes with no strongly-typed model yet (futureParam) are
+        // preserved and serialized verbatim.
         String schemaJson = "{\"fields\":[{\"name\":\"embedding\",\"type\":\"vector\",\"dataType\":\"float32\","
                 + "\"dimension\":4,\"distanceMetric\":\"cosine\",\"futureParam\":\"x\"}]}";
 
@@ -178,8 +180,13 @@ public class PutVectorIndexFusionRequestTest {
                 .schemaConfiguration(schemaJson)
                 .build();
 
-        // the raw JSON schema is not a typed SchemaConfiguration, so the typed getter returns null
-        assertThat(request.schemaConfiguration()).isNull();
+        // the raw JSON schema is parsed, so the typed getter is no longer null
+        assertThat(request.schemaConfiguration()).isNotNull();
+        assertThat(request.schemaConfiguration().fields()).hasSize(1);
+        assertThat(request.schemaConfiguration().fields().get(0)).isInstanceOf(Map.class);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> rawField = (Map<String, Object>) request.schemaConfiguration().fields().get(0);
+        assertThat(rawField.get("futureParam")).isEqualTo("x");
 
         OperationInput input = SerdeVectorIndexBasic.fromPutVectorIndexFusion(request);
         JsonNode actualNode = OBJECT_MAPPER.readTree(input.body().get().toString());
@@ -300,11 +307,11 @@ public class PutVectorIndexFusionRequestTest {
 
         // the enum overloads store the serialized string value, getters still return String
         assertThat(request.mode()).isEqualTo("fusion");
-        FieldSchema vectorField = request.schemaConfiguration().fields().get(0);
+        FieldSchema vectorField = request.schemaConfiguration().fieldSchemas().get(0);
         assertThat(vectorField.type()).isEqualTo("vector");
         assertThat(vectorField.dataType()).isEqualTo("float32");
         assertThat(vectorField.distanceMetric()).isEqualTo("euclidean");
-        FieldSchema titleField = request.schemaConfiguration().fields().get(1);
+        FieldSchema titleField = request.schemaConfiguration().fieldSchemas().get(1);
         assertThat(titleField.type()).isEqualTo("string");
         assertThat(titleField.text().analyzer()).isEqualTo("standard");
 

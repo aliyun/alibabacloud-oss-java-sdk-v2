@@ -239,14 +239,14 @@ public class ListVectorIndexesResultTest {
         assertThat(index.schemaConfiguration()).isNotNull();
         assertThat(index.schemaConfiguration().fields()).hasSize(2);
 
-        FieldSchema vectorField = index.schemaConfiguration().fields().get(0);
+        FieldSchema vectorField = index.schemaConfiguration().fieldSchemas().get(0);
         assertThat(vectorField.name()).isEqualTo("vector_1");
         assertThat(vectorField.type()).isEqualTo("vector");
         assertThat(vectorField.dataType()).isEqualTo("float32");
         assertThat(vectorField.dimension()).isEqualTo(1024);
         assertThat(vectorField.distanceMetric()).isEqualTo("euclidean");
 
-        FieldSchema partitionField = index.schemaConfiguration().fields().get(1);
+        FieldSchema partitionField = index.schemaConfiguration().fieldSchemas().get(1);
         assertThat(partitionField.name()).isEqualTo("user_id");
         assertThat(partitionField.type()).isEqualTo("string");
         assertThat(partitionField.isPartitionKey()).isTrue();
