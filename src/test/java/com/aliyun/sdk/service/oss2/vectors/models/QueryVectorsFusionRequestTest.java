@@ -86,7 +86,8 @@ public class QueryVectorsFusionRequestTest {
 
         assertThat(request.bucket()).isEqualTo("examplebucket");
         assertThat(request.indexName()).isEqualTo("fusion-index");
-        assertThat(request.knn()).containsExactly(knn);
+        assertThat(request.knn()).hasSize(1);
+        assertThat(request.knn().get(0)).isEqualTo(knn.toMap());
         assertThat(request.query()).isSameAs(query);
         assertThat(request.retriever()).isNull();
         assertThat(request.returnMetadata()).isTrue();
@@ -126,8 +127,8 @@ public class QueryVectorsFusionRequestTest {
         assertThat(copy.bucket()).isEqualTo("original-bucket");
         assertThat(copy.indexName()).isEqualTo("original-index");
         assertThat(copy.knn()).hasSize(1);
-        assertThat(copy.knn().get(0).field()).isEqualTo("vector");
-        assertThat(copy.knn().get(0).topK()).isEqualTo(5);
+        assertThat(((Map<?, ?>) copy.knn().get(0)).get("field")).isEqualTo("vector");
+        assertThat(((Map<?, ?>) copy.knn().get(0)).get("topK")).isEqualTo(5);
         assertThat(copy.returnMetadata()).isFalse();
         assertThat(copy.returnMetadataFields()).containsExactly("title");
         assertThat(copy.limit()).isEqualTo(5);
@@ -149,7 +150,65 @@ public class QueryVectorsFusionRequestTest {
                 .knn(knnList)
                 .build();
 
-        assertThat(request.knn()).isSameAs(knnList);
+        // the typed instances are stored as their raw representation
+        assertThat(request.knn()).isEqualTo(Arrays.asList(
+                knnList.get(0).toMap(), knnList.get(1).toMap()));
+    }
+
+    @Test
+    public void testKnnAsGenericMapList() throws Exception {
+        // The generic Map form is passed through verbatim, so attributes without a strongly-typed
+        // model still reach the wire and the request stays forward-compatible.
+        Map<String, Object> knnMap = new HashMap<>();
+        knnMap.put("field", "vector");
+        knnMap.put("queryVector", Arrays.asList(0.1f, 0.2f, 0.3f));
+        knnMap.put("topK", 10);
+        knnMap.put("futureParam", "x");
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .knn(Arrays.asList(knnMap))
+                .build();
+
+        assertThat(request.knn()).hasSize(1);
+        Map<?, ?> storedKnn = (Map<?, ?>) request.knn().get(0);
+        assertThat(storedKnn.get("field")).isEqualTo("vector");
+        assertThat(storedKnn.get("topK")).isEqualTo(10);
+
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"knn\":[{\"field\":\"vector\","
+                + "\"queryVector\":[0.1,0.2,0.3],\"topK\":10,\"futureParam\":\"x\"}]}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    @Test
+    public void testKnnMapSerializesSameAsTypedForm() throws Exception {
+        Map<String, Object> knnMap = new HashMap<>();
+        knnMap.put("field", "vector");
+        knnMap.put("queryVector", Arrays.asList(0.1f, 0.2f, 0.3f));
+        knnMap.put("topK", 10);
+
+        QueryVectorsFusionRequest genericRequest = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .knn(Arrays.asList(knnMap))
+                .build();
+
+        QueryVectorsFusionRequest typedRequest = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .knn(Knn.newBuilder()
+                        .field("vector")
+                        .queryVector(Arrays.asList(0.1f, 0.2f, 0.3f))
+                        .topK(10)
+                        .build())
+                .build();
+
+        JsonNode genericNode = OBJECT_MAPPER.readTree(
+                SerdeVectorsBasic.fromQueryVectorsFusion(genericRequest).body().get().toBytes());
+        JsonNode typedNode = OBJECT_MAPPER.readTree(
+                SerdeVectorsBasic.fromQueryVectorsFusion(typedRequest).body().get().toBytes());
+        assertThat(genericNode).isEqualTo(typedNode);
     }
 
     @Test
@@ -551,23 +610,6 @@ public class QueryVectorsFusionRequestTest {
                 .build();
 
         String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":" + retrieverJson + "}";
-        assertRequestJson(request, jsonStr);
-    }
-
-    @Test
-    public void testKnnFromJsonString() throws Exception {
-        String knnJson = "[{\"field\":\"vector\",\"queryVector\":[0.1,0.2,0.3],\"topK\":10}]";
-
-        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
-                .bucket("test-bucket")
-                .indexName("fusion-index")
-                .knn(knnJson)
-                .build();
-
-        // the raw JSON knn is not a typed list, so the typed getter returns null
-        assertThat(request.knn()).isNull();
-
-        String jsonStr = "{\"indexName\":\"fusion-index\",\"knn\":" + knnJson + "}";
         assertRequestJson(request, jsonStr);
     }
 

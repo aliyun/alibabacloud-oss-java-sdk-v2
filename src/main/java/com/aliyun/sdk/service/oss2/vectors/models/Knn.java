@@ -1,7 +1,9 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The knn vector query of the QueryVectorsFusion operation.
@@ -77,6 +79,36 @@ public class Knn {
      */
     public Float boost() {
         return boost;
+    }
+
+    /**
+     * Converts this knn query to the raw JSON object used on the wire, omitting the attributes
+     * that were not set.
+     * <p>
+     * Use it with {@link QueryVectorsFusionRequest.Builder#knn(java.util.List)}, which takes the
+     * raw representation. The result serializes to the same JSON as this object does.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (field != null) {
+            map.put("field", field);
+        }
+        if (queryVector != null) {
+            map.put("queryVector", queryVector);
+        }
+        if (topK != null) {
+            map.put("topK", topK);
+        }
+        if (filter != null) {
+            map.put("filter", filter);
+        }
+        if (numCandidates != null) {
+            map.put("numCandidates", numCandidates);
+        }
+        if (boost != null) {
+            map.put("boost", boost);
+        }
+        return map;
     }
 
     public Builder toBuilder() {

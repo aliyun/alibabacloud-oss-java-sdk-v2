@@ -556,18 +556,22 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertNotNull(b20KnnResult);
             Assert.assertEquals(200, b20KnnResult.statusCode());
 
-            // Verify raw JSON string overloads for knn and retriever
-            String rawKnnJson = "[{\"field\":\"" + TEST_FUSION_TEXT_VECTOR_FIELD + "\",\"queryVector\":[0.1,0.2,0.3,0.4],\"topK\":10}]";
-            QueryVectorsFusionResult rawKnnResult = vectorsClient.queryVectorsFusion(
+            // Verify the generic Map form of knn, which passes through attributes verbatim
+            Map<String, Object> genericKnn = new HashMap<>();
+            genericKnn.put("field", TEST_FUSION_TEXT_VECTOR_FIELD);
+            genericKnn.put("queryVector", Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f));
+            genericKnn.put("topK", 10);
+            QueryVectorsFusionResult genericKnnResult = vectorsClient.queryVectorsFusion(
                     QueryVectorsFusionRequest.newBuilder()
                             .bucket(bucketName)
                             .indexName(TEST_FUSION_PRODUCT_INDEX_NAME)
-                            .knn(rawKnnJson)
+                            .knn(Arrays.asList(genericKnn))
                             .limit(10)
                             .build());
-            Assert.assertNotNull(rawKnnResult);
-            Assert.assertEquals(200, rawKnnResult.statusCode());
+            Assert.assertNotNull(genericKnnResult);
+            Assert.assertEquals(200, genericKnnResult.statusCode());
 
+            // Verify the raw JSON string overload of retriever
             String rawRetrieverJson = "{\"knn\":{\"field\":\"" + TEST_FUSION_TEXT_VECTOR_FIELD + "\",\"queryVector\":[0.1,0.2,0.3,0.4],\"topK\":10}}";
             QueryVectorsFusionResult rawRetrieverResult = vectorsClient.queryVectorsFusion(
                     QueryVectorsFusionRequest.newBuilder()

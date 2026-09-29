@@ -1,5 +1,6 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,14 +42,15 @@ public final class QueryVectorsFusionRequest extends VectorRequestModel {
     }
 
     /**
-     * The knn vector queries. A single vector query is also represented as a one-element list.
-     * It returns {@code null} when the knn was set from a raw JSON string via
-     * {@link Builder#knn(String)}.
+     * The knn vector queries, exactly as they are sent to the service. A single vector query is
+     * also represented as a one-element list.
+     * <p>
+     * The elements are the raw JSON objects, so attributes that have no strongly-typed model yet
+     * are preserved.
      */
-    @SuppressWarnings("unchecked")
-    public List<Knn> knn() {
+    public List<?> knn() {
         Object value = this.bodyFields.get("knn");
-        return value instanceof List ? (List<Knn>) value : null;
+        return value instanceof List ? (List<?>) value : null;
     }
 
     /**
@@ -159,10 +161,14 @@ public final class QueryVectorsFusionRequest extends VectorRequestModel {
 
         /**
          * The knn vector queries. A single vector query must also be provided as a one-element list.
+         * <p>
+         * The elements are the raw JSON objects: pass {@link Knn} instances directly, or
+         * {@code Map<String, Object>} values when the typed model does not cover every attribute.
+         * {@link Knn} instances are stored as their raw representation via {@link Knn#toMap()}.
          */
-        public Builder knn(List<Knn> value) {
+        public Builder knn(List<?> value) {
             requireNonNull(value);
-            this.bodyFields.put("knn", value);
+            this.bodyFields.put("knn", toRawKnnList(value));
             return this;
         }
 
@@ -172,24 +178,16 @@ public final class QueryVectorsFusionRequest extends VectorRequestModel {
          */
         public Builder knn(Knn value) {
             requireNonNull(value);
-            this.bodyFields.put("knn", Arrays.asList(value));
+            this.bodyFields.put("knn", Arrays.asList(value.toMap()));
             return this;
         }
 
-        /**
-         * Sets the knn vector queries from a raw JSON string. This is a flexible overload for the
-         * nested knn structure: the JSON is passed through as-is, so any current or future knn
-         * fields are supported without a matching strongly-typed model. The value may be a single
-         * knn object or an array of knn objects. Use {@link #knn(List)} or {@link #knn(Knn)} when
-         * you prefer the compile-time-safe, strongly-typed builder.
-         *
-         * @param value the knn JSON string, for example
-         *              {@code [{"field":"vector","queryVector":[0.1,0.2],"topK":10}]}
-         */
-        public Builder knn(String value) {
-            requireNonNull(value);
-            this.bodyFields.put("knn", parseJson(value));
-            return this;
+        private static List<?> toRawKnnList(List<?> value) {
+            List<Object> raw = new ArrayList<>(value.size());
+            for (Object element : value) {
+                raw.add(element instanceof Knn ? ((Knn) element).toMap() : element);
+            }
+            return raw;
         }
 
         /**
