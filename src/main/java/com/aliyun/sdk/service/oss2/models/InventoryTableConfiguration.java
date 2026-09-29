@@ -52,13 +52,12 @@ public final class InventoryTableConfiguration {
             this.encryptionConfiguration = value.encryptionConfiguration;
         }
 
+        /**
+         * Sets the state of the inventory metadata table.
+         * Valid values: ENABLED, DISABLED.
+         */
         public Builder configurationState(String value) {
             this.configurationState = requireNonNull(value);
-            return this;
-        }
-
-        public Builder configurationState(ConfigurationStateType value) {
-            this.configurationState = requireNonNull(value).toString();
             return this;
         }
 

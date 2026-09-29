@@ -38,7 +38,7 @@ public class ClientBucketMetadataConfigurationTest extends TestBase {
                             UpdateBucketMetadataJournalTableConfigurationRequest.newBuilder()
                                     .bucket(bucketName)
                                     .journalTableConfiguration(JournalTableConfiguration.newBuilder()
-                                            .recordExpiration(RecordExpiration.newBuilder()
+                                            .recordExpiration(MetadataTableRecordExpiration.newBuilder()
                                                     .expiration("ENABLED")
                                                     .days(60)
                                                     .build())
@@ -74,7 +74,7 @@ public class ClientBucketMetadataConfigurationTest extends TestBase {
     private static MetadataConfiguration newMetadataConfiguration() {
         return MetadataConfiguration.newBuilder()
                 .journalTableConfiguration(JournalTableConfiguration.newBuilder()
-                        .recordExpiration(RecordExpiration.newBuilder()
+                        .recordExpiration(MetadataTableRecordExpiration.newBuilder()
                                 .expiration("ENABLED")
                                 .days(30)
                                 .build())

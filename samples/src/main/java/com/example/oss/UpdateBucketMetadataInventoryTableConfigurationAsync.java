@@ -20,7 +20,6 @@ public class UpdateBucketMetadataInventoryTableConfigurationAsync implements Exa
             InventoryTableConfiguration configuration =
                     InventoryTableConfiguration.newBuilder()
                             .configurationState(state)
-                            // .configurationState(ConfigurationStateType.ENABLED)
                             .build();
             UpdateBucketMetadataInventoryTableConfigurationResult result =
                     client.updateBucketMetadataInventoryTableConfigurationAsync(

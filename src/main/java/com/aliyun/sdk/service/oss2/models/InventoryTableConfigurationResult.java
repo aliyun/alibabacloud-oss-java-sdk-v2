@@ -27,10 +27,18 @@ public final class InventoryTableConfigurationResult {
     public InventoryTableConfigurationResult() {
     }
 
+    /**
+     * The state of the inventory metadata table.
+     * Valid values: ENABLED, DISABLED.
+     */
     public String configurationState() {
         return configurationState;
     }
 
+    /**
+     * The creation state of a metadata table.
+     * Valid values: CREATING, BACKFILLING, ACTIVE, FAILED.
+     */
     public String tableStatus() {
         return tableStatus;
     }

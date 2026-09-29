@@ -50,13 +50,12 @@ public final class MetadataTableEncryptionConfiguration {
             this.kmsKeyArn = value.kmsKeyArn;
         }
 
+        /**
+         * Sets the server-side encryption algorithm of a metadata table.
+         * Valid values: AES256, oss:kms.
+         */
         public Builder sseAlgorithm(String value) {
             this.sseAlgorithm = requireNonNull(value);
-            return this;
-        }
-
-        public Builder sseAlgorithm(SseAlgorithmType value) {
-            this.sseAlgorithm = requireNonNull(value).toString();
             return this;
         }
 

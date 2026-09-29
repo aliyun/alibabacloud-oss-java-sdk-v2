@@ -84,20 +84,6 @@ public class UpdateBucketMetadataJournalTableConfigurationRequestTest {
     }
 
     @Test
-    public void testEnumBuilder() {
-        JournalTableConfiguration configuration =
-                JournalTableConfiguration.newBuilder()
-                        .recordExpiration(RecordExpiration.newBuilder()
-                                .expiration(RecordExpirationType.ENABLED)
-                                .days(30)
-                                .build())
-                        .build();
-
-        assertThat(configuration.recordExpiration().expiration()).isEqualTo("ENABLED");
-        assertThat(configuration.recordExpiration().days()).isEqualTo(30);
-    }
-
-    @Test
     public void xmlBuilder() throws JsonProcessingException {
         String xml = "<JournalTableConfiguration>\n"
                 + "  <RecordExpiration>\n"
@@ -130,7 +116,7 @@ public class UpdateBucketMetadataJournalTableConfigurationRequestTest {
 
     private static JournalTableConfiguration newConfiguration() {
         return JournalTableConfiguration.newBuilder()
-                .recordExpiration(RecordExpiration.newBuilder()
+                .recordExpiration(MetadataTableRecordExpiration.newBuilder()
                         .expiration("ENABLED")
                         .days(30)
                         .build())

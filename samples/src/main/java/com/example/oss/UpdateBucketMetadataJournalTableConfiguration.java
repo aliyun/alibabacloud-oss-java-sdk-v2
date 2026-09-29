@@ -25,9 +25,8 @@ public class UpdateBucketMetadataJournalTableConfiguration implements Example {
             // Update the journal table record expiration.
             JournalTableConfiguration configuration =
                     JournalTableConfiguration.newBuilder()
-                            .recordExpiration(RecordExpiration.newBuilder()
+                            .recordExpiration(MetadataTableRecordExpiration.newBuilder()
                                     .expiration("ENABLED")
-                                    // .expiration(RecordExpirationType.ENABLED)
                                     .days(days)
                                     .build())
                             .build();

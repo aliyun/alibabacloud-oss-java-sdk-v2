@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 public final class MetadataConfigurationResult {
     @JacksonXmlProperty(localName = "DestinationResult")
-    private DestinationResult destinationResult;
+    private MetadataTableDestinationResult destinationResult;
 
     @JacksonXmlProperty(localName = "JournalTableConfigurationResult")
     private JournalTableConfigurationResult journalTableConfigurationResult;
@@ -18,7 +18,7 @@ public final class MetadataConfigurationResult {
     public MetadataConfigurationResult() {
     }
 
-    public DestinationResult destinationResult() {
+    public MetadataTableDestinationResult destinationResult() {
         return destinationResult;
     }
 

@@ -16,7 +16,7 @@ public final class JournalTableConfigurationResult {
     private String tableArn;
 
     @JacksonXmlProperty(localName = "RecordExpiration")
-    private RecordExpiration recordExpiration;
+    private MetadataTableRecordExpiration recordExpiration;
 
     @JacksonXmlProperty(localName = "EncryptionConfiguration")
     private MetadataTableEncryptionConfiguration encryptionConfiguration;
@@ -27,6 +27,10 @@ public final class JournalTableConfigurationResult {
     public JournalTableConfigurationResult() {
     }
 
+    /**
+     * The creation state of a metadata table.
+     * Valid values: CREATING, BACKFILLING, ACTIVE, FAILED.
+     */
     public String tableStatus() {
         return tableStatus;
     }
@@ -39,7 +43,7 @@ public final class JournalTableConfigurationResult {
         return tableArn;
     }
 
-    public RecordExpiration recordExpiration() {
+    public MetadataTableRecordExpiration recordExpiration() {
         return recordExpiration;
     }
 

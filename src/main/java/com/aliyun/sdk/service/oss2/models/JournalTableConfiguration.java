@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 @JacksonXmlRootElement(localName = "JournalTableConfiguration")
 public final class JournalTableConfiguration {
     @JacksonXmlProperty(localName = "RecordExpiration")
-    private RecordExpiration recordExpiration;
+    private MetadataTableRecordExpiration recordExpiration;
 
     @JacksonXmlProperty(localName = "EncryptionConfiguration")
     private MetadataTableEncryptionConfiguration encryptionConfiguration;
@@ -24,7 +24,7 @@ public final class JournalTableConfiguration {
         this.encryptionConfiguration = builder.encryptionConfiguration;
     }
 
-    public RecordExpiration recordExpiration() {
+    public MetadataTableRecordExpiration recordExpiration() {
         return recordExpiration;
     }
 
@@ -41,7 +41,7 @@ public final class JournalTableConfiguration {
     }
 
     public static final class Builder {
-        private RecordExpiration recordExpiration;
+        private MetadataTableRecordExpiration recordExpiration;
         private MetadataTableEncryptionConfiguration encryptionConfiguration;
 
         private Builder() {
@@ -52,7 +52,7 @@ public final class JournalTableConfiguration {
             this.encryptionConfiguration = value.encryptionConfiguration;
         }
 
-        public Builder recordExpiration(RecordExpiration value) {
+        public Builder recordExpiration(MetadataTableRecordExpiration value) {
             this.recordExpiration = requireNonNull(value);
             return this;
         }

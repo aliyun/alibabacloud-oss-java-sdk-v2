@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 /**
  * The destination information of a bucket metadata configuration.
  */
-public final class DestinationResult {
+public final class MetadataTableDestinationResult {
     @JacksonXmlProperty(localName = "TableBucketType")
     private String tableBucketType;
 
@@ -15,7 +15,7 @@ public final class DestinationResult {
     @JacksonXmlProperty(localName = "TableNamespace")
     private String tableNamespace;
 
-    public DestinationResult() {
+    public MetadataTableDestinationResult() {
     }
 
     public String tableBucketType() {

@@ -7,21 +7,25 @@ import static java.util.Objects.requireNonNull;
 /**
  * The record expiration configuration of a metadata journal table.
  */
-public final class RecordExpiration {
+public final class MetadataTableRecordExpiration {
     @JacksonXmlProperty(localName = "Expiration")
     private String expiration;
 
     @JacksonXmlProperty(localName = "Days")
     private Integer days;
 
-    public RecordExpiration() {
+    public MetadataTableRecordExpiration() {
     }
 
-    private RecordExpiration(Builder builder) {
+    private MetadataTableRecordExpiration(Builder builder) {
         this.expiration = builder.expiration;
         this.days = builder.days;
     }
 
+    /**
+     * The expiration state of journal table records.
+     * Valid values: ENABLED, DISABLED, UNKNOWN.
+     */
     public String expiration() {
         return expiration;
     }
@@ -45,18 +49,17 @@ public final class RecordExpiration {
         private Builder() {
         }
 
-        private Builder(RecordExpiration value) {
+        private Builder(MetadataTableRecordExpiration value) {
             this.expiration = value.expiration;
             this.days = value.days;
         }
 
+        /**
+         * Sets the expiration state of journal table records.
+         * Valid values: ENABLED, DISABLED.
+         */
         public Builder expiration(String value) {
             this.expiration = requireNonNull(value);
-            return this;
-        }
-
-        public Builder expiration(RecordExpirationType value) {
-            this.expiration = requireNonNull(value).toString();
             return this;
         }
 
@@ -65,8 +68,8 @@ public final class RecordExpiration {
             return this;
         }
 
-        public RecordExpiration build() {
-            return new RecordExpiration(this);
+        public MetadataTableRecordExpiration build() {
+            return new MetadataTableRecordExpiration(this);
         }
     }
 }

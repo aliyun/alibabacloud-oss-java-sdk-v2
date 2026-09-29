@@ -84,31 +84,6 @@ public class CreateBucketMetadataConfigurationRequestTest {
     }
 
     @Test
-    public void testEnumBuilder() {
-        MetadataConfiguration configuration = MetadataConfiguration.newBuilder()
-                .journalTableConfiguration(JournalTableConfiguration.newBuilder()
-                        .recordExpiration(RecordExpiration.newBuilder()
-                                .expiration(RecordExpirationType.ENABLED)
-                                .days(30)
-                                .build())
-                        .encryptionConfiguration(MetadataTableEncryptionConfiguration.newBuilder()
-                                .sseAlgorithm(SseAlgorithmType.AES256)
-                                .build())
-                        .build())
-                .inventoryTableConfiguration(InventoryTableConfiguration.newBuilder()
-                        .configurationState(ConfigurationStateType.ENABLED)
-                        .build())
-                .build();
-
-        assertThat(configuration.journalTableConfiguration().recordExpiration().expiration())
-                .isEqualTo("ENABLED");
-        assertThat(configuration.journalTableConfiguration().encryptionConfiguration().sseAlgorithm())
-                .isEqualTo("AES256");
-        assertThat(configuration.inventoryTableConfiguration().configurationState())
-                .isEqualTo("ENABLED");
-    }
-
-    @Test
     public void xmlBuilder() throws JsonProcessingException {
         String xml = "<MetadataConfiguration>\n"
                 + "  <JournalTableConfiguration>\n"
@@ -153,7 +128,7 @@ public class CreateBucketMetadataConfigurationRequestTest {
                 .build();
         return MetadataConfiguration.newBuilder()
                 .journalTableConfiguration(JournalTableConfiguration.newBuilder()
-                        .recordExpiration(RecordExpiration.newBuilder()
+                        .recordExpiration(MetadataTableRecordExpiration.newBuilder()
                                 .expiration("ENABLED")
                                 .days(30)
                                 .build())

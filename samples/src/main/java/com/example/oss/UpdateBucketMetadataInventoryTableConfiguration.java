@@ -26,7 +26,6 @@ public class UpdateBucketMetadataInventoryTableConfiguration implements Example 
             InventoryTableConfiguration configuration =
                     InventoryTableConfiguration.newBuilder()
                             .configurationState(state)
-                            // .configurationState(ConfigurationStateType.ENABLED)
                             .build();
             UpdateBucketMetadataInventoryTableConfigurationResult result =
                     client.updateBucketMetadataInventoryTableConfiguration(

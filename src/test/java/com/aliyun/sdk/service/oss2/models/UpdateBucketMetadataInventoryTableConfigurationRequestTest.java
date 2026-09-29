@@ -86,22 +86,6 @@ public class UpdateBucketMetadataInventoryTableConfigurationRequestTest {
     }
 
     @Test
-    public void testEnumBuilder() {
-        InventoryTableConfiguration configuration =
-                InventoryTableConfiguration.newBuilder()
-                        .configurationState(ConfigurationStateType.ENABLED)
-                        .encryptionConfiguration(MetadataTableEncryptionConfiguration.newBuilder()
-                                .sseAlgorithm(SseAlgorithmType.OSS_KMS)
-                                .kmsKeyArn("string")
-                                .build())
-                        .build();
-
-        assertThat(configuration.configurationState()).isEqualTo("ENABLED");
-        assertThat(configuration.encryptionConfiguration().sseAlgorithm()).isEqualTo("oss:kms");
-        assertThat(configuration.encryptionConfiguration().kmsKeyArn()).isEqualTo("string");
-    }
-
-    @Test
     public void xmlBuilder() throws JsonProcessingException {
         String xml = "<InventoryTableConfiguration>\n"
                 + "  <ConfigurationState>ENABLED</ConfigurationState>\n"
