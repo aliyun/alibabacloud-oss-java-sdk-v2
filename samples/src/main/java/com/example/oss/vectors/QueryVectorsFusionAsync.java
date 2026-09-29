@@ -9,12 +9,10 @@ import com.aliyun.sdk.service.oss2.vectors.models.NormalizerType;
 import com.aliyun.sdk.service.oss2.vectors.models.QueryVectorsFusionRequest;
 import com.aliyun.sdk.service.oss2.vectors.models.QueryVectorsFusionResult;
 import com.aliyun.sdk.service.oss2.vectors.models.QueryVectorsFusionSummary;
-import com.aliyun.sdk.service.oss2.vectors.models.Retriever;
+import com.aliyun.sdk.service.oss2.vectors.models.RetrieverComponent;
 import com.aliyun.sdk.service.oss2.vectors.models.RrfRetriever;
-import com.aliyun.sdk.service.oss2.vectors.models.RrfRetrieverComponent;
 import com.aliyun.sdk.service.oss2.vectors.models.SimpleRetriever;
 import com.aliyun.sdk.service.oss2.vectors.models.WeightRetriever;
-import com.aliyun.sdk.service.oss2.vectors.models.WeightRetrieverComponent;
 import com.example.oss.Example;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -83,61 +81,65 @@ public class QueryVectorsFusionAsync implements Example {
                 // Example 2: query by the scalar / full text conditions only.
                 requestBuilder.query(query);
             } else if ("rrf".equals(mode)) {
-                // Example 3: the rrf compound retriever. Each RrfRetrieverComponent wraps a
-                // nested Retriever with a weight. The rrf component has no normalizer.
-                Retriever retriever = Retriever.newBuilder()
-                        .rrf(RrfRetriever.newBuilder()
-                                .k(50)
-                                .windowSize(100)
-                                .retrievers(Arrays.asList(
-                                        RrfRetrieverComponent.newBuilder()
-                                                .retriever(Retriever.newBuilder().knn(knn).build())
-                                                .weight(1.0f)
-                                                .build(),
-                                        RrfRetrieverComponent.newBuilder()
-                                                .retriever(Retriever.newBuilder()
-                                                        .simple(SimpleRetriever.newBuilder().query(query).build())
-                                                        .build())
-                                                .weight(2.0f)
-                                                .build()))
-                                .build())
+                // Example 3: the rrf compound retriever. Each RetrieverComponent wraps a
+                // nested leaf retriever with a weight. The rrf component has no normalizer.
+                RrfRetriever retriever = RrfRetriever.newBuilder()
+                        .k(50)
+                        .windowSize(100)
+                        .retrievers(Arrays.asList(
+                                RetrieverComponent.newBuilder()
+                                        .retriever(knn)
+                                        .weight(1.0f)
+                                        .build(),
+                                RetrieverComponent.newBuilder()
+                                        .retriever(SimpleRetriever.newBuilder().query(query).build())
+                                        .weight(2.0f)
+                                        .build()))
                         .build();
                 requestBuilder.retriever(retriever);
             } else if ("weight".equals(mode)) {
-                // Example 4: the weight compound retriever. Each WeightRetrieverComponent wraps
-                // a nested Retriever with a weight and a normalizer. The normalizer field
+                // Example 4: the weight compound retriever. Each RetrieverComponent wraps
+                // a nested leaf retriever with a weight and a normalizer. The normalizer field
                 // provides a String overload and a type-safe NormalizerType enum overload
                 // (none/minMax/l2), for example NormalizerType.MIN_MAX -> "minMax".
-                Retriever retriever = Retriever.newBuilder()
-                        .weight(WeightRetriever.newBuilder()
-                                .windowSize(100)
-                                .retrievers(Arrays.asList(
-                                        WeightRetrieverComponent.newBuilder()
-                                                .retriever(Retriever.newBuilder().knn(knn).build())
-                                                .weight(0.7f)
-                                                .normalizer(NormalizerType.MIN_MAX)
-                                                .build(),
-                                        WeightRetrieverComponent.newBuilder()
-                                                .retriever(Retriever.newBuilder()
-                                                        .simple(SimpleRetriever.newBuilder().query(query).build())
-                                                        .build())
-                                                .weight(0.3f)
-                                                .normalizer(NormalizerType.MIN_MAX)
-                                                .build()))
-                                .build())
+                WeightRetriever retriever = WeightRetriever.newBuilder()
+                        .windowSize(100)
+                        .retrievers(Arrays.asList(
+                                RetrieverComponent.newBuilder()
+                                        .retriever(knn)
+                                        .weight(0.7f)
+                                        .normalizer(NormalizerType.MIN_MAX)
+                                        .build(),
+                                RetrieverComponent.newBuilder()
+                                        .retriever(SimpleRetriever.newBuilder().query(query).build())
+                                        .weight(0.3f)
+                                        .normalizer(NormalizerType.MIN_MAX)
+                                        .build()))
                         .build();
                 requestBuilder.retriever(retriever);
-            } else if ("retrieverJson".equals(mode)) {
-                // Example 5: build the whole retriever from a raw JSON string. This overload passes
-                // the nested structure through as-is, so it stays flexible when the server adds new
-                // fields, similar to passing a dict/JSON directly in other language SDKs.
-                String knnJson = "{\"field\":\"" + vectorField + "\",\"queryVector\":[" + queryVector + "]"
-                        + (topK != null ? ",\"topK\":" + topK : "") + "}";
-                String retrieverJson = "{\"rrf\":{\"k\":50,\"windowSize\":100,\"retrievers\":["
-                        + "{\"retriever\":{\"knn\":" + knnJson + "},\"weight\":1.0},"
-                        + "{\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":"
-                        + "{\"value\":\"hello world\",\"boost\":2.0}}}}},\"weight\":2.0}]}}";
-                requestBuilder.retriever(retrieverJson);
+            } else if ("retrieverMap".equals(mode)) {
+                // Example 5: build the whole retriever as a raw Map. The generic form passes the
+                // nested structure through as-is, so it stays flexible when the server adds new
+                // fields, similar to passing a dict/JSON directly in other language SDKs. The typed
+                // knn is mixed in through its toMap() representation.
+                Map<String, Object> knnComponent = new HashMap<>();
+                knnComponent.put("retriever", new HashMap<String, Object>() {{ put("knn", knn.toMap()); }});
+                knnComponent.put("weight", 1.0f);
+
+                Map<String, Object> simpleComponent = new HashMap<>();
+                simpleComponent.put("retriever", new HashMap<String, Object>() {{
+                    put("simple", new HashMap<String, Object>() {{ put("query", query); }});
+                }});
+                simpleComponent.put("weight", 2.0f);
+
+                Map<String, Object> rrf = new HashMap<>();
+                rrf.put("k", 50);
+                rrf.put("windowSize", 100);
+                rrf.put("retrievers", Arrays.asList(knnComponent, simpleComponent));
+
+                Map<String, Object> retrieverMap = new HashMap<>();
+                retrieverMap.put("rrf", rrf);
+                requestBuilder.retriever(retrieverMap);
             } else {
                 // Example 1 (default): the single knn query. The knn(Knn) overload wraps the
                 // single knn into a one-element list internally.
@@ -214,7 +216,7 @@ public class QueryVectorsFusionAsync implements Example {
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("indexName").desc("The name of the index.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("mode").desc("The query mode: knn (default), query, rrf, weight or retrieverJson.").hasArg().get());
+        opts.addOption(Option.builder().longOpt("mode").desc("The query mode: knn (default), query, rrf, weight or retrieverMap.").hasArg().get());
         opts.addOption(Option.builder().longOpt("vectorField").desc("The name of the vector field to query.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("queryVector").desc("The query vector as comma-separated values (e.g., '1.0,2.0,3.0').").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("topK").desc("The number of top K vectors to return.").hasArg().type(Number.class).get());

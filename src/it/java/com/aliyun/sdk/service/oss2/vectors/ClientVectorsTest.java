@@ -236,13 +236,12 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertEquals(200, queryResult.statusCode());
             Assert.assertNotNull(queryResult.vectors());
 
-            // 5. Query vectors in the fusion index with the retriever
-            Retriever retriever = Retriever.newBuilder()
-                    .knn(Knn.newBuilder()
-                            .field(TEST_FUSION_VECTOR_FIELD)
-                            .queryVector(Arrays.asList(0.5f, 0.6f, 0.7f, 0.8f))
-                            .build())
-                    .build();
+            // 5. Query vectors in the fusion index with the retriever (knn leaf, generic Map form)
+            Map<String, Object> knnLeaf = new LinkedHashMap<>();
+            knnLeaf.put("field", TEST_FUSION_VECTOR_FIELD);
+            knnLeaf.put("queryVector", Arrays.asList(0.5f, 0.6f, 0.7f, 0.8f));
+            Map<String, Object> retriever = new LinkedHashMap<>();
+            retriever.put("knn", knnLeaf);
 
             QueryVectorsFusionResult retrieverResult = vectorsClient.queryVectorsFusion(
                     QueryVectorsFusionRequest.newBuilder()
@@ -368,30 +367,24 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertEquals(200, b5Result.statusCode());
 
             // B16. RRF fusion of knn and text-match retrievers
-            Retriever rrfRetriever = Retriever.newBuilder()
-                    .rrf(RrfRetriever.newBuilder()
-                            .k(50)
-                            .windowSize(100)
-                            .retrievers(Arrays.asList(
-                                    RrfRetrieverComponent.newBuilder()
-                                            .retriever(Retriever.newBuilder()
-                                                    .knn(Knn.newBuilder()
-                                                            .field(TEST_FUSION_TEXT_VECTOR_FIELD)
-                                                            .queryVector(Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f))
-                                                            .topK(10)
-                                                            .build())
+            RrfRetriever rrfRetriever = RrfRetriever.newBuilder()
+                    .k(50)
+                    .windowSize(100)
+                    .retrievers(Arrays.asList(
+                            RetrieverComponent.newBuilder()
+                                    .retriever(Knn.newBuilder()
+                                                    .field(TEST_FUSION_TEXT_VECTOR_FIELD)
+                                                    .queryVector(Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f))
+                                                    .topK(10)
                                                     .build())
-                                            .weight(2.0f)
-                                            .build(),
-                                    RrfRetrieverComponent.newBuilder()
-                                            .retriever(Retriever.newBuilder()
-                                                    .simple(SimpleRetriever.newBuilder()
-                                                            .query(createTextMatchQuery(TEST_FUSION_TITLE_FIELD, "headphones", null))
-                                                            .build())
+                                    .weight(2.0f)
+                                    .build(),
+                            RetrieverComponent.newBuilder()
+                                    .retriever(SimpleRetriever.newBuilder()
+                                                    .query(createTextMatchQuery(TEST_FUSION_TITLE_FIELD, "headphones", null))
                                                     .build())
-                                            .weight(0.5f)
-                                            .build()))
-                            .build())
+                                    .weight(0.5f)
+                                    .build()))
                     .build();
             QueryVectorsFusionResult b16Result = vectorsClient.queryVectorsFusion(
                     QueryVectorsFusionRequest.newBuilder()
@@ -406,31 +399,25 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertEquals(200, b16Result.statusCode());
 
             // B17. Weight fusion with minMax normalizer
-            Retriever weightRetriever = Retriever.newBuilder()
-                    .weight(WeightRetriever.newBuilder()
-                            .windowSize(100)
-                            .retrievers(Arrays.asList(
-                                    WeightRetrieverComponent.newBuilder()
-                                            .retriever(Retriever.newBuilder()
-                                                    .knn(Knn.newBuilder()
-                                                            .field(TEST_FUSION_TEXT_VECTOR_FIELD)
-                                                            .queryVector(Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f))
-                                                            .topK(10)
-                                                            .build())
+            WeightRetriever weightRetriever = WeightRetriever.newBuilder()
+                    .windowSize(100)
+                    .retrievers(Arrays.asList(
+                            RetrieverComponent.newBuilder()
+                                    .retriever(Knn.newBuilder()
+                                                    .field(TEST_FUSION_TEXT_VECTOR_FIELD)
+                                                    .queryVector(Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f))
+                                                    .topK(10)
                                                     .build())
-                                            .weight(0.7f)
-                                            .normalizer("minMax")
-                                            .build(),
-                                    WeightRetrieverComponent.newBuilder()
-                                            .retriever(Retriever.newBuilder()
-                                                    .simple(SimpleRetriever.newBuilder()
-                                                            .query(createTextMatchQuery(TEST_FUSION_TITLE_FIELD, "headphones", null))
-                                                            .build())
+                                    .weight(0.7f)
+                                    .normalizer("minMax")
+                                    .build(),
+                            RetrieverComponent.newBuilder()
+                                    .retriever(SimpleRetriever.newBuilder()
+                                                    .query(createTextMatchQuery(TEST_FUSION_TITLE_FIELD, "headphones", null))
                                                     .build())
-                                            .weight(0.3f)
-                                            .normalizer("minMax")
-                                            .build()))
-                            .build())
+                                    .weight(0.3f)
+                                    .normalizer("minMax")
+                                    .build()))
                     .build();
             QueryVectorsFusionResult b17Result = vectorsClient.queryVectorsFusion(
                     QueryVectorsFusionRequest.newBuilder()
@@ -445,42 +432,34 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertEquals(200, b17Result.statusCode());
 
             // B18. Three-way weight fusion over text_vector, image_vector and title text-match
-            Retriever threeWayWeightRetriever = Retriever.newBuilder()
-                    .weight(WeightRetriever.newBuilder()
-                            .windowSize(100)
-                            .retrievers(Arrays.asList(
-                                    WeightRetrieverComponent.newBuilder()
-                                            .retriever(Retriever.newBuilder()
-                                                    .knn(Knn.newBuilder()
-                                                            .field(TEST_FUSION_TEXT_VECTOR_FIELD)
-                                                            .queryVector(Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f))
-                                                            .topK(10)
-                                                            .build())
+            WeightRetriever threeWayWeightRetriever = WeightRetriever.newBuilder()
+                    .windowSize(100)
+                    .retrievers(Arrays.asList(
+                            RetrieverComponent.newBuilder()
+                                    .retriever(Knn.newBuilder()
+                                                    .field(TEST_FUSION_TEXT_VECTOR_FIELD)
+                                                    .queryVector(Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f))
+                                                    .topK(10)
                                                     .build())
-                                            .weight(0.5f)
-                                            .normalizer("l2")
-                                            .build(),
-                                    WeightRetrieverComponent.newBuilder()
-                                            .retriever(Retriever.newBuilder()
-                                                    .knn(Knn.newBuilder()
-                                                            .field(TEST_FUSION_IMAGE_VECTOR_FIELD)
-                                                            .queryVector(Arrays.asList(0.4f, 0.3f, 0.2f, 0.1f))
-                                                            .topK(10)
-                                                            .build())
+                                    .weight(0.5f)
+                                    .normalizer("l2")
+                                    .build(),
+                            RetrieverComponent.newBuilder()
+                                    .retriever(Knn.newBuilder()
+                                                    .field(TEST_FUSION_IMAGE_VECTOR_FIELD)
+                                                    .queryVector(Arrays.asList(0.4f, 0.3f, 0.2f, 0.1f))
+                                                    .topK(10)
                                                     .build())
-                                            .weight(0.3f)
-                                            .normalizer("l2")
-                                            .build(),
-                                    WeightRetrieverComponent.newBuilder()
-                                            .retriever(Retriever.newBuilder()
-                                                    .simple(SimpleRetriever.newBuilder()
-                                                            .query(createTextMatchQuery(TEST_FUSION_TITLE_FIELD, "sports car", null))
-                                                            .build())
+                                    .weight(0.3f)
+                                    .normalizer("l2")
+                                    .build(),
+                            RetrieverComponent.newBuilder()
+                                    .retriever(SimpleRetriever.newBuilder()
+                                                    .query(createTextMatchQuery(TEST_FUSION_TITLE_FIELD, "sports car", null))
                                                     .build())
-                                            .weight(0.2f)
-                                            .normalizer("minMax")
-                                            .build()))
-                            .build())
+                                    .weight(0.2f)
+                                    .normalizer("minMax")
+                                    .build()))
                     .build();
             QueryVectorsFusionResult b18Result = vectorsClient.queryVectorsFusion(
                     QueryVectorsFusionRequest.newBuilder()
@@ -524,10 +503,8 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertEquals(200, b19Result.statusCode());
 
             // B20. single leaf retriever used directly as top-level retriever
-            Retriever simpleLeaf = Retriever.newBuilder()
-                    .simple(SimpleRetriever.newBuilder()
-                            .query(createTextMatchQuery(TEST_FUSION_TITLE_FIELD, "headphones", 2.0f))
-                            .build())
+            SimpleRetriever simpleLeaf = SimpleRetriever.newBuilder()
+                    .query(createTextMatchQuery(TEST_FUSION_TITLE_FIELD, "headphones", 2.0f))
                     .build();
             QueryVectorsFusionResult b20SimpleResult = vectorsClient.queryVectorsFusion(
                     QueryVectorsFusionRequest.newBuilder()
@@ -539,18 +516,17 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertNotNull(b20SimpleResult);
             Assert.assertEquals(200, b20SimpleResult.statusCode());
 
-            Retriever knnLeaf = Retriever.newBuilder()
-                    .knn(Knn.newBuilder()
-                            .field(TEST_FUSION_TEXT_VECTOR_FIELD)
-                            .queryVector(Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f))
-                            .topK(10)
-                            .build())
-                    .build();
+            Map<String, Object> knnLeafMap = new LinkedHashMap<>();
+            knnLeafMap.put("field", TEST_FUSION_TEXT_VECTOR_FIELD);
+            knnLeafMap.put("queryVector", Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f));
+            knnLeafMap.put("topK", 10);
+            Map<String, Object> knnLeafRetriever = new LinkedHashMap<>();
+            knnLeafRetriever.put("knn", knnLeafMap);
             QueryVectorsFusionResult b20KnnResult = vectorsClient.queryVectorsFusion(
                     QueryVectorsFusionRequest.newBuilder()
                             .bucket(bucketName)
                             .indexName(TEST_FUSION_PRODUCT_INDEX_NAME)
-                            .retriever(knnLeaf)
+                            .retriever(knnLeafRetriever)
                             .limit(10)
                             .build());
             Assert.assertNotNull(b20KnnResult);
@@ -571,17 +547,22 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertNotNull(genericKnnResult);
             Assert.assertEquals(200, genericKnnResult.statusCode());
 
-            // Verify the raw JSON string overload of retriever
-            String rawRetrieverJson = "{\"knn\":{\"field\":\"" + TEST_FUSION_TEXT_VECTOR_FIELD + "\",\"queryVector\":[0.1,0.2,0.3,0.4],\"topK\":10}}";
-            QueryVectorsFusionResult rawRetrieverResult = vectorsClient.queryVectorsFusion(
+            // Verify the generic Map form of the retriever
+            Map<String, Object> leafKnn = new HashMap<>();
+            leafKnn.put("field", TEST_FUSION_TEXT_VECTOR_FIELD);
+            leafKnn.put("queryVector", Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f));
+            leafKnn.put("topK", 10);
+            Map<String, Object> genericRetriever = new HashMap<>();
+            genericRetriever.put("knn", leafKnn);
+            QueryVectorsFusionResult genericRetrieverResult = vectorsClient.queryVectorsFusion(
                     QueryVectorsFusionRequest.newBuilder()
                             .bucket(bucketName)
                             .indexName(TEST_FUSION_PRODUCT_INDEX_NAME)
-                            .retriever(rawRetrieverJson)
+                            .retriever(genericRetriever)
                             .limit(10)
                             .build());
-            Assert.assertNotNull(rawRetrieverResult);
-            Assert.assertEquals(200, rawRetrieverResult.statusCode());
+            Assert.assertNotNull(genericRetrieverResult);
+            Assert.assertEquals(200, genericRetrieverResult.statusCode());
 
         } finally {
             cleanupTestResources(vectorsClient, bucketName, TEST_FUSION_PRODUCT_INDEX_NAME);

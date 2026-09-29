@@ -2,10 +2,9 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -13,8 +12,6 @@ import static java.util.Objects.requireNonNull;
  * The request for the QueryVectorsFusion operation.
  */
 public final class QueryVectorsFusionRequest extends VectorRequestModel {
-
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     private final String bucket;
 
@@ -61,12 +58,13 @@ public final class QueryVectorsFusionRequest extends VectorRequestModel {
     }
 
     /**
-     * The multi-way hybrid retriever. It returns {@code null} when the retriever was set from a
-     * raw JSON string via {@link Builder#retriever(String)}.
+     * The multi-way hybrid retriever, exactly as it is sent to the service. It carries the raw
+     * JSON object, so attributes that have no strongly-typed model yet are preserved.
      */
-    public Retriever retriever() {
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> retriever() {
         Object value = this.bodyFields.get("retriever");
-        return value instanceof Retriever ? (Retriever) value : null;
+        return value instanceof Map ? (Map<String, Object>) value : null;
     }
 
     /**
@@ -110,19 +108,6 @@ public final class QueryVectorsFusionRequest extends VectorRequestModel {
      */
     public Object sort() {
         return this.bodyFields.get("sort");
-    }
-
-    /**
-     * Parses a raw JSON string into a Jackson tree so that it is serialized as a nested JSON
-     * structure (instead of an escaped string literal), preserving any current or future fields
-     * verbatim.
-     */
-    private static JsonNode parseJson(String json) {
-        try {
-            return JSON_MAPPER.readTree(json);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse the JSON string", e);
-        }
     }
 
     public Builder toBuilder() {
@@ -200,28 +185,46 @@ public final class QueryVectorsFusionRequest extends VectorRequestModel {
         }
 
         /**
-         * The multi-way hybrid retriever.
+         * The multi-way hybrid retriever as the raw JSON object. Use it when the retriever has
+         * attributes that no strongly-typed model covers yet: the map is passed through verbatim.
          */
-        public Builder retriever(Retriever value) {
+        public Builder retriever(Map<String, Object> value) {
             requireNonNull(value);
             this.bodyFields.put("retriever", value);
             return this;
         }
 
         /**
-         * Sets the multi-way hybrid retriever from a raw JSON string. This is a flexible overload
-         * for the deeply nested retriever structure (rrf/weight and their nested knn/simple
-         * components): the JSON is passed through as-is, so any current or future fields are
-         * supported without a matching strongly-typed model. Use {@link #retriever(Retriever)}
-         * when you prefer the compile-time-safe, strongly-typed builder.
-         *
-         * @param value the retriever JSON string, for example
-         *              {@code {"rrf":{"k":50,"windowSize":100,"retrievers":[ ... ]}}}
+         * The rrf compound retriever, stored as {@code {"rrf": ...}}.
          */
-        public Builder retriever(String value) {
+        public Builder retriever(RrfRetriever value) {
             requireNonNull(value);
-            this.bodyFields.put("retriever", parseJson(value));
+            this.bodyFields.put("retriever", wrap("rrf", value.toMap()));
             return this;
+        }
+
+        /**
+         * The weight compound retriever, stored as {@code {"weight": ...}}.
+         */
+        public Builder retriever(WeightRetriever value) {
+            requireNonNull(value);
+            this.bodyFields.put("retriever", wrap("weight", value.toMap()));
+            return this;
+        }
+
+        /**
+         * The simple leaf retriever, stored as {@code {"simple": ...}}.
+         */
+        public Builder retriever(SimpleRetriever value) {
+            requireNonNull(value);
+            this.bodyFields.put("retriever", wrap("simple", value.toMap()));
+            return this;
+        }
+
+        private static Map<String, Object> wrap(String key, Map<String, Object> body) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put(key, body);
+            return map;
         }
 
         /**

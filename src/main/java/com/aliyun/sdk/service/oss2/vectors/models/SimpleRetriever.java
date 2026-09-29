@@ -2,6 +2,9 @@ package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * The simple retriever that queries documents by the specified conditions.
  */
@@ -26,6 +29,18 @@ public class SimpleRetriever {
      */
     public Object query() {
         return query;
+    }
+
+    /**
+     * Converts this retriever to the raw JSON object used on the wire, omitting the attributes
+     * that were not set.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (query != null) {
+            map.put("query", query);
+        }
+        return map;
     }
 
     public Builder toBuilder() {

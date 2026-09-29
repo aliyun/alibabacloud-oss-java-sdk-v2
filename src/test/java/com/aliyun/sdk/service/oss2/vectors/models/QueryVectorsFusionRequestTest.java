@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class QueryVectorsFusionRequestTest {
 
@@ -359,10 +358,8 @@ public class QueryVectorsFusionRequestTest {
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
-                .retriever(Retriever.newBuilder()
-                        .simple(SimpleRetriever.newBuilder()
-                                .query(createTextMatchQuery("title_field", "hello world", 2.0f))
-                                .build())
+                .retriever(SimpleRetriever.newBuilder()
+                        .query(createTextMatchQuery("title_field", "hello world", 2.0f))
                         .build())
                 .build();
 
@@ -372,16 +369,19 @@ public class QueryVectorsFusionRequestTest {
     }
 
     @Test
-    public void testKnnRetrieverJsonStructure() throws Exception {
+    public void testKnnRetrieverFromMap() throws Exception {
+        // The knn leaf retriever has no dedicated typed overload; it is expressed with the generic
+        // map form, optionally reusing the typed Knn through toMap().
+        Map<String, Object> retriever = new HashMap<>();
+        retriever.put("knn", Knn.newBuilder()
+                .field("vector_field")
+                .queryVector(Arrays.asList(10, 22, 77))
+                .build().toMap());
+
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
-                .retriever(Retriever.newBuilder()
-                        .knn(Knn.newBuilder()
-                                .field("vector_field")
-                                .queryVector(Arrays.asList(10, 22, 77))
-                                .build())
-                        .build())
+                .retriever(retriever)
                 .build();
 
         String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"knn\":{"
@@ -399,7 +399,7 @@ public class QueryVectorsFusionRequestTest {
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
-                .retriever(createTestRetriever())
+                .retriever(createTestRrfRetriever())
                 .build();
 
         OperationInput input = SerdeVectorsBasic.fromQueryVectorsFusion(request);
@@ -412,22 +412,20 @@ public class QueryVectorsFusionRequestTest {
 
     @Test
     public void testWeightRetrieverJsonStructure() throws Exception {
-        Retriever retriever = Retriever.newBuilder()
-                .weight(WeightRetriever.newBuilder()
-                        .windowSize(100)
-                        .retrievers(Arrays.asList(
-                                createKnnComponent("vector", Arrays.asList(10, 22, 77), 0.7f, "minMax"),
-                                createSimpleComponent(
-                                        createTextMatchQuery("title", "hello world", 2.0f),
-                                        0.3f,
-                                        "minMax")))
-                        .build())
+        WeightRetriever weightRetriever = WeightRetriever.newBuilder()
+                .windowSize(100)
+                .retrievers(Arrays.asList(
+                        createKnnComponent("vector", Arrays.asList(10, 22, 77), 0.7f, "minMax"),
+                        createSimpleComponent(
+                                createTextMatchQuery("title", "hello world", 2.0f),
+                                0.3f,
+                                "minMax")))
                 .build();
 
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
-                .retriever(retriever)
+                .retriever(weightRetriever)
                 .build();
 
         String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"weight\":{\"windowSize\":100,"
@@ -441,23 +439,21 @@ public class QueryVectorsFusionRequestTest {
 
     @Test
     public void testThreeWayWeightRetrieverJsonStructure() throws Exception {
-        Retriever retriever = Retriever.newBuilder()
-                .weight(WeightRetriever.newBuilder()
-                        .windowSize(200)
-                        .retrievers(Arrays.asList(
-                                createKnnComponent("text_vector", Arrays.asList(10, 22, 77), 0.5f, "l2"),
-                                createKnnComponent("image_vector", Arrays.asList(21, 35, 66), 0.3f, "l2"),
-                                createSimpleComponent(
-                                        createTextMatchQuery("description", "red sports car", 1.5f),
-                                        0.2f,
-                                        "minMax")))
-                        .build())
+        WeightRetriever weightRetriever = WeightRetriever.newBuilder()
+                .windowSize(200)
+                .retrievers(Arrays.asList(
+                        createKnnComponent("text_vector", Arrays.asList(10, 22, 77), 0.5f, "l2"),
+                        createKnnComponent("image_vector", Arrays.asList(21, 35, 66), 0.3f, "l2"),
+                        createSimpleComponent(
+                                createTextMatchQuery("description", "red sports car", 1.5f),
+                                0.2f,
+                                "minMax")))
                 .build();
 
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
-                .retriever(retriever)
+                .retriever(weightRetriever)
                 .build();
 
         String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"weight\":{\"windowSize\":200,"
@@ -479,25 +475,28 @@ public class QueryVectorsFusionRequestTest {
                         createKnnComponent("image_vector", Arrays.asList(21, 35, 66), 0.3f, "minMax")))
                 .build();
 
-        Retriever retriever = Retriever.newBuilder()
-                .rrf(RrfRetriever.newBuilder()
-                        .k(50)
-                        .windowSize(200)
-                        .retrievers(Arrays.asList(
-                                createRrfSimpleComponent(
-                                        createTextMatchQuery("title", "hello world", null),
-                                        1.0f),
-                                RrfRetrieverComponent.newBuilder()
-                                        .retriever(Retriever.newBuilder().weight(nestedWeight).build())
-                                        .weight(1.2f)
-                                        .build()))
-                        .build())
+        // A nested compound retriever has no typed overload in the component; it is expressed
+        // with the generic map form, wrapped by its type key.
+        Map<String, Object> nestedWeightRetriever = new HashMap<>();
+        nestedWeightRetriever.put("weight", nestedWeight.toMap());
+
+        RrfRetriever rrfRetriever = RrfRetriever.newBuilder()
+                .k(50)
+                .windowSize(200)
+                .retrievers(Arrays.asList(
+                        createRrfSimpleComponent(
+                                createTextMatchQuery("title", "hello world", null),
+                                1.0f),
+                        RetrieverComponent.newBuilder()
+                                .retriever(nestedWeightRetriever)
+                                .weight(1.2f)
+                                .build()))
                 .build();
 
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
-                .retriever(retriever)
+                .retriever(rrfRetriever)
                 .build();
 
         String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"rrf\":{\"k\":50,"
@@ -533,18 +532,14 @@ public class QueryVectorsFusionRequestTest {
     }
 
     @Test
-    public void testWeightRetrieverComponentNormalizerEnum() throws Exception {
-        WeightRetrieverComponent minMaxComponent = WeightRetrieverComponent.newBuilder()
-                .retriever(Retriever.newBuilder()
-                        .knn(Knn.newBuilder().field("text_vector").queryVector(Arrays.asList(10, 22, 77)).build())
-                        .build())
+    public void testRetrieverComponentNormalizerEnum() throws Exception {
+        RetrieverComponent minMaxComponent = RetrieverComponent.newBuilder()
+                .retriever(Knn.newBuilder().field("text_vector").queryVector(Arrays.asList(10, 22, 77)).build())
                 .weight(0.7f)
                 .normalizer(NormalizerType.MIN_MAX)
                 .build();
-        WeightRetrieverComponent l2Component = WeightRetrieverComponent.newBuilder()
-                .retriever(Retriever.newBuilder()
-                        .knn(Knn.newBuilder().field("image_vector").queryVector(Arrays.asList(21, 35, 66)).build())
-                        .build())
+        RetrieverComponent l2Component = RetrieverComponent.newBuilder()
+                .retriever(Knn.newBuilder().field("image_vector").queryVector(Arrays.asList(21, 35, 66)).build())
                 .weight(0.3f)
                 .normalizer(NormalizerType.L2)
                 .build();
@@ -553,17 +548,15 @@ public class QueryVectorsFusionRequestTest {
         assertThat(minMaxComponent.normalizer()).isEqualTo("minMax");
         assertThat(l2Component.normalizer()).isEqualTo("l2");
 
-        Retriever retriever = Retriever.newBuilder()
-                .weight(WeightRetriever.newBuilder()
-                        .windowSize(100)
-                        .retrievers(Arrays.asList(minMaxComponent, l2Component))
-                        .build())
+        WeightRetriever weightRetriever = WeightRetriever.newBuilder()
+                .windowSize(100)
+                .retrievers(Arrays.asList(minMaxComponent, l2Component))
                 .build();
 
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
-                .retriever(retriever)
+                .retriever(weightRetriever)
                 .build();
 
         String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"weight\":{\"windowSize\":100,"
@@ -575,48 +568,215 @@ public class QueryVectorsFusionRequestTest {
     }
 
     @Test
-    public void testRetrieverFromJsonString() throws Exception {
-        // The whole nested retriever is provided as a raw JSON string and passed through as-is.
-        String retrieverJson = "{\"rrf\":{\"k\":50,\"windowSize\":100,\"retrievers\":["
-                + "{\"retriever\":{\"knn\":{\"field\":\"vector\",\"queryVector\":[10,22,77]}},\"weight\":1.0},"
-                + "{\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":{\"value\":\"hello world\",\"boost\":2.0}}}}},\"weight\":2.0}]}}";
+    public void testRetrieverFromRrfRetriever() throws Exception {
+        // The specialized RrfRetriever overload is stored as {"rrf": ...} after normalization.
+        RrfRetriever rrf = RrfRetriever.newBuilder()
+                .k(50)
+                .windowSize(100)
+                .retrievers(Arrays.asList(
+                        createRrfKnnComponent("vector", Arrays.asList(10, 22, 77), 1.0f),
+                        createRrfSimpleComponent(createTextMatchQuery("title", "hello world", 2.0f), 2.0f)))
+                .build();
 
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
-                .retriever(retrieverJson)
+                .retriever(rrf)
                 .limit(10)
                 .build();
 
-        // the raw JSON retriever is not a typed Retriever, so the typed getter returns null
-        assertThat(request.retriever()).isNull();
+        assertThat(request.retriever()).containsKey("rrf");
 
-        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":" + retrieverJson + ",\"limit\":10}";
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"rrf\":{\"k\":50,\"windowSize\":100,"
+                + "\"retrievers\":[{\"retriever\":{\"knn\":{\"field\":\"vector\",\"queryVector\":[10,22,77]}},"
+                + "\"weight\":1.0},{\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":"
+                + "{\"value\":\"hello world\",\"boost\":2.0}}}}},\"weight\":2.0}]}},\"limit\":10}";
         assertRequestJson(request, jsonStr);
     }
 
     @Test
-    public void testRetrieverFromJsonStringPreservesUnknownFields() throws Exception {
-        // Fields that have no strongly-typed model yet are still serialized verbatim, which keeps
-        // the request forward-compatible when the server side adds new parameters.
-        String retrieverJson = "{\"rrf\":{\"k\":50,\"futureParam\":\"x\",\"retrievers\":["
-                + "{\"retriever\":{\"knn\":{\"field\":\"vector\",\"queryVector\":[1.0,2.0]}},\"weight\":1.0,"
-                + "\"futureWeightParam\":42}]}}";
+    public void testRetrieverFromWeightRetriever() throws Exception {
+        WeightRetriever weight = WeightRetriever.newBuilder()
+                .windowSize(100)
+                .retrievers(Arrays.asList(
+                        createKnnComponent("vector", Arrays.asList(10, 22, 77), 0.7f, "minMax"),
+                        createSimpleComponent(createTextMatchQuery("title", "hello world", 2.0f), 0.3f, "minMax")))
+                .build();
 
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
-                .retriever(retrieverJson)
+                .retriever(weight)
                 .build();
 
-        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":" + retrieverJson + "}";
+        assertThat(request.retriever()).containsKey("weight");
+
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"weight\":{\"windowSize\":100,"
+                + "\"retrievers\":[{\"retriever\":{\"knn\":{\"field\":\"vector\",\"queryVector\":[10,22,77]}},"
+                + "\"weight\":0.7,\"normalizer\":\"minMax\"},{\"retriever\":{\"simple\":{\"query\":{\"title\":"
+                + "{\"$textMatch\":{\"value\":\"hello world\",\"boost\":2.0}}}}},\"weight\":0.3,"
+                + "\"normalizer\":\"minMax\"}]}}}";
         assertRequestJson(request, jsonStr);
     }
 
     @Test
-    public void testRetrieverFromInvalidJsonString() {
-        assertThatThrownBy(() -> QueryVectorsFusionRequest.newBuilder().retriever("{invalid json"))
-                .isInstanceOf(IllegalArgumentException.class);
+    public void testRrfRetrieverAcceptsRawComponentMap() throws Exception {
+        // A sub retriever may be supplied as a raw map and mixed with the typed components, so the
+        // structure stays forward-compatible when the typed model does not cover every attribute.
+        Map<String, Object> rawRetriever = new HashMap<>();
+        rawRetriever.put("knn", Knn.newBuilder()
+                .field("raw_vector")
+                .queryVector(Arrays.asList(10, 22, 77))
+                .build().toMap());
+        Map<String, Object> rawComponent = new HashMap<>();
+        rawComponent.put("retriever", rawRetriever);
+        rawComponent.put("weight", 3.0f);
+
+        RrfRetriever rrf = RrfRetriever.newBuilder()
+                .k(50)
+                .retrievers(Arrays.asList(
+                        createRrfKnnComponent("vector", Arrays.asList(10, 22, 77), 1.0f),
+                        rawComponent))
+                .build();
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .retriever(rrf)
+                .build();
+
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"rrf\":{\"k\":50,"
+                + "\"retrievers\":[{\"retriever\":{\"knn\":{\"field\":\"vector\",\"queryVector\":[10,22,77]}},"
+                + "\"weight\":1.0},{\"retriever\":{\"knn\":{\"field\":\"raw_vector\",\"queryVector\":[10,22,77]}},"
+                + "\"weight\":3.0}]}}}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    @Test
+    public void testWeightRetrieverAcceptsRawComponentMap() throws Exception {
+        Map<String, Object> rawRetriever = new HashMap<>();
+        rawRetriever.put("simple", SimpleRetriever.newBuilder()
+                .query(createTextMatchQuery("title", "hello world", null))
+                .build().toMap());
+        Map<String, Object> rawComponent = new HashMap<>();
+        rawComponent.put("retriever", rawRetriever);
+        rawComponent.put("weight", 0.4f);
+        rawComponent.put("normalizer", "l2");
+
+        WeightRetriever weight = WeightRetriever.newBuilder()
+                .windowSize(100)
+                .retrievers(Arrays.asList(
+                        createKnnComponent("vector", Arrays.asList(10, 22, 77), 0.6f, "minMax"),
+                        rawComponent))
+                .build();
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .retriever(weight)
+                .build();
+
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"weight\":{\"windowSize\":100,"
+                + "\"retrievers\":[{\"retriever\":{\"knn\":{\"field\":\"vector\",\"queryVector\":[10,22,77]}},"
+                + "\"weight\":0.6,\"normalizer\":\"minMax\"},{\"retriever\":{\"simple\":{\"query\":{\"title\":"
+                + "{\"$textMatch\":{\"value\":\"hello world\"}}}}},\"weight\":0.4,\"normalizer\":\"l2\"}]}}}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    @Test
+    public void testRetrieverFromSimpleRetriever() throws Exception {
+        SimpleRetriever simple = SimpleRetriever.newBuilder()
+                .query(createTextMatchQuery("title_field", "hello world", 2.0f))
+                .build();
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .retriever(simple)
+                .build();
+
+        assertThat(request.retriever()).containsKey("simple");
+
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"simple\":{\"query\":{"
+                + "\"title_field\":{\"$textMatch\":{\"value\":\"hello world\",\"boost\":2.0}}}}}}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    @Test
+    public void testRetrieverFromGenericMap() throws Exception {
+        // The generic map form is passed through verbatim, so attributes without a strongly-typed
+        // model still reach the wire and the request stays forward-compatible.
+        Map<String, Object> knnLeaf = new HashMap<>();
+        knnLeaf.put("field", "vector");
+        knnLeaf.put("queryVector", Arrays.asList(10, 22, 77));
+
+        Map<String, Object> knnComponent = new HashMap<>();
+        knnComponent.put("retriever", new HashMap<String, Object>() {{ put("knn", knnLeaf); }});
+        knnComponent.put("weight", 1.0f);
+        knnComponent.put("futureWeightParam", 42);
+
+        Map<String, Object> rrf = new HashMap<>();
+        rrf.put("k", 50);
+        rrf.put("futureParam", "x");
+        rrf.put("retrievers", Arrays.asList(knnComponent));
+
+        Map<String, Object> retriever = new HashMap<>();
+        retriever.put("rrf", rrf);
+
+        QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
+                .bucket("test-bucket")
+                .indexName("fusion-index")
+                .retriever(retriever)
+                .limit(10)
+                .build();
+
+        assertThat(request.retriever()).isSameAs(retriever);
+
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"retriever\":{\"rrf\":{\"k\":50,\"futureParam\":\"x\","
+                + "\"retrievers\":[{\"retriever\":{\"knn\":{\"field\":\"vector\",\"queryVector\":[10,22,77]}},"
+                + "\"weight\":1.0,\"futureWeightParam\":42}]}},\"limit\":10}";
+        assertRequestJson(request, jsonStr);
+    }
+
+    @Test
+    public void testRetrieverTypedAndMapSerializeSame() throws Exception {
+        OperationInput genericInput = SerdeVectorsBasic.fromQueryVectorsFusion(
+                QueryVectorsFusionRequest.newBuilder()
+                        .bucket("test-bucket")
+                        .indexName("fusion-index")
+                        .retriever(new HashMap<String, Object>() {{
+                            put("rrf", new HashMap<String, Object>() {{
+                                put("k", 50);
+                                put("windowSize", 100);
+                                put("retrievers", Arrays.asList(
+                                        new HashMap<String, Object>() {{
+                                            put("retriever", new HashMap<String, Object>() {{
+                                                put("knn", Knn.newBuilder()
+                                                        .field("vector")
+                                                        .queryVector(Arrays.asList(10, 22, 77))
+                                                        .build().toMap());
+                                            }});
+                                            put("weight", 1.0f);
+                                        }}));
+                            }});
+                        }})
+                        .build());
+
+        OperationInput typedInput = SerdeVectorsBasic.fromQueryVectorsFusion(
+                QueryVectorsFusionRequest.newBuilder()
+                        .bucket("test-bucket")
+                        .indexName("fusion-index")
+                        .retriever(RrfRetriever.newBuilder()
+                                .k(50)
+                                .windowSize(100)
+                                .retrievers(Arrays.asList(
+                                        createRrfKnnComponent("vector", Arrays.asList(10, 22, 77), 1.0f)))
+                                .build())
+                        .build());
+
+        JsonNode genericNode = OBJECT_MAPPER.readTree(genericInput.body().get().toBytes());
+        JsonNode typedNode = OBJECT_MAPPER.readTree(typedInput.body().get().toBytes());
+        assertThat(genericNode).isEqualTo(typedNode);
     }
 
     /**
@@ -800,26 +960,22 @@ public class QueryVectorsFusionRequestTest {
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("productindex")
-                .retriever(Retriever.newBuilder()
-                        .rrf(RrfRetriever.newBuilder()
-                                .k(50)
-                                .windowSize(100)
-                                .retrievers(Arrays.asList(
-                                        RrfRetrieverComponent.newBuilder()
-                                                .retriever(Retriever.newBuilder()
-                                                        .knn(Knn.newBuilder()
-                                                                .field("text_vector")
-                                                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
-                                                                .topK(100)
-                                                                .build())
+                .retriever(RrfRetriever.newBuilder()
+                        .k(50)
+                        .windowSize(100)
+                        .retrievers(Arrays.asList(
+                                RetrieverComponent.newBuilder()
+                                        .retriever(Knn.newBuilder()
+                                                        .field("text_vector")
+                                                        .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                                                        .topK(100)
                                                         .build())
-                                                .weight(2.0f)
-                                                .build(),
-                                        createRrfSimpleComponent(
-                                                createTextMatchQuery("title", "无线 耳机", null),
-                                                0.5f)))
-                                .build())
-                .build())
+                                        .weight(2.0f)
+                                        .build(),
+                                createRrfSimpleComponent(
+                                        createTextMatchQuery("title", "无线 耳机", null),
+                                        0.5f)))
+                        .build())
                 .limit(10)
                 .returnMetadata(true)
                 .returnMetadataFields(Arrays.asList("title", "brand"))
@@ -841,27 +997,23 @@ public class QueryVectorsFusionRequestTest {
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("productindex")
-                .retriever(Retriever.newBuilder()
-                        .weight(WeightRetriever.newBuilder()
-                                .windowSize(100)
-                                .retrievers(Arrays.asList(
-                                        WeightRetrieverComponent.newBuilder()
-                                                .retriever(Retriever.newBuilder()
-                                                        .knn(Knn.newBuilder()
-                                                                .field("text_vector")
-                                                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
-                                                                .topK(100)
-                                                                .build())
+                .retriever(WeightRetriever.newBuilder()
+                        .windowSize(100)
+                        .retrievers(Arrays.asList(
+                                RetrieverComponent.newBuilder()
+                                        .retriever(Knn.newBuilder()
+                                                        .field("text_vector")
+                                                        .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                                                        .topK(100)
                                                         .build())
-                                                .weight(0.7f)
-                                                .normalizer("minMax")
-                                                .build(),
-                                        createSimpleComponent(
-                                                createTextMatchQuery("title", "无线 耳机", null),
-                                                0.3f,
-                                                "minMax")))
-                                .build())
-                .build())
+                                        .weight(0.7f)
+                                        .normalizer("minMax")
+                                        .build(),
+                                createSimpleComponent(
+                                        createTextMatchQuery("title", "无线 耳机", null),
+                                        0.3f,
+                                        "minMax")))
+                        .build())
                 .limit(10)
                 .returnMetadata(true)
                 .returnMetadataFields(Arrays.asList("title", "brand"))
@@ -883,38 +1035,32 @@ public class QueryVectorsFusionRequestTest {
         QueryVectorsFusionRequest request = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("multimodalindex")
-                .retriever(Retriever.newBuilder()
-                        .weight(WeightRetriever.newBuilder()
-                                .windowSize(200)
-                                .retrievers(Arrays.asList(
-                                        WeightRetrieverComponent.newBuilder()
-                                                .retriever(Retriever.newBuilder()
-                                                        .knn(Knn.newBuilder()
-                                                                .field("text_vector")
-                                                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
-                                                                .topK(200)
-                                                                .build())
+                .retriever(WeightRetriever.newBuilder()
+                        .windowSize(200)
+                        .retrievers(Arrays.asList(
+                                RetrieverComponent.newBuilder()
+                                        .retriever(Knn.newBuilder()
+                                                        .field("text_vector")
+                                                        .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                                                        .topK(200)
                                                         .build())
-                                                .weight(0.5f)
-                                                .normalizer("l2")
-                                                .build(),
-                                        WeightRetrieverComponent.newBuilder()
-                                                .retriever(Retriever.newBuilder()
-                                                        .knn(Knn.newBuilder()
-                                                                .field("image_vector")
-                                                                .queryVector(Arrays.asList(0.44f, 0.21f, 0.77f))
-                                                                .topK(200)
-                                                                .build())
+                                        .weight(0.5f)
+                                        .normalizer("l2")
+                                        .build(),
+                                RetrieverComponent.newBuilder()
+                                        .retriever(Knn.newBuilder()
+                                                        .field("image_vector")
+                                                        .queryVector(Arrays.asList(0.44f, 0.21f, 0.77f))
+                                                        .topK(200)
                                                         .build())
-                                                .weight(0.3f)
-                                                .normalizer("l2")
-                                                .build(),
-                                        createSimpleComponent(
-                                                createTextMatchQuery("title", "红色 跑车", null),
-                                                0.2f,
-                                                "minMax")))
-                                .build())
-                .build())
+                                        .weight(0.3f)
+                                        .normalizer("l2")
+                                        .build(),
+                                createSimpleComponent(
+                                        createTextMatchQuery("title", "红色 跑车", null),
+                                        0.2f,
+                                        "minMax")))
+                        .build())
                 .limit(10)
                 .returnMetadata(true)
                 .returnMetadataFields(Arrays.asList("title", "duration"))
@@ -998,28 +1144,27 @@ public class QueryVectorsFusionRequestTest {
         QueryVectorsFusionRequest simpleRequest = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("kbindex")
-                .retriever(Retriever.newBuilder()
-                        .simple(SimpleRetriever.newBuilder()
-                                .query(createTextMatchQuery("title", "hello world", 2.0f))
-                                .build())
-                .build())
+                .retriever(SimpleRetriever.newBuilder()
+                        .query(createTextMatchQuery("title", "hello world", 2.0f))
+                        .build())
                 .limit(10)
                 .build();
 
         String simpleJson = "{\"indexName\":\"kbindex\",\"retriever\":{\"simple\":{\"query\":{\"title\":{\"$textMatch\":{\"value\":\"hello world\",\"boost\":2.0}}}}},\"limit\":10}";
         assertRequestJson(simpleRequest, simpleJson);
 
-        // knn leaf
+        // knn leaf, expressed with the generic map form
+        Map<String, Object> knnRetriever = new HashMap<>();
+        knnRetriever.put("knn", Knn.newBuilder()
+                .field("chunk_vector")
+                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
+                .topK(100)
+                .build().toMap());
+
         QueryVectorsFusionRequest knnRequest = QueryVectorsFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("kbindex")
-                .retriever(Retriever.newBuilder()
-                        .knn(Knn.newBuilder()
-                                .field("chunk_vector")
-                                .queryVector(Arrays.asList(0.12f, 0.53f, 0.08f))
-                                .topK(100)
-                                .build())
-                .build())
+                .retriever(knnRetriever)
                 .limit(10)
                 .build();
 
@@ -1047,12 +1192,10 @@ public class QueryVectorsFusionRequestTest {
         return query;
     }
 
-    private WeightRetrieverComponent createKnnComponent(
+    private RetrieverComponent createKnnComponent(
             String field, List<Integer> queryVector, Float weight, String normalizer) {
-        WeightRetrieverComponent.Builder builder = WeightRetrieverComponent.newBuilder()
-                .retriever(Retriever.newBuilder()
-                        .knn(Knn.newBuilder().field(field).queryVector(queryVector).build())
-                        .build())
+        RetrieverComponent.Builder builder = RetrieverComponent.newBuilder()
+                .retriever(Knn.newBuilder().field(field).queryVector(queryVector).build())
                 .weight(weight);
         if (normalizer != null) {
             builder.normalizer(normalizer);
@@ -1060,12 +1203,10 @@ public class QueryVectorsFusionRequestTest {
         return builder.build();
     }
 
-    private WeightRetrieverComponent createSimpleComponent(
+    private RetrieverComponent createSimpleComponent(
             Map<String, Object> query, Float weight, String normalizer) {
-        WeightRetrieverComponent.Builder builder = WeightRetrieverComponent.newBuilder()
-                .retriever(Retriever.newBuilder()
-                        .simple(SimpleRetriever.newBuilder().query(query).build())
-                        .build())
+        RetrieverComponent.Builder builder = RetrieverComponent.newBuilder()
+                .retriever(SimpleRetriever.newBuilder().query(query).build())
                 .weight(weight);
         if (normalizer != null) {
             builder.normalizer(normalizer);
@@ -1073,27 +1214,23 @@ public class QueryVectorsFusionRequestTest {
         return builder.build();
     }
 
-    private RrfRetrieverComponent createRrfKnnComponent(
+    private RetrieverComponent createRrfKnnComponent(
             String field, List<Integer> queryVector, Float weight) {
-        return RrfRetrieverComponent.newBuilder()
-                .retriever(Retriever.newBuilder()
-                        .knn(Knn.newBuilder().field(field).queryVector(queryVector).build())
-                        .build())
+        return RetrieverComponent.newBuilder()
+                .retriever(Knn.newBuilder().field(field).queryVector(queryVector).build())
                 .weight(weight)
                 .build();
     }
 
-    private RrfRetrieverComponent createRrfSimpleComponent(
+    private RetrieverComponent createRrfSimpleComponent(
             Map<String, Object> query, Float weight) {
-        return RrfRetrieverComponent.newBuilder()
-                .retriever(Retriever.newBuilder()
-                        .simple(SimpleRetriever.newBuilder().query(query).build())
-                        .build())
+        return RetrieverComponent.newBuilder()
+                .retriever(SimpleRetriever.newBuilder().query(query).build())
                 .weight(weight)
                 .build();
     }
 
-    private Retriever createTestRetriever() {
+    private RrfRetriever createTestRrfRetriever() {
         Map<String, Object> query = new HashMap<>();
         Map<String, Object> textMatch = new HashMap<>();
         textMatch.put("value", "hello world");
@@ -1102,14 +1239,12 @@ public class QueryVectorsFusionRequestTest {
         titleCondition.put("$textMatch", textMatch);
         query.put("title", titleCondition);
 
-        return Retriever.newBuilder()
-                .rrf(RrfRetriever.newBuilder()
-                        .k(50)
-                        .windowSize(100)
-                        .retrievers(Arrays.asList(
-                                createRrfKnnComponent("vector", Arrays.asList(10, 22, 77), 1.0f),
-                                createRrfSimpleComponent(query, 2.0f)))
-                        .build())
+        return RrfRetriever.newBuilder()
+                .k(50)
+                .windowSize(100)
+                .retrievers(Arrays.asList(
+                        createRrfKnnComponent("vector", Arrays.asList(10, 22, 77), 1.0f),
+                        createRrfSimpleComponent(query, 2.0f)))
                 .build();
     }
 

@@ -1,7 +1,11 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The rrf compound retriever. It merges the results of the sub retrievers by the
@@ -13,7 +17,7 @@ public class RrfRetriever {
     @JsonProperty("windowSize")
     private Integer windowSize;
     @JsonProperty("retrievers")
-    private List<RrfRetrieverComponent> retrievers;
+    private List<?> retrievers;
 
     public RrfRetriever() {
     }
@@ -45,9 +49,36 @@ public class RrfRetriever {
 
     /**
      * The sub retrievers. It contains 1 to 3 elements.
+     * <p>
+     * Each element is either a {@link RetrieverComponent} instance or its raw map form
+     * ({@link RetrieverComponent#toMap()}), the same mix accepted by the builder.
      */
-    public List<RrfRetrieverComponent> retrievers() {
+    public List<?> retrievers() {
         return retrievers;
+    }
+
+    /**
+     * Converts this retriever to the raw JSON object used on the wire, omitting the attributes
+     * that were not set.
+     */
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        if (k != null) {
+            map.put("k", k);
+        }
+        if (windowSize != null) {
+            map.put("windowSize", windowSize);
+        }
+        if (retrievers != null) {
+            List<Object> components = new ArrayList<>(retrievers.size());
+            for (Object component : retrievers) {
+                components.add(component instanceof RetrieverComponent
+                        ? ((RetrieverComponent) component).toMap()
+                        : component);
+            }
+            map.put("retrievers", components);
+        }
+        return map;
     }
 
     public Builder toBuilder() {
@@ -57,7 +88,7 @@ public class RrfRetriever {
     public static class Builder {
         private Integer k;
         private Integer windowSize;
-        private List<RrfRetrieverComponent> retrievers;
+        private List<?> retrievers;
 
         private Builder() {
         }
@@ -87,8 +118,11 @@ public class RrfRetriever {
 
         /**
          * The sub retrievers. It contains 1 to 3 elements.
+         * <p>
+         * Pass {@link RetrieverComponent} instances directly, or {@link RetrieverComponent#toMap()}
+         * results when the typed model does not cover every attribute.
          */
-        public Builder retrievers(List<RrfRetrieverComponent> retrievers) {
+        public Builder retrievers(List<?> retrievers) {
             this.retrievers = retrievers;
             return this;
         }
