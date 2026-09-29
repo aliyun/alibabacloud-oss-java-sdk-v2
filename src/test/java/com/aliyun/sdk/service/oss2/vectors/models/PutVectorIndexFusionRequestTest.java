@@ -8,10 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PutVectorIndexFusionRequestTest {
 
@@ -166,40 +166,37 @@ public class PutVectorIndexFusionRequestTest {
     }
 
     @Test
-    public void testSchemaConfigurationFromJsonString() throws JsonProcessingException {
-        // The nested schema is provided as a raw JSON string; it is parsed into a SchemaConfiguration
-        // whose fields stay raw, so attributes with no strongly-typed model yet (futureParam) are
-        // preserved and serialized verbatim.
-        String schemaJson = "{\"fields\":[{\"name\":\"embedding\",\"type\":\"vector\",\"dataType\":\"float32\","
-                + "\"dimension\":4,\"distanceMetric\":\"cosine\",\"futureParam\":\"x\"}]}";
+    public void testSchemaConfigurationAsRawMap() throws JsonProcessingException {
+        // The nested schema is provided as a raw Map via bodyField; it passes through verbatim,
+        // so attributes with no strongly-typed model yet (futureParam) are preserved.
+        Map<String, Object> rawField = new LinkedHashMap<>();
+        rawField.put("name", "embedding");
+        rawField.put("type", "vector");
+        rawField.put("dataType", "float32");
+        rawField.put("dimension", 4);
+        rawField.put("distanceMetric", "cosine");
+        rawField.put("futureParam", "x");
+        Map<String, Object> rawSchema = new LinkedHashMap<>();
+        rawSchema.put("fields", Arrays.asList(rawField));
 
         PutVectorIndexFusionRequest request = PutVectorIndexFusionRequest.newBuilder()
                 .bucket("test-bucket")
                 .indexName("fusion-index")
                 .mode("fusion")
-                .schemaConfiguration(schemaJson)
+                .bodyField("schemaConfiguration", rawSchema)
                 .build();
 
-        // the raw JSON schema is parsed, so the typed getter is no longer null
-        assertThat(request.schemaConfiguration()).isNotNull();
-        assertThat(request.schemaConfiguration().fields()).hasSize(1);
-        assertThat(request.schemaConfiguration().fields().get(0)).isInstanceOf(Map.class);
-        @SuppressWarnings("unchecked")
-        Map<String, Object> rawField = (Map<String, Object>) request.schemaConfiguration().fields().get(0);
-        assertThat(rawField.get("futureParam")).isEqualTo("x");
+        // a raw Map is passed through as-is, so the typed getter is null
+        assertThat(request.schemaConfiguration()).isNull();
 
         OperationInput input = SerdeVectorIndexBasic.fromPutVectorIndexFusion(request);
         JsonNode actualNode = OBJECT_MAPPER.readTree(input.body().get().toString());
 
-        String jsonStr = "{\"indexName\":\"fusion-index\",\"mode\":\"fusion\",\"schemaConfiguration\":" + schemaJson + "}";
+        String jsonStr = "{\"indexName\":\"fusion-index\",\"mode\":\"fusion\",\"schemaConfiguration\":"
+                + "{\"fields\":[{\"name\":\"embedding\",\"type\":\"vector\",\"dataType\":\"float32\","
+                + "\"dimension\":4,\"distanceMetric\":\"cosine\",\"futureParam\":\"x\"}]}}";
         JsonNode expectedNode = OBJECT_MAPPER.readTree(jsonStr);
         assertThat(actualNode).isEqualTo(expectedNode);
-    }
-
-    @Test
-    public void testSchemaConfigurationFromInvalidJsonString() {
-        assertThatThrownBy(() -> PutVectorIndexFusionRequest.newBuilder().schemaConfiguration("{invalid json"))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

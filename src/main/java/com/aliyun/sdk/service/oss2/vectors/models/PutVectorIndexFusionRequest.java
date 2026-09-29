@@ -1,17 +1,11 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import static java.util.Objects.requireNonNull;
 
 /**
  * The request for the PutVectorIndexFusion operation.
  */
 public final class PutVectorIndexFusionRequest extends VectorRequestModel {
-
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private final String bucket;
 
@@ -52,19 +46,6 @@ public final class PutVectorIndexFusionRequest extends VectorRequestModel {
     public SchemaConfiguration schemaConfiguration() {
         Object value = this.bodyFields.get("schemaConfiguration");
         return value instanceof SchemaConfiguration ? (SchemaConfiguration) value : null;
-    }
-
-    /**
-     * Parses a raw JSON string into a {@link SchemaConfiguration}. The schema keeps the field
-     * definitions as the raw JSON structure, so any current or future attribute is preserved
-     * verbatim without a matching strongly-typed model.
-     */
-    private static SchemaConfiguration parseSchema(String json) {
-        try {
-            return JSON_MAPPER.readValue(json, SchemaConfiguration.class);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse the schemaConfiguration JSON string", e);
-        }
     }
 
     public Builder toBuilder() {
@@ -125,23 +106,6 @@ public final class PutVectorIndexFusionRequest extends VectorRequestModel {
         public Builder schemaConfiguration(SchemaConfiguration value) {
             requireNonNull(value);
             this.bodyFields.put("schemaConfiguration", value);
-            return this;
-        }
-
-        /**
-         * Sets the schema configuration of the index from a raw JSON string. This is a flexible
-         * overload for the nested schema structure: the JSON is parsed into a
-         * {@link SchemaConfiguration}, which keeps the field definitions as the raw JSON structure,
-         * so any current or future field parameters are supported without a matching
-         * strongly-typed model. Use {@link #schemaConfiguration(SchemaConfiguration)} when you
-         * prefer the compile-time-safe, strongly-typed builder.
-         *
-         * @param value the schemaConfiguration JSON string, for example
-         *              {@code {"fields":[{"name":"embedding","type":"vector","dataType":"float32","dimension":4,"distanceMetric":"cosine"}]}}
-         */
-        public Builder schemaConfiguration(String value) {
-            requireNonNull(value);
-            this.bodyFields.put("schemaConfiguration", parseSchema(value));
             return this;
         }
 

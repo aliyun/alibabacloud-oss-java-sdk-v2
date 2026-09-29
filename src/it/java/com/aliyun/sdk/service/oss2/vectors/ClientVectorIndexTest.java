@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -232,16 +233,26 @@ public class ClientVectorIndexTest extends TestBaseVectors {
 
         String indexName = TEST_FUSION_INDEX_NAME + "Raw";
         try {
-            // 2. Create a fusion vector index using the raw JSON schema overload
-            String schemaJson = "{\"indexName\":\"" + indexName + "\",\"mode\":\"fusion\",\"schemaConfiguration\":{\"fields\":["
-                    + "{\"name\":\"" + TEST_FUSION_VECTOR_FIELD + "\",\"type\":\"vector\",\"dataType\":\"" + TEST_FUSION_DATA_TYPE + "\",\"dimension\":" + TEST_FUSION_DIMENSION + ",\"distanceMetric\":\"" + TEST_FUSION_DISTANCE_METRIC + "\"},"
-                    + "{\"name\":\"" + TEST_FUSION_PARTITION_FIELD + "\",\"type\":\"string\",\"isPartitionKey\":true}"
-                    + "]}}";
+            // 2. Create a fusion vector index using a raw schemaConfiguration Map passed through as-is
+            Map<String, Object> rawVectorField = new LinkedHashMap<>();
+            rawVectorField.put("name", TEST_FUSION_VECTOR_FIELD);
+            rawVectorField.put("type", "vector");
+            rawVectorField.put("dataType", TEST_FUSION_DATA_TYPE);
+            rawVectorField.put("dimension", TEST_FUSION_DIMENSION);
+            rawVectorField.put("distanceMetric", TEST_FUSION_DISTANCE_METRIC);
+            Map<String, Object> rawPartitionField = new LinkedHashMap<>();
+            rawPartitionField.put("name", TEST_FUSION_PARTITION_FIELD);
+            rawPartitionField.put("type", "string");
+            rawPartitionField.put("isPartitionKey", true);
+            Map<String, Object> rawSchema = new LinkedHashMap<>();
+            rawSchema.put("fields", Arrays.asList(rawVectorField, rawPartitionField));
 
             PutVectorIndexFusionResult putResult = vectorsClient.putVectorIndexFusion(
                     PutVectorIndexFusionRequest.newBuilder()
                             .bucket(bucketName)
-                            .schemaConfiguration(schemaJson)
+                            .indexName(indexName)
+                            .mode("fusion")
+                            .bodyField("schemaConfiguration", rawSchema)
                             .build());
 
             Assert.assertNotNull(putResult);

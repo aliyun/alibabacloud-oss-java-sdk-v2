@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,16 +110,19 @@ public class SchemaConfigurationTest {
     }
 
     @Test
-    public void testUnknownAttributesOutsideFieldsAreIgnored() {
-        // an attribute next to "fields" that the SDK does not model is ignored by the string
-        // overload instead of failing the parse
+    public void testUnknownAttributesOutsideFieldsArePreserved() {
+        // a raw schemaConfiguration Map passes through verbatim, so an attribute next to
+        // "fields" that the SDK does not model is kept instead of being dropped
+        Map<String, Object> schema = new LinkedHashMap<>();
+        schema.put("fields", Arrays.asList(OBJECT_MAPPER.convertValue(
+                parse("{\"name\":\"v\",\"type\":\"vector\"}"), Map.class)));
+        schema.put("futureTop", 123);
         PutVectorIndexFusionRequest request = PutVectorIndexFusionRequest.newBuilder()
                 .bucket("test-bucket")
-                .schemaConfiguration("{\"fields\":[{\"name\":\"v\",\"type\":\"vector\"}],\"futureTop\":123}")
+                .bodyField("schemaConfiguration", schema)
                 .build();
 
-        assertThat(request.schemaConfiguration().fields()).hasSize(1);
-        assertThat(SerdeJsonUtils.toJson(request.schemaConfiguration()).toString()).doesNotContain("futureTop");
+        assertThat(request.bodyFields().get("schemaConfiguration")).isSameAs(schema);
     }
 
     private static Object parse(String json) {
