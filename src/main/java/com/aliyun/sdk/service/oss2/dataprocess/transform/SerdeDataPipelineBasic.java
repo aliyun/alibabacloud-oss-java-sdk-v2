@@ -131,6 +131,9 @@ public final class SerdeDataPipelineBasic {
         if (request.prefix() != null) {
             parameters.put("prefix", request.prefix());
         }
+        if (request.inputBucket() != null) {
+            parameters.put("inputBucket", request.inputBucket());
+        }
         if (request.nextToken() != null) {
             parameters.put("nextToken", request.nextToken());
         }

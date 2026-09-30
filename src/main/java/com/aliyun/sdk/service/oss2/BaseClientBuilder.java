@@ -7,6 +7,7 @@ import com.aliyun.sdk.service.oss2.transport.HttpClient;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
 
@@ -252,6 +253,20 @@ public interface BaseClientBuilder<B extends BaseClientBuilder<B, T>, T> {
     B additionalHeaders(List<String> value);
 
     /**
+     * Sets the default HTTP headers to be automatically added to every request
+     * sent by this client.
+     * <p>
+     * A header set by the request itself takes precedence over the default one.
+     * The {@code User-Agent} header can not be changed this way, use {@link #userAgent(String)} instead.
+     * <p>
+     * Example: {@code Map.of("x-oss-request-payer", "requester")}
+     *
+     * @param value a map of default header names to values
+     * @return this builder for method chaining
+     */
+    B defaultRequestHeaders(Map<String, String> value);
+
+    /**
      * Sets a custom user agent string appended to the default SDK user agent.
      *
      * @param value the custom user agent suffix
@@ -316,6 +331,25 @@ public interface BaseClientBuilder<B extends BaseClientBuilder<B, T>, T> {
      * @return this builder for method chaining
      */
     B proxyHost(String value);
+
+    /**
+     * Sets whether to resolve the HTTP proxy from environment variables.
+     * <p>
+     * When enabled, the proxy is read from the {@code HTTPS_PROXY}, {@code HTTP_PROXY}
+     * and {@code NO_PROXY} environment variables (case-insensitive), following the same
+     * semantics as {@code http.ProxyFromEnvironment} in the OSS Go SDK: HTTPS requests use
+     * {@code HTTPS_PROXY}, HTTP requests use {@code HTTP_PROXY}, and hosts matching
+     * {@code NO_PROXY} bypass the proxy.
+     * <p>
+     * A proxy set via {@link #proxyHost(String)} takes precedence over this setting.
+     * Ignored if a custom {@link #httpClient(HttpClient)} is provided.
+     * <p>
+     * Default: {@code false}
+     *
+     * @param value {@code true} to resolve the proxy from environment variables
+     * @return this builder for method chaining
+     */
+    B proxyFromEnvironment(boolean value);
 
     /**
      * Sets whether to disable CRC64 integrity check on uploads.

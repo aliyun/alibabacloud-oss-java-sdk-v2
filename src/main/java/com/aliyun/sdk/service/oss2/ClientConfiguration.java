@@ -7,6 +7,7 @@ import com.aliyun.sdk.service.oss2.transport.HttpClient;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -29,12 +30,14 @@ public final class ClientConfiguration {
     private final Boolean useVirtualHostedAlias;
     private final HttpClient httpClient;
     private final List<String> additionalHeaders;
+    private final Map<String, String> defaultRequestHeaders;
     private final String userAgent;
     private final Duration connectTimeout;
     private final Duration readWriteTimeout;
     private final Boolean insecureSkipVerify;
     private final Boolean enabledRedirect;
     private final String proxyHost;
+    private final Boolean proxyFromEnvironment;
     private final Boolean disableUploadCRC64Check;
     private final String accountId;
     private final ScheduledExecutorService scheduledExecutorService;
@@ -57,12 +60,14 @@ public final class ClientConfiguration {
         this.useVirtualHostedAlias = builder.useVirtualHostedAlias;
         this.httpClient = builder.httpClient;
         this.additionalHeaders = builder.additionalHeaders;
+        this.defaultRequestHeaders = builder.defaultRequestHeaders;
         this.userAgent = builder.userAgent;
         this.connectTimeout = builder.connectTimeout;
         this.readWriteTimeout = builder.readWriteTimeout;
         this.insecureSkipVerify = builder.insecureSkipVerify;
         this.enabledRedirect = builder.enabledRedirect;
         this.proxyHost = builder.proxyHost;
+        this.proxyFromEnvironment = builder.proxyFromEnvironment;
         this.disableUploadCRC64Check = builder.disableUploadCRC64Check;
         this.accountId = builder.accountId;
         this.scheduledExecutorService = builder.scheduledExecutorService;
@@ -141,6 +146,10 @@ public final class ClientConfiguration {
         return Optional.ofNullable(additionalHeaders);
     }
 
+    public Optional<Map<String, String>> defaultRequestHeaders() {
+        return Optional.ofNullable(defaultRequestHeaders);
+    }
+
     public Optional<String> userAgent() {
         return Optional.ofNullable(userAgent);
     }
@@ -163,6 +172,10 @@ public final class ClientConfiguration {
 
     public Optional<String> proxyHost() {
         return Optional.ofNullable(proxyHost);
+    }
+
+    public Optional<Boolean> proxyFromEnvironment() {
+        return Optional.ofNullable(proxyFromEnvironment);
     }
 
     public Optional<Boolean> DisableUploadCRC64Check() {
@@ -211,12 +224,14 @@ public final class ClientConfiguration {
         private Boolean useVirtualHostedAlias;
         private HttpClient httpClient;
         private List<String> additionalHeaders;
+        private Map<String, String> defaultRequestHeaders;
         private String userAgent;
         private Duration connectTimeout;
         private Duration readWriteTimeout;
         private Boolean insecureSkipVerify;
         private Boolean enabledRedirect;
         private String proxyHost;
+        private Boolean proxyFromEnvironment;
         private Boolean disableUploadCRC64Check;
         private String accountId;
         private ScheduledExecutorService scheduledExecutorService;
@@ -241,12 +256,14 @@ public final class ClientConfiguration {
             this.useVirtualHostedAlias = from.useVirtualHostedAlias;
             this.httpClient = from.httpClient;
             this.additionalHeaders = from.additionalHeaders;
+            this.defaultRequestHeaders = from.defaultRequestHeaders;
             this.userAgent = from.userAgent;
             this.connectTimeout = from.connectTimeout;
             this.readWriteTimeout = from.readWriteTimeout;
             this.insecureSkipVerify = from.insecureSkipVerify;
             this.enabledRedirect = from.enabledRedirect;
             this.proxyHost = from.proxyHost;
+            this.proxyFromEnvironment = from.proxyFromEnvironment;
             this.disableUploadCRC64Check = from.disableUploadCRC64Check;
             this.accountId = from.accountId;
             this.scheduledExecutorService = from.scheduledExecutorService;
@@ -348,6 +365,12 @@ public final class ClientConfiguration {
             return this;
         }
 
+        public Builder defaultRequestHeaders(Map<String, String> value) {
+            requireNonNull(value);
+            this.defaultRequestHeaders = value;
+            return this;
+        }
+
         public Builder userAgent(String value) {
             requireNonNull(value);
             this.userAgent = value;
@@ -381,6 +404,11 @@ public final class ClientConfiguration {
         public Builder proxyHost(String value) {
             requireNonNull(value);
             this.proxyHost = value;
+            return this;
+        }
+
+        public Builder proxyFromEnvironment(boolean value) {
+            this.proxyFromEnvironment = value;
             return this;
         }
 

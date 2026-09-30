@@ -106,4 +106,14 @@ public class DefaultOSSAsyncVectorsClient implements OSSAsyncVectorsClient {
     public CompletableFuture<QueryVectorsResult> queryVectorsAsync(QueryVectorsRequest request, OperationOptions options) {
         return VectorsBasic.queryVectorsAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CompletableFuture<PutVectorIndexFusionResult> putVectorIndexFusionAsync(PutVectorIndexFusionRequest request, OperationOptions options) {
+        return VectorIndexBasic.putVectorIndexFusionAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<QueryVectorsFusionResult> queryVectorsFusionAsync(QueryVectorsFusionRequest request, OperationOptions options) {
+        return VectorsBasic.queryVectorsFusionAsync(this.clientImpl, request, options);
+    }
 }

@@ -465,6 +465,31 @@ public class DefaultOSSAsyncClient implements OSSAsyncClient {
     public CompletableFuture<DeleteBucketStorageQuotaResult> deleteBucketStorageQuotaAsync(DeleteBucketStorageQuotaRequest request, OperationOptions options) {
         return BucketStorageQuota.deleteBucketStorageQuotaAsync(this.clientImpl, request, options);
     }
+  
+    @Override
+    public CompletableFuture<CreateBucketMetadataConfigurationResult> createBucketMetadataConfigurationAsync(CreateBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.createBucketMetadataConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketMetadataConfigurationResult> getBucketMetadataConfigurationAsync(GetBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.getBucketMetadataConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketMetadataConfigurationResult> deleteBucketMetadataConfigurationAsync(DeleteBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.deleteBucketMetadataConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<UpdateBucketMetadataInventoryTableConfigurationResult> updateBucketMetadataInventoryTableConfigurationAsync(UpdateBucketMetadataInventoryTableConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.updateBucketMetadataInventoryTableConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<UpdateBucketMetadataJournalTableConfigurationResult> updateBucketMetadataJournalTableConfigurationAsync(UpdateBucketMetadataJournalTableConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.updateBucketMetadataJournalTableConfigurationAsync(this.clientImpl, request, options);
+    }
 
     @Override
     public CompletableFuture<PutBucketLifecycleResult> putBucketLifecycleAsync(PutBucketLifecycleRequest request, OperationOptions options) {

@@ -36,8 +36,24 @@ public class TestBaseAgentic extends TestBase {
      * and must stay within 63 characters, which leaves 23 characters for prefix plus random part
      * (63 - 1 - 16 for the account id - 1 - 14 for the longest region - 8 for '-ab-apsr').
      */
-    protected static final String AGENTIC_BUCKET_NAME_PREFIX = "java-sdk-test-ab-";
-    protected static final String BUCKET_SPACE_NAME_PREFIX = "java-sdk-test-bs-";
+    protected static final String AGENTIC_BUCKET_NAME_PREFIX = getAgenticBucketNamePrefix();
+    protected static final String BUCKET_SPACE_NAME_PREFIX = getBucketSpacePrefix();
+
+    private static String getAgenticBucketNamePrefix() {
+        String val = System.getenv("OSS_TEST_BUCKET_PREFIX");
+        if (val != null && !val.isEmpty()) {
+            return val + "ab-";
+        }
+        return "oss-sdk-test-ab-";
+    }
+
+    private static String getBucketSpacePrefix() {
+        String val = System.getenv("OSS_TEST_BUCKET_PREFIX");
+        if (val != null && !val.isEmpty()) {
+            return val + "bs-";
+        }
+        return "oss-sdk-test-bs-";
+    }
 
     /** The tail the service appends to an agentic bucket name. */
     protected static final String AGENTIC_BUCKET_SUFFIX = "ab-apsr";

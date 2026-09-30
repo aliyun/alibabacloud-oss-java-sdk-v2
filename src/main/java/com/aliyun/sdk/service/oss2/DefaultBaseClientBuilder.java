@@ -8,6 +8,7 @@ import com.aliyun.sdk.service.oss2.transport.HttpClientOptions;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -114,6 +115,11 @@ public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>
         return (B) this;
     }
 
+    public B defaultRequestHeaders(Map<String, String> value) {
+        cfgBuilder.defaultRequestHeaders(value);
+        return (B) this;
+    }
+
     public B userAgent(String value) {
         cfgBuilder.userAgent(value);
         return (B) this;
@@ -141,6 +147,11 @@ public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>
 
     public B proxyHost(String value) {
         cfgBuilder.proxyHost(value);
+        return (B) this;
+    }
+
+    public B proxyFromEnvironment(boolean value) {
+        cfgBuilder.proxyFromEnvironment(value);
         return (B) this;
     }
 
@@ -191,6 +202,10 @@ public abstract class DefaultBaseClientBuilder<B extends BaseClientBuilder<B, C>
 
         if (cfg.proxyHost().isPresent()) {
             b.proxyHost(cfg.proxyHost().get());
+        }
+
+        if (cfg.proxyFromEnvironment().isPresent()) {
+            b.proxyFromEnvironment(cfg.proxyFromEnvironment().get());
         }
 
         return b.build();

@@ -42,9 +42,19 @@ public class GetDataPipelineConfiguration implements Example {
                 System.out.printf("Pipeline name:%s, status:%s, role:%s, createTime:%s%n",
                         cfg.dataPipelineName(), cfg.status(),
                         cfg.dataPipelineRole(), cfg.createTime());
+                if (cfg.dataPipelineDataProcessConfiguration() != null) {
+                    System.out.printf("Model tier:%s, search mode:%s%n",
+                            cfg.modelTier(),
+                            cfg.dataPipelineDataProcessConfiguration().searchMode());
+                }
                 if (cfg.destination() != null) {
                     System.out.printf("Destination vector bucket:%s%n",
                             cfg.destination().vectorBucketName());
+                    if (cfg.destination().imageEmbedding() != null) {
+                        System.out.printf("Image embedding destination:%s/%s%n",
+                                cfg.destination().imageEmbedding().bucket(),
+                                cfg.destination().imageEmbedding().indexName());
+                    }
                 }
                 if (cfg.dataPipelineError() != null) {
                     System.out.printf("Pipeline error mode:%s, bucket:%s, prefix:%s%n",

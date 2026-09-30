@@ -8,6 +8,7 @@ import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.vectors.models.*;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.GetVectorIndexResultJson;
 import com.aliyun.sdk.service.oss2.vectors.models.internal.ListVectorIndexesResultJson;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.aliyun.sdk.service.oss2.vectors.transform.SerdeJsonUtils.addContentMd5;
@@ -43,6 +44,46 @@ public final class SerdeVectorIndexBasic {
     public static PutVectorIndexResult toPutVectorIndex(OperationOutput output) {
         Object innerBody = null;
         return PutVectorIndexResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(innerBody)
+                .build();
+    }
+
+    public static OperationInput fromPutVectorIndexFusion(PutVectorIndexFusionRequest request) {
+        // headers
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/json");
+
+        // parameters
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("putVectorIndexFusion", "");
+
+        // body
+        Map<String, Object> bodyFields = new HashMap<>(request.bodyFields());
+        if (!bodyFields.containsKey("mode")) {
+            bodyFields.put("mode", "fusion");
+        }
+        BinaryData body = SerdeJsonUtils.toJson(bodyFields);
+
+        OperationInput input = OperationInput.newBuilder()
+                .opName("PutVectorIndexFusion")
+                .bucket(request.bucket())
+                .method("POST")
+                .headers(headers)
+                .parameters(parameters)
+                .body(body)
+                .build();
+
+        SerdeJsonUtils.serializeInput(request, input, addContentMd5);
+
+        return input;
+    }
+
+    public static PutVectorIndexFusionResult toPutVectorIndexFusion(OperationOutput output) {
+        Object innerBody = null;
+        return PutVectorIndexFusionResult.newBuilder()
                 .headers(output.headers)
                 .status(output.status)
                 .statusCode(output.statusCode)
