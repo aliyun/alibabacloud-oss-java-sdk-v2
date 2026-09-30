@@ -1,6 +1,6 @@
 package com.aliyun.sdk.service.oss2.agentic.models;
 
-import com.aliyun.sdk.service.oss2.models.BucketStorageQuotaConfiguration;
+import com.aliyun.sdk.service.oss2.models.QuotaConfiguration;
 import com.aliyun.sdk.service.oss2.models.RequestModel;
 
 import static java.util.Objects.requireNonNull;
@@ -10,12 +10,12 @@ import static java.util.Objects.requireNonNull;
  */
 public final class PutAgenticBucketStorageQuotaRequest extends RequestModel {
     private final String bucket;
-    private final BucketStorageQuotaConfiguration bucketStorageQuotaConfiguration;
+    private final QuotaConfiguration quotaConfiguration;
 
     private PutAgenticBucketStorageQuotaRequest(Builder builder) {
         super(builder);
         this.bucket = builder.bucket;
-        this.bucketStorageQuotaConfiguration = builder.bucketStorageQuotaConfiguration;
+        this.quotaConfiguration = builder.quotaConfiguration;
     }
 
     /**
@@ -28,8 +28,8 @@ public final class PutAgenticBucketStorageQuotaRequest extends RequestModel {
     /**
      * The container of the request body.
      */
-    public BucketStorageQuotaConfiguration bucketStorageQuotaConfiguration() {
-        return bucketStorageQuotaConfiguration;
+    public QuotaConfiguration quotaConfiguration() {
+        return quotaConfiguration;
     }
 
     public static Builder newBuilder() {
@@ -42,7 +42,7 @@ public final class PutAgenticBucketStorageQuotaRequest extends RequestModel {
 
     public static class Builder extends RequestModel.Builder<Builder> {
         private String bucket;
-        private BucketStorageQuotaConfiguration bucketStorageQuotaConfiguration;
+        private QuotaConfiguration quotaConfiguration;
 
         private Builder() {
             super();
@@ -51,7 +51,7 @@ public final class PutAgenticBucketStorageQuotaRequest extends RequestModel {
         private Builder(PutAgenticBucketStorageQuotaRequest request) {
             super(request);
             this.bucket = request.bucket;
-            this.bucketStorageQuotaConfiguration = request.bucketStorageQuotaConfiguration;
+            this.quotaConfiguration = request.quotaConfiguration;
         }
 
         /**
@@ -66,9 +66,9 @@ public final class PutAgenticBucketStorageQuotaRequest extends RequestModel {
         /**
          * The container of the request body.
          */
-        public Builder bucketStorageQuotaConfiguration(BucketStorageQuotaConfiguration value) {
+        public Builder quotaConfiguration(QuotaConfiguration value) {
             requireNonNull(value);
-            this.bucketStorageQuotaConfiguration = value;
+            this.quotaConfiguration = value;
             return this;
         }
 

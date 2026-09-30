@@ -14,7 +14,7 @@ public final class AgenticBucketStorageQuota {
 
     public static PutAgenticBucketStorageQuotaResult putAgenticBucketStorageQuota(ClientImpl impl, PutAgenticBucketStorageQuotaRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.bucketStorageQuotaConfiguration(), "request.bucketStorageQuotaConfiguration is required");
+        requireNonNull(request.quotaConfiguration(), "request.quotaConfiguration is required");
         OperationInput input = SerdeAgenticBucketStorageQuota.fromPutAgenticBucketStorageQuota(request);
         OperationOutput output = impl.execute(input, options);
         return SerdeAgenticBucketStorageQuota.toPutAgenticBucketStorageQuota(output);
@@ -22,7 +22,7 @@ public final class AgenticBucketStorageQuota {
 
     public static CompletableFuture<PutAgenticBucketStorageQuotaResult> putAgenticBucketStorageQuotaAsync(ClientImpl impl, PutAgenticBucketStorageQuotaRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.bucketStorageQuotaConfiguration(), "request.bucketStorageQuotaConfiguration is required");
+        requireNonNull(request.quotaConfiguration(), "request.quotaConfiguration is required");
         OperationInput input = SerdeAgenticBucketStorageQuota.fromPutAgenticBucketStorageQuota(request);
         return impl.executeAsync(input, options).thenApply(SerdeAgenticBucketStorageQuota::toPutAgenticBucketStorageQuota);
     }

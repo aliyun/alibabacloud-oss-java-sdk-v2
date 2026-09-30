@@ -12,7 +12,7 @@ public class ClientBucketStorageQuotaTest extends TestBase {
         OSSClient client = getDefaultClient();
 
         try {
-            BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+            QuotaConfiguration config = QuotaConfiguration.newBuilder()
                     .storageQuota(10737418240L)
                     .mode("Strict")
                     .build();
@@ -20,7 +20,7 @@ public class ClientBucketStorageQuotaTest extends TestBase {
             PutBucketStorageQuotaResult putResult = client.putBucketStorageQuota(
                     PutBucketStorageQuotaRequest.newBuilder()
                             .bucket(bucketName)
-                            .bucketStorageQuotaConfiguration(config)
+                            .quotaConfiguration(config)
                             .build());
             Assert.assertNotNull(putResult);
             Assert.assertEquals(200, putResult.statusCode());
@@ -32,11 +32,11 @@ public class ClientBucketStorageQuotaTest extends TestBase {
             Assert.assertNotNull(getResult);
             Assert.assertEquals(200, getResult.statusCode());
             Assert.assertNotNull(getResult.requestId());
-            Assert.assertNotNull(getResult.bucketStorageQuotaConfiguration());
-            Assert.assertEquals("Strict", getResult.bucketStorageQuotaConfiguration().mode());
-            Assert.assertEquals(Long.valueOf(10737418240L), getResult.bucketStorageQuotaConfiguration().storageQuota());
-            Assert.assertNotNull(getResult.bucketStorageQuotaConfiguration().currentUsage());
-            Assert.assertTrue(getResult.bucketStorageQuotaConfiguration().currentUsage() >= 0);
+            Assert.assertNotNull(getResult.quotaConfiguration());
+            Assert.assertEquals("Strict", getResult.quotaConfiguration().mode());
+            Assert.assertEquals(Long.valueOf(10737418240L), getResult.quotaConfiguration().storageQuota());
+            Assert.assertNotNull(getResult.quotaConfiguration().currentUsage());
+            Assert.assertTrue(getResult.quotaConfiguration().currentUsage() >= 0);
 
             // GetBucketStat returns the same usage data as CurrentUsage in GetBucketStorageQuota
             GetBucketStatResult statResult = client.getBucketStat(

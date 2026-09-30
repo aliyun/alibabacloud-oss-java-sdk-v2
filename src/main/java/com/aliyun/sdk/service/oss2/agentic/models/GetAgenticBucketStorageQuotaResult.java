@@ -1,6 +1,6 @@
 package com.aliyun.sdk.service.oss2.agentic.models;
 
-import com.aliyun.sdk.service.oss2.models.BucketStorageQuotaConfiguration;
+import com.aliyun.sdk.service.oss2.models.QuotaConfiguration;
 import com.aliyun.sdk.service.oss2.models.ResultModel;
 
 /**
@@ -11,8 +11,8 @@ public final class GetAgenticBucketStorageQuotaResult extends ResultModel {
     /**
      * The container that stores the agentic bucket storage quota configuration.
      */
-    public BucketStorageQuotaConfiguration bucketStorageQuotaConfiguration() {
-        return (BucketStorageQuotaConfiguration) innerBody;
+    public QuotaConfiguration quotaConfiguration() {
+        return (QuotaConfiguration) innerBody;
     }
 
     GetAgenticBucketStorageQuotaResult(Builder builder) {

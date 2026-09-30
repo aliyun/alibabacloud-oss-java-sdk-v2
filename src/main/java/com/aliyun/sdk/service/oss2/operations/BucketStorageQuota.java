@@ -14,7 +14,7 @@ public final class BucketStorageQuota {
 
     public static PutBucketStorageQuotaResult putBucketStorageQuota(ClientImpl impl, PutBucketStorageQuotaRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.bucketStorageQuotaConfiguration(), "request.bucketStorageQuotaConfiguration is required");
+        requireNonNull(request.quotaConfiguration(), "request.quotaConfiguration is required");
         OperationInput input = SerdeBucketStorageQuota.fromPutBucketStorageQuota(request);
         OperationOutput output = impl.execute(input, options);
         return SerdeBucketStorageQuota.toPutBucketStorageQuota(output);
@@ -22,7 +22,7 @@ public final class BucketStorageQuota {
 
     public static CompletableFuture<PutBucketStorageQuotaResult> putBucketStorageQuotaAsync(ClientImpl impl, PutBucketStorageQuotaRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
-        requireNonNull(request.bucketStorageQuotaConfiguration(), "request.bucketStorageQuotaConfiguration is required");
+        requireNonNull(request.quotaConfiguration(), "request.quotaConfiguration is required");
         OperationInput input = SerdeBucketStorageQuota.fromPutBucketStorageQuota(request);
         return impl.executeAsync(input, options).thenApply(SerdeBucketStorageQuota::toPutBucketStorageQuota);
     }

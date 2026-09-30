@@ -1,28 +1,42 @@
-package com.example.oss;
+package com.example.oss.agentic;
 
-import com.aliyun.sdk.service.oss2.OSSAsyncClient;
-import com.aliyun.sdk.service.oss2.OSSAsyncClientBuilder;
+import com.example.oss.Example;
+
+import com.aliyun.sdk.service.oss2.agentic.OSSAsyncAgenticBucketClient;
+import com.aliyun.sdk.service.oss2.agentic.OSSAsyncAgenticBucketClientBuilder;
+import com.aliyun.sdk.service.oss2.agentic.models.*;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
 import com.aliyun.sdk.service.oss2.models.QuotaConfiguration;
-import com.aliyun.sdk.service.oss2.models.GetBucketStorageQuotaRequest;
-import com.aliyun.sdk.service.oss2.models.GetBucketStorageQuotaResult;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class GetBucketStorageQuotaAsync implements Example {
+public class GetAgenticBucketStorageQuotaAsync implements Example {
 
-    private static void execute(String endpoint, String region, String bucket) {
+    private static void execute(
+            String endpoint,
+            String region,
+            String accountId,
+            String bucket) {
+
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
+        OSSAsyncAgenticBucketClientBuilder clientBuilder = OSSAsyncAgenticBucketClient.newBuilder()
+                .credentialsProvider(provider)
+                .region(region)
+                .accountId(accountId);
 
-        try (OSSAsyncClient client = getDefaultAsyncClient(endpoint, region, provider)) {
-            GetBucketStorageQuotaRequest request = GetBucketStorageQuotaRequest.newBuilder()
+        if (endpoint != null) {
+            clientBuilder.endpoint(endpoint);
+        }
+
+        try (OSSAsyncAgenticBucketClient client = clientBuilder.build()) {
+            GetAgenticBucketStorageQuotaRequest request = GetAgenticBucketStorageQuotaRequest.newBuilder()
                     .bucket(bucket)
                     .build();
 
-            GetBucketStorageQuotaResult result = client.getBucketStorageQuotaAsync(request).get();
+            GetAgenticBucketStorageQuotaResult result = client.getAgenticBucketStorageQuotaAsync(request).get();
 
             System.out.printf("Status code:%d, request id:%s%n",
                     result.statusCode(), result.requestId());
@@ -31,9 +45,6 @@ public class GetBucketStorageQuotaAsync implements Example {
             if (config != null) {
                 System.out.printf("Storage quota: %d bytes%n", config.storageQuota());
                 System.out.printf("Mode: %s%n", config.mode());
-                if (config.currentUsage() != null) {
-                    System.out.printf("Current usage: %d bytes%n", config.currentUsage());
-                }
             }
 
         } catch (Exception e) {
@@ -41,22 +52,13 @@ public class GetBucketStorageQuotaAsync implements Example {
         }
     }
 
-    private static OSSAsyncClient getDefaultAsyncClient(String endpoint, String region, CredentialsProvider provider) {
-        OSSAsyncClientBuilder builder = OSSAsyncClient.newBuilder()
-                .region(region)
-                .credentialsProvider(provider);
-        if (endpoint != null) {
-            builder.endpoint(endpoint);
-        }
-        return builder.build();
-    }
-
     @Override
     public Options getOptions() {
         Options opts = new Options();
         opts.addOption(Option.builder().longOpt("endpoint").desc("The domain names that other services can use to access OSS.").hasArg().get());
         opts.addOption(Option.builder().longOpt("region").desc("The region in which the bucket is located.").hasArg().required().get());
-        opts.addOption(Option.builder().longOpt("bucket").desc("The name of the bucket.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("accountId").desc("The ID of the Alibaba Cloud account.").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("bucket").desc("The name of the agentic bucket.").hasArg().required().get());
         return opts;
     }
 
@@ -64,7 +66,8 @@ public class GetBucketStorageQuotaAsync implements Example {
     public void runCmd(CommandLine cmd) throws ParseException {
         String endpoint = cmd.getParsedOptionValue("endpoint");
         String region = cmd.getParsedOptionValue("region");
+        String accountId = cmd.getParsedOptionValue("accountId");
         String bucket = cmd.getParsedOptionValue("bucket");
-        execute(endpoint, region, bucket);
+        execute(endpoint, region, accountId, bucket);
     }
 }

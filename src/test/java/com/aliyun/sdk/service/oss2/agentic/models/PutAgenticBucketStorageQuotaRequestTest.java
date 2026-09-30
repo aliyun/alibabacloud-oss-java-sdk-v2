@@ -2,7 +2,7 @@ package com.aliyun.sdk.service.oss2.agentic.models;
 
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.agentic.transform.SerdeAgenticBucketStorageQuota;
-import com.aliyun.sdk.service.oss2.models.BucketStorageQuotaConfiguration;
+import com.aliyun.sdk.service.oss2.models.QuotaConfiguration;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,27 +18,27 @@ public class PutAgenticBucketStorageQuotaRequestTest {
         PutAgenticBucketStorageQuotaRequest request = PutAgenticBucketStorageQuotaRequest.newBuilder().build();
         assertThat(request).isNotNull();
         assertThat(request.bucket()).isNull();
-        assertThat(request.bucketStorageQuotaConfiguration()).isNull();
+        assertThat(request.quotaConfiguration()).isNull();
     }
 
     @Test
     public void testFullBuilder() {
-        BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+        QuotaConfiguration config = QuotaConfiguration.newBuilder()
                 .storageQuota(10737418240L)
                 .mode("Strict")
                 .build();
 
         PutAgenticBucketStorageQuotaRequest request = PutAgenticBucketStorageQuotaRequest.newBuilder()
                 .bucket("example-agentic-bucket")
-                .bucketStorageQuotaConfiguration(config)
+                .quotaConfiguration(config)
                 .build();
 
         assertThat(request.bucket()).isEqualTo("example-agentic-bucket");
-        assertThat(request.bucketStorageQuotaConfiguration()).isEqualTo(config);
+        assertThat(request.quotaConfiguration()).isEqualTo(config);
 
         PutAgenticBucketStorageQuotaRequest copy = request.toBuilder().build();
         assertThat(copy.bucket()).isEqualTo("example-agentic-bucket");
-        assertThat(copy.bucketStorageQuotaConfiguration()).isEqualTo(config);
+        assertThat(copy.quotaConfiguration()).isEqualTo(config);
     }
 
     @Test
@@ -49,17 +49,17 @@ public class PutAgenticBucketStorageQuotaRequestTest {
                 "</QuotaConfiguration>";
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        BucketStorageQuotaConfiguration xmlConfig = xmlMapper.readValue(xml, BucketStorageQuotaConfiguration.class);
+        QuotaConfiguration xmlConfig = xmlMapper.readValue(xml, QuotaConfiguration.class);
         String expectedXml = xmlMapper.writeValueAsString(xmlConfig);
 
-        BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+        QuotaConfiguration config = QuotaConfiguration.newBuilder()
                 .storageQuota(10737418240L)
                 .mode("Warning")
                 .build();
 
         PutAgenticBucketStorageQuotaRequest request = PutAgenticBucketStorageQuotaRequest.newBuilder()
                 .bucket("agentic-xml-bucket")
-                .bucketStorageQuotaConfiguration(config)
+                .quotaConfiguration(config)
                 .build();
 
         OperationInput input = SerdeAgenticBucketStorageQuota.fromPutAgenticBucketStorageQuota(request);

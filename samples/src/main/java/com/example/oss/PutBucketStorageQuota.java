@@ -4,7 +4,7 @@ import com.aliyun.sdk.service.oss2.OSSClient;
 import com.aliyun.sdk.service.oss2.OSSClientBuilder;
 import com.aliyun.sdk.service.oss2.credentials.CredentialsProvider;
 import com.aliyun.sdk.service.oss2.credentials.EnvironmentVariableCredentialsProvider;
-import com.aliyun.sdk.service.oss2.models.BucketStorageQuotaConfiguration;
+import com.aliyun.sdk.service.oss2.models.QuotaConfiguration;
 import com.aliyun.sdk.service.oss2.models.PutBucketStorageQuotaRequest;
 import com.aliyun.sdk.service.oss2.models.PutBucketStorageQuotaResult;
 import org.apache.commons.cli.CommandLine;
@@ -26,8 +26,7 @@ public class PutBucketStorageQuota implements Example {
 
         try (OSSClient client = clientBuilder.build()) {
             PutBucketStorageQuotaRequest request = PutBucketStorageQuotaRequest.newBuilder()
-                    .bucket(bucket)
-                    .bucketStorageQuotaConfiguration(BucketStorageQuotaConfiguration.newBuilder()
+                    .bucket(bucket).quotaConfiguration(QuotaConfiguration.newBuilder()
                             .storageQuota(storageQuota)
                             .mode(mode)
                             .build())

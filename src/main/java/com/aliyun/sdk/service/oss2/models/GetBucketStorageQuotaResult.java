@@ -8,8 +8,8 @@ public final class GetBucketStorageQuotaResult extends ResultModel {
     /**
      * The container that stores the bucket storage quota configuration.
      */
-    public BucketStorageQuotaConfiguration bucketStorageQuotaConfiguration() {
-        return (BucketStorageQuotaConfiguration) innerBody;
+    public QuotaConfiguration quotaConfiguration() {
+        return (QuotaConfiguration) innerBody;
     }
 
     GetBucketStorageQuotaResult(Builder builder) {

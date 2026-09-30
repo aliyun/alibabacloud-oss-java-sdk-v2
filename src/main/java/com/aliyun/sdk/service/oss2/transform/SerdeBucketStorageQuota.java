@@ -23,7 +23,7 @@ public final class SerdeBucketStorageQuota {
         parameters.put("quota", "");
         builder.parameters(parameters);
 
-        BinaryData body = SerdeUtils.serializeXmlBody(request.bucketStorageQuotaConfiguration());
+        BinaryData body = SerdeUtils.serializeXmlBody(request.quotaConfiguration());
         builder.body(body);
 
         builder.bucket(request.bucket());
@@ -62,7 +62,7 @@ public final class SerdeBucketStorageQuota {
     }
 
     public static GetBucketStorageQuotaResult toGetBucketStorageQuota(OperationOutput output) {
-        Object innerBody = SerdeUtils.deserializeXmlBody(output, BucketStorageQuotaConfiguration.class);
+        Object innerBody = SerdeUtils.deserializeXmlBody(output, QuotaConfiguration.class);
         return GetBucketStorageQuotaResult.newBuilder()
                 .headers(output.headers)
                 .status(output.status)

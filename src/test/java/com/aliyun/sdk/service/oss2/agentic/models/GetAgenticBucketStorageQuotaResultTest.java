@@ -2,7 +2,7 @@ package com.aliyun.sdk.service.oss2.agentic.models;
 
 import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.agentic.transform.SerdeAgenticBucketStorageQuota;
-import com.aliyun.sdk.service.oss2.models.BucketStorageQuotaConfiguration;
+import com.aliyun.sdk.service.oss2.models.QuotaConfiguration;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import org.junit.jupiter.api.Test;
 import java.util.Collections;
@@ -18,12 +18,12 @@ public class GetAgenticBucketStorageQuotaResultTest {
         assertThat(result).isNotNull();
         assertThat(result.headers()).isNotNull();
         assertThat(result.headers().isEmpty()).isTrue();
-        assertThat(result.bucketStorageQuotaConfiguration()).isNull();
+        assertThat(result.quotaConfiguration()).isNull();
     }
 
     @Test
     public void testFullBuilder() {
-        BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+        QuotaConfiguration config = QuotaConfiguration.newBuilder()
                 .storageQuota(10737418240L)
                 .mode("Strict")
                 .currentUsage(1049600L)
@@ -35,16 +35,16 @@ public class GetAgenticBucketStorageQuotaResultTest {
                 .build();
 
         assertThat(result.requestId()).isEqualTo("request-id");
-        assertThat(result.bucketStorageQuotaConfiguration()).isNotNull();
-        assertThat(result.bucketStorageQuotaConfiguration()).isEqualTo(config);
-        assertThat(result.bucketStorageQuotaConfiguration().mode()).isEqualTo("Strict");
-        assertThat(result.bucketStorageQuotaConfiguration().storageQuota()).isEqualTo(10737418240L);
-        assertThat(result.bucketStorageQuotaConfiguration().currentUsage()).isEqualTo(1049600L);
+        assertThat(result.quotaConfiguration()).isNotNull();
+        assertThat(result.quotaConfiguration()).isEqualTo(config);
+        assertThat(result.quotaConfiguration().mode()).isEqualTo("Strict");
+        assertThat(result.quotaConfiguration().storageQuota()).isEqualTo(10737418240L);
+        assertThat(result.quotaConfiguration().currentUsage()).isEqualTo(1049600L);
     }
 
     @Test
     public void testToBuilderPreserveState() {
-        BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+        QuotaConfiguration config = QuotaConfiguration.newBuilder()
                 .storageQuota(10737418240L)
                 .mode("Warning")
                 .currentUsage(2099200L)
@@ -58,11 +58,11 @@ public class GetAgenticBucketStorageQuotaResultTest {
         GetAgenticBucketStorageQuotaResult copy = original.toBuilder().build();
 
         assertThat(copy.requestId()).isEqualTo("request-id");
-        assertThat(copy.bucketStorageQuotaConfiguration()).isNotNull();
-        assertThat(copy.bucketStorageQuotaConfiguration()).isEqualTo(config);
-        assertThat(copy.bucketStorageQuotaConfiguration().mode()).isEqualTo("Warning");
-        assertThat(copy.bucketStorageQuotaConfiguration().storageQuota()).isEqualTo(10737418240L);
-        assertThat(copy.bucketStorageQuotaConfiguration().currentUsage()).isEqualTo(2099200L);
+        assertThat(copy.quotaConfiguration()).isNotNull();
+        assertThat(copy.quotaConfiguration()).isEqualTo(config);
+        assertThat(copy.quotaConfiguration().mode()).isEqualTo("Warning");
+        assertThat(copy.quotaConfiguration().storageQuota()).isEqualTo(10737418240L);
+        assertThat(copy.quotaConfiguration().currentUsage()).isEqualTo(2099200L);
     }
 
     @Test
@@ -85,9 +85,9 @@ public class GetAgenticBucketStorageQuotaResultTest {
         assertThat(result).isNotNull();
         assertThat(result.headers()).isNotNull();
         assertThat(result.statusCode()).isEqualTo(200);
-        assertThat(result.bucketStorageQuotaConfiguration()).isNotNull();
-        assertThat(result.bucketStorageQuotaConfiguration().mode()).isEqualTo("Strict");
-        assertThat(result.bucketStorageQuotaConfiguration().storageQuota()).isEqualTo(104857600L);
-        assertThat(result.bucketStorageQuotaConfiguration().currentUsage()).isNull();
+        assertThat(result.quotaConfiguration()).isNotNull();
+        assertThat(result.quotaConfiguration().mode()).isEqualTo("Strict");
+        assertThat(result.quotaConfiguration().storageQuota()).isEqualTo(104857600L);
+        assertThat(result.quotaConfiguration().currentUsage()).isNull();
     }
 }

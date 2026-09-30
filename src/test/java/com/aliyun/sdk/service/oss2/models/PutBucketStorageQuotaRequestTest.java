@@ -22,19 +22,19 @@ public class PutBucketStorageQuotaRequestTest {
         assertThat(request.parameters()).isNotNull();
         assertThat(request.parameters().isEmpty()).isTrue();
         assertThat(request.bucket()).isNull();
-        assertThat(request.bucketStorageQuotaConfiguration()).isNull();
+        assertThat(request.quotaConfiguration()).isNull();
     }
 
     @Test
     public void testFullBuilder() {
-        BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+        QuotaConfiguration config = QuotaConfiguration.newBuilder()
                 .storageQuota(10737418240L)
                 .mode("Strict")
                 .build();
 
         PutBucketStorageQuotaRequest request = PutBucketStorageQuotaRequest.newBuilder()
                 .bucket("examplebucket")
-                .bucketStorageQuotaConfiguration(config)
+                .quotaConfiguration(config)
                 .header("x-header-value", "value1")
                 .header("x-header-value", "value2")
                 .parameter("empty-param", "")
@@ -43,7 +43,7 @@ public class PutBucketStorageQuotaRequestTest {
                 .build();
 
         assertThat(request.bucket()).isEqualTo("examplebucket");
-        assertThat(request.bucketStorageQuotaConfiguration()).isEqualTo(config);
+        assertThat(request.quotaConfiguration()).isEqualTo(config);
         assertThat(request.headers()).contains(
                 new AbstractMap.SimpleEntry<>("x-header-value", "value2"));
         assertThat(request.parameters()).contains(
@@ -54,41 +54,41 @@ public class PutBucketStorageQuotaRequestTest {
 
         PutBucketStorageQuotaRequest copy = request.toBuilder().build();
         assertThat(copy.bucket()).isEqualTo("examplebucket");
-        assertThat(copy.bucketStorageQuotaConfiguration()).isEqualTo(config);
+        assertThat(copy.quotaConfiguration()).isEqualTo(config);
     }
 
     @Test
     public void testToBuilderPreserveState() {
-        BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+        QuotaConfiguration config = QuotaConfiguration.newBuilder()
                 .storageQuota(10737418240L)
                 .mode("Warning")
                 .build();
 
         PutBucketStorageQuotaRequest original = PutBucketStorageQuotaRequest.newBuilder()
                 .bucket("test-bucket")
-                .bucketStorageQuotaConfiguration(config)
+                .quotaConfiguration(config)
                 .build();
 
         PutBucketStorageQuotaRequest copy = original.toBuilder().build();
         assertThat(copy.bucket()).isEqualTo("test-bucket");
-        assertThat(copy.bucketStorageQuotaConfiguration()).isEqualTo(config);
+        assertThat(copy.quotaConfiguration()).isEqualTo(config);
     }
 
     @Test
     public void testHeaderProperties() {
-        BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+        QuotaConfiguration config = QuotaConfiguration.newBuilder()
                 .storageQuota(10737418240L)
                 .mode("Strict")
                 .build();
 
         PutBucketStorageQuotaRequest request = PutBucketStorageQuotaRequest.newBuilder()
                 .bucket("quota-bucket")
-                .bucketStorageQuotaConfiguration(config)
+                .quotaConfiguration(config)
                 .build();
 
         assertThat(request.bucket()).isEqualTo("quota-bucket");
-        assertThat(request.bucketStorageQuotaConfiguration().storageQuota()).isEqualTo(10737418240L);
-        assertThat(request.bucketStorageQuotaConfiguration().mode()).isEqualTo("Strict");
+        assertThat(request.quotaConfiguration().storageQuota()).isEqualTo(10737418240L);
+        assertThat(request.quotaConfiguration().mode()).isEqualTo("Strict");
     }
 
     @Test
@@ -99,17 +99,17 @@ public class PutBucketStorageQuotaRequestTest {
                 "</QuotaConfiguration>";
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        BucketStorageQuotaConfiguration xmlConfig = xmlMapper.readValue(xml, BucketStorageQuotaConfiguration.class);
+        QuotaConfiguration xmlConfig = xmlMapper.readValue(xml, QuotaConfiguration.class);
         String expectedXml = xmlMapper.writeValueAsString(xmlConfig);
 
-        BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+        QuotaConfiguration config = QuotaConfiguration.newBuilder()
                 .storageQuota(10737418240L)
                 .mode("Strict")
                 .build();
 
         PutBucketStorageQuotaRequest request = PutBucketStorageQuotaRequest.newBuilder()
                 .bucket("xml-bucket")
-                .bucketStorageQuotaConfiguration(config)
+                .quotaConfiguration(config)
                 .build();
 
         OperationInput input = SerdeBucketStorageQuota.fromPutBucketStorageQuota(request);

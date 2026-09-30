@@ -2,7 +2,7 @@ package com.aliyun.sdk.service.oss2.agentic;
 
 import com.aliyun.sdk.service.oss2.agentic.models.*;
 import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
-import com.aliyun.sdk.service.oss2.models.BucketStorageQuotaConfiguration;
+import com.aliyun.sdk.service.oss2.models.QuotaConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ public class ClientAgenticBucketStorageQuotaAsyncTest extends TestBaseAgentic {
         String bucket = agenticBucketName;
 
         try {
-            BucketStorageQuotaConfiguration config = BucketStorageQuotaConfiguration.newBuilder()
+            QuotaConfiguration config = QuotaConfiguration.newBuilder()
                     .storageQuota(10737418240L)
                     .mode("Warning")
                     .build();
@@ -22,7 +22,7 @@ public class ClientAgenticBucketStorageQuotaAsyncTest extends TestBaseAgentic {
             PutAgenticBucketStorageQuotaResult putResult = client.putAgenticBucketStorageQuotaAsync(
                     PutAgenticBucketStorageQuotaRequest.newBuilder()
                             .bucket(bucket)
-                            .bucketStorageQuotaConfiguration(config)
+                            .quotaConfiguration(config)
                             .build()).get();
             Assert.assertNotNull(putResult);
             Assert.assertEquals(200, putResult.statusCode());
@@ -34,9 +34,9 @@ public class ClientAgenticBucketStorageQuotaAsyncTest extends TestBaseAgentic {
             Assert.assertNotNull(getResult);
             Assert.assertEquals(200, getResult.statusCode());
             Assert.assertNotNull(getResult.requestId());
-            Assert.assertNotNull(getResult.bucketStorageQuotaConfiguration());
-            Assert.assertEquals("Warning", getResult.bucketStorageQuotaConfiguration().mode());
-            Assert.assertEquals(Long.valueOf(10737418240L), getResult.bucketStorageQuotaConfiguration().storageQuota());
+            Assert.assertNotNull(getResult.quotaConfiguration());
+            Assert.assertEquals("Warning", getResult.quotaConfiguration().mode());
+            Assert.assertEquals(Long.valueOf(10737418240L), getResult.quotaConfiguration().storageQuota());
 
             DeleteAgenticBucketStorageQuotaResult deleteResult = client.deleteAgenticBucketStorageQuotaAsync(
                     DeleteAgenticBucketStorageQuotaRequest.newBuilder()

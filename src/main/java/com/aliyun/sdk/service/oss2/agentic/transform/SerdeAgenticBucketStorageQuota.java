@@ -3,7 +3,7 @@ package com.aliyun.sdk.service.oss2.agentic.transform;
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.agentic.models.*;
-import com.aliyun.sdk.service.oss2.models.BucketStorageQuotaConfiguration;
+import com.aliyun.sdk.service.oss2.models.QuotaConfiguration;
 import com.aliyun.sdk.service.oss2.transform.SerdeUtils;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
@@ -28,7 +28,7 @@ public final class SerdeAgenticBucketStorageQuota {
 
         builder.bucket(request.bucket());
 
-        BinaryData body = SerdeUtils.serializeXmlBody(request.bucketStorageQuotaConfiguration());
+        BinaryData body = SerdeUtils.serializeXmlBody(request.quotaConfiguration());
         builder.body(body != null ? body : new com.aliyun.sdk.service.oss2.transport.StringBinaryData(""));
 
         OperationInput input = builder.build();
@@ -66,7 +66,7 @@ public final class SerdeAgenticBucketStorageQuota {
     }
 
     public static GetAgenticBucketStorageQuotaResult toGetAgenticBucketStorageQuota(OperationOutput output) {
-        Object innerBody = SerdeUtils.deserializeXmlBody(output, BucketStorageQuotaConfiguration.class);
+        Object innerBody = SerdeUtils.deserializeXmlBody(output, QuotaConfiguration.class);
         return GetAgenticBucketStorageQuotaResult.newBuilder()
                 .headers(output.headers)
                 .status(output.status)
