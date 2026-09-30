@@ -135,6 +135,65 @@ public interface OSSAsyncAgenticBucketClient extends AutoCloseable {
      */
     default CompletableFuture<PutAgenticBucketStatusResult> putAgenticBucketStatusAsync(PutAgenticBucketStatusRequest request, OperationOptions options) { throw new UnsupportedOperationException(); }
 
+    // Storage Quota
+
+    /**
+     * Configures the default storage quota for bucket spaces created in an agentic bucket.
+     *
+     * @param request A {@link PutAgenticBucketStorageQuotaRequest} for PutAgenticBucketStorageQuota operation.
+     * @return A {@link CompletableFuture} of {@link PutAgenticBucketStorageQuotaResult} for PutAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutAgenticBucketStorageQuotaResult> putAgenticBucketStorageQuotaAsync(PutAgenticBucketStorageQuotaRequest request) { return putAgenticBucketStorageQuotaAsync(request, OperationOptions.defaults()); }
+
+    /**
+     * Configures the default storage quota for bucket spaces created in an agentic bucket.
+     *
+     * @param request A {@link PutAgenticBucketStorageQuotaRequest} for PutAgenticBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A {@link CompletableFuture} of {@link PutAgenticBucketStorageQuotaResult} for PutAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutAgenticBucketStorageQuotaResult> putAgenticBucketStorageQuotaAsync(PutAgenticBucketStorageQuotaRequest request, OperationOptions options) { throw new UnsupportedOperationException(); }
+
+    /**
+     * Queries the default storage quota of an agentic bucket.
+     *
+     * @param request A {@link GetAgenticBucketStorageQuotaRequest} for GetAgenticBucketStorageQuota operation.
+     * @return A {@link CompletableFuture} of {@link GetAgenticBucketStorageQuotaResult} for GetAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAgenticBucketStorageQuotaResult> getAgenticBucketStorageQuotaAsync(GetAgenticBucketStorageQuotaRequest request) { return getAgenticBucketStorageQuotaAsync(request, OperationOptions.defaults()); }
+
+    /**
+     * Queries the default storage quota of an agentic bucket.
+     *
+     * @param request A {@link GetAgenticBucketStorageQuotaRequest} for GetAgenticBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A {@link CompletableFuture} of {@link GetAgenticBucketStorageQuotaResult} for GetAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<GetAgenticBucketStorageQuotaResult> getAgenticBucketStorageQuotaAsync(GetAgenticBucketStorageQuotaRequest request, OperationOptions options) { throw new UnsupportedOperationException(); }
+
+    /**
+     * Deletes the default storage quota of an agentic bucket.
+     *
+     * @param request A {@link DeleteAgenticBucketStorageQuotaRequest} for DeleteAgenticBucketStorageQuota operation.
+     * @return A {@link CompletableFuture} of {@link DeleteAgenticBucketStorageQuotaResult} for DeleteAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAgenticBucketStorageQuotaResult> deleteAgenticBucketStorageQuotaAsync(DeleteAgenticBucketStorageQuotaRequest request) { return deleteAgenticBucketStorageQuotaAsync(request, OperationOptions.defaults()); }
+
+    /**
+     * Deletes the default storage quota of an agentic bucket.
+     *
+     * @param request A {@link DeleteAgenticBucketStorageQuotaRequest} for DeleteAgenticBucketStorageQuota operation.
+     * @param options The operation options.
+     * @return A {@link CompletableFuture} of {@link DeleteAgenticBucketStorageQuotaResult} for DeleteAgenticBucketStorageQuota operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<DeleteAgenticBucketStorageQuotaResult> deleteAgenticBucketStorageQuotaAsync(DeleteAgenticBucketStorageQuotaRequest request, OperationOptions options) { throw new UnsupportedOperationException(); }
+
     /**
      * Lists the bucket spaces of an agentic bucket.
      *

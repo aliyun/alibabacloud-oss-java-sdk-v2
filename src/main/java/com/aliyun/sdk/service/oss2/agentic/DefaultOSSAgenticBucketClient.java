@@ -38,6 +38,10 @@ public class DefaultOSSAgenticBucketClient implements OSSAgenticBucketClient {
     @Override public PutAgenticBucketStatusResult putAgenticBucketStatus(PutAgenticBucketStatusRequest request, OperationOptions options) { return AgenticBucketBasic.putAgenticBucketStatus(this.clientImpl, request, options); }
     @Override public ListBucketSpacesResult listBucketSpaces(ListBucketSpacesRequest request, OperationOptions options) { return AgenticBucketBasic.listBucketSpaces(this.clientImpl, request, options); }
 
+    @Override public PutAgenticBucketStorageQuotaResult putAgenticBucketStorageQuota(PutAgenticBucketStorageQuotaRequest request, OperationOptions options) { return AgenticBucketStorageQuota.putAgenticBucketStorageQuota(this.clientImpl, request, options); }
+    @Override public GetAgenticBucketStorageQuotaResult getAgenticBucketStorageQuota(GetAgenticBucketStorageQuotaRequest request, OperationOptions options) { return AgenticBucketStorageQuota.getAgenticBucketStorageQuota(this.clientImpl, request, options); }
+    @Override public DeleteAgenticBucketStorageQuotaResult deleteAgenticBucketStorageQuota(DeleteAgenticBucketStorageQuotaRequest request, OperationOptions options) { return AgenticBucketStorageQuota.deleteAgenticBucketStorageQuota(this.clientImpl, request, options); }
+
     @Override public PutAgenticBucketAclResult putAgenticBucketAcl(PutAgenticBucketAclRequest request, OperationOptions options) { return AgenticBucketAcl.putAgenticBucketAcl(this.clientImpl, request, options); }
     @Override public GetAgenticBucketAclResult getAgenticBucketAcl(GetAgenticBucketAclRequest request, OperationOptions options) { return AgenticBucketAcl.getAgenticBucketAcl(this.clientImpl, request, options); }
 
