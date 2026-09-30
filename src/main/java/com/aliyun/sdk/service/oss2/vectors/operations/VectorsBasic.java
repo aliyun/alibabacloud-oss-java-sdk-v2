@@ -90,4 +90,20 @@ public final class VectorsBasic {
         return impl.executeAsync(input, options)
                 .thenApply(SerdeVectorsBasic::toQueryVectors);
     }
+
+    public static QueryVectorsFusionResult queryVectorsFusion(ClientImpl impl, QueryVectorsFusionRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeVectorsBasic.fromQueryVectorsFusion(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeVectorsBasic.toQueryVectorsFusion(output);
+    }
+
+    public static CompletableFuture<QueryVectorsFusionResult> queryVectorsFusionAsync(ClientImpl impl, QueryVectorsFusionRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeVectorsBasic.fromQueryVectorsFusion(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeVectorsBasic::toQueryVectorsFusion);
+    }
 }

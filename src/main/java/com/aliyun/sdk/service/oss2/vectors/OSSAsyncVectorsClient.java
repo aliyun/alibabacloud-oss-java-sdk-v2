@@ -332,6 +332,52 @@ public interface OSSAsyncVectorsClient extends AutoCloseable {
     default CompletableFuture<QueryVectorsResult> queryVectorsAsync(QueryVectorsRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Creates a fusion vector index.
+     *
+     * @param request A {@link PutVectorIndexFusionRequest} for PutVectorIndexFusion operation.
+     * @return A Java Future containing the {@link PutVectorIndexFusionResult} of the PutVectorIndexFusion operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutVectorIndexFusionResult> putVectorIndexFusionAsync(PutVectorIndexFusionRequest request) {
+        return putVectorIndexFusionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a fusion vector index.
+     *
+     * @param request A {@link PutVectorIndexFusionRequest} for PutVectorIndexFusion operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link PutVectorIndexFusionResult} of the PutVectorIndexFusion operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<PutVectorIndexFusionResult> putVectorIndexFusionAsync(PutVectorIndexFusionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries vectors in a fusion index.
+     *
+     * @param request A {@link QueryVectorsFusionRequest} for QueryVectorsFusion operation.
+     * @return A Java Future containing the {@link QueryVectorsFusionResult} of the QueryVectorsFusion operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<QueryVectorsFusionResult> queryVectorsFusionAsync(QueryVectorsFusionRequest request) {
+        return queryVectorsFusionAsync(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries vectors in a fusion index.
+     *
+     * @param request A {@link QueryVectorsFusionRequest} for QueryVectorsFusion operation.
+     * @param options The operation options.
+     * @return A Java Future containing the {@link QueryVectorsFusionResult} of the QueryVectorsFusion operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CompletableFuture<QueryVectorsFusionResult> queryVectorsFusionAsync(QueryVectorsFusionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 
 }
