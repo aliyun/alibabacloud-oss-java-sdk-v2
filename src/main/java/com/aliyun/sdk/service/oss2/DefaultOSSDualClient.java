@@ -907,6 +907,36 @@ public class DefaultOSSDualClient implements OSSDualClient {
     }
 
     @Override
+    public PutBucketStorageQuotaResult putBucketStorageQuota(PutBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.putBucketStorageQuota(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketStorageQuotaResult getBucketStorageQuota(GetBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.getBucketStorageQuota(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketStorageQuotaResult deleteBucketStorageQuota(DeleteBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.deleteBucketStorageQuota(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<PutBucketStorageQuotaResult> putBucketStorageQuotaAsync(PutBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.putBucketStorageQuotaAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketStorageQuotaResult> getBucketStorageQuotaAsync(GetBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.getBucketStorageQuotaAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketStorageQuotaResult> deleteBucketStorageQuotaAsync(DeleteBucketStorageQuotaRequest request, OperationOptions options) {
+        return BucketStorageQuota.deleteBucketStorageQuotaAsync(this.clientImpl, request, options);
+    }
+  
+    @Override
     public CreateBucketMetadataConfigurationResult createBucketMetadataConfiguration(CreateBucketMetadataConfigurationRequest request, OperationOptions options) {
         return BucketMetadataConfiguration.createBucketMetadataConfiguration(this.clientImpl, request, options);
     }

@@ -38,6 +38,10 @@ public class DefaultOSSAsyncAgenticBucketClient implements OSSAsyncAgenticBucket
     @Override public CompletableFuture<PutAgenticBucketStatusResult> putAgenticBucketStatusAsync(PutAgenticBucketStatusRequest request, OperationOptions options) { return AgenticBucketBasic.putAgenticBucketStatusAsync(this.clientImpl, request, options); }
     @Override public CompletableFuture<ListBucketSpacesResult> listBucketSpacesAsync(ListBucketSpacesRequest request, OperationOptions options) { return AgenticBucketBasic.listBucketSpacesAsync(this.clientImpl, request, options); }
 
+    @Override public CompletableFuture<PutAgenticBucketStorageQuotaResult> putAgenticBucketStorageQuotaAsync(PutAgenticBucketStorageQuotaRequest request, OperationOptions options) { return AgenticBucketStorageQuota.putAgenticBucketStorageQuotaAsync(this.clientImpl, request, options); }
+    @Override public CompletableFuture<GetAgenticBucketStorageQuotaResult> getAgenticBucketStorageQuotaAsync(GetAgenticBucketStorageQuotaRequest request, OperationOptions options) { return AgenticBucketStorageQuota.getAgenticBucketStorageQuotaAsync(this.clientImpl, request, options); }
+    @Override public CompletableFuture<DeleteAgenticBucketStorageQuotaResult> deleteAgenticBucketStorageQuotaAsync(DeleteAgenticBucketStorageQuotaRequest request, OperationOptions options) { return AgenticBucketStorageQuota.deleteAgenticBucketStorageQuotaAsync(this.clientImpl, request, options); }
+
     @Override public CompletableFuture<PutAgenticBucketAclResult> putAgenticBucketAclAsync(PutAgenticBucketAclRequest request, OperationOptions options) { return AgenticBucketAcl.putAgenticBucketAclAsync(this.clientImpl, request, options); }
     @Override public CompletableFuture<GetAgenticBucketAclResult> getAgenticBucketAclAsync(GetAgenticBucketAclRequest request, OperationOptions options) { return AgenticBucketAcl.getAgenticBucketAclAsync(this.clientImpl, request, options); }
 
