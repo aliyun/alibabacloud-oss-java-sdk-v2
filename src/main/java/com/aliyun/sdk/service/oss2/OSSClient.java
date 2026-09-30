@@ -2357,6 +2357,75 @@ public interface OSSClient extends AutoCloseable, Presignable {
         throw new UnsupportedOperationException();
     }
     //-----------------------------------------------------------------------
+
+    // bucket metadata configuration api
+
+    /**
+     * Creates the metadata table configuration of a bucket.
+     *
+     * @param request A {@link CreateBucketMetadataConfigurationRequest} for CreateBucketMetadataConfiguration operation.
+     * @return A {@link CreateBucketMetadataConfigurationResult} for CreateBucketMetadataConfiguration operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default CreateBucketMetadataConfigurationResult createBucketMetadataConfiguration(CreateBucketMetadataConfigurationRequest request) {
+        return createBucketMetadataConfiguration(request, OperationOptions.defaults());
+    }
+
+    default CreateBucketMetadataConfigurationResult createBucketMetadataConfiguration(
+            CreateBucketMetadataConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the metadata table configuration of a bucket.
+     */
+    default GetBucketMetadataConfigurationResult getBucketMetadataConfiguration(GetBucketMetadataConfigurationRequest request) {
+        return getBucketMetadataConfiguration(request, OperationOptions.defaults());
+    }
+
+    default GetBucketMetadataConfigurationResult getBucketMetadataConfiguration(
+            GetBucketMetadataConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the metadata table configuration of a bucket.
+     */
+    default DeleteBucketMetadataConfigurationResult deleteBucketMetadataConfiguration(DeleteBucketMetadataConfigurationRequest request) {
+        return deleteBucketMetadataConfiguration(request, OperationOptions.defaults());
+    }
+
+    default DeleteBucketMetadataConfigurationResult deleteBucketMetadataConfiguration(
+            DeleteBucketMetadataConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Enables or disables the metadata inventory table of a bucket.
+     */
+    default UpdateBucketMetadataInventoryTableConfigurationResult updateBucketMetadataInventoryTableConfiguration(
+            UpdateBucketMetadataInventoryTableConfigurationRequest request) {
+        return updateBucketMetadataInventoryTableConfiguration(request, OperationOptions.defaults());
+    }
+
+    default UpdateBucketMetadataInventoryTableConfigurationResult updateBucketMetadataInventoryTableConfiguration(
+            UpdateBucketMetadataInventoryTableConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Updates the record expiration configuration of a metadata journal table.
+     */
+    default UpdateBucketMetadataJournalTableConfigurationResult updateBucketMetadataJournalTableConfiguration(
+            UpdateBucketMetadataJournalTableConfigurationRequest request) {
+        return updateBucketMetadataJournalTableConfiguration(request, OperationOptions.defaults());
+    }
+
+    default UpdateBucketMetadataJournalTableConfigurationResult updateBucketMetadataJournalTableConfiguration(
+            UpdateBucketMetadataJournalTableConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
   
     // bucket lifecycle api
     /**

@@ -905,6 +905,56 @@ public class DefaultOSSDualClient implements OSSDualClient {
     public CompletableFuture<GetBucketTransferAccelerationResult> getBucketTransferAccelerationAsync(GetBucketTransferAccelerationRequest request, OperationOptions options) {
         return BucketTransferAcceleration.getBucketTransferAccelerationAsync(this.clientImpl, request, options);
     }
+
+    @Override
+    public CreateBucketMetadataConfigurationResult createBucketMetadataConfiguration(CreateBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.createBucketMetadataConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<CreateBucketMetadataConfigurationResult> createBucketMetadataConfigurationAsync(CreateBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.createBucketMetadataConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketMetadataConfigurationResult getBucketMetadataConfiguration(GetBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.getBucketMetadataConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<GetBucketMetadataConfigurationResult> getBucketMetadataConfigurationAsync(GetBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.getBucketMetadataConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketMetadataConfigurationResult deleteBucketMetadataConfiguration(DeleteBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.deleteBucketMetadataConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<DeleteBucketMetadataConfigurationResult> deleteBucketMetadataConfigurationAsync(DeleteBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.deleteBucketMetadataConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public UpdateBucketMetadataInventoryTableConfigurationResult updateBucketMetadataInventoryTableConfiguration(UpdateBucketMetadataInventoryTableConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.updateBucketMetadataInventoryTableConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<UpdateBucketMetadataInventoryTableConfigurationResult> updateBucketMetadataInventoryTableConfigurationAsync(UpdateBucketMetadataInventoryTableConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.updateBucketMetadataInventoryTableConfigurationAsync(this.clientImpl, request, options);
+    }
+
+    @Override
+    public UpdateBucketMetadataJournalTableConfigurationResult updateBucketMetadataJournalTableConfiguration(UpdateBucketMetadataJournalTableConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.updateBucketMetadataJournalTableConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public CompletableFuture<UpdateBucketMetadataJournalTableConfigurationResult> updateBucketMetadataJournalTableConfigurationAsync(UpdateBucketMetadataJournalTableConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.updateBucketMetadataJournalTableConfigurationAsync(this.clientImpl, request, options);
+    }
   
     @Override
     public PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request, OperationOptions options) {

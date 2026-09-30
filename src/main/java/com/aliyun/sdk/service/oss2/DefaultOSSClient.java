@@ -488,6 +488,31 @@ public class DefaultOSSClient implements OSSClient {
     }
 
     @Override
+    public CreateBucketMetadataConfigurationResult createBucketMetadataConfiguration(CreateBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.createBucketMetadataConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public GetBucketMetadataConfigurationResult getBucketMetadataConfiguration(GetBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.getBucketMetadataConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public DeleteBucketMetadataConfigurationResult deleteBucketMetadataConfiguration(DeleteBucketMetadataConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.deleteBucketMetadataConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public UpdateBucketMetadataInventoryTableConfigurationResult updateBucketMetadataInventoryTableConfiguration(UpdateBucketMetadataInventoryTableConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.updateBucketMetadataInventoryTableConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
+    public UpdateBucketMetadataJournalTableConfigurationResult updateBucketMetadataJournalTableConfiguration(UpdateBucketMetadataJournalTableConfigurationRequest request, OperationOptions options) {
+        return BucketMetadataConfiguration.updateBucketMetadataJournalTableConfiguration(this.clientImpl, request, options);
+    }
+
+    @Override
     public PutBucketLifecycleResult putBucketLifecycle(PutBucketLifecycleRequest request, OperationOptions options) {
         return BucketLifecycle.putBucketLifecycle(this.clientImpl, request, options);
     }

@@ -2224,6 +2224,78 @@ public interface OSSAsyncClient extends AutoCloseable {
     }
     //-----------------------------------------------------------------------
 
+    // bucket metadata configuration api
+
+    /**
+     * Creates the metadata table configuration of a bucket asynchronously.
+     */
+    default CompletableFuture<CreateBucketMetadataConfigurationResult> createBucketMetadataConfigurationAsync(
+            CreateBucketMetadataConfigurationRequest request) {
+        return createBucketMetadataConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<CreateBucketMetadataConfigurationResult> createBucketMetadataConfigurationAsync(
+            CreateBucketMetadataConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the metadata table configuration of a bucket asynchronously.
+     */
+    default CompletableFuture<GetBucketMetadataConfigurationResult> getBucketMetadataConfigurationAsync(
+            GetBucketMetadataConfigurationRequest request) {
+        return getBucketMetadataConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<GetBucketMetadataConfigurationResult> getBucketMetadataConfigurationAsync(
+            GetBucketMetadataConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Deletes the metadata table configuration of a bucket asynchronously.
+     */
+    default CompletableFuture<DeleteBucketMetadataConfigurationResult> deleteBucketMetadataConfigurationAsync(
+            DeleteBucketMetadataConfigurationRequest request) {
+        return deleteBucketMetadataConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<DeleteBucketMetadataConfigurationResult> deleteBucketMetadataConfigurationAsync(
+            DeleteBucketMetadataConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Enables or disables the metadata inventory table of a bucket asynchronously.
+     */
+    default CompletableFuture<UpdateBucketMetadataInventoryTableConfigurationResult>
+    updateBucketMetadataInventoryTableConfigurationAsync(
+            UpdateBucketMetadataInventoryTableConfigurationRequest request) {
+        return updateBucketMetadataInventoryTableConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<UpdateBucketMetadataInventoryTableConfigurationResult>
+    updateBucketMetadataInventoryTableConfigurationAsync(
+            UpdateBucketMetadataInventoryTableConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Updates the record expiration configuration of a metadata journal table asynchronously.
+     */
+    default CompletableFuture<UpdateBucketMetadataJournalTableConfigurationResult>
+    updateBucketMetadataJournalTableConfigurationAsync(
+            UpdateBucketMetadataJournalTableConfigurationRequest request) {
+        return updateBucketMetadataJournalTableConfigurationAsync(request, OperationOptions.defaults());
+    }
+
+    default CompletableFuture<UpdateBucketMetadataJournalTableConfigurationResult>
+    updateBucketMetadataJournalTableConfigurationAsync(
+            UpdateBucketMetadataJournalTableConfigurationRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+    //-----------------------------------------------------------------------
+
     // bucket lifecycle api
     /**
      * Configures the lifecycle rules for a bucket.
