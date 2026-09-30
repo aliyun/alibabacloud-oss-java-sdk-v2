@@ -192,4 +192,41 @@ public final class SerdeVectorsBasic {
                 .innerBody(innerBody)
                 .build();
     }
+
+    public static OperationInput fromQueryVectorsFusion(QueryVectorsFusionRequest request) {
+        OperationInput.Builder builder = OperationInput.newBuilder()
+                .opName("QueryVectorsFusion")
+                .method("POST");
+
+        // default headers
+        Map<String, String> headers = MapUtils.caseInsensitiveMap();
+        headers.put("Content-Type", "application/json");
+        builder.headers(headers);
+
+        // parameters
+        Map<String, String> parameters = MapUtils.caseSensitiveMap();
+        parameters.put("queryVectorsFusion", "");
+        builder.parameters(parameters);
+
+        builder.bucket(request.bucket());
+
+        // body
+        builder.body(SerdeJsonUtils.toJson(request.bodyFields()));
+
+        OperationInput input = builder.build();
+        serializeInput(request, input, addContentMd5);
+        return input;
+    }
+
+    public static QueryVectorsFusionResult toQueryVectorsFusion(OperationOutput output) {
+        Object innerBody = null;
+        innerBody = SerdeJsonUtils.fromJsonBody(output, QueryVectorsFusionJson.class);
+
+        return QueryVectorsFusionResult.newBuilder()
+                .headers(output.headers)
+                .status(output.status)
+                .statusCode(output.statusCode)
+                .innerBody(innerBody)
+                .build();
+    }
 }

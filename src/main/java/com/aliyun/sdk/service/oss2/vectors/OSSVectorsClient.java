@@ -330,6 +330,52 @@ public interface OSSVectorsClient extends AutoCloseable {
     default QueryVectorsResult queryVectors(QueryVectorsRequest request, OperationOptions options) {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Creates a fusion vector index.
+     *
+     * @param request A {@link PutVectorIndexFusionRequest} for PutVectorIndexFusion operation.
+     * @return A {@link PutVectorIndexFusionResult} for PutVectorIndexFusion operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutVectorIndexFusionResult putVectorIndexFusion(PutVectorIndexFusionRequest request) {
+        return putVectorIndexFusion(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Creates a fusion vector index.
+     *
+     * @param request A {@link PutVectorIndexFusionRequest} for PutVectorIndexFusion operation.
+     * @param options The operation options.
+     * @return A {@link PutVectorIndexFusionResult} for PutVectorIndexFusion operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default PutVectorIndexFusionResult putVectorIndexFusion(PutVectorIndexFusionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Queries vectors in a fusion index.
+     *
+     * @param request A {@link QueryVectorsFusionRequest} for QueryVectorsFusion operation.
+     * @return A {@link QueryVectorsFusionResult} for QueryVectorsFusion operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default QueryVectorsFusionResult queryVectorsFusion(QueryVectorsFusionRequest request) {
+        return queryVectorsFusion(request, OperationOptions.defaults());
+    }
+
+    /**
+     * Queries vectors in a fusion index.
+     *
+     * @param request A {@link QueryVectorsFusionRequest} for QueryVectorsFusion operation.
+     * @param options The operation options.
+     * @return A {@link QueryVectorsFusionResult} for QueryVectorsFusion operation.
+     * @throws RuntimeException If an error occurs
+     */
+    default QueryVectorsFusionResult queryVectorsFusion(QueryVectorsFusionRequest request, OperationOptions options) {
+        throw new UnsupportedOperationException();
+    }
     //-----------------------------------------------------------------------
 
 }

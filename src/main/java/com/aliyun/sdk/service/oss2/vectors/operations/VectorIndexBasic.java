@@ -27,6 +27,22 @@ public final class VectorIndexBasic {
                 .thenApply(SerdeVectorIndexBasic::toPutVectorIndex);
     }
 
+    public static PutVectorIndexFusionResult putVectorIndexFusion(ClientImpl impl, PutVectorIndexFusionRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeVectorIndexBasic.fromPutVectorIndexFusion(request);
+        OperationOutput output = impl.execute(input, options);
+        return SerdeVectorIndexBasic.toPutVectorIndexFusion(output);
+    }
+
+    public static CompletableFuture<PutVectorIndexFusionResult> putVectorIndexFusionAsync(ClientImpl impl, PutVectorIndexFusionRequest request, OperationOptions options) {
+        requireNonNull(request.bucket(), "request.bucket is required");
+
+        OperationInput input = SerdeVectorIndexBasic.fromPutVectorIndexFusion(request);
+        return impl.executeAsync(input, options)
+                .thenApply(SerdeVectorIndexBasic::toPutVectorIndexFusion);
+    }
+
     public static GetVectorIndexResult getVectorIndex(ClientImpl impl, GetVectorIndexRequest request, OperationOptions options) {
         requireNonNull(request.bucket(), "request.bucket is required");
 
