@@ -2,6 +2,7 @@ package com.aliyun.sdk.service.oss2.transfermanager;
 
 import com.aliyun.sdk.service.oss2.OSSClient;
 import com.aliyun.sdk.service.oss2.exceptions.InconsistentException;
+import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.progress.ProgressListener;
 
@@ -182,6 +183,7 @@ public class Copier {
             }
         }
 
+        // use single copy first; fall back to multipart copy on timeout or EntityTooLarge
         private CopyResult shallowCopy() throws CopyError {
             try {
                 CopyObjectResult result = client.copyObject(request);
@@ -201,7 +203,7 @@ public class Copier {
                         .statusCode(result.statusCode())
                         .build();
             } catch (Exception e) {
-                if (isTimeoutException(e)) {
+                if (isTimeoutException(e) || isEntityTooLargeException(e)) {
                     return multiCopy();
                 }
                 throw new CopyError("", ossPath(), e);
@@ -471,6 +473,17 @@ public class Copier {
                 String msg = t.getMessage();
                 if (msg != null && (msg.contains("timeout") || msg.contains("Timeout") || msg.contains("timed out"))) {
                     return true;
+                }
+                t = t.getCause();
+            }
+            return false;
+        }
+
+        private static boolean isEntityTooLargeException(Exception e) {
+            Throwable t = e;
+            while (t != null) {
+                if (t instanceof ServiceException) {
+                    return "EntityTooLarge".equals(((ServiceException) t).errorCode());
                 }
                 t = t.getCause();
             }
