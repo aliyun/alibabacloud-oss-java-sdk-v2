@@ -39,6 +39,7 @@ public class CopierTest {
         boolean headObjectError = false;
         boolean copyObjectError = false;
         boolean copyObjectTimeout = false;
+        boolean copyObjectEntityTooLarge = false;
         boolean initiateMultipartError = false;
         boolean completeMultipartError = false;
         Set<Integer> uploadPartCopyErrors = new HashSet<>();
@@ -47,6 +48,11 @@ public class CopierTest {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                         "<Error><Code>InvalidAccessKeyId</Code>" +
                         "<Message>Error</Message><RequestId>id-1234</RequestId></Error>";
+
+        static final String ENTITY_TOO_LARGE_XML =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                        "<Error><Code>EntityTooLarge</Code>" +
+                        "<Message>Entity Too Large</Message><RequestId>id-1234</RequestId></Error>";
 
         @Override
         public CompletableFuture<ResponseMessage> sendAsync(RequestMessage request, RequestContext context) {
@@ -112,6 +118,9 @@ public class CopierTest {
             copyObjectCount.incrementAndGet();
             if (copyObjectTimeout) {
                 throw new RuntimeException(new java.net.SocketTimeoutException("Read timed out"));
+            }
+            if (copyObjectEntityTooLarge) {
+                return buildResponse(400, ENTITY_TOO_LARGE_XML, Collections.emptyMap());
             }
             if (copyObjectError) {
                 return buildResponse(403, ERROR_XML, Collections.emptyMap());
@@ -1170,6 +1179,101 @@ public class CopierTest {
         assertEquals(1, mock.copyObjectCount.get()); // shallow copy attempted
         assertEquals(1, mock.initiateMultipartCount.get()); // fell back to multipart
         assertTrue(mock.uploadPartCopyCount.get() > 0);
+    }
+
+    // endregion
+
+    // region Shallow Copy EntityTooLarge Fallback
+
+    @Test
+    public void testShallowCopyEntityTooLargeFallsBackToMultipart() throws CopyError {
+        CopierMockHttpClient mock = new CopierMockHttpClient();
+        mock.sourceContentLength = 500;
+        mock.copyObjectEntityTooLarge = true;
+        OSSClient client = createMockClient(mock);
+
+        Copier copier = new Copier(client, CopierOptions.newBuilder()
+                .multipartCopyThreshold(200)
+                .partSize(100)
+                .parallelNum(1)
+                .build());
+
+        // Same bucket, no SSE -> shallow copy attempted, but EntityTooLarge -> multipart
+        CopyObjectRequest request = CopyObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .sourceKey("src-key")
+                .build();
+
+        CopyResult result = copier.copy(request);
+        assertNotNull(result);
+        assertEquals("uploadId-copy", result.uploadId());
+        assertEquals(1, mock.copyObjectCount.get()); // shallow copy attempted
+        assertEquals(1, mock.initiateMultipartCount.get()); // fell back to multipart
+        assertEquals(5, mock.uploadPartCopyCount.get());
+        assertEquals(1, mock.completeMultipartCount.get());
+    }
+
+    @Test
+    public void testShallowCopyEntityTooLargeFallbackMultiCopyFails() {
+        CopierMockHttpClient mock = new CopierMockHttpClient();
+        mock.sourceContentLength = 500;
+        mock.copyObjectEntityTooLarge = true;
+        mock.initiateMultipartError = true;
+        OSSClient client = createMockClient(mock);
+
+        Copier copier = new Copier(client, CopierOptions.newBuilder()
+                .multipartCopyThreshold(200)
+                .partSize(100)
+                .parallelNum(1)
+                .build());
+
+        CopyObjectRequest request = CopyObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .sourceKey("src-key")
+                .build();
+
+        try {
+            copier.copy(request);
+            fail("Expected CopyError");
+        } catch (CopyError e) {
+            assertTrue(e.getMessage().contains("InvalidAccessKeyId"));
+            // HEAD + CopyObject(EntityTooLarge) + InitiateMultipartUpload error
+            assertEquals(1, mock.copyObjectCount.get());
+            assertEquals(1, mock.initiateMultipartCount.get());
+            assertEquals(0, mock.uploadPartCopyCount.get());
+        }
+    }
+
+    @Test
+    public void testShallowCopyNoFallbackOnOtherError() {
+        CopierMockHttpClient mock = new CopierMockHttpClient();
+        mock.sourceContentLength = 500;
+        mock.copyObjectError = true;
+        OSSClient client = createMockClient(mock);
+
+        Copier copier = new Copier(client, CopierOptions.newBuilder()
+                .multipartCopyThreshold(200)
+                .partSize(100)
+                .parallelNum(1)
+                .build());
+
+        CopyObjectRequest request = CopyObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .sourceKey("src-key")
+                .build();
+
+        try {
+            copier.copy(request);
+            fail("Expected CopyError");
+        } catch (CopyError e) {
+            assertTrue(e.getMessage().contains("InvalidAccessKeyId"));
+            // non-EntityTooLarge error must not fall back
+            assertEquals(1, mock.copyObjectCount.get());
+            assertEquals(0, mock.initiateMultipartCount.get());
+        }
     }
 
     // endregion
