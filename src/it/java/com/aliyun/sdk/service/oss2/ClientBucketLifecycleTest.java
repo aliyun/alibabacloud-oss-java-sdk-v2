@@ -35,6 +35,8 @@ public class ClientBucketLifecycleTest extends TestBase {
             Assert.assertNotNull("Put bucket lifecycle result should not be null", putResult);
             Assert.assertEquals("Put bucket lifecycle should return status code 200", 200, putResult.statusCode());
 
+            waitForCacheExpiration(1);
+
             // Get bucket lifecycle
             GetBucketLifecycleResult getResult = client.getBucketLifecycle(GetBucketLifecycleRequest.newBuilder()
                     .bucket(bucketName)
@@ -202,6 +204,8 @@ public class ClientBucketLifecycleTest extends TestBase {
             Assert.assertNotNull("Put advanced bucket lifecycle result should not be null", putResult);
             Assert.assertEquals("Put advanced bucket lifecycle should return status code 200", 200, putResult.statusCode());
             Assert.assertNotNull("Put advanced bucket lifecycle result should have a request ID", putResult.requestId());
+
+            waitForCacheExpiration(1);
 
             // Get and verify advanced bucket lifecycle
             GetBucketLifecycleResult getResult = client.getBucketLifecycle(GetBucketLifecycleRequest.newBuilder()

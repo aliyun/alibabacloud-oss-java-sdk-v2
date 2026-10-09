@@ -25,6 +25,8 @@ public class ClientBucketStorageQuotaAsyncTest extends TestBase {
             Assert.assertNotNull(putResult);
             Assert.assertEquals(200, putResult.statusCode());
 
+            waitForCacheExpiration(1);
+
             GetBucketStorageQuotaResult getResult = client.getBucketStorageQuotaAsync(
                     GetBucketStorageQuotaRequest.newBuilder()
                             .bucket(bucketName)

@@ -44,6 +44,8 @@ public class ClientBucketObjectWormConfigurationTest extends TestBase {
         Assert.assertNotNull(putResult);
         Assert.assertEquals(200, putResult.statusCode());
 
+        waitForCacheExpiration(1);
+
         // 3. Get bucket object worm configuration
         GetBucketObjectWormConfigurationResult getResult = client.getBucketObjectWormConfiguration(
                 GetBucketObjectWormConfigurationRequest.newBuilder()

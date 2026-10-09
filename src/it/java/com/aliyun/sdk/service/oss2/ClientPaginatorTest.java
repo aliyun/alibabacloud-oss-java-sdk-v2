@@ -701,6 +701,8 @@ public class ClientPaginatorTest  extends TestBase {
                         .build())
                 .build());
 
+        waitForCacheExpiration(1);
+
         List<String> keys = Arrays.asList(
                 "1/1.txt", "1/2.txt", "1/3.txt", "1/4.txt",
                 "2/2-1.txt", "2/2-2.txt",

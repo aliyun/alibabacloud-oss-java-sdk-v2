@@ -10,7 +10,7 @@ public class ClientBucketAccessMonitorAsyncTest extends TestBase {
     @Test
     public void testBucketAccessMonitorOperations() throws ExecutionException, InterruptedException {
         OSSAsyncClient client = getDefaultAsyncClient();
-        String testBucketName = genBucketName() + "-access-monitor-test";
+        String testBucketName = genBucketName() + "-access-monitor";
 
         // 1. Create a bucket first
         PutBucketResult putBucketResult = client.putBucketAsync(

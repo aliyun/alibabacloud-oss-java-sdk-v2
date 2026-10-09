@@ -32,6 +32,8 @@ public class ClientBucketAclTest extends TestBase {
                         .build()
         );
 
+        waitForCacheExpiration(1);
+
         try {
             // 2. Get bucket ACL (default)
             GetBucketAclResult getAclResult = client.getBucketAcl(
@@ -54,6 +56,8 @@ public class ClientBucketAclTest extends TestBase {
             Assert.assertNotNull(putAclResult);
             Assert.assertEquals(200, putAclResult.statusCode());
 
+            waitForCacheExpiration(1);
+
             // 4. Get bucket ACL (public-read)
             getAclResult = client.getBucketAcl(
                     GetBucketAclRequest.newBuilder()
@@ -74,6 +78,8 @@ public class ClientBucketAclTest extends TestBase {
             Assert.assertNotNull(putAclResult);
             Assert.assertEquals(200, putAclResult.statusCode());
 
+            waitForCacheExpiration(1);
+
             // 6. Get bucket ACL (public-read-write)
             getAclResult = client.getBucketAcl(
                     GetBucketAclRequest.newBuilder()
@@ -93,6 +99,8 @@ public class ClientBucketAclTest extends TestBase {
                             .build());
             Assert.assertNotNull(putAclResult);
             Assert.assertEquals(200, putAclResult.statusCode());
+
+            waitForCacheExpiration(1);
 
             // 8. Get bucket ACL (private)
             getAclResult = client.getBucketAcl(

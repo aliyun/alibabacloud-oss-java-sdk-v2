@@ -26,6 +26,8 @@ public class ClientBucketWormTest extends TestBase {
         String wormId = initiateResult.wormId();
         assertThat(wormId).isNotNull();
 
+        waitForCacheExpiration(1);
+
         // Get bucket worm to check the configuration
         GetBucketWormRequest getRequest = GetBucketWormRequest.newBuilder()
                 .bucket(bucketName)
@@ -73,6 +75,8 @@ public class ClientBucketWormTest extends TestBase {
         assertThat(completeResult).isNotNull();
         assertThat(completeResult.statusCode()).isEqualTo(200);
 
+        waitForCacheExpiration(1);
+
         // Get bucket worm again to verify completion
         GetBucketWormResult getResult2 = client.getBucketWorm(getRequest);
         assertThat(getResult2).isNotNull();
@@ -95,6 +99,8 @@ public class ClientBucketWormTest extends TestBase {
         ExtendBucketWormResult extendResult = client.extendBucketWorm(extendRequest);
         assertThat(extendResult).isNotNull();
         assertThat(extendResult.statusCode()).isEqualTo(200);
+
+        waitForCacheExpiration(1);
 
         // Get bucket worm again to verify extension
         GetBucketWormResult getResult3 = client.getBucketWorm(getRequest);

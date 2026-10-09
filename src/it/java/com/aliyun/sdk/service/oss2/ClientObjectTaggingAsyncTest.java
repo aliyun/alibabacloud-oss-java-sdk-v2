@@ -131,6 +131,8 @@ public class ClientObjectTaggingAsyncTest extends TestBase {
                         .build())
                 .build()).get();
 
+        waitForCacheExpiration(5);
+
         // 1. Create an object first
         byte[] content = TestUtils.generateTestData(1024);
         PutObjectResult putResult = client.putObjectAsync(

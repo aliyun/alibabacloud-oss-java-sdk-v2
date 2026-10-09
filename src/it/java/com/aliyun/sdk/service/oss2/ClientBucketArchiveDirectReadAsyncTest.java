@@ -36,6 +36,8 @@ public class ClientBucketArchiveDirectReadAsyncTest extends TestBase {
         Assert.assertNotNull(putResult);
         Assert.assertEquals(200, putResult.statusCode());
 
+        waitForCacheExpiration(1);
+
         // Get archive direct read configuration (async)
         CompletableFuture<GetBucketArchiveDirectReadResult> getFuture = asyncClient.getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest.newBuilder()
                 .bucket(bucketName)
@@ -60,6 +62,8 @@ public class ClientBucketArchiveDirectReadAsyncTest extends TestBase {
         putResult = putFuture.get();
         Assert.assertNotNull(putResult);
         Assert.assertEquals(200, putResult.statusCode());
+
+        waitForCacheExpiration(1);
 
         // Verify the configuration is now disabled (async)
         getFuture = asyncClient.getBucketArchiveDirectReadAsync(GetBucketArchiveDirectReadRequest.newBuilder()

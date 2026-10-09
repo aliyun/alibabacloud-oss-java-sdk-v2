@@ -25,6 +25,8 @@ public class ClientBucketStorageQuotaTest extends TestBase {
             Assert.assertNotNull(putResult);
             Assert.assertEquals(200, putResult.statusCode());
 
+            waitForCacheExpiration(1);
+
             GetBucketStorageQuotaResult getResult = client.getBucketStorageQuota(
                     GetBucketStorageQuotaRequest.newBuilder()
                             .bucket(bucketName)
