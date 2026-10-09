@@ -9,7 +9,7 @@ public class ClientBucketAccessMonitorTest extends TestBase {
     @Test
     public void testBucketAccessMonitorOperations() {
         OSSClient client = getDefaultClient();
-        String testBucketName = genBucketName() + "-access-monitor-test";
+        String testBucketName = genBucketName() + "-access-monitor";
 
         // 1. Create a bucket first
         PutBucketResult putBucketResult = client.putBucket(

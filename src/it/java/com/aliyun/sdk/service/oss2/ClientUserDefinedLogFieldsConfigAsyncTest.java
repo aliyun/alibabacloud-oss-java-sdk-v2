@@ -67,6 +67,8 @@ public class ClientUserDefinedLogFieldsConfigAsyncTest extends TestBase {
         Assert.assertNotNull(deleteResult);
         Assert.assertEquals(204, deleteResult.statusCode());
 
+        waitForCacheExpiration(5);
+
         try {
             GetUserDefinedLogFieldsConfigResult getResultAfterDelete = client.getUserDefinedLogFieldsConfigAsync(
                     GetUserDefinedLogFieldsConfigRequest.newBuilder()

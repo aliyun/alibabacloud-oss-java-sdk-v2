@@ -33,6 +33,8 @@ public class ClientBucketArchiveDirectReadTest extends TestBase {
         Assert.assertNotNull(putResult);
         Assert.assertEquals(200, putResult.statusCode());
 
+        waitForCacheExpiration(1);
+
         // Get archive direct read configuration
         GetBucketArchiveDirectReadResult getResult = client.getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest.newBuilder()
                 .bucket(bucketName)
@@ -53,6 +55,8 @@ public class ClientBucketArchiveDirectReadTest extends TestBase {
                 .build());
         Assert.assertNotNull(putResult);
         Assert.assertEquals(200, putResult.statusCode());
+
+        waitForCacheExpiration(1);
 
         // Verify the configuration is now disabled
         getResult = client.getBucketArchiveDirectRead(GetBucketArchiveDirectReadRequest.newBuilder()

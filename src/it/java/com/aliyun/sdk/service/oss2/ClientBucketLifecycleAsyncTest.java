@@ -38,6 +38,8 @@ public class ClientBucketLifecycleAsyncTest extends TestBase {
         Assert.assertEquals("Put bucket lifecycle should return status code 200", 200, putResult.statusCode());
         Assert.assertNotNull("Put bucket lifecycle result should have a request ID", putResult.requestId());
 
+        waitForCacheExpiration(1);
+
         // Get bucket lifecycle
         CompletableFuture<GetBucketLifecycleResult> getFuture = client.getBucketLifecycleAsync(GetBucketLifecycleRequest.newBuilder()
                 .bucket(bucketName)
@@ -205,6 +207,8 @@ public class ClientBucketLifecycleAsyncTest extends TestBase {
         Assert.assertNotNull("Put advanced bucket lifecycle result should not be null", putResult);
         Assert.assertEquals("Put advanced bucket lifecycle should return status code 200", 200, putResult.statusCode());
         Assert.assertNotNull("Put advanced bucket lifecycle result should have a request ID", putResult.requestId());
+
+        waitForCacheExpiration(1);
 
         // Get and verify advanced bucket lifecycle
         CompletableFuture<GetBucketLifecycleResult> getFuture = client.getBucketLifecycleAsync(GetBucketLifecycleRequest.newBuilder()

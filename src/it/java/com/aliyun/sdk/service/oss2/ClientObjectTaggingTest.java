@@ -131,6 +131,8 @@ public class ClientObjectTaggingTest extends TestBase {
                         .build())
                 .build());
 
+        waitForCacheExpiration(5);
+
         // 1. Create an object first
         byte[] content = TestUtils.generateTestData(1024);
         PutObjectResult putResult = client.putObject(

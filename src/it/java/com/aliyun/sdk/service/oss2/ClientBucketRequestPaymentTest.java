@@ -23,6 +23,8 @@ public class ClientBucketRequestPaymentTest extends TestBase {
             Assert.assertNotNull(putResult);
             Assert.assertTrue(putResult.statusCode() > 0);
 
+            waitForCacheExpiration(1);
+
             // Then, get the request payment configuration
             GetBucketRequestPaymentRequest getRequest = GetBucketRequestPaymentRequest.newBuilder()
                     .bucket(bucketName)
