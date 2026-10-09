@@ -16,9 +16,9 @@
 
         <!-- test dependencies -->
         <junit5.version>5.13.0</junit5.version>
-        <assertj.version>3.27.3</assertj.version>
+        <assertj.version>3.27.7</assertj.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <bcprov-jdk18on.version>1.78</bcprov-jdk18on.version>
+        <bcprov-jdk18on.version>1.86</bcprov-jdk18on.version>
 
         <!-- build plugin dependencies-->
         <maven.surefire.version>3.1.2</maven.surefire.version>
