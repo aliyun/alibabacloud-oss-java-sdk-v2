@@ -39,7 +39,9 @@ public class GetAgenticBucketStorageQuota implements Example {
             GetAgenticBucketStorageQuotaResult result = client.getAgenticBucketStorageQuota(request);
 
             System.out.printf("Status code:%d, request id:%s%n",
-                    result.statusCode(), result.requestId());QuotaConfiguration config = result.quotaConfiguration();
+                    result.statusCode(), result.requestId());
+
+            QuotaConfiguration config = result.quotaConfiguration();
             if (config != null) {
                 System.out.printf("Storage quota: %d bytes%n", config.storageQuota());
                 System.out.printf("Mode: %s%n", config.mode());

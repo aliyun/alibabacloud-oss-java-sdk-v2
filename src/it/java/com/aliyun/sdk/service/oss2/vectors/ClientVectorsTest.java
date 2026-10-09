@@ -215,6 +215,10 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertNotNull(putVectorsResult);
             Assert.assertEquals(200, putVectorsResult.statusCode());
 
+            // Wait until the asynchronously built index makes the vectors queryable
+            waitForVectorsQueryable(vectorsClient, bucketName, TEST_FUSION_INDEX_NAME,
+                    TEST_FUSION_VECTOR_FIELD, Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f));
+
             // 4. Query vectors in the fusion index with the knn query
             Knn knn = Knn.newBuilder()
                     .field(TEST_FUSION_VECTOR_FIELD)
@@ -235,6 +239,8 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertNotNull(queryResult);
             Assert.assertEquals(200, queryResult.statusCode());
             Assert.assertNotNull(queryResult.vectors());
+            Assert.assertFalse("knn query should hit the written vectors",
+                    queryResult.vectors().isEmpty());
 
             // 5. Query vectors in the fusion index with the retriever (knn leaf, generic Map form)
             Map<String, Object> knnLeaf = new LinkedHashMap<>();
@@ -253,6 +259,9 @@ public class ClientVectorsTest extends TestBaseVectors {
 
             Assert.assertNotNull(retrieverResult);
             Assert.assertEquals(200, retrieverResult.statusCode());
+            Assert.assertNotNull(retrieverResult.vectors());
+            Assert.assertFalse("retriever query should hit the written vectors",
+                    retrieverResult.vectors().isEmpty());
         } finally {
             cleanupTestResources(vectorsClient, bucketName, TEST_FUSION_INDEX_NAME);
         }
@@ -290,6 +299,10 @@ public class ClientVectorsTest extends TestBaseVectors {
             Assert.assertNotNull(putVectorsResult);
             Assert.assertEquals(200, putVectorsResult.statusCode());
 
+            // Wait until the asynchronously built index makes the vectors queryable
+            waitForVectorsQueryable(vectorsClient, bucketName, TEST_FUSION_PRODUCT_INDEX_NAME,
+                    TEST_FUSION_TEXT_VECTOR_FIELD, Arrays.asList(0.1f, 0.2f, 0.3f, 0.4f));
+
             // B2. knn with pre-filter
             Knn knnWithFilter = Knn.newBuilder()
                     .field(TEST_FUSION_TEXT_VECTOR_FIELD)
@@ -308,6 +321,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b2Result);
             Assert.assertEquals(200, b2Result.statusCode());
+            Assert.assertNotNull(b2Result.vectors());
+            Assert.assertFalse("B2 knn+filter should hit fusion-product-1", b2Result.vectors().isEmpty());
 
             // B3. multi-way knn over text_vector and image_vector
             Knn textKnn = Knn.newBuilder()
@@ -336,6 +351,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b3Result);
             Assert.assertEquals(200, b3Result.statusCode());
+            Assert.assertNotNull(b3Result.vectors());
+            Assert.assertFalse("B3 multi-way knn should hit written vectors", b3Result.vectors().isEmpty());
 
             // B4. pure scalar query
             QueryVectorsFusionResult b4Result = vectorsClient.queryVectorsFusion(
@@ -352,6 +369,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b4Result);
             Assert.assertEquals(200, b4Result.statusCode());
+            Assert.assertNotNull(b4Result.vectors());
+            Assert.assertFalse("B4 scalar query should hit fusion-product-2", b4Result.vectors().isEmpty());
 
             // B5. full-text search with $textMatch
             QueryVectorsFusionResult b5Result = vectorsClient.queryVectorsFusion(
@@ -365,6 +384,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b5Result);
             Assert.assertEquals(200, b5Result.statusCode());
+            Assert.assertNotNull(b5Result.vectors());
+            Assert.assertFalse("B5 text-match should hit fusion-product-1", b5Result.vectors().isEmpty());
 
             // B16. RRF fusion of knn and text-match retrievers
             RrfRetriever rrfRetriever = RrfRetriever.newBuilder()
@@ -397,6 +418,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b16Result);
             Assert.assertEquals(200, b16Result.statusCode());
+            Assert.assertNotNull(b16Result.vectors());
+            Assert.assertFalse("B16 RRF retriever should hit written vectors", b16Result.vectors().isEmpty());
 
             // B17. Weight fusion with minMax normalizer
             WeightRetriever weightRetriever = WeightRetriever.newBuilder()
@@ -430,6 +453,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b17Result);
             Assert.assertEquals(200, b17Result.statusCode());
+            Assert.assertNotNull(b17Result.vectors());
+            Assert.assertFalse("B17 weight retriever should hit written vectors", b17Result.vectors().isEmpty());
 
             // B18. Three-way weight fusion over text_vector, image_vector and title text-match
             WeightRetriever threeWayWeightRetriever = WeightRetriever.newBuilder()
@@ -472,6 +497,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b18Result);
             Assert.assertEquals(200, b18Result.statusCode());
+            Assert.assertNotNull(b18Result.vectors());
+            Assert.assertFalse("B18 three-way weight retriever should hit written vectors", b18Result.vectors().isEmpty());
 
             // B19. knn and query coexist
             QueryVectorsFusionResult b19Result = vectorsClient.queryVectorsFusion(
@@ -501,6 +528,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b19Result);
             Assert.assertEquals(200, b19Result.statusCode());
+            Assert.assertNotNull(b19Result.vectors());
+            Assert.assertFalse("B19 knn+query should hit written vectors", b19Result.vectors().isEmpty());
 
             // B20. single leaf retriever used directly as top-level retriever
             SimpleRetriever simpleLeaf = SimpleRetriever.newBuilder()
@@ -515,6 +544,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b20SimpleResult);
             Assert.assertEquals(200, b20SimpleResult.statusCode());
+            Assert.assertNotNull(b20SimpleResult.vectors());
+            Assert.assertFalse("B20 simple retriever should hit fusion-product-1", b20SimpleResult.vectors().isEmpty());
 
             Map<String, Object> knnLeafMap = new LinkedHashMap<>();
             knnLeafMap.put("field", TEST_FUSION_TEXT_VECTOR_FIELD);
@@ -531,6 +562,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(b20KnnResult);
             Assert.assertEquals(200, b20KnnResult.statusCode());
+            Assert.assertNotNull(b20KnnResult.vectors());
+            Assert.assertFalse("B20 knn leaf retriever should hit written vectors", b20KnnResult.vectors().isEmpty());
 
             // Verify the generic Map form of knn, which passes through attributes verbatim
             Map<String, Object> genericKnn = new HashMap<>();
@@ -546,6 +579,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(genericKnnResult);
             Assert.assertEquals(200, genericKnnResult.statusCode());
+            Assert.assertNotNull(genericKnnResult.vectors());
+            Assert.assertFalse("generic knn map form should hit written vectors", genericKnnResult.vectors().isEmpty());
 
             // Verify the generic Map form of the retriever
             Map<String, Object> leafKnn = new HashMap<>();
@@ -563,6 +598,8 @@ public class ClientVectorsTest extends TestBaseVectors {
                             .build());
             Assert.assertNotNull(genericRetrieverResult);
             Assert.assertEquals(200, genericRetrieverResult.statusCode());
+            Assert.assertNotNull(genericRetrieverResult.vectors());
+            Assert.assertFalse("generic retriever map form should hit written vectors", genericRetrieverResult.vectors().isEmpty());
 
         } finally {
             cleanupTestResources(vectorsClient, bucketName, TEST_FUSION_PRODUCT_INDEX_NAME);
@@ -606,10 +643,47 @@ public class ClientVectorsTest extends TestBaseVectors {
                 PutVectorIndexFusionRequest.newBuilder()
                         .bucket(bucketName)
                         .indexName(TEST_FUSION_INDEX_NAME)
+                        .mode("fusion")
                         .schemaConfiguration(SchemaConfiguration.newBuilder().fields(fields).build())
                         .build());
         Assert.assertNotNull(putIndexResult);
         Assert.assertEquals(200, putIndexResult.statusCode());
+    }
+
+    /**
+     * Vector index building is asynchronous: after PutVectors the data is not immediately
+     * queryable by knn / full-text / scalar search. Poll a simple knn query until at least one
+     * result is returned (or the timeout elapses) so subsequent assertions verify real hits.
+     */
+    private void waitForVectorsQueryable(OSSVectorsClient client, String bucketName, String indexName,
+                                         String vectorField, List<Float> queryVector) {
+        long deadline = System.currentTimeMillis() + 120_000L;
+        while (System.currentTimeMillis() < deadline) {
+            try {
+                QueryVectorsFusionResult probe = client.queryVectorsFusion(
+                        QueryVectorsFusionRequest.newBuilder()
+                                .bucket(bucketName)
+                                .indexName(indexName)
+                                .knn(Knn.newBuilder()
+                                        .field(vectorField)
+                                        .queryVector(queryVector)
+                                        .topK(10)
+                                        .build())
+                                .limit(10)
+                                .build());
+                if (probe != null && probe.vectors() != null && !probe.vectors().isEmpty()) {
+                    return;
+                }
+            } catch (Exception e) {
+                // Index may not be ready yet, keep polling until the deadline.
+            }
+            try {
+                Thread.sleep(5_000L);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
     }
 
     private void cleanupTestResources(OSSVectorsClient client, String bucketName, String indexName) {
