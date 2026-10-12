@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -592,6 +593,52 @@ public class DownloaderTest {
         byte[] downloaded = Files.readAllBytes(new File(filePath).toPath());
         assertArrayEquals(data, downloaded);
         new File(filePath).delete();
+    }
+
+    @Test
+    public void testTempSymlinkRemoved() throws Exception {
+        int length = 2048;
+        byte[] data = createTestData(length);
+
+        DownloaderMockHttpClient mock = new DownloaderMockHttpClient();
+        mock.sourceData = data;
+        OSSClient client = createMockClient(mock);
+        Downloader downloader = new Downloader(client, DownloaderOptions.newBuilder()
+                .partSize(2 * 1024 * 1024)
+                .parallelNum(1)
+                .useTempFile(true)
+                .build());
+
+        File dir = Files.createTempDirectory("download-symlink-").toFile();
+        dir.deleteOnExit();
+        File target = new File(dir, "linktarget.dat");
+        Files.write(target.toPath(), "original".getBytes());
+        File file = new File(dir, "target.dat");
+        Path tempLink = new File(file.getAbsolutePath() + Defaults.TEMP_FILE_SUFFIX).toPath();
+        try {
+            Files.createSymbolicLink(tempLink, target.toPath());
+        } catch (UnsupportedOperationException | IOException e) {
+            return; // symbolic link not supported on this platform
+        }
+
+        GetObjectRequest request = GetObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        DownloadResult result = downloader.downloadFile(request, file.getAbsolutePath());
+        assertEquals(length, result.written());
+
+        // The temporary symlink is replaced by a regular file at the final path.
+        assertFalse(Files.isSymbolicLink(file.toPath()));
+        assertArrayEquals(data, Files.readAllBytes(file.toPath()));
+
+        // The original symlink target is untouched.
+        assertArrayEquals("original".getBytes(), Files.readAllBytes(target.toPath()));
+
+        file.delete();
+        target.delete();
+        dir.delete();
     }
 
     // endregion

@@ -9,6 +9,8 @@ import com.aliyun.sdk.service.oss2.progress.ProgressListener;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.*;
@@ -199,6 +201,14 @@ public class Downloader {
 
             FileChannel channel = null;
             try {
+                // Remove an existing symbolic link at the temporary path before opening it.
+                if (opts.useTempFile()) {
+                    Path tempPath = new File(tempFilePath).toPath();
+                    if (Files.isSymbolicLink(tempPath)) {
+                        Files.delete(tempPath);
+                    }
+                }
+
                 channel = FileChannel.open(
                         new File(tempFilePath).toPath(),
                         StandardOpenOption.CREATE,
