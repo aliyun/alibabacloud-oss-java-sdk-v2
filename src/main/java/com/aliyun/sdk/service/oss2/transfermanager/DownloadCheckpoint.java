@@ -175,6 +175,15 @@ class DownloadCheckpoint {
             long remains = (diskInfo.data.downloadInfo.offset - rangeOffset) % diskInfo.data.partSize;
             if (remains != 0) return false;
 
+            // valid destination path
+            long downloadLen = diskInfo.data.downloadInfo.offset - rangeOffset;
+            if (downloadLen > 0) {
+                File destFile = new File(info.data.filePath);
+                if (destFile.length() < downloadLen) {
+                    return false;
+                }
+            }
+
             info.data.downloadInfo = diskInfo.data.downloadInfo;
             return true;
         } catch (Exception e) {
