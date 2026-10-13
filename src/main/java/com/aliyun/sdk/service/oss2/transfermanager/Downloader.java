@@ -46,6 +46,7 @@ public class Downloader {
 
         DownloaderDelegate delegate = new DownloaderDelegate(client, request, filePath, options, overrideOptions);
         delegate.checkSource();
+        delegate.checkDestination();
         delegate.adjustRange();
         delegate.checkCheckpoint();
         delegate.updateCRCFlag();
@@ -136,6 +137,24 @@ public class Downloader {
             }
         }
 
+        // Determine the destination path.
+        void checkDestination() throws DownloadError {
+            this.tempFilePath = filePath;
+            if (opts.useTempFile()) {
+                this.tempFilePath = filePath + Defaults.TEMP_FILE_SUFFIX;
+
+                // Remove an existing symlink at the temporary path.
+                Path tempPath = new File(tempFilePath).toPath();
+                if (Files.isSymbolicLink(tempPath)) {
+                    try {
+                        Files.delete(tempPath);
+                    } catch (IOException e) {
+                        throw new DownloadError(filePath, e);
+                    }
+                }
+            }
+        }
+
         /**
          * Parse Range header and set rangeStart/rangeEnd.
          */
@@ -155,12 +174,6 @@ public class Downloader {
          * Load or create checkpoint if enabled.
          */
         void checkCheckpoint() throws DownloadError {
-            // Determine temp file path
-            this.tempFilePath = filePath;
-            if (opts.useTempFile()) {
-                this.tempFilePath = filePath + Defaults.TEMP_FILE_SUFFIX;
-            }
-
             if (opts.enableCheckpoint()) {
                 this.checkpoint = DownloadCheckpoint.create(
                         request.bucket(), request.key(),
@@ -201,14 +214,6 @@ public class Downloader {
 
             FileChannel channel = null;
             try {
-                // Remove an existing symbolic link at the temporary path before opening it.
-                if (opts.useTempFile()) {
-                    Path tempPath = new File(tempFilePath).toPath();
-                    if (Files.isSymbolicLink(tempPath)) {
-                        Files.delete(tempPath);
-                    }
-                }
-
                 channel = FileChannel.open(
                         new File(tempFilePath).toPath(),
                         StandardOpenOption.CREATE,

@@ -979,6 +979,133 @@ public class DownloaderTest {
         cpDir.delete();
     }
 
+    @Test
+    public void testEnableCheckpointInvalidWhenTempFileMissing() throws Exception {
+        int partSize = 128;
+        int length = 1234;
+        byte[] data = createTestData(length);
+
+        DownloaderMockHttpClient mock = new DownloaderMockHttpClient();
+        mock.sourceData = data;
+        mock.failPartNum = 6;
+        mock.partSize = partSize;
+        OSSClient client = createMockClient(mock);
+        Downloader downloader = new Downloader(client);
+
+        File tempFile = File.createTempFile("download-cp-missing-", ".dat");
+        tempFile.deleteOnExit();
+        String filePath = tempFile.getAbsolutePath();
+
+        File cpDir = Files.createTempDirectory("download-cp-missing-dir-").toFile();
+        cpDir.deleteOnExit();
+
+        GetObjectRequest request = GetObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        // First download - should fail at part 6
+        try {
+            downloader.downloadFile(request, filePath,
+                    DownloaderOptions.newBuilder()
+                            .partSize(partSize)
+                            .parallelNum(3)
+                            .checkpointDir(cpDir.getAbsolutePath())
+                            .enableCheckpoint(true)
+                            .build());
+            fail("Expected DownloadError");
+        } catch (DownloadError e) {
+            // expected
+        }
+
+        // Remove temp file but keep checkpoint
+        assertTrue(new File(filePath + Defaults.TEMP_FILE_SUFFIX).delete());
+
+        // Resume download - should start from scratch
+        mock.failPartNum = 0;
+        DownloadResult result = downloader.downloadFile(request, filePath,
+                DownloaderOptions.newBuilder()
+                        .partSize(partSize)
+                        .parallelNum(3)
+                        .checkpointDir(cpDir.getAbsolutePath())
+                        .enableCheckpoint(true)
+                        .build());
+
+        assertNotNull(result);
+        assertEquals(length, result.written());
+
+        byte[] downloaded = Files.readAllBytes(tempFile.toPath());
+        assertArrayEquals(data, downloaded);
+
+        tempFile.delete();
+        cpDir.delete();
+    }
+
+    @Test
+    public void testEnableCheckpointInvalidWhenTempFileTooSmall() throws Exception {
+        int partSize = 128;
+        int length = 1234;
+        byte[] data = createTestData(length);
+
+        DownloaderMockHttpClient mock = new DownloaderMockHttpClient();
+        mock.sourceData = data;
+        mock.failPartNum = 6;
+        mock.partSize = partSize;
+        OSSClient client = createMockClient(mock);
+        Downloader downloader = new Downloader(client);
+
+        File tempFile = File.createTempFile("download-cp-small-", ".dat");
+        tempFile.deleteOnExit();
+        String filePath = tempFile.getAbsolutePath();
+
+        File cpDir = Files.createTempDirectory("download-cp-small-dir-").toFile();
+        cpDir.deleteOnExit();
+
+        GetObjectRequest request = GetObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        // First download - should fail at part 6
+        try {
+            downloader.downloadFile(request, filePath,
+                    DownloaderOptions.newBuilder()
+                            .partSize(partSize)
+                            .parallelNum(3)
+                            .checkpointDir(cpDir.getAbsolutePath())
+                            .enableCheckpoint(true)
+                            .build());
+            fail("Expected DownloadError");
+        } catch (DownloadError e) {
+            // expected
+        }
+
+        // Truncate temp file to a smaller size but keep checkpoint
+        File tempDestFile = new File(filePath + Defaults.TEMP_FILE_SUFFIX);
+        try (FileOutputStream fos = new FileOutputStream(tempDestFile)) {
+            fos.getChannel().truncate(1);
+        }
+
+        // Resume download - should start from scratch
+        mock.failPartNum = 0;
+        DownloadResult result = downloader.downloadFile(request, filePath,
+                DownloaderOptions.newBuilder()
+                        .partSize(partSize)
+                        .parallelNum(3)
+                        .checkpointDir(cpDir.getAbsolutePath())
+                        .enableCheckpoint(true)
+                        .build());
+
+        assertNotNull(result);
+        assertEquals(length, result.written());
+
+        byte[] downloaded = Files.readAllBytes(tempFile.toPath());
+        assertArrayEquals(data, downloaded);
+
+        tempFile.delete();
+        cpDir.delete();
+    }
+
     // endregion
 
     // region CRC64 Tests

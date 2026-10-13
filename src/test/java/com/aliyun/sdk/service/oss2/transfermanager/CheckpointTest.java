@@ -196,9 +196,12 @@ public class CheckpointTest {
         Path tmpDir = Files.createTempDirectory("cp-download-test");
         tmpDir.toFile().deleteOnExit();
 
+        File destFile = File.createTempFile("download-", ".dat", tmpDir.toFile());
+        destFile.deleteOnExit();
+
         DownloadCheckpoint cp = DownloadCheckpoint.create(
                 "bucket", "key", null, null,
-                "/tmp/download.dat", tmpDir.toString(),
+                destFile.getAbsolutePath(), tmpDir.toString(),
                 50000, "Wed, 01 Jan 2025 00:00:00 GMT", "\"etag-123\"",
                 1024 * 1024);
 
@@ -214,10 +217,14 @@ public class CheckpointTest {
         cp.dump();
         assertTrue(new File(cp.cpFilePath).exists());
 
+        // Create destination file large enough for the checkpoint offset used below.
+        byte[] zeros = new byte[1024 * 1024];
+        Files.write(destFile.toPath(), zeros);
+
         // Create a new checkpoint with same params and load
         DownloadCheckpoint cp2 = DownloadCheckpoint.create(
                 "bucket", "key", null, null,
-                "/tmp/download.dat", tmpDir.toString(),
+                destFile.getAbsolutePath(), tmpDir.toString(),
                 50000, "Wed, 01 Jan 2025 00:00:00 GMT", "\"etag-123\"",
                 1024 * 1024);
 
@@ -229,6 +236,7 @@ public class CheckpointTest {
         cp2.remove();
         assertFalse(new File(cp.cpFilePath).exists());
         deleteDir(tmpDir.toFile());
+        destFile.delete();
     }
 
     @Test
@@ -330,16 +338,23 @@ public class CheckpointTest {
         Path tmpDir = Files.createTempDirectory("cp-download-range");
         tmpDir.toFile().deleteOnExit();
 
+        File destFile = File.createTempFile("download-", ".dat", tmpDir.toFile());
+        destFile.deleteOnExit();
+
         DownloadCheckpoint cp = DownloadCheckpoint.create(
                 "bucket", "key", null, "bytes=1024-4095",
-                "/tmp/download.dat", tmpDir.toString(),
+                destFile.getAbsolutePath(), tmpDir.toString(),
                 10000, "mod", "etag", 1024);
         cp.info.data.downloadInfo.offset = 2048; // 1024 (rangeStart) + 1024 (1 part)
         cp.dump();
 
+        // Create destination file large enough for the checkpoint offset used below.
+        byte[] rangeData = new byte[1024];
+        Files.write(destFile.toPath(), rangeData);
+
         DownloadCheckpoint cp2 = DownloadCheckpoint.create(
                 "bucket", "key", null, "bytes=1024-4095",
-                "/tmp/download.dat", tmpDir.toString(),
+                destFile.getAbsolutePath(), tmpDir.toString(),
                 10000, "mod", "etag", 1024);
         assertTrue(cp2.load());
         assertTrue(cp2.loaded);
@@ -347,6 +362,7 @@ public class CheckpointTest {
 
         cp2.remove();
         deleteDir(tmpDir.toFile());
+        destFile.delete();
     }
 
     @Test
@@ -354,29 +370,37 @@ public class CheckpointTest {
         Path tmpDir = Files.createTempDirectory("cp-download-version");
         tmpDir.toFile().deleteOnExit();
 
+        File destFile = File.createTempFile("download-", ".dat", tmpDir.toFile());
+        destFile.deleteOnExit();
+
         DownloadCheckpoint cp = DownloadCheckpoint.create(
                 "bucket", "key", "version-1", null,
-                "/tmp/download.dat", tmpDir.toString(),
+                destFile.getAbsolutePath(), tmpDir.toString(),
                 2048, "mod", "etag", 1024);
         cp.info.data.downloadInfo.offset = 1024;
         cp.dump();
 
+        // Create destination file large enough for the checkpoint offset used below.
+        byte[] versionData = new byte[1024];
+        Files.write(destFile.toPath(), versionData);
+
         // Same versionId should load
         DownloadCheckpoint cp2 = DownloadCheckpoint.create(
                 "bucket", "key", "version-1", null,
-                "/tmp/download.dat", tmpDir.toString(),
+                destFile.getAbsolutePath(), tmpDir.toString(),
                 2048, "mod", "etag", 1024);
         assertTrue(cp2.load());
 
         // Different versionId should generate different checkpoint file
         DownloadCheckpoint cp3 = DownloadCheckpoint.create(
                 "bucket", "key", "version-2", null,
-                "/tmp/download.dat", tmpDir.toString(),
+                destFile.getAbsolutePath(), tmpDir.toString(),
                 2048, "mod", "etag", 1024);
         assertFalse(cp3.load()); // different file path, no file
 
         cp2.remove();
         deleteDir(tmpDir.toFile());
+        destFile.delete();
     }
 
     @Test(expected = IOException.class)
