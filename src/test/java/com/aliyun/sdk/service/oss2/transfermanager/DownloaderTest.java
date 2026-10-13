@@ -7,9 +7,11 @@ import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.progress.ProgressListener;
 import com.aliyun.sdk.service.oss2.transport.*;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
+import org.junit.Assume;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -618,7 +620,7 @@ public class DownloaderTest {
         try {
             Files.createSymbolicLink(tempLink, target.toPath());
         } catch (UnsupportedOperationException | IOException e) {
-            return; // symbolic link not supported on this platform
+            Assume.assumeNoException("Symbolic links are not supported on this platform", e);
         }
 
         GetObjectRequest request = GetObjectRequest.newBuilder()
@@ -639,6 +641,84 @@ public class DownloaderTest {
         file.delete();
         target.delete();
         dir.delete();
+    }
+
+    @Test
+    public void testOpenDestinationDoesNotFollowSymbolicLink() throws Exception {
+        Path dir = Files.createTempDirectory("download-nofollow-");
+        dir.toFile().deleteOnExit();
+        Path target = Files.write(dir.resolve("target.dat"), "original".getBytes());
+        target.toFile().deleteOnExit();
+        Path link = dir.resolve("download.tmp");
+        try {
+            Files.createSymbolicLink(link, target);
+        } catch (UnsupportedOperationException | IOException e) {
+            Assume.assumeNoException("Symbolic links are not supported on this platform", e);
+        }
+        link.toFile().deleteOnExit();
+
+        try (FileChannel ignored = Downloader.openDestination(link)) {
+            fail("Expected IOException when opening a symbolic link");
+        } catch (IOException expected) {
+            // Expected: NOFOLLOW_LINKS rejects the symbolic link.
+        }
+        assertArrayEquals("original".getBytes(), Files.readAllBytes(target));
+
+        Files.deleteIfExists(link);
+        Files.deleteIfExists(target);
+        Files.deleteIfExists(dir);
+    }
+
+    @Test
+    public void testTempSymlinkInvalidatesCheckpointBeforeResume() throws Exception {
+        int partSize = 128;
+        int length = 1024;
+        byte[] data = createTestData(length);
+        byte[] original = createTestData(partSize);
+
+        DownloaderMockHttpClient mock = new DownloaderMockHttpClient();
+        mock.sourceData = data;
+        OSSClient client = createMockClient(mock);
+
+        Path dir = Files.createTempDirectory("download-symlink-checkpoint-");
+        dir.toFile().deleteOnExit();
+        Path target = Files.write(dir.resolve("link-target.dat"), original);
+        target.toFile().deleteOnExit();
+        Path destination = dir.resolve("download.dat");
+        Path tempLink = new File(destination.toString() + Defaults.TEMP_FILE_SUFFIX).toPath();
+        try {
+            Files.createSymbolicLink(tempLink, target);
+        } catch (UnsupportedOperationException | IOException e) {
+            Assume.assumeNoException("Symbolic links are not supported on this platform", e);
+        }
+        tempLink.toFile().deleteOnExit();
+
+        DownloadCheckpoint checkpoint = DownloadCheckpoint.create(
+                "bucket", "key", null, null,
+                tempLink.toString(), dir.toString(),
+                length, "Wed, 01 Jan 2025 00:00:00 GMT", "\"source-etag\"", partSize);
+        checkpoint.info.data.downloadInfo.offset = partSize;
+        checkpoint.dump();
+
+        Downloader downloader = new Downloader(client, DownloaderOptions.newBuilder()
+                .partSize(partSize)
+                .parallelNum(3)
+                .useTempFile(true)
+                .enableCheckpoint(true)
+                .checkpointDir(dir.toString())
+                .build());
+        DownloadResult result = downloader.downloadFile(
+                GetObjectRequest.newBuilder().bucket("bucket").key("key").build(),
+                destination.toString());
+
+        assertEquals(length, result.written());
+        assertArrayEquals(data, Files.readAllBytes(destination));
+        assertArrayEquals(original, Files.readAllBytes(target));
+        assertFalse(Files.exists(new File(checkpoint.cpFilePath).toPath()));
+
+        Files.deleteIfExists(destination);
+        Files.deleteIfExists(target);
+        Files.deleteIfExists(dir);
     }
 
     // endregion

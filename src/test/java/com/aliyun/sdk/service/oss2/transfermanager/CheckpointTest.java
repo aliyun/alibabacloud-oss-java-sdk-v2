@@ -202,14 +202,14 @@ public class CheckpointTest {
         DownloadCheckpoint cp = DownloadCheckpoint.create(
                 "bucket", "key", null, null,
                 destFile.getAbsolutePath(), tmpDir.toString(),
-                50000, "Wed, 01 Jan 2025 00:00:00 GMT", "\"etag-123\"",
+                2L * 1024 * 1024, "Wed, 01 Jan 2025 00:00:00 GMT", "\"etag-123\"",
                 1024 * 1024);
 
         assertNotNull(cp.cpFilePath);
         assertTrue(cp.cpFilePath.endsWith(Defaults.CHECKPOINT_FILE_SUFFIX_DOWNLOADER));
         assertEquals(Defaults.CHECKPOINT_MAGIC, cp.info.magic);
         assertEquals("oss://bucket/key", cp.info.data.objectInfo.name);
-        assertEquals(50000, cp.info.data.objectMeta.size);
+        assertEquals(2L * 1024 * 1024, cp.info.data.objectMeta.size);
         assertEquals("\"etag-123\"", cp.info.data.objectMeta.eTag);
 
         // Set download offset and dump
@@ -225,7 +225,7 @@ public class CheckpointTest {
         DownloadCheckpoint cp2 = DownloadCheckpoint.create(
                 "bucket", "key", null, null,
                 destFile.getAbsolutePath(), tmpDir.toString(),
-                50000, "Wed, 01 Jan 2025 00:00:00 GMT", "\"etag-123\"",
+                2L * 1024 * 1024, "Wed, 01 Jan 2025 00:00:00 GMT", "\"etag-123\"",
                 1024 * 1024);
 
         assertTrue(cp2.load());
@@ -330,6 +330,58 @@ public class CheckpointTest {
                 4096, "mod", "etag", 1024);
         assertFalse(cp2.load());
 
+        deleteDir(tmpDir.toFile());
+    }
+
+    @Test
+    public void testDownloadCheckpointOffsetBeyondObjectSize() throws Exception {
+        Path tmpDir = Files.createTempDirectory("cp-download-object-bound");
+        tmpDir.toFile().deleteOnExit();
+        File destFile = File.createTempFile("download-", ".dat", tmpDir.toFile());
+        destFile.deleteOnExit();
+        Files.write(destFile.toPath(), new byte[3072]);
+
+        DownloadCheckpoint cp = DownloadCheckpoint.create(
+                "bucket", "key", null, null,
+                destFile.getAbsolutePath(), tmpDir.toString(),
+                2048, "mod", "etag", 1024);
+        cp.info.data.downloadInfo.offset = 3072;
+        cp.dump();
+
+        DownloadCheckpoint loaded = DownloadCheckpoint.create(
+                "bucket", "key", null, null,
+                destFile.getAbsolutePath(), tmpDir.toString(),
+                2048, "mod", "etag", 1024);
+        assertFalse(loaded.load());
+        assertFalse(new File(cp.cpFilePath).exists());
+
+        destFile.delete();
+        deleteDir(tmpDir.toFile());
+    }
+
+    @Test
+    public void testDownloadCheckpointOffsetBeyondRangeEnd() throws Exception {
+        Path tmpDir = Files.createTempDirectory("cp-download-range-bound");
+        tmpDir.toFile().deleteOnExit();
+        File destFile = File.createTempFile("download-", ".dat", tmpDir.toFile());
+        destFile.deleteOnExit();
+        Files.write(destFile.toPath(), new byte[4096]);
+
+        DownloadCheckpoint cp = DownloadCheckpoint.create(
+                "bucket", "key", null, "bytes=1024-4095",
+                destFile.getAbsolutePath(), tmpDir.toString(),
+                10000, "mod", "etag", 1024);
+        cp.info.data.downloadInfo.offset = 5120;
+        cp.dump();
+
+        DownloadCheckpoint loaded = DownloadCheckpoint.create(
+                "bucket", "key", null, "bytes=1024-4095",
+                destFile.getAbsolutePath(), tmpDir.toString(),
+                10000, "mod", "etag", 1024);
+        assertFalse(loaded.load());
+        assertFalse(new File(cp.cpFilePath).exists());
+
+        destFile.delete();
         deleteDir(tmpDir.toFile());
     }
 

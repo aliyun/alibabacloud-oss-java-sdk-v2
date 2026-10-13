@@ -172,6 +172,8 @@ class DownloadCheckpoint {
                 rangeOffset = parseRangeOffset(info.data.objectInfo.range);
             }
             if (diskInfo.data.downloadInfo.offset < rangeOffset) return false;
+            long rangeEnd = parseRangeEnd(info.data.objectInfo.range, info.data.objectMeta.size);
+            if (diskInfo.data.downloadInfo.offset > rangeEnd) return false;
             long remains = (diskInfo.data.downloadInfo.offset - rangeOffset) % diskInfo.data.partSize;
             if (remains != 0) return false;
 
@@ -218,6 +220,23 @@ class DownloadCheckpoint {
             }
         }
         return 0;
+    }
+
+    private static long parseRangeEnd(String range, long objectSize) {
+        if (range != null && range.startsWith("bytes=")) {
+            String[] parts = range.substring(6).split("-", 2);
+            if (parts.length == 2 && !parts[1].isEmpty()) {
+                try {
+                    long inclusiveEnd = Long.parseLong(parts[1]);
+                    return inclusiveEnd == Long.MAX_VALUE
+                            ? objectSize
+                            : Math.min(inclusiveEnd + 1, objectSize);
+                } catch (NumberFormatException e) {
+                    return objectSize;
+                }
+            }
+        }
+        return objectSize;
     }
 
     private static boolean strEquals(String a, String b) {

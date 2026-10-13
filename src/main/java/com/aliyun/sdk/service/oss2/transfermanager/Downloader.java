@@ -10,6 +10,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
@@ -63,6 +64,13 @@ public class Downloader {
         if (request.key() == null) {
             throw new IllegalArgumentException("null field, request.Key");
         }
+    }
+
+    static FileChannel openDestination(Path path) throws IOException {
+        return FileChannel.open(path,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.WRITE,
+                LinkOption.NOFOLLOW_LINKS);
     }
 
     // -------------------------------------------------------------------------
@@ -214,10 +222,7 @@ public class Downloader {
 
             FileChannel channel = null;
             try {
-                channel = FileChannel.open(
-                        new File(tempFilePath).toPath(),
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.WRITE);
+                channel = openDestination(new File(tempFilePath).toPath());
 
                 long effectiveStart = rangeStart;
                 if (resumeOffset > 0) {
