@@ -10,6 +10,7 @@ import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -618,7 +619,7 @@ public class DownloaderTest {
         try {
             Files.createSymbolicLink(tempLink, target.toPath());
         } catch (UnsupportedOperationException | IOException e) {
-            return; // symbolic link not supported on this platform
+            org.junit.Assume.assumeNoException("Symbolic links are unavailable", e);
         }
 
         GetObjectRequest request = GetObjectRequest.newBuilder()
@@ -639,6 +640,40 @@ public class DownloaderTest {
         file.delete();
         target.delete();
         dir.delete();
+    }
+
+    @Test
+    public void testDownloadWithoutTempFileFollowsDestinationSymlink() throws Exception {
+        byte[] data = createTestData(2048);
+        DownloaderMockHttpClient mock = new DownloaderMockHttpClient();
+        mock.sourceData = data;
+        OSSClient client = createMockClient(mock);
+        Downloader downloader = new Downloader(client, DownloaderOptions.newBuilder()
+                .partSize(2 * 1024 * 1024)
+                .parallelNum(1)
+                .useTempFile(false)
+                .build());
+
+        Path dir = Files.createTempDirectory("download-destination-symlink-");
+        Path target = dir.resolve("target.dat");
+        Path destinationLink = dir.resolve("destination.dat");
+        try {
+            Files.createSymbolicLink(destinationLink, target);
+        } catch (UnsupportedOperationException | IOException e) {
+            org.junit.Assume.assumeNoException("Symbolic links are unavailable", e);
+        }
+
+        DownloadResult result = downloader.downloadFile(GetObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build(), destinationLink.toString());
+
+        assertEquals(data.length, result.written());
+        assertTrue(Files.isSymbolicLink(destinationLink));
+        assertArrayEquals(data, Files.readAllBytes(target));
+        Files.delete(destinationLink);
+        Files.delete(target);
+        Files.delete(dir);
     }
 
     // endregion
@@ -1542,6 +1577,75 @@ public class DownloaderTest {
         byte[] downloaded = Files.readAllBytes(tempFile.toPath());
         assertArrayEquals(data, downloaded);
         tempFile.delete();
+    }
+    @Test
+    public void testResumeAfterTempSymlinkRemovedWithCRC() throws Exception {
+        verifyResumeAfterTempSymlinkRemoved(true);
+    }
+
+    @Test
+    public void testResumeAfterTempSymlinkRemovedWithoutCRC() throws Exception {
+        verifyResumeAfterTempSymlinkRemoved(false);
+    }
+
+    private void verifyResumeAfterTempSymlinkRemoved(boolean enableCRC64Check) throws Exception {
+        int partSize = 128;
+        byte[] data = createTestData(1234);
+
+        DownloaderMockHttpClient mock = new DownloaderMockHttpClient();
+        mock.sourceData = data;
+        mock.partSize = partSize;
+        mock.failPartNum = 6;
+        OSSClient client = createMockClient(mock);
+        Downloader downloader = new Downloader(client);
+
+        Path dir = Files.createTempDirectory("download-symlink-checkpoint-");
+        Path destination = dir.resolve("target.dat");
+        Path tempPath = dir.resolve("target.dat" + Defaults.TEMP_FILE_SUFFIX);
+        Path checkpointDir = Files.createDirectory(dir.resolve("checkpoint"));
+        Path protectedTarget = dir.resolve("protected.dat");
+        byte[] protectedContents = "original".getBytes("UTF-8");
+        Files.write(protectedTarget, protectedContents);
+
+        DownloaderOptions options = DownloaderOptions.newBuilder()
+                .partSize(partSize)
+                .parallelNum(3)
+                .useTempFile(true)
+                .enableCheckpoint(true)
+                .checkpointDir(checkpointDir.toString())
+                .enableCRC64Check(enableCRC64Check)
+                .build();
+        GetObjectRequest request = GetObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        try {
+            downloader.downloadFile(request, destination.toString(), options);
+            fail("Expected DownloadError");
+        } catch (DownloadError expected) {
+            // Expected: retain a resumable temporary file and checkpoint.
+        }
+
+        assertTrue(Files.exists(tempPath));
+        assertEquals(1, Objects.requireNonNull(
+                checkpointDir.toFile().listFiles((d, n) -> n.endsWith(".dcp"))).length);
+
+        Files.delete(tempPath);
+        try {
+            Files.createSymbolicLink(tempPath, protectedTarget);
+        } catch (UnsupportedOperationException | IOException e) {
+            org.junit.Assume.assumeNoException("Symbolic links are unavailable", e);
+        }
+
+        mock.failPartNum = 0;
+        DownloadResult result = downloader.downloadFile(request, destination.toString(), options);
+
+        assertEquals(data.length, result.written());
+        assertArrayEquals(data, Files.readAllBytes(destination));
+        assertArrayEquals(protectedContents, Files.readAllBytes(protectedTarget));
+        assertEquals(0, Objects.requireNonNull(
+                checkpointDir.toFile().listFiles((d, n) -> n.endsWith(".dcp"))).length);
     }
 
     // endregion

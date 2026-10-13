@@ -201,11 +201,17 @@ public class Downloader {
 
             FileChannel channel = null;
             try {
-                // Remove an existing symbolic link at the temporary path before opening it.
+                // A checkpoint belongs to the temporary file. If the temporary path is a
+                // symbolic link, discard both before starting over with a regular file.
                 if (opts.useTempFile()) {
                     Path tempPath = new File(tempFilePath).toPath();
                     if (Files.isSymbolicLink(tempPath)) {
                         Files.delete(tempPath);
+                        if (checkpoint != null) {
+                            checkpoint.remove();
+                            checkpoint = null;
+                            resumeOffset = 0;
+                        }
                     }
                 }
 
