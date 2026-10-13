@@ -1106,6 +1106,76 @@ public class DownloaderTest {
         cpDir.delete();
     }
 
+    @Test
+    public void testEnableCheckpointResumesWhenTempFilePresent() throws Exception {
+        int partSize = 128;
+        int length = 1234;
+        byte[] data = createTestData(length);
+
+        DownloaderMockHttpClient mock = new DownloaderMockHttpClient();
+        mock.sourceData = data;
+        mock.failPartNum = 6;
+        mock.partSize = partSize;
+        OSSClient client = createMockClient(mock);
+        Downloader downloader = new Downloader(client);
+
+        File tempFile = File.createTempFile("download-cp-reuse-", ".dat");
+        tempFile.deleteOnExit();
+        String filePath = tempFile.getAbsolutePath();
+
+        File cpDir = Files.createTempDirectory("download-cp-reuse-dir-").toFile();
+        cpDir.deleteOnExit();
+
+        GetObjectRequest request = GetObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .build();
+
+        // First download - fails at part 6, leaving a partial regular temp file and a valid checkpoint.
+        try {
+            downloader.downloadFile(request, filePath,
+                    DownloaderOptions.newBuilder()
+                            .partSize(partSize)
+                            .parallelNum(3)
+                            .checkpointDir(cpDir.getAbsolutePath())
+                            .enableCheckpoint(true)
+                            .build());
+            fail("Expected DownloadError");
+        } catch (DownloadError e) {
+            // expected
+        }
+
+        File tempDestFile = new File(filePath + Defaults.TEMP_FILE_SUFFIX);
+        assertTrue(tempDestFile.exists());
+        assertFalse(Files.isSymbolicLink(tempDestFile.toPath()));
+        long firstRunGets = mock.getObjectCount.get();
+
+        // Resume - the pre-existing regular temp file must not be deleted by checkDestination.
+        mock.failPartNum = 0;
+        DownloadResult result = downloader.downloadFile(request, filePath,
+                DownloaderOptions.newBuilder()
+                        .partSize(partSize)
+                        .parallelNum(3)
+                        .checkpointDir(cpDir.getAbsolutePath())
+                        .enableCheckpoint(true)
+                        .build());
+
+        assertNotNull(result);
+        assertEquals(length, result.written());
+
+        byte[] downloaded = Files.readAllBytes(tempFile.toPath());
+        assertArrayEquals(data, downloaded);
+
+        // Resume should fetch only the remaining parts, not all of them.
+        long totalParts = (length + partSize - 1) / partSize;
+        long secondRunGets = mock.getObjectCount.get() - firstRunGets;
+        assertTrue("resume should fetch fewer parts than a full download",
+                secondRunGets < totalParts);
+
+        tempFile.delete();
+        cpDir.delete();
+    }
+
     // endregion
 
     // region CRC64 Tests
