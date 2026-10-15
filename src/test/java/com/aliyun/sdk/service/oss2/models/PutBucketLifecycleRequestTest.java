@@ -52,6 +52,7 @@ public class PutBucketLifecycleRequestTest {
                                 .expiredObjectDeleteMarker(true)
                                 .build())
                         .abortMultipartUpload(LifecycleRuleAbortMultipartUpload.newBuilder()
+                                .createdBeforeDate(Instant.parse("2020-06-22T11:42:32.120Z"))
                                 .days(30)
                                 .build())
                         .build(),
@@ -181,6 +182,7 @@ public class PutBucketLifecycleRequestTest {
                                 .expiredObjectDeleteMarker(true)
                                 .build())
                         .abortMultipartUpload(LifecycleRuleAbortMultipartUpload.newBuilder()
+                                .createdBeforeDate(Instant.parse("2020-06-22T11:42:32.120Z"))
                                 .days(30)
                                 .build())
                         .build(),
@@ -275,6 +277,8 @@ public class PutBucketLifecycleRequestTest {
         assertThat(xmlContent).contains("atime transition2");
         assertThat(xmlContent).contains("RuleID");
         assertThat(xmlContent).contains("2020-06-22T11:42:32.120Z");
+        assertThat(xmlContent).contains("<AbortMultipartUpload>");
+        assertThat(xmlContent).contains("<CreatedBeforeDate>2020-06-22T11:42:32.120Z</CreatedBeforeDate>");
         
         // Parse the XML to verify it's well-formed and contains expected structure
         ObjectMapper xmlMapper = new XmlMapper();
@@ -299,6 +303,7 @@ public class PutBucketLifecycleRequestTest {
         assertThat(rule0.expiration().expiredObjectDeleteMarker()).isTrue();
         assertThat(rule0.expiration().createdBeforeDate()).isEqualTo("2020-06-22T11:42:32.120Z");
         assertThat(rule0.abortMultipartUpload()).isNotNull();
+        assertThat(rule0.abortMultipartUpload().createdBeforeDate()).isEqualTo("2020-06-22T11:42:32.120Z");
         assertThat(rule0.abortMultipartUpload().days()).isEqualTo(30);
         
         // Verify second rule

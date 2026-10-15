@@ -78,6 +78,7 @@ public class GetBucketLifecycleResultTest {
                         "                     <ExpiredObjectDeleteMarker>true</ExpiredObjectDeleteMarker>\n" +
                         "                 </Expiration>\n" +
                         "                 <AbortMultipartUpload>\n" +
+                        "                     <CreatedBeforeDate>2020-06-22T11:42:32.000Z</CreatedBeforeDate>\n" +
                         "                     <Days>30</Days>\n" +
                         "                 </AbortMultipartUpload>\n" +
                         "             </Rule>\n" +
@@ -171,6 +172,7 @@ public class GetBucketLifecycleResultTest {
         // Check abort multipart upload
         LifecycleRuleAbortMultipartUpload abortMultipartUpload = rule1.abortMultipartUpload();
         assertThat(abortMultipartUpload).isNotNull();
+        assertThat(abortMultipartUpload.createdBeforeDate()).isEqualTo("2020-06-22T11:42:32.000Z");
         assertThat(abortMultipartUpload.days()).isEqualTo(30);
 
         // Check second rule
@@ -263,6 +265,7 @@ public class GetBucketLifecycleResultTest {
 
         // Create abort multipart upload
         LifecycleRuleAbortMultipartUpload abortMultipartUpload = LifecycleRuleAbortMultipartUpload.newBuilder()
+                .createdBeforeDate("2020-06-22T11:42:32.000Z")
                 .days(30)
                 .build();
 

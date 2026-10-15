@@ -4,7 +4,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.time.Instant;
+import java.time.ZoneOffset;
 
+import static com.aliyun.sdk.service.oss2.utils.DateUtils.ISO8601_DATE_FORMAT;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -16,7 +18,7 @@ public final class LifecycleRuleAbortMultipartUpload {
     private Integer days;
 
     @JacksonXmlProperty(localName = "CreatedBeforeDate")
-    private Instant createdBeforeDate;
+    private String createdBeforeDate;
 
     public LifecycleRuleAbortMultipartUpload() {
     }
@@ -40,7 +42,7 @@ public final class LifecycleRuleAbortMultipartUpload {
     /**
      * The date based on which the lifecycle rule takes effect. OSS performs the specified operation on data whose last modified date is earlier than this date. Specify the time in the ISO 8601 standard. The time must be at 00:00:00 in UTC.
      */
-    public Instant createdBeforeDate() {
+    public String createdBeforeDate() {
         return this.createdBeforeDate;
     }
 
@@ -50,7 +52,7 @@ public final class LifecycleRuleAbortMultipartUpload {
 
     public static class Builder {
         private Integer days;
-        private Instant createdBeforeDate;
+        private String createdBeforeDate;
 
         private Builder() {
             super();
@@ -73,9 +75,19 @@ public final class LifecycleRuleAbortMultipartUpload {
         /**
          * The date based on which the lifecycle rule takes effect. OSS performs the specified operation on data whose last modified date is earlier than this date. Specify the time in the ISO 8601 standard. The time must be at 00:00:00 in UTC.
          */
-        public Builder createdBeforeDate(Instant value) {
+        public Builder createdBeforeDate(String value) {
             requireNonNull(value);
             this.createdBeforeDate = value;
+            return this;
+        }
+
+        /**
+         * The date based on which the lifecycle rule takes effect. OSS performs the specified operation on data whose last modified date is earlier than this date. Specify the time in the ISO 8601 standard. The time must be at 00:00:00 in UTC.
+         */
+        public Builder createdBeforeDate(Instant value) {
+            requireNonNull(value);
+            this.createdBeforeDate = value.atOffset(ZoneOffset.UTC)
+                                          .format(ISO8601_DATE_FORMAT);
             return this;
         }
 
