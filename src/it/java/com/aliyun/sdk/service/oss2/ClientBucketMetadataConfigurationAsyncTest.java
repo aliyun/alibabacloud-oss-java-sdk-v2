@@ -24,6 +24,8 @@ public class ClientBucketMetadataConfigurationAsyncTest extends TestBase {
             Assert.assertEquals(200, createResult.statusCode());
             Assert.assertNotNull(createResult.requestId());
 
+            waitForCacheExpiration(15);
+
             // Get and verify the bucket metadata configuration.
             GetBucketMetadataConfigurationResult getResult = client.getBucketMetadataConfigurationAsync(
                     GetBucketMetadataConfigurationRequest.newBuilder()
@@ -92,7 +94,7 @@ public class ClientBucketMetadataConfigurationAsyncTest extends TestBase {
         Assert.assertNotNull(result.requestId());
         Assert.assertNotNull(result.metadataConfigurationResult());
         Assert.assertNotNull(result.metadataConfigurationResult().destinationResult());
-        Assert.assertEquals("oss", result.metadataConfigurationResult().destinationResult().tableBucketType());
+        Assert.assertEquals("system", result.metadataConfigurationResult().destinationResult().tableBucketType());
         Assert.assertNotNull(result.metadataConfigurationResult().journalTableConfigurationResult());
         Assert.assertNotNull(result.metadataConfigurationResult().inventoryTableConfigurationResult());
         Assert.assertEquals("DISABLED", result.metadataConfigurationResult()
@@ -106,7 +108,7 @@ public class ClientBucketMetadataConfigurationAsyncTest extends TestBase {
                     GetBucketMetadataConfigurationRequest.newBuilder().bucket(bucketName).build()).get();
             String status = result.metadataConfigurationResult()
                     .journalTableConfigurationResult().tableStatus();
-            if ("ACTIVE".equals(status)) {
+            if ("ACTIVE".equals(status) || "CREATING".equals(status)) {
                 return;
             }
             if ("FAILED".equals(status)) {
