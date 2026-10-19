@@ -357,4 +357,37 @@ public class PutBucketLifecycleRequestTest {
         assertThat(not2.tag().key()).isEqualTo("notkey2");
         assertThat(not2.tag().value()).isEqualTo("notvalue2");
     }
+
+    @Test
+    public void testIsAccessTimeSerializedOnlyAsIsAccessTime() {
+        List<LifecycleRule> rules = Arrays.asList(
+                LifecycleRule.newBuilder()
+                        .id("atime transition")
+                        .prefix("logs/")
+                        .status("Enabled")
+                        .noncurrentVersionTransitions(Arrays.asList(
+                                NoncurrentVersionTransition.newBuilder()
+                                        .noncurrentDays(30)
+                                        .storageClass("IA")
+                                        .isAccessTime(true)
+                                        .returnToStdWhenVisit(false)
+                                        .build()))
+                        .build()
+        );
+
+        LifecycleConfiguration lifecycleConfiguration = LifecycleConfiguration.newBuilder()
+                .rules(rules)
+                .build();
+
+        PutBucketLifecycleRequest request = PutBucketLifecycleRequest.newBuilder()
+                .bucket("examplebucket")
+                .lifecycleConfiguration(lifecycleConfiguration)
+                .build();
+
+        OperationInput input = SerdeBucketLifecycle.fromPutBucketLifecycle(request);
+        String xmlContent = new String(input.body().get().toBytes(), StandardCharsets.UTF_8);
+
+        assertThat(xmlContent).contains("<IsAccessTime>true</IsAccessTime>");
+        assertThat(xmlContent).doesNotContain("<accessTime>");
+    }
 }

@@ -1,5 +1,6 @@
 package com.aliyun.sdk.service.oss2.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import static java.util.Objects.requireNonNull;
@@ -29,6 +30,7 @@ public final class IncrementalInventory {
     /**
     * Specifies whether incremental inventory is enabled
     */
+    @JsonIgnore
     public Boolean isEnabled() {
         return this.isEnabled;
     }

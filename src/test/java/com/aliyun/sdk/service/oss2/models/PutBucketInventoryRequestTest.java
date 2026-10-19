@@ -720,4 +720,29 @@ public class PutBucketInventoryRequestTest {
         assertThat(onceCopy.autoDelete()).isEqualTo(false);
         assertThat(onceCopy.dayOfMonth()).isNull();
     }
+
+    @Test
+    public void testIsEnabledSerializedOnlyAsIsEnabled() {
+        IncrementalInventory incrementalInventory = IncrementalInventory.newBuilder()
+                .isEnabled(true)
+                .build();
+
+        InventoryConfiguration inventoryConfiguration = InventoryConfiguration.newBuilder()
+                .id("report1")
+                .isEnabled(true)
+                .incrementalInventory(incrementalInventory)
+                .build();
+
+        PutBucketInventoryRequest request = PutBucketInventoryRequest.newBuilder()
+                .bucket("examplebucket")
+                .inventoryId("report1")
+                .inventoryConfiguration(inventoryConfiguration)
+                .build();
+
+        OperationInput input = SerdeBucketInventory.fromPutBucketInventory(request);
+        String xmlContent = new String(input.body().get().toBytes(), StandardCharsets.UTF_8);
+
+        assertThat(xmlContent).contains("<IsEnabled>true</IsEnabled>");
+        assertThat(xmlContent).doesNotContain("<enabled>");
+    }
 }
