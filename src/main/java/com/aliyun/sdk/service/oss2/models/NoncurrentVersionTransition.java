@@ -1,5 +1,6 @@
 package com.aliyun.sdk.service.oss2.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import static java.util.Objects.requireNonNull;
@@ -44,6 +45,7 @@ public final class NoncurrentVersionTransition {
     /**
     * Specifies whether the lifecycle rule applies to objects based on their last access time. Valid values:*   true: The rule applies to objects based on their last access time.*   false: The rule applies to objects based on their last modified time.
     */
+    @JsonIgnore
     public Boolean isAccessTime() {
         return this.isAccessTime;
     }
