@@ -1,5 +1,15 @@
 # ChangeLog - Alibaba Cloud OSS SDK For Java V2
 
+## 版本号：0.6.1 日期：2026-10-19
+### 变更内容
+- Feature：Add metadata table api
+- Feature：Add vector fusion
+- Feature：Add agentic quota
+- Feature：Support client-level DefaultRequestHeaders config
+- Feature：Support HTTP proxy configuration
+- Update：Encode string request bodies as UTF-8 in Apache transports
+- Update：Align lifecycle date fields
+
 ## 版本号：0.6.0 日期：2026-08-27
 ### 变更内容
 - Feature：Add agentic bucket
