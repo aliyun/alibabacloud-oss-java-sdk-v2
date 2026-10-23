@@ -70,6 +70,10 @@ public class PutDataPipelineV2Configuration implements Example {
                             .modelTier("standard")
                             .dataPipelineDataProcessConfiguration(processConfiguration)
                             .destination(destination)
+                            // DataPipelineError and its ErrorMode are mandatory.
+                            .dataPipelineError(DataPipelineError.newBuilder()
+                                    .errorMode("ignore")
+                                    .build())
                             .build();
 
             PutDataPipelineConfigurationResult result = client.putDataPipelineConfiguration(
