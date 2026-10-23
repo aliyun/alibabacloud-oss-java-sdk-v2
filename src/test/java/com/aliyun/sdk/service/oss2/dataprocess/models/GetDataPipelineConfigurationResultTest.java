@@ -181,7 +181,7 @@ public class GetDataPipelineConfigurationResultTest {
                 + "<Sources><InputBucket>source-bucket</InputBucket><InputDataScope>All</InputDataScope>"
                 + "<IgnoreDelete>false</IgnoreDelete><FilterConfiguration><PrefixSet>media/</PrefixSet>"
                 + "<ObjectMediaTypes>image</ObjectMediaTypes><ObjectMediaTypes>video</ObjectMediaTypes>"
-                + "<ObjectMediaTypes>text</ObjectMediaTypes></FilterConfiguration></Sources>"
+                + "<ObjectMediaTypes>document</ObjectMediaTypes></FilterConfiguration></Sources>"
                 + "<ModelTier>standard</ModelTier>"
                 + "<DataPipelineDataProcessConfiguration><SearchMode>balanced</SearchMode><Insights>"
                 + "<Image><Caption><Prompt>Describe the image.</Prompt></Caption></Image>"
@@ -217,7 +217,7 @@ public class GetDataPipelineConfigurationResultTest {
         assertThat(configuration.sources().get(0).ignoreDelete()).isFalse();
         assertThat(configuration.sources().get(0).filterConfiguration().prefixSet()).containsExactly("media/");
         assertThat(configuration.sources().get(0).filterConfiguration().objectMediaTypes())
-                .containsExactly("image", "video", "text");
+                .containsExactly("image", "video", "document");
         assertThat(configuration.dataPipelineDataProcessConfiguration().searchMode()).isEqualTo("balanced");
         assertThat(configuration.dataPipelineDataProcessConfiguration().insights().image())
                 .isInstanceOf(InsightsImage.class);

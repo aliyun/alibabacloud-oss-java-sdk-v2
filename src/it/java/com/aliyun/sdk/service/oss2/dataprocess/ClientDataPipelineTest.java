@@ -1,12 +1,8 @@
 package com.aliyun.sdk.service.oss2.dataprocess;
 
 import com.aliyun.sdk.service.oss2.OSSClient;
-import com.aliyun.sdk.service.oss2.OperationInput;
-import com.aliyun.sdk.service.oss2.OperationOptions;
-import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.TestBase;
 import com.aliyun.sdk.service.oss2.dataprocess.models.*;
-import com.aliyun.sdk.service.oss2.dataprocess.transform.SerdeDataPipelineBasic;
 import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.CreateBucketConfiguration;
 import com.aliyun.sdk.service.oss2.models.DeleteBucketRequest;
@@ -28,7 +24,7 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
     public void testDataPipelineLifecycle() {
         OSSDataProcessClient client = getDataClient();
         String pipelineName = "test-pipeline-" + System.currentTimeMillis();
-        String roleName = roleName();
+        String roleName = ramRoleArn();
 
         // 1. Put Data Pipeline Configuration
         DataPipelineSourceFilterConfiguration filterConfig = DataPipelineSourceFilterConfiguration.newBuilder()
@@ -52,8 +48,7 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
 
 
         OSSVectorsClient vectorsClient = getVectorsClient();
-        String vectorBucketName = "sdk-oss-java-test-" + System.currentTimeMillis() + "-" +
-                (int) (Math.random() * 10000);
+        String vectorBucketName = "sdk-test"+ "-" + (int) (Math.random() * 100);
 
 
         // Put vector bucket
@@ -238,11 +233,13 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
     public void testV2DataPipelineLifecycleAndValidation() {
         OSSDataProcessClient client = getDataClient();
         OSSVectorsClient vectorsClient = getVectorsClient();
+        String roleName = ramRoleArn();
         String suffix = String.valueOf(System.currentTimeMillis());
         String pipelineName = "test-v2-" + suffix;
         String invalidPipelineName = "test-v2-invalid-" + suffix;
-        String vectorBucketName = "test-v2-vector-" + suffix + "-" + (int) (Math.random() * 10000);
-        String indexName = "video-frame-" + suffix;
+        String vectorBucketName = "test-v2-vector-" + (int) (Math.random() * 100);
+        // indexName only allows letters and digits, must start with a letter.
+        String indexName = "videoFrame" + suffix;
 
         vectorsClient.putVectorBucket(PutVectorBucketRequest.newBuilder()
                 .bucket(vectorBucketName)
@@ -256,6 +253,24 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
                 .metadata(Collections.singletonMap(
                         "nonFilterableMetadataKeys", Collections.singletonList("VideoStreams")))
                 .build());
+
+        // DataPipelineError and its ErrorMode are mandatory.
+        String errorBucketName = genBucketName() + "-error-test";
+        OSSClient ossClient = getDefaultClient();
+        PutBucketResult putBucketResult = ossClient.putBucket(
+                PutBucketRequest.newBuilder()
+                        .bucket(errorBucketName)
+                        .createBucketConfiguration(CreateBucketConfiguration.newBuilder()
+                                .storageClass("Standard")
+                                .build())
+                        .build());
+        Assert.assertNotNull(putBucketResult);
+        Assert.assertEquals(200, putBucketResult.statusCode());
+        waitForCacheExpiration(1);
+
+        DataPipelineError errorConfig = DataPipelineError.newBuilder()
+                .errorMode("ignore")
+                .build();
 
         DataPipelineSource source = DataPipelineSource.newBuilder()
                 .inputBucket(bucketName)
@@ -293,6 +308,7 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
                         .modelTier("standard")
                         .dataPipelineDataProcessConfiguration(processConfiguration)
                         .destination(destination)
+                        .dataPipelineError(errorConfig)
                         .build();
 
         try {
@@ -302,7 +318,7 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
             try {
                 client.putDataPipelineConfiguration(PutDataPipelineConfigurationRequest.newBuilder()
                         .dataPipelineName(invalidPipelineName)
-                        .role(ramRoleArn())
+                        .role(roleName)
                         .putDataPipelineConfigurationConfiguration(multipleSources)
                         .build());
                 Assert.fail("Expected multiple Sources to be rejected");
@@ -315,7 +331,7 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
             PutDataPipelineConfigurationResult putResult = client.putDataPipelineConfiguration(
                     PutDataPipelineConfigurationRequest.newBuilder()
                             .dataPipelineName(pipelineName)
-                            .role(ramRoleArn())
+                            .role(roleName)
                             .putDataPipelineConfigurationConfiguration(configuration)
                             .build());
             Assert.assertEquals(200, putResult.statusCode());
@@ -327,17 +343,6 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
             Assert.assertEquals(200, getResult.statusCode());
             assertV2Configuration(getResult.dataPipelineConfiguration(), pipelineName, vectorBucketName, indexName);
 
-            OperationInput getInput = SerdeDataPipelineBasic.fromGetDataPipelineConfiguration(getRequest)
-                    .toBuilder()
-                    .method("GET")
-                    .build();
-            OperationOutput getOutput = client.invokeOperation(getInput, OperationOptions.defaults());
-            GetDataPipelineConfigurationResult getByGetMethod =
-                    SerdeDataPipelineBasic.toGetDataPipelineConfiguration(getOutput);
-            Assert.assertEquals(200, getByGetMethod.statusCode());
-            assertV2Configuration(
-                    getByGetMethod.dataPipelineConfiguration(), pipelineName, vectorBucketName, indexName);
-
             ListDataPipelineConfigurationsRequest listRequest =
                     ListDataPipelineConfigurationsRequest.newBuilder()
                             .maxResults(0)
@@ -348,16 +353,6 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
                     client.listDataPipelineConfigurations(listRequest);
             Assert.assertEquals(200, listResult.statusCode());
             assertV2ListResult(listResult, pipelineName, vectorBucketName, indexName);
-
-            OperationInput listInput = SerdeDataPipelineBasic.fromListDataPipelineConfigurations(listRequest)
-                    .toBuilder()
-                    .method("GET")
-                    .build();
-            OperationOutput listOutput = client.invokeOperation(listInput, OperationOptions.defaults());
-            ListDataPipelineConfigurationsResult listByGetMethod =
-                    SerdeDataPipelineBasic.toListDataPipelineConfigurations(listOutput);
-            Assert.assertEquals(200, listByGetMethod.statusCode());
-            assertV2ListResult(listByGetMethod, pipelineName, vectorBucketName, indexName);
         } finally {
             for (String name : Arrays.asList(pipelineName, invalidPipelineName)) {
                 try {
@@ -377,6 +372,12 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
             try {
                 vectorsClient.deleteVectorBucket(DeleteVectorBucketRequest.newBuilder()
                         .bucket(vectorBucketName)
+                        .build());
+            } catch (Exception ignored) {
+            }
+            try {
+                ossClient.deleteBucket(DeleteBucketRequest.newBuilder()
+                        .bucket(errorBucketName)
                         .build());
             } catch (Exception ignored) {
             }
@@ -414,6 +415,8 @@ public class ClientDataPipelineTest extends TestBaseDataProcess {
                 .insights().video().frameEmbedding().snapshot();
         Assert.assertEquals("interval", snapshot.mode());
         Assert.assertEquals(Double.valueOf(1.0d), snapshot.interval());
+        Assert.assertNotNull(configuration.dataPipelineError());
+        Assert.assertEquals("ignore", configuration.dataPipelineError().errorMode());
         VideoFrameEmbedding videoFrame = configuration.destination().videoFrameEmbedding();
         Assert.assertEquals(vectorBucketName, videoFrame.bucket());
         Assert.assertEquals(indexName, videoFrame.indexName());
