@@ -52,6 +52,8 @@ public class ClientBucketLoggingTest extends TestBase {
             Assert.assertNotNull(deleteResult);
             Assert.assertEquals(204, deleteResult.statusCode());
 
+            waitForCacheExpiration(2);
+
             GetBucketLoggingResult getResultAfterDelete = client.getBucketLogging(GetBucketLoggingRequest.newBuilder()
                     .bucket(bucketName)
                     .build());

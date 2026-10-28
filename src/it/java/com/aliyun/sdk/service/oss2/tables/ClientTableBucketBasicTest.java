@@ -15,6 +15,7 @@ public class ClientTableBucketBasicTest extends TestBaseTables {
         // List vector buckets with maxKeys = 1
         ListTableBucketsResult result = client.listTableBuckets(ListTableBucketsRequest.newBuilder()
                 .maxBuckets(1)
+                .prefix(tableBucketName)
                 .build());
 
         Assert.assertNotNull(result);

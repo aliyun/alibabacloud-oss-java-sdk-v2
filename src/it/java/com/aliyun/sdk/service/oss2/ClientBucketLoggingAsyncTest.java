@@ -53,6 +53,8 @@ public class ClientBucketLoggingAsyncTest extends TestBase {
         Assert.assertNotNull(deleteResult);
         Assert.assertEquals(204, deleteResult.statusCode());
 
+        waitForCacheExpiration(2);
+
         GetBucketLoggingResult getResultAfterDelete = client.getBucketLoggingAsync(GetBucketLoggingRequest.newBuilder()
                 .bucket(bucketName)
                 .build()).get();

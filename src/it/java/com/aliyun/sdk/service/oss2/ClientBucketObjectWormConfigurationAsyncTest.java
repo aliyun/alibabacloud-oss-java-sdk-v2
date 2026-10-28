@@ -46,6 +46,8 @@ public class ClientBucketObjectWormConfigurationAsyncTest extends TestBase {
         Assert.assertNotNull(putResult);
         Assert.assertEquals(200, putResult.statusCode());
 
+        waitForCacheExpiration(2);
+
         // 3. Get bucket object worm configuration
         GetBucketObjectWormConfigurationResult getResult = client.getBucketObjectWormConfigurationAsync(
                 GetBucketObjectWormConfigurationRequest.newBuilder()
