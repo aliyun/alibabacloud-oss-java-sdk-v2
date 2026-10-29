@@ -6,6 +6,7 @@ import com.aliyun.sdk.service.oss2.exceptions.ServiceException;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.progress.ProgressListener;
 
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -430,7 +431,9 @@ public class Copier {
                             StringBuilder sb = new StringBuilder();
                             for (Tag tag : tagResult.tagging().tagSet().tags()) {
                                 if (sb.length() > 0) sb.append("&");
-                                sb.append(tag.key()).append("=").append(tag.value());
+                                sb.append(encodeTagComponent(tag.key()))
+                                  .append("=")
+                                  .append(encodeTagComponent(tag.value()));
                             }
                             if (sb.length() > 0) {
                                 initBuilder.tagging(sb.toString());
@@ -442,6 +445,17 @@ public class Copier {
                 }
             }
             // For "REPLACE" directive, the tagging from the request is used (already set)
+        }
+
+        private static String encodeTagComponent(String value) {
+            if (value == null) {
+                return "";
+            }
+            try {
+                return URLEncoder.encode(value, "UTF-8").replace("+", "%20");
+            } catch (java.io.UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         private void abortMultipartUpload(String uploadId) {

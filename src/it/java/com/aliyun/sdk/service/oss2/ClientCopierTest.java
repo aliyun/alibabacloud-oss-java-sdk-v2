@@ -8,7 +8,9 @@ import com.aliyun.sdk.service.oss2.utils.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -725,6 +727,93 @@ public class ClientCopierTest extends TestBase {
                 aclResult.accessControlPolicy().accessControlList().grant());
 
         // Verify content
+        GetObjectResult getResult = client.getObject(GetObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .build());
+        byte[] downloaded = IOUtils.toByteArray(getResult.body());
+        Assert.assertArrayEquals(data, downloaded);
+    }
+
+    // endregion
+
+    // region Special Character Tagging
+
+    @Test
+    public void testCopierMultipartCopySpecialCharacterTagging() throws Exception {
+        OSSClient client = getDefaultClient();
+        String srcKey = genObjectName() + "-cp-src-tag-special";
+        String dstKey = genObjectName() + "-cp-dst-tag-special";
+
+        int partSize = 100 * 1024;
+        int length = 2 * partSize + 1234;
+        byte[] data = randomData(length);
+
+        PutObjectResult putResult = client.putObject(PutObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(srcKey)
+                .body(BinaryData.fromBytes(data))
+                .build());
+        Assert.assertEquals(200, putResult.statusCode());
+
+        // Source tags contain =, + and spaces. The Copier must URL-encode each
+        // key/value when it builds the x-oss-tagging header for multipart copy.
+        List<Tag> srcTags = new ArrayList<>();
+        srcTags.add(Tag.newBuilder().key("a=b").value("c+d").build());
+        srcTags.add(Tag.newBuilder().key("key with space").value("value+with=special").build());
+        PutObjectTaggingResult putTaggingResult = client.putObjectTagging(PutObjectTaggingRequest.newBuilder()
+                .bucket(bucketName)
+                .key(srcKey)
+                .tagging(Tagging.newBuilder()
+                        .tagSet(TagSet.newBuilder().tags(srcTags).build())
+                        .build())
+                .build());
+        Assert.assertEquals(200, putTaggingResult.statusCode());
+
+        GetObjectTaggingResult srcTagResult = client.getObjectTagging(GetObjectTaggingRequest.newBuilder()
+                .bucket(bucketName)
+                .key(srcKey)
+                .build());
+        Assert.assertNotNull(srcTagResult.tagging());
+        Assert.assertNotNull(srcTagResult.tagging().tagSet());
+        Assert.assertEquals(2, srcTagResult.tagging().tagSet().tags().size());
+        Assert.assertEquals("a=b", srcTagResult.tagging().tagSet().tags().get(0).key());
+        Assert.assertEquals("c+d", srcTagResult.tagging().tagSet().tags().get(0).value());
+        Assert.assertEquals("key with space", srcTagResult.tagging().tagSet().tags().get(1).key());
+        Assert.assertEquals("value+with=special", srcTagResult.tagging().tagSet().tags().get(1).value());
+
+        Copier copier = new Copier(client, CopierOptions.newBuilder()
+                .partSize(partSize)
+                .multipartCopyThreshold(partSize)
+                .parallelNum(1)
+                .disableShallowCopy(true)
+                .build());
+
+        CopyResult result = copier.copy(CopyObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .sourceKey(srcKey)
+                .build());
+        Assert.assertNotNull(result);
+
+        HeadObjectResult headResult = client.headObject(HeadObjectRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .build());
+        Assert.assertEquals("Multipart", headResult.objectType());
+
+        GetObjectTaggingResult dstTagResult = client.getObjectTagging(GetObjectTaggingRequest.newBuilder()
+                .bucket(bucketName)
+                .key(dstKey)
+                .build());
+        Assert.assertNotNull(dstTagResult.tagging());
+        Assert.assertNotNull(dstTagResult.tagging().tagSet());
+        Assert.assertEquals(2, dstTagResult.tagging().tagSet().tags().size());
+        Assert.assertEquals("a=b", dstTagResult.tagging().tagSet().tags().get(0).key());
+        Assert.assertEquals("c+d", dstTagResult.tagging().tagSet().tags().get(0).value());
+        Assert.assertEquals("key with space", dstTagResult.tagging().tagSet().tags().get(1).key());
+        Assert.assertEquals("value+with=special", dstTagResult.tagging().tagSet().tags().get(1).value());
+
         GetObjectResult getResult = client.getObject(GetObjectRequest.newBuilder()
                 .bucket(bucketName)
                 .key(dstKey)

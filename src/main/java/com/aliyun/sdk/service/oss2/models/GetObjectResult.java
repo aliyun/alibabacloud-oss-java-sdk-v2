@@ -35,7 +35,7 @@ public final class GetObjectResult extends ResultModel implements AutoCloseable 
      * The number of tags added to the object.
      */
     public Long taggingCount() {
-        String value = headers.get("x‑oss‑tagging‑count");
+        String value = headers.get("x-oss-tagging-count");
         return ConvertUtils.toLongOrNull(value);
     }
 

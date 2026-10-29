@@ -35,6 +35,9 @@ public class CopierTest {
         String sourceCRC64 = "1234567890";
         String completeCRC64 = "1234567890"; // default: matches source CRC
         int sourceTaggingCount = 0;
+        List<Tag> sourceTags = Collections.singletonList(
+                Tag.newBuilder().key("key1").value("value1").build());
+        String capturedTaggingHeader = null;
 
         boolean headObjectError = false;
         boolean copyObjectError = false;
@@ -109,7 +112,7 @@ public class CopierTest {
                 headers.put("x-oss-server-side-encryption", sourceServerSideEncryption);
             }
             if (sourceTaggingCount > 0) {
-                headers.put("x\u2011oss\u2011tagging\u2011count", String.valueOf(sourceTaggingCount));
+                headers.put("x-oss-tagging-count", String.valueOf(sourceTaggingCount));
             }
             return buildResponse(200, "", headers);
         }
@@ -141,6 +144,9 @@ public class CopierTest {
             initiateMultipartCount.incrementAndGet();
             if (initiateMultipartError) {
                 return buildResponse(403, ERROR_XML, Collections.emptyMap());
+            }
+            if (request.headers() != null) {
+                capturedTaggingHeader = request.headers().get("x-oss-tagging");
             }
             String xml = "<InitiateMultipartUploadResult>" +
                     "<Bucket>bucket</Bucket><Key>key</Key><UploadId>uploadId-copy</UploadId>" +
@@ -186,10 +192,22 @@ public class CopierTest {
 
         private ResponseMessage handleGetObjectTagging(RequestMessage request) {
             getObjectTaggingCount.incrementAndGet();
-            String xml = "<Tagging><TagSet>" +
-                    "<Tag><Key>key1</Key><Value>value1</Value></Tag>" +
-                    "</TagSet></Tagging>";
-            return buildResponse(200, xml, Collections.emptyMap());
+            StringBuilder xml = new StringBuilder("<Tagging><TagSet>");
+            for (Tag tag : sourceTags) {
+                xml.append("<Tag><Key>").append(escapeXml(tag.key()))
+                   .append("</Key><Value>").append(escapeXml(tag.value()))
+                   .append("</Value></Tag>");
+            }
+            xml.append("</TagSet></Tagging>");
+            return buildResponse(200, xml.toString(), Collections.emptyMap());
+        }
+
+        private static String escapeXml(String value) {
+            return value.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                    .replace("\"", "&quot;")
+                    .replace("'", "&apos;");
         }
 
         private int extractPartNumber(String query) {
@@ -1328,6 +1346,35 @@ public class CopierTest {
         CopyResult result = copier.copy(request);
         assertNotNull(result);
         assertEquals(1, mock.getObjectTaggingCount.get());
+    }
+
+    @Test
+    public void testMultipartCopyWithTaggingUrlEncoded() throws CopyError {
+        CopierMockHttpClient mock = new CopierMockHttpClient();
+        mock.sourceContentLength = 500;
+        mock.sourceTaggingCount = 2;
+        mock.sourceTags = Arrays.asList(
+                Tag.newBuilder().key("a=b").value("c+d").build(),
+                Tag.newBuilder().key("key with space").value("value+with=special").build());
+        OSSClient client = createMockClient(mock);
+
+        Copier copier = new Copier(client, CopierOptions.newBuilder()
+                .multipartCopyThreshold(200)
+                .partSize(100)
+                .parallelNum(1)
+                .disableShallowCopy(true)
+                .build());
+
+        CopyObjectRequest request = CopyObjectRequest.newBuilder()
+                .bucket("bucket")
+                .key("key")
+                .sourceKey("src-key")
+                .build();
+
+        CopyResult result = copier.copy(request);
+        assertNotNull(result);
+        assertEquals(1, mock.getObjectTaggingCount.get());
+        assertEquals("a%3Db=c%2Bd&key%20with%20space=value%2Bwith%3Dspecial", mock.capturedTaggingHeader);
     }
 
     // endregion
