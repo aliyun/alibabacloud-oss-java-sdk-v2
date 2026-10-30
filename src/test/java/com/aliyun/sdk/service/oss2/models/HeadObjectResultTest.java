@@ -75,7 +75,7 @@ public class HeadObjectResultTest {
         headers.put("ETag", "\"B5eJF1ptWaXm4bijSPyxw==\"");
         headers.put("x-oss-meta-custom", "custom-value");
         headers.put("x-oss-transition-time", "2022-10-12T00:00:00.000Z");
-        headers.put("x‑oss‑tagging‑count", "10");
+        headers.put("x-oss-tagging-count", "10");
         headers.put("x-oss-server-side-encryption", "AES256");
         headers.put("x-oss-expiration", "2022-10-12T00:00:00.000Z");
 
@@ -144,7 +144,7 @@ public class HeadObjectResultTest {
         headers.put("ETag", "\"original-etag\"");
         headers.put("x-oss-meta-custom", "custom-value-2");
         headers.put("x-oss-transition-time", "2022-10-13T00:00:00.000Z");
-        headers.put("x‑oss‑tagging‑count", "5");
+        headers.put("x-oss-tagging-count", "5");
         headers.put("x-oss-server-side-encryption", "SM4");
         headers.put("x-oss-expiration", "2022-10-13T00:00:00.000Z");
 

@@ -52,7 +52,7 @@ public class GetObjectResultTest {
         headers.put("Content-Md5", "B5eJF1ptWaXm4bijSPyxw==");
         headers.put("x-oss-server-side-encryption-key-id", "9468da86-3509-4f8d-a61e-6eab1eac****");
         headers.put("x-oss-restore", "Restore");
-        headers.put("x‑oss‑tagging‑count", "10");
+        headers.put("x-oss-tagging-count", "10");
         headers.put("x-oss-expiration", "2022-10-12T00:00:00.000Z");
         headers.put("x-oss-next-append-position", "100");
         headers.put("x-oss-meta-custom", "custom-value");
@@ -108,7 +108,7 @@ public class GetObjectResultTest {
         headers.put("Content-Md5", "original-md5");
         headers.put("x-oss-server-side-encryption-key-id", "original-key-id");
         headers.put("x-oss-restore", "original-restore");
-        headers.put("x‑oss‑tagging‑count", "5");
+        headers.put("x-oss-tagging-count", "5");
         headers.put("x-oss-expiration", "2022-10-13T00:00:00.000Z");
         headers.put("x-oss-next-append-position", "200");
 
