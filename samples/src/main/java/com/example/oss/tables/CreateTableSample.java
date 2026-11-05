@@ -11,6 +11,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CreateTableSample implements com.example.oss.Example {
@@ -21,7 +23,8 @@ public class CreateTableSample implements com.example.oss.Example {
             String tableBucketARN,
             String namespace,
             String name,
-            String format) {
+            String format,
+            boolean useSchemaV2) {
 
         CredentialsProvider provider = new EnvironmentVariableCredentialsProvider();
         OSSTablesClientBuilder clientBuilder = OSSTablesClient.newBuilder()
@@ -77,6 +80,34 @@ public class CreateTableSample implements com.example.oss.Example {
                 .partitionSpec(partitionSpec)
                 .build();
 
+            if (useSchemaV2) {
+                // schemaV2 and schema are mutually exclusive; use separate metadata without legacy partition field IDs.
+                IcebergSchemaV2 schemaV2 = IcebergSchemaV2.newBuilder()
+                        .schemaId(0)
+                        .identifierFieldIds(Collections.singletonList(10))
+                        .fields(Arrays.asList(
+                                SchemaV2Field.newBuilder().id(10).name("order_id")
+                                        .type("long").required(true).build(),
+                                SchemaV2Field.newBuilder().id(20).name("customer").required(false)
+                                        .type(IcebergStructType.newBuilder().fields(Arrays.asList(
+                                                SchemaV2Field.newBuilder().id(21).name("name")
+                                                        .type("string").required(false).build(),
+                                                SchemaV2Field.newBuilder().id(22).name("level")
+                                                        .type("int").required(false).build())).build())
+                                        .build(),
+                                SchemaV2Field.newBuilder().id(30).name("tags").required(false)
+                                        .type(IcebergListType.newBuilder().elementId(31)
+                                                .element("string").elementRequired(false).build())
+                                        .build(),
+                                SchemaV2Field.newBuilder().id(40).name("attributes").required(false)
+                                        .type(IcebergMapType.newBuilder().keyId(41).key("string")
+                                                .valueId(42).value("string").valueRequired(false).build())
+                                        .build()))
+                        .build();
+                icebergMetadata = IcebergMetadata.newBuilder().schemaV2(schemaV2)
+                        .properties(Collections.singletonMap("format-version", "2")).build();
+            }
+
             // Set metadata
             TableMetadata metadata = TableMetadata.newBuilder()
                 .iceberg(icebergMetadata)
@@ -117,6 +148,7 @@ public class CreateTableSample implements com.example.oss.Example {
         opts.addOption(Option.builder().longOpt("namespace").desc("The namespace of the table.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("name").desc("The name of the table.").hasArg().required().get());
         opts.addOption(Option.builder().longOpt("format").desc("The format of the table (currently only 'iceberg' is supported).").hasArg().required().get());
+        opts.addOption(Option.builder().longOpt("schemaV2").desc("使用包含 struct、list、map 的 schemaV2 建表，默认使用旧 schema。").get());
         return opts;
     }
 
@@ -128,6 +160,6 @@ public class CreateTableSample implements com.example.oss.Example {
         String namespace = cmd.getParsedOptionValue("namespace");
         String name = cmd.getParsedOptionValue("name");
         String format = cmd.getParsedOptionValue("format");
-        execute(endpoint, region, tableBucketARN, namespace, name, format);
+        execute(endpoint, region, tableBucketARN, namespace, name, format, cmd.hasOption("schemaV2"));
     }
 }
