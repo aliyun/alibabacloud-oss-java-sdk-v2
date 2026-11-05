@@ -22,7 +22,8 @@ import com.aliyun.sdk.service.oss2.types.AddressStyleType;
 import com.aliyun.sdk.service.oss2.types.AuthMethodType;
 import com.aliyun.sdk.service.oss2.types.FeatureFlagsType;
 import com.aliyun.sdk.service.oss2.utils.*;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.aliyun.sdk.service.oss2.internal.serde.OssSerde;
+import com.aliyun.sdk.service.oss2.internal.serde.XmlErrorParser;
 
 import java.net.URI;
 import java.time.Instant;
@@ -761,20 +762,23 @@ public class ClientImpl implements AutoCloseable {
                 // json format
                 try {
                     if (data.length > 0) {
-                        JsonNode root = JsonUtils.getJsonRootElement(data);
+                        Object parsed = OssSerde.fromPlainJson(data, Object.class);
+                        Map<?, ?> root = parsed instanceof Map ? (Map<?, ?>) parsed : Collections.emptyMap();
                         if (headers.containsKey("x-oss-error-type")) {
                             errorFields.put("Code", headers.get("x-oss-error-type"));
-                            if (root.has("message")) {
-                                errorFields.put("Message", root.get("message").textValue());
+                            if (root.containsKey("message")) {
+                                Object message = root.get("message");
+                                errorFields.put("Message", message instanceof String ? (String) message : null);
                             } else {
                                 errorFields.put("Message", toErrorMessage("Not found key message", data));
                             }
                         } else {
-                            if (root.has("Error")) {
-                                Iterator<Map.Entry<String, JsonNode>> iterator = root.get("Error").fields();
-                                while (iterator.hasNext()) {
-                                    Map.Entry<String, JsonNode> entry = iterator.next();
-                                    errorFields.put(entry.getKey(), entry.getValue().asText());
+                            if (root.containsKey("Error")) {
+                                Object error = root.get("Error");
+                                if (error instanceof Map) {
+                                    for (Map.Entry<?, ?> entry : ((Map<?, ?>) error).entrySet()) {
+                                        errorFields.put(String.valueOf(entry.getKey()), asText(entry.getValue()));
+                                    }
                                 }
                             } else {
                                 errorFields.put("Message", toErrorMessage("Not found key Error", data));
@@ -791,13 +795,9 @@ public class ClientImpl implements AutoCloseable {
                 // xml format
                 try {
                     if (data.length > 0) {
-                        JsonNode root = XmlUtils.getXmlRootElement(data);
-                        if (root.has("Error")) {
-                            Iterator<Map.Entry<String, JsonNode>> iterator = root.get("Error").fields();
-                            while (iterator.hasNext()) {
-                                Map.Entry<String, JsonNode> entry = iterator.next();
-                                errorFields.put(entry.getKey(), entry.getValue().asText());
-                            }
+                        Map<String, String> fields = XmlErrorParser.parseError(data);
+                        if (fields != null) {
+                            errorFields.putAll(fields);
                         } else {
                             errorFields.put("Message", toErrorMessage("Not found tag <Error>", data));
                         }
@@ -838,6 +838,17 @@ public class ClientImpl implements AutoCloseable {
             }
             String rawString = new String(data);
             return prefix + ", part response body " + rawString.substring(0, Math.min(255, rawString.length()));
+        }
+
+        // same result as JsonNode.asText() on the parsed value
+        private static String asText(Object value) {
+            if (value == null) {
+                return "null";
+            }
+            if (value instanceof Map || value instanceof List) {
+                return "";
+            }
+            return String.valueOf(value);
         }
     }
 }

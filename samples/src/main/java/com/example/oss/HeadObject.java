@@ -34,8 +34,8 @@ public class HeadObject implements Example {
                             .key(key)
                     .build());
 
-            System.out.printf("status code:%d, request id:%s, eTag:%s, last modified:%s, content length:%d\n",
-                    result.statusCode(), result.requestId(), result.eTag(), result.lastModified(), result.contentLength());
+            System.out.printf("status code:%d, request id:%s, eTag:%s, last modified:%s, content length:%d, tag counts:%s, \n",
+                    result.statusCode(), result.requestId(), result.eTag(), result.lastModified(), result.contentLength(), result.taggingCount());
 
         } catch (Exception e) {
             //If the exception is caused by ServiceException, detailed information can be obtained in this way.

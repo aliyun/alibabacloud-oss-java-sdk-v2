@@ -1,9 +1,8 @@
 package com.aliyun.sdk.service.oss2.vectors.models;
 
+import com.aliyun.sdk.service.oss2.internal.serde.OssSerde;
+import com.aliyun.sdk.service.oss2.internal.serde.TypeRef;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -16,11 +15,8 @@ import java.util.List;
  */
 public class SchemaConfiguration {
 
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-    private static final TypeReference<List<FieldSchema>> FIELD_SCHEMA_LIST =
-            new TypeReference<List<FieldSchema>>() {
+    private static final TypeRef<List<FieldSchema>> FIELD_SCHEMA_LIST =
+            new TypeRef<List<FieldSchema>>() {
             };
 
     @JsonProperty("fields")
@@ -62,7 +58,7 @@ public class SchemaConfiguration {
         if (fields == null) {
             return null;
         }
-        return JSON_MAPPER.convertValue(fields, FIELD_SCHEMA_LIST);
+        return OssSerde.convertLenient(fields, FIELD_SCHEMA_LIST);
     }
 
     public Builder toBuilder() {

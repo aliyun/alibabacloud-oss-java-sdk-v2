@@ -1,7 +1,7 @@
 package com.aliyun.sdk.service.oss2.models;
 
 import com.aliyun.sdk.service.oss2.utils.Base64Utils;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.aliyun.sdk.service.oss2.internal.serde.OssSerde;
 
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -205,9 +205,8 @@ public class CallbackHelper {
     }
 
     static String toJsonBase64(Map<String, Object> value) {
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            String json = objectMapper.writeValueAsString(value);
+            String json = OssSerde.toPlainJson(value);
             return Base64Utils.encodeToString(json.getBytes(StandardCharsets.UTF_8));
         } catch (Exception ignore) {
             //

@@ -1,29 +1,19 @@
 package com.aliyun.sdk.service.oss2.utils;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
+import com.aliyun.sdk.service.oss2.internal.serde.XmlErrorParser;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.deser.FromXmlParser;
 
 import java.io.IOException;
 
 public class XmlUtils {
 
     public static JsonNode getXmlRootElement(byte[] data) throws IOException {
-        XmlMapper xmlMapper = new XmlMapper();
-        xmlMapper.registerModule(new SimpleModule().addDeserializer(JsonNode.class,
-                new JsonNodeDeserializer() {
-                    @Override
-                    public JsonNode deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-                        String rootName = ((FromXmlParser) p).getStaxReader().getLocalName();
-                        return ctxt.getNodeFactory()
-                                .objectNode().set(rootName, super.deserialize(p, ctxt));
-                    }
-                }));
-        return xmlMapper.readTree(data);
+        // read the root name with StAX, FromXmlParser.getStaxReader() is not reliable across versions
+        String rootName = XmlErrorParser.rootName(data);
+        JsonNode content = new XmlMapper().readTree(data);
+        return JsonNodeFactory.instance.objectNode().set(rootName, content);
     }
 
     public static String escapeText(String key) {

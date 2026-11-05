@@ -1,7 +1,8 @@
 package com.aliyun.sdk.service.oss2.transfermanager;
 
+import com.aliyun.sdk.service.oss2.internal.serde.OssSerde;
+import com.aliyun.sdk.service.oss2.internal.serde.SerdeException;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -16,8 +17,6 @@ import java.security.NoSuchAlgorithmException;
  * already completed ranges.
  */
 class DownloadCheckpoint {
-
-    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     String cpDirPath;
     String cpFilePath;
@@ -145,12 +144,12 @@ class DownloadCheckpoint {
     boolean valid() {
         try {
             byte[] contents = Files.readAllBytes(Paths.get(cpFilePath));
-            Info diskInfo = MAPPER.readValue(contents, Info.class);
+            Info diskInfo = OssSerde.fromPlainJson(contents, Info.class);
             if (diskInfo == null) return false;
 
             if (!Defaults.CHECKPOINT_MAGIC.equals(diskInfo.magic)) return false;
 
-            String dataMd5 = md5Hex(MAPPER.writeValueAsString(diskInfo.data));
+            String dataMd5 = md5Hex(OssSerde.toPlainJson(diskInfo.data));
             if (!dataMd5.equals(diskInfo.md5)) return false;
 
             if (!strEquals(info.data.objectInfo.name, diskInfo.data.objectInfo.name)) return false;
@@ -192,9 +191,14 @@ class DownloadCheckpoint {
     }
 
     void dump() throws IOException {
-        String dataJson = MAPPER.writeValueAsString(info.data);
-        info.md5 = md5Hex(dataJson);
-        String json = MAPPER.writeValueAsString(info);
+        String json;
+        try {
+            String dataJson = OssSerde.toPlainJson(info.data);
+            info.md5 = md5Hex(dataJson);
+            json = OssSerde.toPlainJson(info);
+        } catch (SerdeException e) {
+            throw new IOException(e.getMessage(), e.getCause());
+        }
         Files.write(Paths.get(cpFilePath), json.getBytes(StandardCharsets.UTF_8));
     }
 
