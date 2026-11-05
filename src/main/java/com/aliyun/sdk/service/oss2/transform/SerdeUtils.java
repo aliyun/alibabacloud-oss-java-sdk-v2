@@ -3,6 +3,7 @@ package com.aliyun.sdk.service.oss2.transform;
 import com.aliyun.sdk.service.oss2.OperationInput;
 import com.aliyun.sdk.service.oss2.OperationOutput;
 import com.aliyun.sdk.service.oss2.exceptions.DeserializationException;
+import com.aliyun.sdk.service.oss2.internal.serde.OssSerde;
 import com.aliyun.sdk.service.oss2.models.*;
 import com.aliyun.sdk.service.oss2.transport.BinaryData;
 import com.aliyun.sdk.service.oss2.transport.ByteArrayBinaryData;
@@ -10,12 +11,6 @@ import com.aliyun.sdk.service.oss2.transport.StringBinaryData;
 import com.aliyun.sdk.service.oss2.utils.HttpUtils;
 import com.aliyun.sdk.service.oss2.utils.Md5Utils;
 import com.aliyun.sdk.service.oss2.utils.MimeUtils;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.w3c.dom.Element;
 
 import java.nio.charset.StandardCharsets;
@@ -62,13 +57,7 @@ public final class SerdeUtils {
     }
 
     private static String toXmlString(Object value) {
-        ObjectMapper xmlMapper = new XmlMapper();
-        xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        try {
-            return xmlMapper.writeValueAsString(value);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        return OssSerde.toXml(value);
     }
 
     public static <T> Object deserializeXmlBody(OperationOutput output, Class<T> clz) {
@@ -88,11 +77,7 @@ public final class SerdeUtils {
         }
 
         try {
-            ObjectMapper xmlMapper = new XmlMapper();
-            xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-            xmlMapper.registerModule(new JavaTimeModule());
-            xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            return xmlMapper.readValue(xmlBytes, clz);
+            return OssSerde.fromXml(xmlBytes, clz);
         } catch (Exception e) {
             throw new DeserializationException("Failed to parse XML", e);
         }
@@ -182,11 +167,7 @@ public final class SerdeUtils {
         }
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-            objectMapper.registerModule(new JavaTimeModule());
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            return objectMapper.readValue(jsonBytes, clazz);
+            return OssSerde.fromJson(jsonBytes, clazz);
         } catch (Exception e) {
             throw new DeserializationException("Failed to parse JSON", e);
         }

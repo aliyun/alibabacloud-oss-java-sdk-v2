@@ -20,10 +20,7 @@ import com.aliyun.sdk.service.oss2.utils.HttpUtils;
 import com.aliyun.sdk.service.oss2.utils.MapUtils;
 import com.aliyun.sdk.service.oss2.utils.XmlUtils;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
+import com.aliyun.sdk.service.oss2.internal.serde.OssSerde;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -606,21 +603,13 @@ public final class SerdeObjectBasic {
         // body
         SelectMetaRequest metaRequest = request.selectMetaRequest();
         if (metaRequest != null) {
-            try {
-                XmlMapper xmlMapper = new XmlMapper();
-                xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-                String rootName = "CsvMetaRequest";
-                if (metaRequest.inputSerialization() != null && metaRequest.inputSerialization().json() != null) {
-                    rootName = "JsonMetaRequest";
-                }
-                String xml = xmlMapper.writer(new DefaultXmlPrettyPrinter())
-                        .withRootName(rootName)
-                        .writeValueAsString(metaRequest);
-
-                builder.body(BinaryData.fromBytes(xml.getBytes(StandardCharsets.UTF_8)));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+            String rootName = "CsvMetaRequest";
+            if (metaRequest.inputSerialization() != null && metaRequest.inputSerialization().json() != null) {
+                rootName = "JsonMetaRequest";
             }
+            String xml = OssSerde.toXml(metaRequest, rootName, true);
+
+            builder.body(BinaryData.fromBytes(xml.getBytes(StandardCharsets.UTF_8)));
         }
 
         builder.bucket(request.bucket());

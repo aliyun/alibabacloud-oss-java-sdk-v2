@@ -2,8 +2,8 @@ package com.aliyun.sdk.service.oss2.encryption.internal;
 
 
 import com.aliyun.sdk.service.oss2.encryption.crypto.CryptoScheme;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.aliyun.sdk.service.oss2.internal.serde.OssSerde;
+import com.aliyun.sdk.service.oss2.internal.serde.TypeRef;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,8 +11,7 @@ import java.util.Map;
 
 public class CryptoUtils {
     private static final String RANGE_PREFIX = "bytes=";
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final TypeReference<Map<String, String>> MAP_TYPE = new TypeReference<Map<String, String>>() {};
+    private static final TypeRef<Map<String, String>> MAP_TYPE = new TypeRef<Map<String, String>>() {};
 
     /**
      * Checks there an encryption info in the metadata.
@@ -31,7 +30,7 @@ public class CryptoUtils {
             return Collections.emptyMap();
         }
         try {
-            return MAPPER.readValue(jsonString, MAP_TYPE);
+            return OssSerde.fromPlainJson(jsonString, MAP_TYPE);
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse matdesc JSON: " + e.getMessage(), e);
         }
@@ -45,7 +44,7 @@ public class CryptoUtils {
             return null;
         }
         try {
-            return MAPPER.writeValueAsString(map);
+            return OssSerde.toPlainJson(map);
         } catch (Exception e) {
             throw new RuntimeException("Failed to serialize matdesc to JSON: " + e.getMessage(), e);
         }

@@ -2,16 +2,14 @@ package com.aliyun.sdk.service.oss2.dataprocess.models;
 
 import com.aliyun.sdk.service.oss2.models.RequestModel;
 import com.aliyun.sdk.service.oss2.utils.ConvertUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.aliyun.sdk.service.oss2.internal.serde.OssSerde;
+import com.aliyun.sdk.service.oss2.internal.serde.TypeRef;
 
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 public final class ListSmartClustersRequest extends RequestModel {
-
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     private final String bucket;
 
@@ -44,7 +42,7 @@ public final class ListSmartClustersRequest extends RequestModel {
             return null;
         }
         try {
-            return JSON_MAPPER.readValue(raw, new TypeReference<List<String>>() {});
+            return OssSerde.fromPlainJson(raw, new TypeRef<List<String>>() {});
         } catch (Exception e) {
             return null;
         }
@@ -100,7 +98,7 @@ public final class ListSmartClustersRequest extends RequestModel {
                 return this;
             }
             try {
-                this.parameters.put("ruleTypes", JSON_MAPPER.writeValueAsString(values));
+                this.parameters.put("ruleTypes", OssSerde.toPlainJson(values));
             } catch (Exception e) {
                 throw new IllegalArgumentException("Failed to encode ruleTypes as JSON", e);
             }

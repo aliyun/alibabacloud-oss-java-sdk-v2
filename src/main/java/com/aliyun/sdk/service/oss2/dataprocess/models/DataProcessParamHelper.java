@@ -1,7 +1,6 @@
 package com.aliyun.sdk.service.oss2.dataprocess.models;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.aliyun.sdk.service.oss2.internal.serde.OssSerde;
 
 import java.util.List;
 
@@ -9,9 +8,6 @@ import java.util.List;
  * Helper class for converting complex typed parameters to JSON query parameter strings.
  */
 public final class DataProcessParamHelper {
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
     private DataProcessParamHelper() {}
 
     /**
@@ -69,7 +65,7 @@ public final class DataProcessParamHelper {
             return null;
         }
         try {
-            return JSON_MAPPER.writeValueAsString(value);
+            return OssSerde.toJson(value);
         } catch (Exception e) {
             throw new RuntimeException("Failed to serialize parameter to JSON", e);
         }
