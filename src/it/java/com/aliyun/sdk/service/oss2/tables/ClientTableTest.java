@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ClientTableTest extends TestBaseTables {
@@ -606,6 +608,197 @@ public class ClientTableTest extends TestBaseTables {
                         e.getMessage());
             }
         }
+    }
+
+    @Test
+    public void testCreateTableSchemaV2Lifecycle() {
+        runSchemaV2Lifecycle(getTablesClient(), null);
+    }
+
+    @Test
+    public void testCreateTableSchemaV2UsePathStyle() throws Exception {
+        OSSTablesClientBuilder builder = OSSTablesClient.newBuilder()
+                .region(region())
+                .usePathStyle(true)
+                .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()));
+        String endpoint = tablesEndpoint();
+        if (endpoint != null && !endpoint.isEmpty()) {
+            builder.endpoint(endpoint);
+        }
+        try (OSSTablesClient client = builder.build()) {
+            runSchemaV2Lifecycle(client, null);
+        }
+    }
+
+    @Test
+    public void testCreateTableSchemaV2AsyncLifecycle() throws Exception {
+        OSSAsyncTablesClientBuilder builder = OSSAsyncTablesClient.newBuilder()
+                .region(region())
+                .credentialsProvider(new StaticCredentialsProvider(accessKeyId(), accessKeySecret()));
+        String endpoint = tablesEndpoint();
+        if (endpoint != null && !endpoint.isEmpty()) {
+            builder.endpoint(endpoint);
+        }
+        try (OSSAsyncTablesClient client = builder.build()) {
+            // Cross-check queries, listing, and cleanup with the synchronous client after asynchronous creation.
+            runSchemaV2Lifecycle(getTablesClient(), client);
+        }
+    }
+
+    private void runSchemaV2Lifecycle(OSSTablesClient client, OSSAsyncTablesClient asyncClient) {
+        String namespaceName = "test_ns_schema_v2_" + System.currentTimeMillis();
+        String tableName = "orders_nested_" + System.currentTimeMillis();
+        CreateTableBucketResult bucketResult = client.createTableBucket(
+                CreateTableBucketRequest.newBuilder().name(genTableBucketName()).build());
+        Assert.assertNotNull(bucketResult);
+        String tableBucketARN = bucketResult.arn();
+        boolean namespaceCreated = false;
+        boolean tableCreated = false;
+
+        try {
+            Assert.assertEquals(200, bucketResult.statusCode());
+            Assert.assertNotNull(tableBucketARN);
+            CreateNamespaceResult namespaceResult = client.createNamespace(
+                    CreateNamespaceRequest.newBuilder()
+                            .tableBucketARN(tableBucketARN)
+                            .namespace(Collections.singletonList(namespaceName))
+                            .build());
+            namespaceCreated = true;
+            Assert.assertNotNull(namespaceResult);
+            Assert.assertEquals(200, namespaceResult.statusCode());
+            Assert.assertTrue(namespaceResult.namespace().contains(namespaceName));
+
+            // Set schemaV2 alone without reusing the legacy schema or its partition field IDs.
+            IcebergMetadata iceberg = IcebergMetadata.newBuilder()
+                    .schemaV2(createNestedSchemaV2())
+                    .properties(Collections.singletonMap("format-version", "2"))
+                    .build();
+            CreateTableRequest request = CreateTableRequest.newBuilder()
+                    .tableBucketARN(tableBucketARN)
+                    .namespace(namespaceName)
+                    .name(tableName)
+                    .format("ICEBERG")
+                    .metadata(TableMetadata.newBuilder().iceberg(iceberg).build())
+                    .build();
+            Assert.assertNull(request.metadata().iceberg().schema());
+            CreateTableResult createResult = asyncClient == null
+                    ? client.createTable(request)
+                    : asyncClient.createTableAsync(request).join();
+            tableCreated = true;
+            Assert.assertNotNull(createResult);
+            Assert.assertEquals(200, createResult.statusCode());
+            Assert.assertNotNull(createResult.tableARN());
+            Assert.assertNotNull(createResult.versionToken());
+
+            GetTableResult getResult = client.getTable(GetTableRequest.newBuilder()
+                    .tableBucketARN(tableBucketARN)
+                    .namespace(namespaceName)
+                    .name(tableName)
+                    .build());
+            Assert.assertNotNull(getResult);
+            Assert.assertEquals(200, getResult.statusCode());
+            Assert.assertEquals(tableName, getResult.name());
+            Assert.assertEquals(createResult.tableARN(), getResult.tableARN());
+            Assert.assertEquals(Collections.singletonList(namespaceName), getResult.namespace());
+
+            GetTableResult getByArnResult = client.getTable(GetTableRequest.newBuilder()
+                    .tableArn(createResult.tableARN())
+                    .build());
+            Assert.assertNotNull(getByArnResult);
+            Assert.assertEquals(200, getByArnResult.statusCode());
+            Assert.assertEquals(tableName, getByArnResult.name());
+            Assert.assertEquals(createResult.tableARN(), getByArnResult.tableARN());
+            Assert.assertEquals(Collections.singletonList(namespaceName), getByArnResult.namespace());
+
+            ListTablesResult listResult = client.listTables(ListTablesRequest.newBuilder()
+                    .tableBucketARN(tableBucketARN)
+                    .namespace(namespaceName)
+                    .build());
+            Assert.assertNotNull(listResult);
+            Assert.assertEquals(200, listResult.statusCode());
+            Assert.assertNotNull(listResult.tables());
+            boolean found = false;
+            for (TableSummary summary : listResult.tables()) {
+                if (tableName.equals(summary.name())
+                        && Collections.singletonList(namespaceName).equals(summary.namespace())) {
+                    found = true;
+                    break;
+                }
+            }
+            Assert.assertTrue("列表应包含使用 schemaV2 创建的表", found);
+        } finally {
+            // Nested finally blocks ensure subsequent cleanup is attempted even if an earlier step fails.
+            try {
+                if (tableCreated) {
+                    DeleteTableResult result = client.deleteTable(DeleteTableRequest.newBuilder()
+                            .tableBucketARN(tableBucketARN)
+                            .namespace(namespaceName)
+                            .name(tableName)
+                            .build());
+                    Assert.assertNotNull(result);
+                    Assert.assertEquals(204, result.statusCode());
+                }
+            } finally {
+                try {
+                    if (namespaceCreated) {
+                        DeleteNamespaceResult result = client.deleteNamespace(DeleteNamespaceRequest.newBuilder()
+                                .tableBucketARN(tableBucketARN)
+                                .namespace(namespaceName)
+                                .build());
+                        Assert.assertNotNull(result);
+                        Assert.assertEquals(204, result.statusCode());
+                    }
+                } finally {
+                    if (tableBucketARN != null) {
+                        DeleteTableBucketResult result = client.deleteTableBucket(DeleteTableBucketRequest.newBuilder()
+                                .tableBucketARN(tableBucketARN)
+                                .build());
+                        Assert.assertNotNull(result);
+                        Assert.assertEquals(204, result.statusCode());
+                    }
+                }
+            }
+        }
+    }
+
+    private IcebergSchemaV2 createNestedSchemaV2() {
+        // Cover primitive types, struct, list, map, and optional properties from the API specification.
+        List<SchemaV2Field> fields = new ArrayList<>();
+        fields.add(SchemaV2Field.newBuilder().id(10).name("order_id")
+                .type("long").required(true).doc("订单编号").build());
+        fields.add(SchemaV2Field.newBuilder().id(20).name("customer").required(false)
+                .type(IcebergStructType.newBuilder().fields(Arrays.asList(
+                        SchemaV2Field.newBuilder().id(21).name("name").type("string").required(false).build(),
+                        SchemaV2Field.newBuilder().id(22).name("level").type("int").required(false).build()))
+                        .build())
+                .build());
+        fields.add(SchemaV2Field.newBuilder().id(30).name("tags").required(false)
+                .type(IcebergListType.newBuilder().elementId(31).element("string")
+                        .elementRequired(false).build())
+                .build());
+        fields.add(SchemaV2Field.newBuilder().id(40).name("attributes").required(false)
+                .type(IcebergMapType.newBuilder().keyId(41).key("string").valueId(42).value("string")
+                        .valueRequired(false).build())
+                .build());
+
+        // Cover multiple nesting levels: list<struct<sku: string, props: map<string, list<int>>>>.
+        IcebergMapType itemProperties = IcebergMapType.newBuilder()
+                .keyId(54).key("string").valueId(55)
+                .value(IcebergListType.newBuilder().elementId(56).element("int")
+                        .elementRequired(false).build())
+                .valueRequired(false).build();
+        IcebergStructType item = IcebergStructType.newBuilder().fields(Arrays.asList(
+                SchemaV2Field.newBuilder().id(52).name("sku").type("string").required(true).build(),
+                SchemaV2Field.newBuilder().id(53).name("props").type(itemProperties).required(false).build()))
+                .build();
+        fields.add(SchemaV2Field.newBuilder().id(50).name("items").required(false)
+                .type(IcebergListType.newBuilder().elementId(51).element(item).elementRequired(true).build())
+                .build());
+        return IcebergSchemaV2.newBuilder()
+                .schemaId(0)
+                .identifierFieldIds(Collections.singletonList(10))
+                .fields(fields)
+                .build();
     }
 
     private SchemaField createSchemaField(String name, String type, boolean required) {

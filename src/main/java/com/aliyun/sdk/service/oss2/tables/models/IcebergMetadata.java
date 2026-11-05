@@ -9,6 +9,9 @@ public class IcebergMetadata {
     @JsonProperty("schema")
     private IcebergSchema schema;
 
+    @JsonProperty("schemaV2")
+    private IcebergSchemaV2 schemaV2;
+
     @JsonProperty("partitionSpec")
     private IcebergPartitionSpec partitionSpec;
 
@@ -23,6 +26,7 @@ public class IcebergMetadata {
 
     private IcebergMetadata(Builder builder) {
         this.schema = builder.schema;
+        this.schemaV2 = builder.schemaV2;
         this.partitionSpec = builder.partitionSpec;
         this.writeOrder = builder.writeOrder;
         this.properties = builder.properties;
@@ -40,6 +44,10 @@ public class IcebergMetadata {
         return schema;
     }
 
+    public IcebergSchemaV2 schemaV2() {
+        return schemaV2;
+    }
+
     public IcebergPartitionSpec partitionSpec() {
         return partitionSpec;
     }
@@ -54,6 +62,7 @@ public class IcebergMetadata {
 
     public static class Builder {
         private IcebergSchema schema;
+        private IcebergSchemaV2 schemaV2;
         private IcebergPartitionSpec partitionSpec;
         private IcebergWriteOrder writeOrder;
         private Map<String, String> properties;
@@ -63,6 +72,7 @@ public class IcebergMetadata {
 
         private Builder(IcebergMetadata model) {
             this.schema = model.schema;
+            this.schemaV2 = model.schemaV2;
             this.partitionSpec = model.partitionSpec;
             this.writeOrder = model.writeOrder;
             this.properties = model.properties;
@@ -70,6 +80,16 @@ public class IcebergMetadata {
 
         public Builder schema(IcebergSchema schema) {
             this.schema = schema;
+            return this;
+        }
+
+        /**
+         * Sets the table schema supporting nested struct, list, and map types.
+         * Only one of schema and schemaV2 can be specified in a table creation request.
+         * Mutual exclusivity is validated by the server, not locally by the SDK.
+         */
+        public Builder schemaV2(IcebergSchemaV2 schemaV2) {
+            this.schemaV2 = schemaV2;
             return this;
         }
 
