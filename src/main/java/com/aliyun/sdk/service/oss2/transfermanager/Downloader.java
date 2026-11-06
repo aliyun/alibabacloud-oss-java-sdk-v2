@@ -411,6 +411,7 @@ public class Downloader {
                     pos = chunkEnd;
                 }
 
+                // Cancel tasks that have not started yet once a failure is known.
                 for (Future<?> future : futures) {
                     if (firstError.get() != null) {
                         future.cancel(false);
@@ -422,6 +423,20 @@ public class Downloader {
                     } catch (InterruptedException | ExecutionException e) {
                         if (firstError.get() == null) {
                             firstError.set(e.getCause() != null ? (Exception) e.getCause() : e);
+                        }
+                    }
+                }
+
+                // After a failure, wait for workers that were still running so that side effects
+                // (writing the temp file or checkpoint) do not outlive this call.
+                if (firstError.get() != null) {
+                    for (Future<?> future : futures) {
+                        if (future.isDone()) {
+                            continue;
+                        }
+                        try {
+                            future.get();
+                        } catch (Exception ignored) {
                         }
                     }
                 }

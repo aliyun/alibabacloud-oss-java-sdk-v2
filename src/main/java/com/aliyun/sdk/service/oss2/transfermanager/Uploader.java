@@ -626,6 +626,20 @@ public class Uploader {
                     }
                 }
             }
+
+            // After a failure, wait for workers that were still running so that side effects
+            // (writing the temp file or checkpoint) do not outlive this call.
+            if (firstError.get() != null) {
+                for (Future<?> future : futures) {
+                    if (future.isDone()) {
+                        continue;
+                    }
+                    try {
+                        future.get();
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
         }
 
         private static String detectContentType(String filePath) {
