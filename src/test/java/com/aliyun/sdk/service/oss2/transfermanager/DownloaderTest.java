@@ -885,6 +885,10 @@ public class DownloaderTest {
 
         // Temp file and checkpoint should exist
         assertTrue(new File(filePath + Defaults.TEMP_FILE_SUFFIX).exists());
+
+        // Give the filesystem a moment to settle the checkpoint file.
+        Thread.sleep(1000);
+
         File[] cpFiles = cpDir.listFiles((dir, name) -> name.endsWith(".dcp"));
         assertNotNull(cpFiles);
         assertEquals(1, cpFiles.length);
@@ -1386,6 +1390,10 @@ public class DownloaderTest {
         }
 
         // Verify checkpoint has CRC64
+
+        // Give the filesystem a moment to settle the checkpoint file.
+        Thread.sleep(1000);
+
         File[] cpFiles = cpDir.listFiles((dir, name) -> name.endsWith(".dcp"));
         assertNotNull(cpFiles);
         assertEquals(1, cpFiles.length);
