@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,17 +66,35 @@ public class RetryerTest {
                         .build()))
                 .isFalse();
 
-        //delay test
+        //delay test: full jitter samples [0, min(200ms * 2^attempt, 20s)), so zero is legal
         Duration min = Duration.ofSeconds(0);
         Duration max = Duration.ofSeconds(20);
         Exception e = new Exception();
-        assertThat(retry.retryDelay(0, e)).isGreaterThan(min);
 
         for (int i = 0; i < 128; i++) {
             Duration val = retry.retryDelay(i, e);
-            assertThat(val).isGreaterThan(min);
+            assertThat(val).isGreaterThanOrEqualTo(min);
             assertThat(val).isLessThanOrEqualTo(max);
         }
+
+        // attempt 0 has a fixed cap of 200ms
+        for (int i = 0; i < 100; i++) {
+            assertThat(retry.retryDelay(0, e)).isLessThan(Duration.ofMillis(200));
+        }
+
+        // attempt 7 is capped at 20s; sampled delays must span that range instead of
+        // collapsing to a constant
+        Set<Duration> seen = new HashSet<>();
+        Duration largest = Duration.ZERO;
+        for (int i = 0; i < 1000; i++) {
+            Duration val = retry.retryDelay(7, e);
+            seen.add(val);
+            if (val.compareTo(largest) > 0) {
+                largest = val;
+            }
+        }
+        assertThat(seen.size()).isGreaterThan(1);
+        assertThat(largest).isGreaterThan(Duration.ofSeconds(10));
     }
 
     @Test

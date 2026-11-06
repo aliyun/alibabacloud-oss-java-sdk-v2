@@ -1150,6 +1150,9 @@ public class DownloaderTest {
         assertFalse(Files.isSymbolicLink(tempDestFile.toPath()));
         long firstRunGets = mock.getObjectCount.get();
 
+        // Give the filesystem a moment to settle the checkpoint file before resuming.
+        Thread.sleep(1000);
+
         // Resume - the pre-existing regular temp file must not be deleted by checkDestination.
         mock.failPartNum = 0;
         DownloadResult result = downloader.downloadFile(request, filePath,
