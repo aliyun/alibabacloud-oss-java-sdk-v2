@@ -294,6 +294,7 @@ public class PutDataPipelineConfigurationRequestTest {
                 PutDataPipelineConfigurationConfiguration.newBuilder()
                         .sources(Collections.singletonList(DataPipelineSource.newBuilder()
                                 .inputBucket("source-bucket")
+                                .inputDataScope("All")
                                 .filterConfiguration(DataPipelineSourceFilterConfiguration.newBuilder()
                                         .objectMediaTypes(Collections.singletonList("video"))
                                         .build())
@@ -313,6 +314,9 @@ public class PutDataPipelineConfigurationRequestTest {
                                         .bucket("vector-bucket")
                                         .indexName("video-frame")
                                         .build())
+                                .build())
+                        .dataPipelineError(DataPipelineError.newBuilder()
+                                .errorMode("ignore")
                                 .build())
                         .build();
         PutDataPipelineConfigurationRequest request = PutDataPipelineConfigurationRequest.newBuilder()
@@ -403,7 +407,7 @@ public class PutDataPipelineConfigurationRequestTest {
                 .inputDataScope("All")
                 .filterConfiguration(DataPipelineSourceFilterConfiguration.newBuilder()
                         .prefixSet(Collections.singletonList("media/"))
-                        .objectMediaTypes(Arrays.asList("image", "video", "text"))
+                        .objectMediaTypes(Arrays.asList("image", "video", "document"))
                         .build())
                 .build();
 
@@ -451,7 +455,7 @@ public class PutDataPipelineConfigurationRequestTest {
                 + "<Sources><InputBucket>source-bucket</InputBucket><InputDataScope>All</InputDataScope>"
                 + "<FilterConfiguration><PrefixSet>media/</PrefixSet>"
                 + "<ObjectMediaTypes>image</ObjectMediaTypes><ObjectMediaTypes>video</ObjectMediaTypes>"
-                + "<ObjectMediaTypes>text</ObjectMediaTypes></FilterConfiguration></Sources>"
+                + "<ObjectMediaTypes>document</ObjectMediaTypes></FilterConfiguration></Sources>"
                 + "<ModelTier>standard</ModelTier>"
                 + "<DataPipelineDataProcessConfiguration><SearchMode>balanced</SearchMode><Insights>"
                 + "<Image><Caption><Prompt>Describe the image.</Prompt></Caption></Image>"
@@ -473,11 +477,14 @@ public class PutDataPipelineConfigurationRequestTest {
 
     private static String dhashRequestExampleXml() {
         return "<DataPipelineConfiguration><Sources><InputBucket>source-bucket</InputBucket>"
+                + "<InputDataScope>All</InputDataScope>"
                 + "<FilterConfiguration><ObjectMediaTypes>video</ObjectMediaTypes></FilterConfiguration></Sources>"
                 + "<DataPipelineDataProcessConfiguration><SearchMode>fast</SearchMode><Insights><Video>"
                 + "<FrameEmbedding><Snapshot><Mode>dhash</Mode><Number>20</Number></Snapshot></FrameEmbedding>"
                 + "</Video></Insights></DataPipelineDataProcessConfiguration><Destination>"
                 + "<VideoFrameEmbedding><Bucket>vector-bucket</Bucket><IndexName>video-frame</IndexName>"
-                + "</VideoFrameEmbedding></Destination></DataPipelineConfiguration>";
+                + "</VideoFrameEmbedding></Destination>"
+                + "<DataPipelineError><ErrorMode>ignore</ErrorMode></DataPipelineError>"
+                + "</DataPipelineConfiguration>";
     }
 }

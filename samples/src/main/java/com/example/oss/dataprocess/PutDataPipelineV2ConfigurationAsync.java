@@ -68,6 +68,10 @@ public class PutDataPipelineV2ConfigurationAsync implements Example {
                                             .prefix("v2")
                                             .build())
                                     .build())
+                            // DataPipelineError and its ErrorMode are mandatory.
+                            .dataPipelineError(DataPipelineError.newBuilder()
+                                    .errorMode("ignore")
+                                    .build())
                             .build();
 
             PutDataPipelineConfigurationResult result = client.putDataPipelineConfigurationAsync(
